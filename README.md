@@ -62,6 +62,7 @@ src/
 │   │   ├── login/     # ログインページ
 │   │   │   └── page.tsx  # ログインフォーム
 │   │   └── signup/    # サインアップページ
+│   │       └── page.tsx  # サインアップフォーム
 │   ├── (dashboard)/   # ダッシュボード関連ページ
 │   │   ├── plans/     # プラン一覧・詳細
 │   │   └── settings/  # 設定ページ
@@ -71,8 +72,10 @@ src/
 │   ├── ui/           # 共通UIコンポーネント
 │   │   └── button.tsx  # ボタンコンポーネント
 │   └── features/     # 機能別コンポーネント
-│       ├── auth/
-│       └── plans/
+├── contexts/         # Reactコンテキスト
+│   └── AuthContext.tsx  # 認証状態管理
+├── hooks/            # カスタムフック
+│   └── useRequireAuth.ts  # 認証要求フック
 ├── lib/              # ユーティリティ関数
 │   ├── supabase.ts  # Supabase クライアント
 │   └── utils.ts     # 汎用ユーティリティ関数
@@ -136,5 +139,13 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY="your-supabase-anon-key"
 - ログインページの実装
   - メールアドレス/パスワードによるログイン
   - レスポンシブデザイン対応
+- サインアップページの実装
+  - 名前、メールアドレス、パスワードによる新規登録
+  - 確認メール送信機能
+  - ログインページへのリンク
+- 認証状態管理
+  - グローバルな認証状態の管理（AuthContext）
+  - 認証状態の永続化
+  - 認証要求フック（useRequireAuth）
 - 共通UIコンポーネント
   - Button: バリアント（primary/secondary/outline）とサイズ（sm/md/lg）に対応
