@@ -6,3 +6,12 @@ export interface LoginForm {
   export interface SignUpForm extends LoginForm {
     name: string
   }
+
+export interface Profile {
+  id: string
+  userId: string
+  name: string
+  email: string
+  createdAt: Date
+  updatedAt: Date
+}

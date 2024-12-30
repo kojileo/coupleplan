@@ -30,27 +30,87 @@ Couple Planは、カップルのためのデートプラン管理アプリケー
 
 ## 開発環境のセットアップ
 
-1. 依存関係のインストール
+1. リポジトリのクローン
+```bash
+git clone <repository-url>
+cd couple-plan
+```
+
+2. 依存関係のインストール
 ```bash
 npm install
 ```
 
-2. 環境変数の設定
-`.env.local`ファイルを作成し、必要な環境変数を設定:
-```
-DATABASE_URL="your-database-url"
-NEXT_PUBLIC_SUPABASE_URL="your-supabase-url"
-NEXT_PUBLIC_SUPABASE_ANON_KEY="your-supabase-anon-key"
+3. ローカルデータベースの準備
+- PostgreSQLをインストール（未インストールの場合）
+- データベースの作成
+```sql
+CREATE DATABASE coupleplan;
 ```
 
-3. データベースのマイグレーション
+4. 環境変数の設定
+`.env`ファイルを作成し、以下の環境変数を設定:
+
+
+5. Prismaの設定
 ```bash
+# Prismaクライアントの生成
+npx prisma generate
+
+# データベースマイグレーションの実行
 npx prisma migrate dev
 ```
 
-4. 開発サーバーの起動
+6. Supabaseプロジェクトの設定
+- Supabaseでプロジェクトを作成
+- Authentication > Providersから「Email」を有効化
+- プロジェクトのURLとAnon Keyを`.env`ファイルに設定
+
+7. 開発サーバーの起動
 ```bash
 npm run dev
+```
+
+
+## 動作確認手順
+
+1. ユーザー登録・ログインの確認
+- `/signup`にアクセスして新規ユーザーを作成
+- 作成したアカウントで`/login`からログイン
+- ダッシュボードにリダイレクトされることを確認
+
+2. プラン管理機能の確認
+- 「新規プラン作成」からプランを作成
+- プラン一覧での表示を確認
+- プラン詳細画面での表示・編集・削除を確認
+
+3. プラン共有機能の確認
+- プラン詳細画面から「共有」ボタンをクリック
+- 共有したいユーザーのメールアドレスを入力
+- 招待メールの送信を確認（開発環境では実際のメール送信は無効）
+
+## トラブルシューティング
+
+1. データベース接続エラー
+- PostgreSQLサービスが起動していることを確認
+- `.env`の接続情報が正しいことを確認
+```bash
+# PostgreSQLサービスの状態確認
+sudo service postgresql status
+```
+
+2. Supabase認証エラー
+- Supabaseプロジェクトの設定を確認
+- `.env`のSupabase URLとAnon Keyが正しいことを確認
+- ブラウザのコンソールでエラーメッセージを確認
+
+3. Prismaエラー
+```bash
+# Prismaクライアントの再生成
+npx prisma generate
+
+# データベーススキーマの同期確認
+npx prisma db push
 ```
 
 ## プロジェクト構成
@@ -58,20 +118,40 @@ npm run dev
 ```
 src/
 ├── app/                # Next.js App Router
+│   ├── page.tsx       # ランディングページ
 │   ├── (auth)/        # 認証関連ページ
 │   │   ├── login/     # ログインページ
 │   │   │   └── page.tsx  # ログインフォーム
 │   │   └── signup/    # サインアップページ
 │   │       └── page.tsx  # サインアップフォーム
 │   ├── (dashboard)/   # ダッシュボード関連ページ
-│   │   ├── plans/     # プラン一覧・詳細
-│   │   └── settings/  # 設定ページ
-│   ├── api/          # APIエンドポイント
-│   └── layout.tsx    # ルートレイアウト
+│   │   ├── layout.tsx # ダッシュボードレイアウト
+│   │   └── plans/     # プラン一覧・詳細
+│   │       ├── page.tsx  # プラン一覧ページ
+│   │       ├── [id]/    # プラン詳細ページ
+│   │       │   ├── page.tsx
+│   │       │   └── edit/  # プラン編集ページ
+│   │       │       └── page.tsx
+│   │       └── new/      # 新規プラン作成
+│   │           └── page.tsx  # プラン作成フォーム
+├── components/        # コンポーネント
+│   ├── features/     # 機能別コンポーネント
+│   │   ├── auth/     # 認証関連コンポーネント
+│   │   └── plans/    # プラン関連コンポーネント
+│   │       └── ShareDialog.tsx  # 共有ダイアログ
+├── types/           # 型定義
+│   ├── auth.ts      # 認証関連の型定義
+│   ├── plan.ts      # プラン関連の型定義
+│   └── share.ts     # 共有関連の型定義
 ├── components/        # コンポーネント
 │   ├── ui/           # 共通UIコンポーネント
 │   │   └── button.tsx  # ボタンコンポーネント
-│   └── features/     # 機能別コンポーネント
+│   ├── features/     # 機能別コンポーネント
+│   │   ├── auth/     # 認証関連コンポーネント
+│   │   │   └── AuthGuard.tsx
+│   │   └── dashboard/ # ダッシュボード関連コンポーネント
+│   │       └── Navbar.tsx
+│   └── ui/           # 共通UIコンポーネント
 ├── contexts/         # Reactコンテキスト
 │   └── AuthContext.tsx  # 認証状態管理
 ├── hooks/            # カスタムフック
@@ -79,8 +159,6 @@ src/
 ├── lib/              # ユーティリティ関数
 │   ├── supabase.ts  # Supabase クライアント
 │   └── utils.ts     # 汎用ユーティリティ関数
-├── types/           # 型定義
-│   └── auth.ts      # 認証関連の型定義
 └── styles/          # グローバルスタイル
 ```
 
@@ -100,12 +178,6 @@ npm install -D prisma @types/node
 
 3. 環境変数の設定
 `.env.local`ファイルを作成:
-```
-DATABASE_URL="your-database-url"
-NEXT_PUBLIC_SUPABASE_URL="your-supabase-url"
-NEXT_PUBLIC_SUPABASE_ANON_KEY="your-supabase-anon-key"
-```
-
 ## 開発ガイドライン
 
 ### コーディング規約
@@ -149,3 +221,32 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY="your-supabase-anon-key"
   - 認証要求フック（useRequireAuth）
 - 共通UIコンポーネント
   - Button: バリアント（primary/secondary/outline）とサイズ（sm/md/lg）に対応
+- 認証ガード
+  - 保護されたルートの実装
+  - ローディング状態の表示
+  - 未認証時のリダイレクト
+- ダッシュボード
+  - 基本レイアウト
+  - ログアウト機能
+  - ユーザー情報の表示
+
+### ダッシュボード
+- ナビゲーションバー
+  - レスポンシブデザイン
+  - アプリケーションロゴ
+  - メインナビゲーション（プラン一覧、新規プラン、設定）
+  - ユーザー情報表示
+  - ログアウト機能
+
+### プラン管理機能
+- プラン一覧表示
+  - グリッドレイアウト
+  - プランカードの表示（タイトル、説明、日付、予算、場所）
+  - 新規プラン作成へのリンク
+  - ローディング状態の表示
+  - プラン未作成時の案内表示
+  - レスポンシブデザイン
+- プラン共有機能
+  - メールアドレスによる共有招待
+  - 共有ダイアログ
+  - 招待状態の管理

@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Profile {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @unique @map("user_id") @db.Uuid
+  name      String   @db.VarChar(255)
+  email     String   @unique @db.VarChar(255)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
+  plans     Plan[]
+  receivedInvitations ShareInvitation[] @relation("ReceivedInvitations")
+
+  @@map("profiles")
+}
+
+model Plan {
+  id          String    @id @default(uuid()) @db.Uuid
+  title       String    @db.VarChar(255)
+  description String?   @db.Text
+  date        DateTime? @db.Date
+  budget      Int       @default(0)
+  location    String?   @db.VarChar(255)
+  userId      String    @map("user_id") @db.Uuid
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime  @default(now()) @map("updated_at") @db.Timestamptz
+  
+  profile    Profile    @relation(fields: [userId], references: [userId])
+  shareInvitations ShareInvitation[]
+
+  @@map("plans")
+}
+
+model ShareInvitation {
+  id        String   @id @default(uuid()) @db.Uuid
+  planId    String   @map("plan_id") @db.Uuid
+  email     String   @db.VarChar(255)
+  status    String   @default("pending") @db.VarChar(20)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
+  
+  plan      Plan     @relation(fields: [planId], references: [id])
+  recipient Profile? @relation("ReceivedInvitations", fields: [email], references: [email])
+
+  @@unique([planId, email])
+  @@map("share_invitations")
+}
