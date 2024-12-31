@@ -1,43 +1,46 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState } from 'react'
-import { User } from '@supabase/supabase-js'
-import { supabase } from '@/lib/supabase'
+import { User, Session } from '@supabase/supabase-js'
+import { supabase } from '@/lib/supabase-auth'
 
 type AuthContextType = {
   user: User | null
-  loading: boolean
+  session: Session | null
+  isLoading: boolean
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
-  loading: true,
+  session: null,
+  isLoading: true,
 })
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [session, setSession] = useState<Session | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // 現在のセッションを取得
     supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
       setUser(session?.user ?? null)
-      setLoading(false)
+      setIsLoading(false)
     })
 
-    // 認証状態の変更を監視
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange((_event: string, session: Session | null) => {
+      setSession(session)
       setUser(session?.user ?? null)
-      setLoading(false)
+      setIsLoading(false)
     })
 
     return () => subscription.unsubscribe()
   }, [])
 
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider value={{ user, session, isLoading }}>
       {children}
     </AuthContext.Provider>
   )

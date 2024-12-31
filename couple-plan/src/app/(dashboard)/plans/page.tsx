@@ -4,28 +4,23 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 import Button from '@/components/ui/button'
-import { supabase } from '@/lib/supabase'
+import { api } from '@/lib/api'
 import type { Plan } from '@/types/plan'
 
 export default function PlansPage() {
   const router = useRouter()
-  const { user } = useAuth()
+  const { user, session } = useAuth()
   const [plans, setPlans] = useState<Plan[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchPlans = async () => {
-      if (!user) return
+      if (!session) return
 
       try {
-        const { data, error } = await supabase
-          .from('plans')
-          .select('*')
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false })
-
-        if (error) throw error
-        setPlans(data || [])
+        const { data, error } = await api.plans.list(session.access_token)
+        if (error) throw new Error(error)
+        setPlans(data)
       } catch (error) {
         console.error('プランの取得に失敗しました:', error)
       } finally {
@@ -34,7 +29,7 @@ export default function PlansPage() {
     }
 
     fetchPlans()
-  }, [user])
+  }, [session])
 
   if (loading) {
     return (
@@ -60,7 +55,7 @@ export default function PlansPage() {
             className="mt-4"
             onClick={() => router.push('/plans/new')}
           >
-            最初のプランを作成
+            新規プラン作成
           </Button>
         </div>
       ) : (

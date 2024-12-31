@@ -2,45 +2,41 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import Button from '@/components/ui/button'
-import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
-import type { CreatePlanInput } from '@/types/plan'
+import Button from '@/components/ui/button'
+import { api } from '@/lib/api'
+import type { PlanRequest } from '@/types/api'
 
 export default function NewPlanPage() {
   const router = useRouter()
-  const { user } = useAuth()
-  const [loading, setLoading] = useState(false)
-  const [formData, setFormData] = useState<CreatePlanInput>({
+  const { session } = useAuth()
+  const [saving, setSaving] = useState(false)
+  const [formData, setFormData] = useState<PlanRequest>({
     title: '',
     description: '',
-    date: null,
+    date: '',
     budget: 0,
     location: '',
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!user) return
+    if (!session) return
 
-    setLoading(true)
+    setSaving(true)
     try {
-      const { error } = await supabase
-        .from('plans')
-        .insert([
-          {
-            ...formData,
-            user_id: user.id,
-          },
-        ])
-
-      if (error) throw error
+      const { data, error } = await api.plans.create(session.access_token, {
+        ...formData,
+        date: formData.date ? new Date(formData.date).toISOString() : undefined,
+      })
       
+      if (error) throw new Error(error)
       router.push('/plans')
     } catch (error) {
+      console.error('プランの作成に失敗しました:', error)
       alert('プランの作成に失敗しました')
     } finally {
-      setLoading(false)
+      setSaving(false)
     }
   }
 
@@ -81,7 +77,8 @@ export default function NewPlanPage() {
           <input
             type="date"
             className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            onChange={(e) => setFormData({ ...formData, date: e.target.value ? new Date(e.target.value) : null })}
+            value={formData.date}
+            onChange={(e) => setFormData({ ...formData, date: e.target.value })}
           />
         </div>
 
@@ -91,6 +88,8 @@ export default function NewPlanPage() {
           </label>
           <input
             type="number"
+            required
+            min={0}
             className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={formData.budget}
             onChange={(e) => setFormData({ ...formData, budget: Number(e.target.value) })}
@@ -119,9 +118,9 @@ export default function NewPlanPage() {
           </Button>
           <Button
             type="submit"
-            disabled={loading}
+            disabled={saving}
           >
-            {loading ? '作成中...' : 'プランを作成'}
+            {saving ? '作成中...' : '作成'}
           </Button>
         </div>
       </form>

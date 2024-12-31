@@ -116,51 +116,112 @@ npx prisma db push
 ## プロジェクト構成
 
 ```
-src/
-├── app/                # Next.js App Router
-│   ├── page.tsx       # ランディングページ
-│   ├── (auth)/        # 認証関連ページ
-│   │   ├── login/     # ログインページ
-│   │   │   └── page.tsx  # ログインフォーム
-│   │   └── signup/    # サインアップページ
-│   │       └── page.tsx  # サインアップフォーム
-│   ├── (dashboard)/   # ダッシュボード関連ページ
-│   │   ├── layout.tsx # ダッシュボードレイアウト
-│   │   └── plans/     # プラン一覧・詳細
-│   │       ├── page.tsx  # プラン一覧ページ
-│   │       ├── [id]/    # プラン詳細ページ
-│   │       │   ├── page.tsx
-│   │       │   └── edit/  # プラン編集ページ
-│   │       │       └── page.tsx
-│   │       └── new/      # 新規プラン作成
-│   │           └── page.tsx  # プラン作成フォーム
-├── components/        # コンポーネント
-│   ├── features/     # 機能別コンポーネント
-│   │   ├── auth/     # 認証関連コンポーネント
-│   │   └── plans/    # プラン関連コンポーネント
-│   │       └── ShareDialog.tsx  # 共有ダイアログ
-├── types/           # 型定義
-│   ├── auth.ts      # 認証関連の型定義
-│   ├── plan.ts      # プラン関連の型定義
-│   └── share.ts     # 共有関連の型定義
-├── components/        # コンポーネント
-│   ├── ui/           # 共通UIコンポーネント
-│   │   └── button.tsx  # ボタンコンポーネント
-│   ├── features/     # 機能別コンポーネント
-│   │   ├── auth/     # 認証関連コンポーネント
-│   │   │   └── AuthGuard.tsx
-│   │   └── dashboard/ # ダッシュボード関連コンポーネント
-│   │       └── Navbar.tsx
-│   └── ui/           # 共通UIコンポーネント
-├── contexts/         # Reactコンテキスト
-│   └── AuthContext.tsx  # 認証状態管理
-├── hooks/            # カスタムフック
-│   └── useRequireAuth.ts  # 認証要求フック
-├── lib/              # ユーティリティ関数
-│   ├── supabase.ts  # Supabase クライアント
-│   └── utils.ts     # 汎用ユーティリティ関数
-└── styles/          # グローバルスタイル
+couple-plan/
+├── .next/                # Next.js ビルドファイル
+├── node_modules/         # 依存パッケージ
+├── public/              # 静的ファイル
+├── src/
+│   ├── app/            # Next.js App Router
+│   │   ├── api/        # API Routes
+│   │   │   ├── auth/   # 認証関連API
+│   │   │   │   ├── login/
+│   │   │   │   │   └── route.ts
+│   │   │   │   └── signup/
+│   │   │   │       └── route.ts
+│   │   │   └── plans/  # プラン関連API
+│   │   │       ├── route.ts          # プラン一覧
+│   │   │       └── [id]/
+│   │   │           ├── route.ts      # プラン詳細
+│   │   │           └── share/
+│   │   │               └── route.ts  # プラン共有
+│   │   ├── layout.tsx  # ルートレイアウト
+│   │   ├── page.tsx    # ホームページ
+│   │   ├── (auth)/     # 認証関連ページ
+│   │   │   ├── login/  # ログインページ
+│   │   │   │   └── page.tsx
+│   │   │   ├── signup/ # サインアップページ
+│   │   │   │   └── page.tsx
+│   │   │   └── verify-email/ # メール確認待ちページ
+│   │   │       └── page.tsx
+│   │   └── (dashboard)/ # ダッシュボード関連ページ
+│   │       ├── layout.tsx
+│   │       └── plans/   # プラン関連ページ
+│   │           ├── page.tsx        # プラン一覧
+│   │           ├── new/           # 新規プラン作成
+│   │           │   └── page.tsx
+│   │           └── [id]/          # プラン詳細・編集
+│   │               ├── page.tsx   # 詳細表示
+│   │               └── edit/      # 編集ページ
+│   │                   └── page.tsx
+│   ├── components/     # コンポーネント
+│   │   ├── ui/        # 共通UIコンポーネント
+│   │   │   └── button.tsx
+│   │   └── features/  # 機能別コンポーネント
+│   │       ├── auth/  # 認証関連
+│   │       │   └── AuthGuard.tsx
+│   │       ├── dashboard/ # ダッシュボード関連
+│   │       │   └── Navbar.tsx
+│   │       └── plans/ # プラン関連
+│   │           └── ShareDialog.tsx
+│   ├── contexts/      # Reactコンテキスト
+│   │   └── AuthContext.tsx
+│   ├── hooks/         # カスタムフック
+│   │   ├── useRequireAuth.ts
+│   │   └── usePlans.ts      # プラン関連フック
+│   ├── lib/          # ユーティリティ
+│   │   ├── db.ts     # Prismaクライアント
+│   │   ├── supabase-auth.ts # Supabase認証
+│   │   ├── api.ts    # APIクライアント関数
+│   │   └── utils.ts  # ユーティリティ関数
+│   └── types/        # 型定義
+│       ├── auth.ts
+│       ├── plan.ts
+│       ├── share.ts
+│       ├── api.ts    # API関連の型定義
+│       └── database.ts
+├── .env              # 環境変数
+├── .gitignore       # Git除外設定
+├── next.config.js   # Next.js設定
+├── package.json     # プロジェクト設定
+├── prisma/          # Prisma設定
+│   └── schema.prisma # データベーススキーマ
+├── README.md        # プロジェクト説明
+├── tailwind.config.js # Tailwind CSS設定
+└── tsconfig.json    # TypeScript設定
 ```
+
+### 主要ディレクトリの説明
+
+- `src/app/`: Next.js 13のApp Routerを使用したページコンポーネント
+  - `api/`: サーバーサイドAPI実装
+  - `(auth)/`: 認証関連ページ
+  - `(dashboard)/`: ダッシュボード関連ページ
+- `src/components/`: 再利用可能なReactコンポーネント
+  - `ui/`: 汎用的なUIコンポーネント
+  - `features/`: 特定の機能に紐づくコンポーネント
+- `src/contexts/`: アプリケーション全体で共有する状態管理
+- `src/hooks/`: カスタムフック
+- `src/lib/`: ユーティリティ関数やサービス設定
+  - `api.ts`: APIクライアント関数
+  - `db.ts`: Prismaクライアント（サーバーサイドのみ）
+  - `supabase-auth.ts`: Supabase認証
+- `src/types/`: TypeScript型定義
+
+### 技術スタック
+
+- **フロントエンド**
+  - Next.js 14 (App Router)
+  - TypeScript
+  - Tailwind CSS
+  - shadcn/ui
+
+- **バックエンド**
+  - Supabase (認証)
+  - Prisma (ORM)
+  - PostgreSQL
+
+- **インフラ**
+  - Vercel (ホスティング)
 
 ## セットアップ手順
 

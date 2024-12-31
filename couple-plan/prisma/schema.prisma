@@ -11,7 +11,6 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
 }
 
 model Profile {
@@ -21,7 +20,9 @@ model Profile {
   email     String   @unique @db.VarChar(255)
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
-  plans     Plan[]
+
+  // Relations
+  plans               Plan[]
   receivedInvitations ShareInvitation[] @relation("ReceivedInvitations")
 
   @@map("profiles")
@@ -37,8 +38,9 @@ model Plan {
   userId      String    @map("user_id") @db.Uuid
   createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
   updatedAt   DateTime  @default(now()) @map("updated_at") @db.Timestamptz
-  
-  profile    Profile    @relation(fields: [userId], references: [userId])
+
+  // Relations
+  profile          Profile           @relation(fields: [userId], references: [userId])
   shareInvitations ShareInvitation[]
 
   @@map("plans")
@@ -48,13 +50,20 @@ model ShareInvitation {
   id        String   @id @default(uuid()) @db.Uuid
   planId    String   @map("plan_id") @db.Uuid
   email     String   @db.VarChar(255)
-  status    String   @default("pending") @db.VarChar(20)
+  status    ShareInvitationStatus @default(PENDING)
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
-  
+
+  // Relations
   plan      Plan     @relation(fields: [planId], references: [id])
   recipient Profile? @relation("ReceivedInvitations", fields: [email], references: [email])
 
   @@unique([planId, email])
   @@map("share_invitations")
+}
+
+enum ShareInvitationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
 }

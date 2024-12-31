@@ -3,24 +3,45 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
-import Image from 'next/image'
+import Link from 'next/link'
 import Button from '@/components/ui/button'
 
 export default function Home() {
   const router = useRouter()
-  const { user } = useAuth()
+  const { user, isLoading } = useAuth()
 
   useEffect(() => {
-    // 認証済みユーザーは直接プラン一覧へリダイレクト
-    if (user) {
+    if (!isLoading && user) {
       router.push('/plans')
     }
-  }, [user, router])
+  }, [user, isLoading, router])
+
+  // 認証状態確認中はローディング表示
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      <div className="container mx-auto px-4 py-12">
-        <div className="flex flex-col items-center justify-center gap-8 text-center">
+      <header className="absolute top-0 w-full">
+        <nav className="container mx-auto px-4 py-6">
+          <div className="flex justify-end space-x-4">
+            <Link href="/login">
+              <Button variant="outline">ログイン</Button>
+            </Link>
+            <Link href="/signup">
+              <Button>新規登録</Button>
+            </Link>
+          </div>
+        </nav>
+      </header>
+
+      <main className="container mx-auto px-4 py-12">
+        <div className="flex flex-col items-center justify-center gap-8 text-center pt-16">
           <h1 className="text-4xl font-bold text-gray-900 sm:text-5xl">
             Couple Plan
             <span className="block text-xl font-normal text-gray-600 mt-2">
@@ -52,20 +73,19 @@ export default function Home() {
           </div>
 
           <div className="flex gap-4 mt-8">
-            <Button
-              onClick={() => router.push('/login')}
-              variant="outline"
-            >
-              ログイン
-            </Button>
-            <Button
-              onClick={() => router.push('/signup')}
-            >
-              新規登録
-            </Button>
+            <Link href="/login">
+              <Button variant="outline" size="lg">
+                ログイン
+              </Button>
+            </Link>
+            <Link href="/signup">
+              <Button size="lg">
+                新規登録
+              </Button>
+            </Link>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   )
 }

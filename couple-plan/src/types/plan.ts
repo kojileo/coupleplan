@@ -10,10 +10,6 @@ export interface Plan {
     updatedAt: Date
   }
   
-  export interface CreatePlanInput {
-    title: string
-    description: string
-    date: Date | null
-    budget: number
-    location: string
-  }
+  export type CreatePlanInput = Pick<Plan, 'title' | 'description' | 'date' | 'budget' | 'location'>
+  
+  export type UpdatePlanInput = Partial<CreatePlanInput>

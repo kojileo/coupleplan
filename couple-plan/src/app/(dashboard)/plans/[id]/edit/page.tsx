@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 import Button from '@/components/ui/button'
-import { supabase } from '@/lib/supabase'
-import type { Plan, CreatePlanInput } from '@/types/plan'
+import { api } from '@/lib/api'
+import type { Plan } from '@/types/plan'
 
 export default function EditPlanPage({
   params,
@@ -13,37 +13,33 @@ export default function EditPlanPage({
   params: { id: string }
 }) {
   const router = useRouter()
-  const { user } = useAuth()
+  const { session } = useAuth()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [formData, setFormData] = useState<CreatePlanInput>({
+  const [plan, setPlan] = useState<Plan | null>(null)
+  const [formData, setFormData] = useState({
     title: '',
     description: '',
-    date: null,
+    date: '',
     budget: 0,
     location: '',
   })
 
   useEffect(() => {
     const fetchPlan = async () => {
-      if (!user) return
+      if (!session) return
 
       try {
-        const { data, error } = await supabase
-          .from('plans')
-          .select('*')
-          .eq('id', params.id)
-          .eq('user_id', user.id)
-          .single()
-
-        if (error) throw error
+        const { data, error } = await api.plans.get(session.access_token, params.id)
+        if (error) throw new Error(error)
         
+        setPlan(data)
         setFormData({
           title: data.title,
-          description: data.description,
-          date: data.date ? new Date(data.date) : null,
+          description: data.description || '',
+          date: data.date ? new Date(data.date).toISOString().split('T')[0] : '',
           budget: data.budget,
-          location: data.location,
+          location: data.location || '',
         })
       } catch (error) {
         console.error('プランの取得に失敗しました:', error)
@@ -54,27 +50,23 @@ export default function EditPlanPage({
     }
 
     fetchPlan()
-  }, [user, params.id, router])
+  }, [session, params.id, router])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!user) return
+    if (!session) return
 
     setSaving(true)
     try {
-      const { error } = await supabase
-        .from('plans')
-        .update({
-          ...formData,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', params.id)
-        .eq('user_id', user.id)
-
-      if (error) throw error
+      const { error } = await api.plans.update(session.access_token, params.id, {
+        ...formData,
+        date: formData.date ? new Date(formData.date).toISOString() : undefined,
+      })
       
+      if (error) throw new Error(error)
       router.push(`/plans/${params.id}`)
     } catch (error) {
+      console.error('プランの更新に失敗しました:', error)
       alert('プランの更新に失敗しました')
     } finally {
       setSaving(false)
@@ -85,6 +77,20 @@ export default function EditPlanPage({
     return (
       <div className="flex justify-center items-center min-h-[400px]">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
+      </div>
+    )
+  }
+
+  if (!plan) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-gray-500">プランが見つかりません</p>
+        <Button 
+          className="mt-4"
+          onClick={() => router.push('/plans')}
+        >
+          プラン一覧に戻る
+        </Button>
       </div>
     )
   }
@@ -126,8 +132,8 @@ export default function EditPlanPage({
           <input
             type="date"
             className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={formData.date ? new Date(formData.date).toISOString().split('T')[0] : ''}
-            onChange={(e) => setFormData({ ...formData, date: e.target.value ? new Date(e.target.value) : null })}
+            value={formData.date}
+            onChange={(e) => setFormData({ ...formData, date: e.target.value })}
           />
         </div>
 
@@ -137,6 +143,8 @@ export default function EditPlanPage({
           </label>
           <input
             type="number"
+            required
+            min={0}
             className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={formData.budget}
             onChange={(e) => setFormData({ ...formData, budget: Number(e.target.value) })}

@@ -1,12 +1,16 @@
+export type ShareInvitationStatus = 'PENDING' | 'ACCEPTED' | 'REJECTED'
+
 export interface ShareInvitation {
-    id: string
-    planId: string
+  id: string
+  planId: string
+  email: string
+  status: 'PENDING' | 'ACCEPTED' | 'REJECTED'
+  createdAt: Date
+  updatedAt: Date
+  recipient?: {
+    name: string
     email: string
-    status: 'pending' | 'accepted' | 'rejected'
-    createdAt: Date
-    updatedAt: Date
   }
-  
-  export interface CreateShareInvitationInput {
-    email: string
-  }
+}
+
+export type CreateShareInvitationInput = Pick<ShareInvitation, 'email'>

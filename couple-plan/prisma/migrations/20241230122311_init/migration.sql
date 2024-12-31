@@ -1,3 +1,6 @@
+-- CreateEnum
+CREATE TYPE "ShareInvitationStatus" AS ENUM ('PENDING', 'ACCEPTED', 'REJECTED');
+
 -- CreateTable
 CREATE TABLE "profiles" (
     "id" UUID NOT NULL,
@@ -30,7 +33,7 @@ CREATE TABLE "share_invitations" (
     "id" UUID NOT NULL,
     "plan_id" UUID NOT NULL,
     "email" VARCHAR(255) NOT NULL,
-    "status" VARCHAR(20) NOT NULL DEFAULT 'pending',
+    "status" "ShareInvitationStatus" NOT NULL DEFAULT 'PENDING',
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 

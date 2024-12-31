@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 import Button from '@/components/ui/button'
-import { supabase } from '@/lib/supabase'
-import type { Plan } from '@/types/plan'
 import ShareDialog from '@/components/features/plans/ShareDialog'
+import { api } from '@/lib/api'
+import type { Plan } from '@/types/plan'
 
 export default function PlanDetailPage({
   params,
@@ -14,24 +14,18 @@ export default function PlanDetailPage({
   params: { id: string }
 }) {
   const router = useRouter()
-  const { user } = useAuth()
+  const { session } = useAuth()
   const [plan, setPlan] = useState<Plan | null>(null)
   const [loading, setLoading] = useState(true)
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false)
 
   useEffect(() => {
     const fetchPlan = async () => {
-      if (!user) return
+      if (!session) return
 
       try {
-        const { data, error } = await supabase
-          .from('plans')
-          .select('*')
-          .eq('id', params.id)
-          .eq('user_id', user.id)
-          .single()
-
-        if (error) throw error
+        const { data, error } = await api.plans.get(session.access_token, params.id)
+        if (error) throw new Error(error)
         setPlan(data)
       } catch (error) {
         console.error('プランの取得に失敗しました:', error)
@@ -42,19 +36,14 @@ export default function PlanDetailPage({
     }
 
     fetchPlan()
-  }, [user, params.id, router])
+  }, [session, params.id, router])
 
   const handleDelete = async () => {
-    if (!confirm('このプランを削除してもよろしいですか？')) return
+    if (!session || !confirm('このプランを削除してもよろしいですか？')) return
 
     try {
-      const { error } = await supabase
-        .from('plans')
-        .delete()
-        .eq('id', params.id)
-        .eq('user_id', user?.id)
-
-      if (error) throw error
+      const { error } = await api.plans.delete(session.access_token, params.id)
+      if (error) throw new Error(error)
       router.push('/plans')
     } catch (error) {
       console.error('プランの削除に失敗しました:', error)
