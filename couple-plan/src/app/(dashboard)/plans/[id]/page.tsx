@@ -1,5 +1,6 @@
 'use client'
 
+import { use } from 'react'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
@@ -8,23 +9,27 @@ import ShareDialog from '@/components/features/plans/ShareDialog'
 import { api } from '@/lib/api'
 import type { Plan } from '@/types/plan'
 
-export default function PlanDetailPage({
-  params,
-}: {
-  params: { id: string }
-}) {
+type Props = {
+  params: Promise<{
+    id: string
+  }>
+}
+
+export default function PlanDetailPage({ params }: Props) {
   const router = useRouter()
   const { session } = useAuth()
   const [plan, setPlan] = useState<Plan | null>(null)
   const [loading, setLoading] = useState(true)
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false)
+  
+  const { id } = use(params)
 
   useEffect(() => {
     const fetchPlan = async () => {
       if (!session) return
 
       try {
-        const { data, error } = await api.plans.get(session.access_token, params.id)
+        const { data, error } = await api.plans.get(session.access_token, id)
         if (error) throw new Error(error)
         setPlan(data)
       } catch (error) {
@@ -36,13 +41,13 @@ export default function PlanDetailPage({
     }
 
     fetchPlan()
-  }, [session, params.id, router])
+  }, [session, id, router])
 
   const handleDelete = async () => {
     if (!session || !confirm('このプランを削除してもよろしいですか？')) return
 
     try {
-      const { error } = await api.plans.delete(session.access_token, params.id)
+      const { error } = await api.plans.delete(session.access_token, id)
       if (error) throw new Error(error)
       router.push('/plans')
     } catch (error) {
@@ -76,7 +81,7 @@ export default function PlanDetailPage({
           </Button>
           <Button
             variant="outline"
-            onClick={() => router.push(`/plans/${params.id}/edit`)}
+            onClick={() => router.push(`/plans/${id}/edit`)}
           >
             編集
           </Button>
@@ -121,7 +126,7 @@ export default function PlanDetailPage({
       </div>
 
       <ShareDialog
-        planId={params.id}
+        planId={id}
         isOpen={isShareDialogOpen}
         onClose={() => setIsShareDialogOpen(false)}
       />

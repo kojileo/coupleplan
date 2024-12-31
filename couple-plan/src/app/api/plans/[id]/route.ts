@@ -3,20 +3,20 @@ import { prisma } from '@/lib/db'
 import { supabase } from '@/lib/supabase-auth'
 import type { PlanRequest } from '@/types/api'
 
-// パラメータの型定義
 type Props = {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 // プラン詳細の取得
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: Props
 ) {
   try {
-    const planId = params.id
+    // paramsをawaitして使用
+    const { id: planId } = await params
 
     // 1. 認証チェック
     const authHeader = request.headers.get('Authorization')
@@ -62,10 +62,10 @@ export async function GET(
 // プランの更新
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: Props
 ) {
   try {
-    const planId = params.id
+    const { id: planId } = await params
 
     const authHeader = request.headers.get('Authorization')
     if (!authHeader) {
@@ -101,10 +101,10 @@ export async function PUT(
 // プランの削除
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: Props
 ) {
   try {
-    const planId = params.id
+    const { id: planId } = await params
 
     const authHeader = request.headers.get('Authorization')
     if (!authHeader) {

@@ -1,5 +1,6 @@
 'use client'
 
+import { use } from 'react'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
@@ -7,11 +8,13 @@ import Button from '@/components/ui/button'
 import { api } from '@/lib/api'
 import type { Plan } from '@/types/plan'
 
-export default function EditPlanPage({
-  params,
-}: {
-  params: { id: string }
-}) {
+type Props = {
+  params: Promise<{
+    id: string
+  }>
+}
+
+export default function EditPlanPage({ params }: Props) {
   const router = useRouter()
   const { session } = useAuth()
   const [loading, setLoading] = useState(true)
@@ -25,12 +28,14 @@ export default function EditPlanPage({
     location: '',
   })
 
+  const { id } = use(params)
+
   useEffect(() => {
     const fetchPlan = async () => {
       if (!session) return
 
       try {
-        const { data, error } = await api.plans.get(session.access_token, params.id)
+        const { data, error } = await api.plans.get(session.access_token, id)
         if (error) throw new Error(error)
         
         setPlan(data)
@@ -50,7 +55,7 @@ export default function EditPlanPage({
     }
 
     fetchPlan()
-  }, [session, params.id, router])
+  }, [session, id, router])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -58,13 +63,13 @@ export default function EditPlanPage({
 
     setSaving(true)
     try {
-      const { error } = await api.plans.update(session.access_token, params.id, {
+      const { error } = await api.plans.update(session.access_token, id, {
         ...formData,
         date: formData.date ? new Date(formData.date).toISOString() : undefined,
       })
       
       if (error) throw new Error(error)
-      router.push(`/plans/${params.id}`)
+      router.push(`/plans/${id}`)
     } catch (error) {
       console.error('プランの更新に失敗しました:', error)
       alert('プランの更新に失敗しました')
