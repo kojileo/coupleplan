@@ -38,14 +38,16 @@ export default function EditPlanPage({ params }: Props) {
         const { data, error } = await api.plans.get(session.access_token, id)
         if (error) throw new Error(error)
         
-        setPlan(data)
-        setFormData({
-          title: data.title,
-          description: data.description || '',
-          date: data.date ? new Date(data.date).toISOString().split('T')[0] : '',
-          budget: data.budget,
-          location: data.location || '',
-        })
+        setPlan(data || null)
+        if (data) {
+          setFormData({
+            title: data.title,
+            description: data.description || '',
+            date: data.date ? new Date(data.date).toISOString().split('T')[0] : '',
+            budget: data.budget,
+            location: data.location || '',
+          })
+        }
       } catch (error) {
         console.error('プランの取得に失敗しました:', error)
         router.push('/plans')
@@ -161,7 +163,7 @@ export default function EditPlanPage({ params }: Props) {
             場所
           </label>
           <input
-            type="text"
+            type="url"
             className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={formData.location}
             onChange={(e) => setFormData({ ...formData, location: e.target.value })}

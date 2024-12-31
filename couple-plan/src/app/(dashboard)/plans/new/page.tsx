@@ -101,7 +101,7 @@ export default function NewPlanPage() {
             場所
           </label>
           <input
-            type="text"
+            type="url"
             className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={formData.location}
             onChange={(e) => setFormData({ ...formData, location: e.target.value })}
