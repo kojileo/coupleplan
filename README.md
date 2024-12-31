@@ -318,3 +318,100 @@ npm install -D prisma @types/node
   - メールアドレスによる共有招待
   - 共有ダイアログ
   - 招待状態の管理
+
+Vercelへのデプロイ手順を説明します。
+
+1. **事前準備**
+
+````bash:couple-plan/package.json
+# .env.localファイルを作成（既存の.envをコピー）
+cp .env .env.local
+
+# 以下の環境変数が設定されていることを確認
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+DATABASE_URL=your_database_url
+````
+
+2. **package.jsonの修正**
+
+````json:package.json
+{
+  "scripts": {
+    // ... 既存のスクリプト ...
+    "vercel-build": "prisma generate && prisma migrate deploy && next build",
+    "postinstall": "prisma generate"
+  }
+}
+````
+
+3. **Vercelのセットアップ**
+
+1. [Vercel](https://vercel.com)にアクセスしてアカウントを作成（GitHubアカウントでログイン推奨）
+2. 「New Project」をクリック
+3. GitHubリポジトリをインポート
+4. 以下の環境変数を設定:
+   ```
+   NEXT_PUBLIC_SUPABASE_URL
+   NEXT_PUBLIC_SUPABASE_ANON_KEY
+   DATABASE_URL
+   ```
+
+4. **デプロイ設定**
+
+1. Framework Presetで「Next.js」を選択
+2. Build and Output Settingsで以下を設定:
+   - Build Command: `npm run vercel-build`
+   - Output Directory: `.next`
+3. 「Deploy」をクリック
+
+5. **Supabaseの設定**
+
+1. Supabaseのダッシュボードで、本番環境用のプロジェクトを作成
+2. 「Project Settings」→「Database」で本番用のDATABASE_URLを取得
+3. 「Project Settings」→「API」でSUPABASE_URLとSUPABASE_ANON_KEYを取得
+4. Vercelの環境変数に設定
+
+6. **デプロイ後の確認事項**
+
+1. マイグレーションが正常に実行されたか確認
+2. Supabaseとの接続が正常か確認
+3. 認証機能が正常に動作するか確認
+4. プランの作成・編集・削除が正常に動作するか確認
+
+7. **継続的デプロイメント**
+
+- GitHubのmainブランチにプッシュすると自動的にデプロイされるように設定
+- プレビューデプロイメントを有効化（PRごとに一時的な環境を作成）
+
+8. **本番環境の最適化**
+
+````bash
+# 本番環境用のビルド最適化
+npm run build
+
+# 静的ファイルの最適化
+next lint
+````
+
+9. **トラブルシューティング**
+
+デプロイに失敗した場合:
+1. Vercelのビルドログを確認
+2. 環境変数が正しく設定されているか確認
+3. `prisma generate`が正常に実行されているか確認
+4. データベース接続が正常か確認
+
+10. **セキュリティ対策**
+
+1. Supabaseの本番環境でRLSポリシーを確認
+2. API Routesの認証を確認
+3. 環境変数が正しく設定されているか再確認
+
+11. **パフォーマンスモニタリング**
+
+1. Vercelのダッシュボードでパフォーマンスメトリクスを確認
+2. Analytics機能を有効化（オプション）
+3. エラーモニタリングを設定
+
+これらの手順に従うことで、安全かつ効率的にVercelへデプロイすることができます。デプロイ後は、実際のユーザー環境でアプリケーションが正常に動作することを確認してください。
