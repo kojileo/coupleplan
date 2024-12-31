@@ -130,6 +130,8 @@ couple-plan/
 │   │   │   │       └── route.ts
 │   │   │   └── plans/  # プラン関連API
 │   │   │       ├── route.ts          # プラン一覧
+│   │   │       ├── public/          # 公開プラン一覧 (新規追加)
+│   │   │       │   └── route.ts
 │   │   │       └── [id]/
 │   │   │           ├── route.ts      # プラン詳細
 │   │   │           └── share/
@@ -149,9 +151,12 @@ couple-plan/
 │   │           ├── page.tsx        # プラン一覧
 │   │           ├── new/           # 新規プラン作成
 │   │           │   └── page.tsx
-│   │           └── [id]/          # プラン詳細・編集
-│   │               ├── page.tsx   # 詳細表示
-│   │               └── edit/      # 編集ページ
+│   │           ├── [id]/          # プラン詳細・編集
+│   │           │   ├── page.tsx   # 詳細表示
+│   │           │   └── edit/      # 編集ページ
+│   │           │       └── page.tsx
+│   │           └── share/         # 共有関連ページ
+│   │               └── accept/    # 共有招待受け入れページ
 │   │                   └── page.tsx
 │   ├── components/     # コンポーネント
 │   │   ├── ui/        # 共通UIコンポーネント
@@ -162,7 +167,9 @@ couple-plan/
 │   │       ├── dashboard/ # ダッシュボード関連
 │   │       │   └── Navbar.tsx
 │   │       └── plans/ # プラン関連
-│   │           └── ShareDialog.tsx
+│   │           ├── PlanList.tsx      # プラン一覧
+│   │           ├── PublishDialog.tsx  # ShareDialog から変更
+│   │           └── PublicBadge.tsx    # 新規追加
 │   ├── contexts/      # Reactコンテキスト
 │   │   └── AuthContext.tsx
 │   ├── hooks/         # カスタムフック
@@ -175,8 +182,8 @@ couple-plan/
 │   │   └── utils.ts  # ユーティリティ関数
 │   └── types/        # 型定義
 │       ├── auth.ts
-│       ├── plan.ts
-│       ├── share.ts
+│       ├── plan.ts   # プラン関連の型定義
+│       ├── share.ts  # 共有関連の型定義
 │       ├── api.ts    # API関連の型定義
 │       └── database.ts
 ├── .env              # 環境変数

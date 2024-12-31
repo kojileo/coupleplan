@@ -11,6 +11,7 @@ export default function PlansPage() {
   const router = useRouter()
   const { user, session } = useAuth()
   const [plans, setPlans] = useState<Plan[]>([])
+  const [publicPlans, setPublicPlans] = useState<Plan[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -18,9 +19,16 @@ export default function PlansPage() {
       if (!session) return
 
       try {
-        const { data, error } = await api.plans.list(session.access_token)
-        if (error) throw new Error(error)
-        setPlans(data)
+        // 自分のプランを取得
+        const { data: ownPlans, error: ownError } = await api.plans.list(session.access_token)
+        if (ownError) throw new Error(ownError)
+        
+        // 公開プランを取得
+        const { data: publicPlansData, error: publicError } = await api.plans.listPublic(session.access_token)
+        if (publicError) throw new Error(publicError)
+
+        setPlans(ownPlans || [])
+        setPublicPlans(publicPlansData || [])
       } catch (error) {
         console.error('プランの取得に失敗しました:', error)
       } finally {
@@ -48,7 +56,7 @@ export default function PlansPage() {
         </Button>
       </div>
 
-      {plans.length === 0 ? (
+      {plans.length === 0 && publicPlans.length === 0 ? (
         <div className="bg-white rounded-lg shadow p-6 text-center">
           <p className="text-gray-500">プランがまだありません</p>
           <Button 
@@ -59,28 +67,58 @@ export default function PlansPage() {
           </Button>
         </div>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {plans.map((plan) => (
-            <div
-              key={plan.id}
-              className="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow cursor-pointer"
-              onClick={() => router.push(`/plans/${plan.id}`)}
-            >
-              <h3 className="font-semibold mb-2">{plan.title}</h3>
-              <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                {plan.description}
-              </p>
-              <div className="flex justify-between text-sm text-gray-500">
-                <span>{plan.date ? new Date(plan.date).toLocaleDateString() : '日付未設定'}</span>
-                <span>¥{plan.budget.toLocaleString()}</span>
-              </div>
-              <div className="mt-2 text-sm text-gray-500">
-                <span>📍 {plan.location || '場所未設定'}</span>
+        <>
+          {/* 自分のプラン */}
+          <div className="mb-8">
+            <h2 className="text-xl font-semibold mb-4">マイプラン</h2>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {plans.map((plan) => (
+                <PlanCard key={plan.id} plan={plan} isPublic={false} />
+              ))}
+            </div>
+          </div>
+
+          {/* 公開プラン */}
+          {publicPlans.length > 0 && (
+            <div>
+              <h2 className="text-xl font-semibold mb-4">公開プラン</h2>
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {publicPlans.map((plan) => (
+                  <PlanCard key={plan.id} plan={plan} isPublic={true} />
+                ))}
               </div>
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
+    </div>
+  )
+}
+
+function PlanCard({ plan, isPublic }: { plan: Plan, isPublic: boolean }) {
+  const router = useRouter()
+
+  return (
+    <div
+      className="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow cursor-pointer relative"
+      onClick={() => router.push(`/plans/${plan.id}`)}
+    >
+      {isPublic && (
+        <span className="absolute top-2 right-2 text-sm text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
+          公開プラン
+        </span>
+      )}
+      <h3 className="font-semibold mb-2">{plan.title}</h3>
+      <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+        {plan.description}
+      </p>
+      <div className="flex justify-between text-sm text-gray-500">
+        <span>{plan.date ? new Date(plan.date).toLocaleDateString() : '日付未設定'}</span>
+        <span>¥{plan.budget.toLocaleString()}</span>
+      </div>
+      <div className="mt-2 text-sm text-gray-500">
+        <span>📍 {plan.location || '場所未設定'}</span>
+      </div>
     </div>
   )
 }

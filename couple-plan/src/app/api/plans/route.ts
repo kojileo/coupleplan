@@ -3,7 +3,7 @@ import { prisma } from '@/lib/db'
 import { supabase } from '@/lib/supabase-auth'
 import type { PlanRequest } from '@/types/api'
 
-// プラン一覧の取得
+// プラン一覧の取得（自分のプラン）
 export async function GET(request: Request) {
   try {
     const authHeader = request.headers.get('Authorization')
@@ -18,9 +18,14 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: '認証が必要です' }, { status: 401 })
     }
 
+    // 自分のプランを取得
     const plans = await prisma.plan.findMany({
-      where: { userId: user.id },
-      orderBy: { createdAt: 'desc' },
+      where: {
+        userId: user.id
+      },
+      orderBy: {
+        updatedAt: 'desc'
+      }
     })
 
     return NextResponse.json({ data: plans })
@@ -33,10 +38,8 @@ export async function GET(request: Request) {
   }
 }
 
-// プランの作成
 export async function POST(request: Request) {
   try {
-    // 1. 認証チェック
     const authHeader = request.headers.get('Authorization')
     if (!authHeader) {
       return NextResponse.json({ error: '認証が必要です' }, { status: 401 })
@@ -49,36 +52,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: '認証が必要です' }, { status: 401 })
     }
 
-    // 2. プロフィール取得
-    const profile = await prisma.profile.findUnique({
-      where: { userId: user.id },
-    })
+    const planData: PlanRequest = await request.json()
 
-    if (!profile) {
-      return NextResponse.json(
-        { error: 'プロフィールが見つかりません' },
-        { status: 404 }
-      )
-    }
-
-    // 3. リクエストデータの取得と変換
-    const data: PlanRequest = await request.json()
-    
-    // 4. プラン作成
     const plan = await prisma.plan.create({
       data: {
-        title: data.title,
-        description: data.description,
-        date: data.date ? new Date(data.date) : null,
-        budget: data.budget,
-        location: data.location,
-        userId: profile.userId,  // profile.userIdを使用
+        ...planData,
+        userId: user.id,
       },
     })
 
     return NextResponse.json({ data: plan })
   } catch (error) {
-    // 5. エラーハンドリングの修正
     console.error('プラン作成エラー:', error)
     return NextResponse.json(
       { error: 'プランの作成に失敗しました' },

@@ -8,6 +8,7 @@ export interface Plan {
     userId: string
     createdAt: Date
     updatedAt: Date
+    isPublic: boolean
   }
   
   export type CreatePlanInput = Pick<Plan, 'title' | 'description' | 'date' | 'budget' | 'location'>

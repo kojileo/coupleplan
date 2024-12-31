@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 import Button from '@/components/ui/button'
-import ShareDialog from '@/components/features/plans/ShareDialog'
+import PublishDialog from '@/components/features/plans/PublishDialog'
 import { api } from '@/lib/api'
 import type { Plan } from '@/types/plan'
 
@@ -20,7 +20,7 @@ export default function PlanDetailPage({ params }: Props) {
   const { session } = useAuth()
   const [plan, setPlan] = useState<Plan | null>(null)
   const [loading, setLoading] = useState(true)
-  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false)
+  const [isPublishDialogOpen, setIsPublishDialogOpen] = useState(false)
   
   const { id } = use(params)
 
@@ -31,7 +31,7 @@ export default function PlanDetailPage({ params }: Props) {
       try {
         const { data, error } = await api.plans.get(session.access_token, id)
         if (error) throw new Error(error)
-        setPlan(data)
+        setPlan(data || null)
       } catch (error) {
         console.error('プランの取得に失敗しました:', error)
         router.push('/plans')
@@ -75,9 +75,9 @@ export default function PlanDetailPage({ params }: Props) {
         <div className="flex gap-4">
           <Button
             variant="outline"
-            onClick={() => setIsShareDialogOpen(true)}
+            onClick={() => setIsPublishDialogOpen(true)}
           >
-            共有
+            公開
           </Button>
           <Button
             variant="outline"
@@ -125,10 +125,10 @@ export default function PlanDetailPage({ params }: Props) {
         </div>
       </div>
 
-      <ShareDialog
+      <PublishDialog
         planId={id}
-        isOpen={isShareDialogOpen}
-        onClose={() => setIsShareDialogOpen(false)}
+        isOpen={isPublishDialogOpen}
+        onClose={() => setIsPublishDialogOpen(false)}
       />
     </div>
   )

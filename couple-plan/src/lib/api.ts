@@ -1,4 +1,5 @@
-import { ApiResponse, LoginRequest, SignUpRequest, PlanRequest, ShareInvitationRequest } from '@/types/api'
+import { ApiResponse, LoginRequest, SignUpRequest, PlanRequest } from '@/types/api'
+import type { Plan } from '@/types/plan'
 
 const API_BASE = '/api'
 
@@ -24,7 +25,7 @@ export const api = {
   },
 
   plans: {
-    list: async (token: string): Promise<ApiResponse> => {
+    list: async (token: string): Promise<ApiResponse<Plan[]>> => {
       const response = await fetch(`${API_BASE}/plans`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -33,19 +34,31 @@ export const api = {
       return response.json()
     },
 
-    create: async (token: string, data: PlanRequest): Promise<ApiResponse> => {
-      const response = await fetch(`${API_BASE}/plans`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(data),
-      })
-      return response.json()
+    create: async (token: string, data: PlanRequest): Promise<ApiResponse<Plan>> => {
+      try {
+        const response = await fetch(`${API_BASE}/plans`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(data),
+        })
+
+        if (!response.ok) {
+          throw new Error('プランの作成に失敗しました')
+        }
+
+        return response.json()
+      } catch (error) {
+        console.error('API error:', error)
+        return {
+          error: error instanceof Error ? error.message : 'プランの作成に失敗しました'
+        }
+      }
     },
 
-    get: async (token: string, id: string): Promise<ApiResponse> => {
+    get: async (token: string, id: string): Promise<ApiResponse<Plan>> => {
       const response = await fetch(`${API_BASE}/plans/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -54,7 +67,7 @@ export const api = {
       return response.json()
     },
 
-    update: async (token: string, id: string, data: PlanRequest): Promise<ApiResponse> => {
+    update: async (token: string, id: string, data: PlanRequest): Promise<ApiResponse<Plan>> => {
       const response = await fetch(`${API_BASE}/plans/${id}`, {
         method: 'PUT',
         headers: {
@@ -76,23 +89,23 @@ export const api = {
       return response.json()
     },
 
-    share: async (token: string, planId: string, data: ShareInvitationRequest): Promise<ApiResponse> => {
-      const response = await fetch(`${API_BASE}/plans/${planId}/share`, {
+    listPublic: async (token: string): Promise<ApiResponse<Plan[]>> => {
+      const response = await fetch(`${API_BASE}/plans/public`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      return response.json()
+    },
+
+    publish: async (token: string, planId: string, isPublic: boolean): Promise<ApiResponse<Plan>> => {
+      const response = await fetch(`${API_BASE}/plans/${planId}/publish`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(data),
-      })
-      return response.json()
-    },
-
-    getInvitations: async (token: string, planId: string): Promise<ApiResponse> => {
-      const response = await fetch(`${API_BASE}/plans/${planId}/share`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        body: JSON.stringify({ isPublic }),
       })
       return response.json()
     },

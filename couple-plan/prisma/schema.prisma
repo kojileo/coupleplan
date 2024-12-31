@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -22,48 +19,21 @@ model Profile {
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
 
   // Relations
-  plans               Plan[]
-  receivedInvitations ShareInvitation[] @relation("ReceivedInvitations")
+  plans Plan[]
 
   @@map("profiles")
 }
 
 model Plan {
-  id          String    @id @default(uuid()) @db.Uuid
-  title       String    @db.VarChar(255)
-  description String?   @db.Text
-  date        DateTime? @db.Date
-  budget      Int       @default(0)
-  location    String?   @db.VarChar(255)
-  userId      String    @map("user_id") @db.Uuid
-  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt   DateTime  @default(now()) @map("updated_at") @db.Timestamptz
-
-  // Relations
-  profile          Profile           @relation(fields: [userId], references: [userId])
-  shareInvitations ShareInvitation[]
-
-  @@map("plans")
-}
-
-model ShareInvitation {
-  id        String   @id @default(uuid()) @db.Uuid
-  planId    String   @map("plan_id") @db.Uuid
-  email     String   @db.VarChar(255)
-  status    ShareInvitationStatus @default(PENDING)
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
-
-  // Relations
-  plan      Plan     @relation(fields: [planId], references: [id])
-  recipient Profile? @relation("ReceivedInvitations", fields: [email], references: [email])
-
-  @@unique([planId, email])
-  @@map("share_invitations")
-}
-
-enum ShareInvitationStatus {
-  PENDING
-  ACCEPTED
-  REJECTED
+  id          String   @id @default(uuid()) @db.Uuid
+  title       String
+  description String?
+  date        DateTime?
+  budget      Int      @default(0)
+  location    String?
+  isPublic    Boolean  @default(false)
+  userId      String   @db.Uuid
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  profile     Profile  @relation(fields: [userId], references: [userId])
 }

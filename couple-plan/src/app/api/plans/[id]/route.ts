@@ -15,10 +15,7 @@ export async function GET(
   { params }: Props
 ) {
   try {
-    // paramsをawaitして使用
-    const { id: planId } = await params
-
-    // 1. 認証チェック
+    const { id } = await params
     const authHeader = request.headers.get('Authorization')
     if (!authHeader) {
       return NextResponse.json({ error: '認証が必要です' }, { status: 401 })
@@ -31,15 +28,15 @@ export async function GET(
       return NextResponse.json({ error: '認証が必要です' }, { status: 401 })
     }
 
-    // 2. プラン取得
-    const plan = await prisma.plan.findUnique({
+    // プランの取得（所有者または公開プラン）
+    const plan = await prisma.plan.findFirst({
       where: {
-        id: planId,
-        userId: user.id,
-      },
-      include: {
-        shareInvitations: true,
-      },
+        id,
+        OR: [
+          { userId: user.id },
+          { isPublic: true }
+        ]
+      }
     })
 
     if (!plan) {
@@ -65,8 +62,7 @@ export async function PUT(
   { params }: Props
 ) {
   try {
-    const { id: planId } = await params
-
+    const { id } = await params
     const authHeader = request.headers.get('Authorization')
     if (!authHeader) {
       return NextResponse.json({ error: '認証が必要です' }, { status: 401 })
@@ -82,7 +78,7 @@ export async function PUT(
     const planData: PlanRequest = await request.json()
     const plan = await prisma.plan.update({
       where: {
-        id: planId,
+        id,
         userId: user.id,
       },
       data: planData,
@@ -104,8 +100,7 @@ export async function DELETE(
   { params }: Props
 ) {
   try {
-    const { id: planId } = await params
-
+    const { id } = await params
     const authHeader = request.headers.get('Authorization')
     if (!authHeader) {
       return NextResponse.json({ error: '認証が必要です' }, { status: 401 })
@@ -120,7 +115,7 @@ export async function DELETE(
 
     await prisma.plan.delete({
       where: {
-        id: planId,
+        id,
         userId: user.id,
       },
     })
