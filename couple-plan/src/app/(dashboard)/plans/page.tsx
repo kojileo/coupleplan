@@ -9,7 +9,7 @@ import type { Plan } from '@/types/plan'
 
 export default function PlansPage() {
   const router = useRouter()
-  const { user, session } = useAuth()
+  const { session } = useAuth()
   const [plans, setPlans] = useState<Plan[]>([])
   const [publicPlans, setPublicPlans] = useState<Plan[]>([])
   const [loading, setLoading] = useState(true)
@@ -20,15 +20,15 @@ export default function PlansPage() {
 
       try {
         // 自分のプランを取得
-        const { data: ownPlans, error: ownError } = await api.plans.list(session.access_token)
-        if (ownError) throw new Error(ownError)
+        const response = await api.plans.list(session.access_token)
+        if ('error' in response) throw new Error(response.error)
         
         // 公開プランを取得
-        const { data: publicPlansData, error: publicError } = await api.plans.listPublic(session.access_token)
-        if (publicError) throw new Error(publicError)
+        const publicResponse = await api.plans.listPublic(session.access_token)
+        if ('error' in publicResponse) throw new Error(publicResponse.error)
 
-        setPlans(ownPlans || [])
-        setPublicPlans(publicPlansData || [])
+        setPlans(response.data || [])
+        setPublicPlans(publicResponse.data || [])
       } catch (error) {
         console.error('プランの取得に失敗しました:', error)
       } finally {

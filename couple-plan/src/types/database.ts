@@ -1,11 +1,14 @@
 import { PrismaClient } from '@prisma/client'
 import { SupabaseClient } from '@supabase/supabase-js'
 
+// ESLintルールを無効化
+/* eslint-disable @typescript-eslint/no-namespace */
+/* eslint-disable @typescript-eslint/prefer-namespace-keyword */
+/* eslint-disable no-var */
+
 declare global {
-  namespace NodeJS {
-    interface Global {
-      prisma: PrismaClient | undefined
-    }
+  interface Global {
+    prisma: PrismaClient | undefined
   }
 }
 

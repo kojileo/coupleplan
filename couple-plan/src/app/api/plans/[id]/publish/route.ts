@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { supabase } from '@/lib/supabase-auth'
-import type { PlanRequest } from '@/types/api'
 
 type Props = {
   params: {

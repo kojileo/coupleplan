@@ -25,12 +25,12 @@ export default function NewPlanPage() {
 
     setSaving(true)
     try {
-      const { data, error } = await api.plans.create(session.access_token, {
+      const response = await api.plans.create(session.access_token, {
         ...formData,
         date: formData.date ? new Date(formData.date).toISOString() : undefined,
       })
       
-      if (error) throw new Error(error)
+      if ('error' in response) throw new Error(response.error)
       router.push('/plans')
     } catch (error) {
       console.error('プランの作成に失敗しました:', error)

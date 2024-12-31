@@ -23,9 +23,9 @@ export default function PublishDialog({ planId, isOpen, onClose }: PublishDialog
       if (!session || !isOpen) return
 
       try {
-        const { data, error } = await api.plans.get(session.access_token, planId)
-        if (error) throw new Error(error)
-        if (data) setPlan(data)
+        const response = await api.plans.get(session.access_token, planId)
+        if ('error' in response) throw new Error(response.error)
+        if (response.data) setPlan(response.data)
       } catch (error) {
         console.error('プランの取得に失敗しました:', error)
       }
@@ -41,12 +41,12 @@ export default function PublishDialog({ planId, isOpen, onClose }: PublishDialog
     setError('')
 
     try {
-      const { error } = await api.plans.publish(
+      const response = await api.plans.publish(
         session.access_token,
         planId,
         !plan.isPublic
       )
-      if (error) throw new Error(error)
+      if ('error' in response) throw new Error(response.error)
       
       setPlan(prev => prev ? { ...prev, isPublic: !prev.isPublic } : null)
     } catch (error) {

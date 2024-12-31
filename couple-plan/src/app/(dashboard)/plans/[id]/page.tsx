@@ -29,9 +29,9 @@ export default function PlanDetailPage({ params }: Props) {
       if (!session) return
 
       try {
-        const { data, error } = await api.plans.get(session.access_token, id)
-        if (error) throw new Error(error)
-        setPlan(data || null)
+        const response = await api.plans.get(session.access_token, id)
+        if ('error' in response) throw new Error(response.error)
+        setPlan(response.data || null)
       } catch (error) {
         console.error('プランの取得に失敗しました:', error)
         router.push('/plans')
@@ -47,8 +47,8 @@ export default function PlanDetailPage({ params }: Props) {
     if (!session || !confirm('このプランを削除してもよろしいですか？')) return
 
     try {
-      const { error } = await api.plans.delete(session.access_token, id)
-      if (error) throw new Error(error)
+      const response = await api.plans.delete(session.access_token, id)
+      if ('error' in response) throw new Error(response.error)
       router.push('/plans')
     } catch (error) {
       console.error('プランの削除に失敗しました:', error)

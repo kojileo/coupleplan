@@ -8,7 +8,7 @@ import { api } from '@/lib/api'
 export default function SignUpPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [, setError] = useState('')
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()

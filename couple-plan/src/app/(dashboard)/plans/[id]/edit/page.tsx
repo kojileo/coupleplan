@@ -35,17 +35,17 @@ export default function EditPlanPage({ params }: Props) {
       if (!session) return
 
       try {
-        const { data, error } = await api.plans.get(session.access_token, id)
-        if (error) throw new Error(error)
+        const response = await api.plans.get(session.access_token, id)
+        if ('error' in response) throw new Error(response.error)
         
-        setPlan(data || null)
-        if (data) {
+        setPlan(response.data || null)
+        if (response.data) {
           setFormData({
-            title: data.title,
-            description: data.description || '',
-            date: data.date ? new Date(data.date).toISOString().split('T')[0] : '',
-            budget: data.budget,
-            location: data.location || '',
+            title: response.data.title,
+            description: response.data.description || '',
+            date: response.data.date ? new Date(response.data.date).toISOString().split('T')[0] : '',
+            budget: response.data.budget,
+            location: response.data.location || '',
           })
         }
       } catch (error) {
@@ -65,12 +65,12 @@ export default function EditPlanPage({ params }: Props) {
 
     setSaving(true)
     try {
-      const { error } = await api.plans.update(session.access_token, id, {
+      const response = await api.plans.update(session.access_token, id, {
         ...formData,
         date: formData.date ? new Date(formData.date).toISOString() : undefined,
       })
       
-      if (error) throw new Error(error)
+      if ('error' in response) throw new Error(response.error)
       router.push(`/plans/${id}`)
     } catch (error) {
       console.error('プランの更新に失敗しました:', error)

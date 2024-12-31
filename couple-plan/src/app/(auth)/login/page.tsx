@@ -24,6 +24,7 @@ export default function LoginPage() {
       if (error) throw error
       router.push('/plans')
     } catch (error) {
+      console.error('ログインエラー:', error)
       alert('ログインに失敗しました')
     } finally {
       setLoading(false)
