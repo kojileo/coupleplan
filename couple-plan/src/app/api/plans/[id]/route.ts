@@ -1,18 +1,15 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { supabase } from '@/lib/supabase-auth'
 import type { PlanRequest } from '@/types/api'
 
-type Props = {
-  params: Promise<{
-    id: string
-  }>
+type RouteParams = {
+  params: Promise<{ id: string }>
 }
 
-// プラン詳細の取得
 export async function GET(
-  request: Request,
-  { params }: Props
+  request: NextRequest,
+  { params }: RouteParams
 ) {
   try {
     const { id } = await params
@@ -56,10 +53,9 @@ export async function GET(
   }
 }
 
-// プランの更新
 export async function PUT(
-  request: Request,
-  { params }: Props
+  request: NextRequest,
+  { params }: RouteParams
 ) {
   try {
     const { id } = await params
@@ -94,10 +90,9 @@ export async function PUT(
   }
 }
 
-// プランの削除
 export async function DELETE(
-  request: Request,
-  { params }: Props
+  request: NextRequest,
+  { params }: RouteParams
 ) {
   try {
     const { id } = await params

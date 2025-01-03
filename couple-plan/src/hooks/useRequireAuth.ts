@@ -5,14 +5,14 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 
 export function useRequireAuth() {
-  const { user, loading } = useAuth()
+  const { user, isLoading } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
-    if (!loading && !user) {
+    if (!isLoading && !user) {
       router.push('/login')
     }
-  }, [user, loading, router])
+  }, [user, isLoading, router])
 
-  return { user, loading }
+  return { user, isLoading }
 }

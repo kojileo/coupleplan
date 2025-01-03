@@ -16,10 +16,10 @@ export default function PlanList() {
       if (!session) return
 
       try {
-        const { data, error } = await api.plans.list(session.access_token)
-        if (error) throw new Error(error)
+        const response = await api.plans.list(session.access_token)
+        if ('error' in response) throw new Error(response.error)
         
-        setPlans(data || [])
+        setPlans(response.data || [])
       } catch (error) {
         console.error('プラン一覧の取得に失敗:', error)
       } finally {

@@ -17,19 +17,11 @@ export interface PlanRequest {
   budget: number
 }
 
-// 成功レスポンス用のインターフェース
-interface SuccessResponse<T = void> {
+export interface ApiResponse<T = void> {
   data?: T
+  error?: string
   message?: string
 }
-
-// エラーレスポンス用のインターフェース
-interface ErrorResponse {
-  error: string
-}
-
-// ApiResponse型をユニオン型として定義
-export type ApiResponse<T = void> = SuccessResponse<T> | ErrorResponse
 
 export type ShareInvitationRequest = {
   email: string

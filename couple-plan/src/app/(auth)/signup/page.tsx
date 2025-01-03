@@ -21,13 +21,13 @@ export default function SignUpPage() {
     const name = formData.get('name') as string
 
     try {
-      const { error } = await api.auth.signup({
+      const response = await api.auth.signup({
         email,
         password,
         name,
       })
-
-      if (error) throw new Error(error)
+      
+      if ('error' in response) throw new Error(response.error)
 
       // メール確認待ちページへリダイレクト
       router.push(`/verify-email?email=${encodeURIComponent(email)}`)
