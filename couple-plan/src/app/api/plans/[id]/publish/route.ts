@@ -2,14 +2,31 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { supabase } from '@/lib/supabase-auth'
 
-export async function POST(request: NextRequest) {
+type Props = {
+  params: Promise<{
+    id: string
+  }>
+}
+
+export async function POST(
+  request: NextRequest,
+  { params }: Props
+) {
   try {
-    // URLからIDを取得
-    const id = request.nextUrl.pathname.split('/').pop()
-    if (!id) {
-      return NextResponse.json({ error: 'IDが必要です' }, { status: 400 })
+    const { id } = await params
+    
+    // リクエストボディを取得
+    const body = await request.json()
+    const { isPublic } = body
+
+    if (typeof isPublic !== 'boolean') {
+      return NextResponse.json(
+        { error: '公開設定が不正です' },
+        { status: 400 }
+      )
     }
 
+    // 認証チェック
     const authHeader = request.headers.get('Authorization')
     if (!authHeader) {
       return NextResponse.json({ error: '認証が必要です' }, { status: 401 })
@@ -19,11 +36,10 @@ export async function POST(request: NextRequest) {
     const { data: { user }, error } = await supabase.auth.getUser(token)
     
     if (error || !user) {
-      return NextResponse.json({ error: '認証が必要です' }, { status: 401 })
+      return NextResponse.json({ error: '認証が失敗しました' }, { status: 401 })
     }
 
-    const { isPublic } = await request.json()
-
+    // プランの更新
     const plan = await prisma.plan.update({
       where: {
         id,
@@ -42,6 +58,7 @@ export async function POST(request: NextRequest) {
     })
 
     return NextResponse.json({ data: plan })
+
   } catch (error) {
     console.error('公開設定更新エラー:', error)
     return NextResponse.json(

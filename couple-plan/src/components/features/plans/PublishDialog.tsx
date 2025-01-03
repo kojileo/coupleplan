@@ -28,6 +28,7 @@ export default function PublishDialog({ planId, isOpen, onClose }: PublishDialog
         if (response.data) setPlan(response.data)
       } catch (error) {
         console.error('プランの取得に失敗しました:', error)
+        setError('プランの取得に失敗しました')
       }
     }
 
@@ -46,9 +47,15 @@ export default function PublishDialog({ planId, isOpen, onClose }: PublishDialog
         planId,
         !plan.isPublic
       )
-      if ('error' in response) throw new Error(response.error)
       
-      setPlan(prev => prev ? { ...prev, isPublic: !prev.isPublic } : null)
+      if ('error' in response) {
+        throw new Error(response.error)
+      }
+      
+      if (response.data) {
+        setPlan(prev => prev ? { ...prev, isPublic: !prev.isPublic } : null)
+        onClose()
+      }
     } catch (error) {
       console.error('公開設定の更新に失敗しました:', error)
       setError('公開設定の更新に失敗しました')
