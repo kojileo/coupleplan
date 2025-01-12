@@ -21,7 +21,7 @@ export default function PlanList() {
         
         setPlans(response.data || [])
       } catch (error) {
-        console.error('プラン一覧の取得に失敗:', error)
+        console.error('マイプラン一覧の取得に失敗:', error)
       } finally {
         setLoading(false)
       }

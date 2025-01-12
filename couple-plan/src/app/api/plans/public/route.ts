@@ -17,13 +17,10 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: '認証が必要です' }, { status: 401 })
     }
 
-    // 自分以外のユーザーの公開プランを取得
+    // すべての公開プランを取得
     const plans = await prisma.plan.findMany({
       where: {
-        isPublic: true,
-        NOT: {
-          userId: user.id
-        }
+        isPublic: true
       },
       orderBy: {
         updatedAt: 'desc'
