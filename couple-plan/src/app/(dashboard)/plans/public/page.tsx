@@ -3,12 +3,10 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
-import Button from '@/components/ui/button'
 import { api } from '@/lib/api'
 import type { Plan } from '@/types/plan'
 
 export default function PublicPlansPage() {
-  const router = useRouter()
   const { session } = useAuth()
   const [publicPlans, setPublicPlans] = useState<Plan[]>([])
   const [loading, setLoading] = useState(true)
