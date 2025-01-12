@@ -7,10 +7,10 @@ import Button from '@/components/ui/button'
 import { api } from '@/lib/api'
 import type { Plan } from '@/types/plan'
 
-export default function MyPlansPage() {
+export default function PublicPlansPage() {
   const router = useRouter()
   const { session } = useAuth()
-  const [plans, setPlans] = useState<Plan[]>([])
+  const [publicPlans, setPublicPlans] = useState<Plan[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -18,11 +18,11 @@ export default function MyPlansPage() {
       if (!session) return
 
       try {
-        const response = await api.plans.list(session.access_token)
-        if ('error' in response) throw new Error(response.error)
-        setPlans(response.data || [])
+        const publicResponse = await api.plans.listPublic(session.access_token)
+        if ('error' in publicResponse) throw new Error(publicResponse.error)
+        setPublicPlans(publicResponse.data || [])
       } catch (error) {
-        console.error('プランの取得に失敗しました:', error)
+        console.error('公開プランの取得に失敗しました:', error)
       } finally {
         setLoading(false)
       }
@@ -42,26 +42,17 @@ export default function MyPlansPage() {
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold">マイプラン一覧</h1>
-        <Button onClick={() => router.push('/plans/new')}>
-          新規プラン作成
-        </Button>
+        <h1 className="text-2xl font-bold">公開プラン一覧</h1>
       </div>
 
-      {plans.length === 0 ? (
+      {publicPlans.length === 0 ? (
         <div className="bg-white rounded-lg shadow p-6 text-center">
-          <p className="text-gray-500">プランがまだありません</p>
-          <Button 
-            className="mt-4"
-            onClick={() => router.push('/plans/new')}
-          >
-            新規プラン作成
-          </Button>
+          <p className="text-gray-500">公開プランがまだありません</p>
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {plans.map((plan) => (
-            <PlanCard key={plan.id} plan={plan} isPublic={false} />
+          {publicPlans.map((plan) => (
+            <PlanCard key={plan.id} plan={plan} isPublic={true} />
           ))}
         </div>
       )}

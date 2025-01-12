@@ -2,13 +2,13 @@
 
 ## 概要
 
-Couple Planは、カップルのためのデートプラン作成・共有アプリケーションです。行きたい場所の作成・保存・管理と予算管理を行うことができます。
+Couple Planは、カップルのためのデートプラン作成・管理・公開するアプリケーションです。行きたい場所の作成・保存・管理と公開を行うことができます。
 
 ## 主な機能
 
-- 👥 カップルのための共同アカウント作成・管理
-- 📍 行きたい場所の作成・保存・管理
-- 💰 予算管理
+- 👥 カップルでデートプランを管理
+- 📍 行きたい場所管理
+- 💛 公開されているデートプランを参考
 
 ## 技術スタック
 
@@ -81,12 +81,12 @@ npm run dev
 
 2. プラン管理機能の確認
 - 「新規プラン作成」からプランを作成
-- プラン一覧での表示を確認
+- マイプラン一覧での表示を確認
 - プラン詳細画面での表示・編集・削除を確認
 
-3. プラン共有機能の確認
-- プラン詳細画面から「共有」ボタンをクリック
-- 共有したいユーザーのメールアドレスを入力
+3. プラン公開機能の確認
+- プラン詳細画面から「公開」ボタンをクリック
+- 公開したいユーザーのメールアドレスを入力
 - 招待メールの送信を確認（開発環境では実際のメール送信は無効）
 
 ## トラブルシューティング
@@ -130,12 +130,13 @@ couple-plan/
 │   │   │   │       └── route.ts
 │   │   │   └── plans/  # プラン関連API
 │   │   │       ├── route.ts          # プラン一覧
-│   │   │       ├── public/          # 公開プラン一覧 (新規追加)
+│   │   │       ├── public/          # 公開プラン一覧
 │   │   │       │   └── route.ts
 │   │   │       └── [id]/
 │   │   │           ├── route.ts      # プラン詳細
-│   │   │           └── share/
-│   │   │               └── route.ts  # プラン共有
+│   │   │           └── publish/
+│   │   │               └── route.ts  # プラン公開
+│   │   ├── global.css
 │   │   ├── layout.tsx  # ルートレイアウト
 │   │   ├── page.tsx    # ホームページ
 │   │   ├── (auth)/     # 認証関連ページ
@@ -148,15 +149,14 @@ couple-plan/
 │   │   └── (dashboard)/ # ダッシュボード関連ページ
 │   │       ├── layout.tsx
 │   │       └── plans/   # プラン関連ページ
-│   │           ├── page.tsx        # プラン一覧
+│   │           ├── page.tsx        # マイプラン一覧
+│   │           ├── public/        # 公開プラン一覧
+│   │           │   └── page.tsx
 │   │           ├── new/           # 新規プラン作成
 │   │           │   └── page.tsx
-│   │           ├── [id]/          # プラン詳細・編集
-│   │           │   ├── page.tsx   # 詳細表示
-│   │           │   └── edit/      # 編集ページ
-│   │           │       └── page.tsx
-│   │           └── share/         # 共有関連ページ
-│   │               └── accept/    # 共有招待受け入れページ
+│   │           └── [id]/          # プラン詳細・編集
+│   │               ├── page.tsx   # 詳細表示
+│   │               └── edit/      # 編集ページ
 │   │                   └── page.tsx
 │   ├── components/     # コンポーネント
 │   │   ├── ui/        # 共通UIコンポーネント
@@ -168,8 +168,7 @@ couple-plan/
 │   │       │   └── Navbar.tsx
 │   │       └── plans/ # プラン関連
 │   │           ├── PlanList.tsx      # プラン一覧
-│   │           ├── PublishDialog.tsx  # ShareDialog から変更
-│   │           └── PublicBadge.tsx    # 新規追加
+│   │           └── PublishDialog.tsx  # 公開設定ダイアログ
 │   ├── contexts/      # Reactコンテキスト
 │   │   └── AuthContext.tsx
 │   ├── hooks/         # カスタムフック
@@ -183,18 +182,20 @@ couple-plan/
 │   └── types/        # 型定義
 │       ├── auth.ts
 │       ├── plan.ts   # プラン関連の型定義
-│       ├── share.ts  # 共有関連の型定義
 │       ├── api.ts    # API関連の型定義
 │       └── database.ts
 ├── .env              # 環境変数
 ├── .gitignore       # Git除外設定
-├── next.config.js   # Next.js設定
+├── next.config.ts   # Next.ts設定
+├── next-env.d.ts  
+├── eslintrc.json    # ESLint設定
 ├── package.json     # プロジェクト設定
 ├── prisma/          # Prisma設定
 │   └── schema.prisma # データベーススキーマ
 ├── README.md        # プロジェクト説明
 ├── tailwind.config.js # Tailwind CSS設定
-└── tsconfig.json    # TypeScript設定
+├── tsconfig.json    # TypeScript設定
+└── postcss.config.js # PostCSS設定 
 ```
 
 ### 主要ディレクトリの説明

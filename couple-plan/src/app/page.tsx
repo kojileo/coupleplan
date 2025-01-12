@@ -45,12 +45,12 @@ export default function Home() {
           <h1 className="text-4xl font-bold text-gray-900 sm:text-5xl">
             Couple Plan
             <span className="block text-xl font-normal text-gray-600 mt-2">
-              カップルのためのデートプラン作成・共有アプリ
+              カップルのためのデートプラン作成・共有・公開アプリ
             </span>
           </h1>
 
           <p className="max-w-2xl text-gray-600">
-            行きたい場所を保存して、カップルで予定を共有しよう！！
+            行きたい場所を保存して、カップルで予定を共有・公開しよう！！
             公開されているデートプランにいいねをしよう！
           </p>
 

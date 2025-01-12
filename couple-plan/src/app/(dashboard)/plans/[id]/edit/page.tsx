@@ -91,12 +91,12 @@ export default function EditPlanPage({ params }: Props) {
   if (!plan) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-500">プランが見つかりません</p>
+        <p className="text-gray-500">マイプランが見つかりません</p>
         <Button 
           className="mt-4"
           onClick={() => router.push('/plans')}
         >
-          プラン一覧に戻る
+          マイプラン一覧に戻る
         </Button>
       </div>
     )
@@ -104,7 +104,7 @@ export default function EditPlanPage({ params }: Props) {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold mb-8">プランの編集</h1>
+      <h1 className="text-2xl font-bold mb-8">マイプランの編集</h1>
       
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>

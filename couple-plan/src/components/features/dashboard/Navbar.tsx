@@ -31,13 +31,13 @@ export default function Navbar() {
                 href="/plans" 
                 className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm"
               >
-                プラン一覧
+                マイプラン一覧
               </Link>
               <Link 
-                href="/plans/new" 
+                href="/plans/public" 
                 className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm"
               >
-                新規プラン
+                公開プラン一覧
               </Link>
             </div>
           </div>
