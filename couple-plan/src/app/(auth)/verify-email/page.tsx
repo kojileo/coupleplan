@@ -9,13 +9,13 @@ function VerifyEmailContent() {
   const email = searchParams.get('email')
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-pink-50 to-white py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-rose-950">
             メール確認のお願い
           </h2>
-          <div className="mt-4 text-center text-gray-600">
+          <div className="mt-4 text-center text-rose-800">
             <p className="mb-4">
               {email ? `${email} 宛に` : ''}確認メールを送信しました。
             </p>
@@ -31,7 +31,7 @@ function VerifyEmailContent() {
         <div className="text-center">
           <Link 
             href="/login"
-            className="text-sm text-blue-600 hover:text-blue-500"
+            className="text-sm text-rose-600 hover:text-rose-500"
           >
             ログインページへ戻る
           </Link>

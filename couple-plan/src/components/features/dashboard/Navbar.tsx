@@ -22,20 +22,20 @@ export default function Navbar() {
           <div className="flex items-center">
             <Link 
               href="/plans" 
-              className="text-xl font-semibold text-gray-900"
+              className="text-xl font-semibold text-rose-900"
             >
               Couple Plan
             </Link>
             <div className="ml-10 flex items-center space-x-4">
               <Link 
                 href="/plans" 
-                className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm"
+                className="text-rose-600 hover:text-rose-900 px-3 py-2 rounded-md text-sm"
               >
                 マイプラン一覧
               </Link>
               <Link 
                 href="/plans/public" 
-                className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm"
+                className="text-rose-600 hover:text-rose-900 px-3 py-2 rounded-md text-sm"
               >
                 公開プラン一覧
               </Link>
@@ -43,7 +43,7 @@ export default function Navbar() {
           </div>
           
           <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-600">
+            <span className="text-sm text-rose-600">
               {user?.email}
             </span>
             <Button

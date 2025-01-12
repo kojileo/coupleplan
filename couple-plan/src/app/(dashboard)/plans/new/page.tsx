@@ -46,7 +46,7 @@ export default function NewPlanPage() {
       
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-rose-700 mb-1">
             タイトル
           </label>
           <input
@@ -59,7 +59,7 @@ export default function NewPlanPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-rose-700 mb-1">
             説明
           </label>
           <textarea
@@ -71,7 +71,7 @@ export default function NewPlanPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-rose-700 mb-1">
             日付
           </label>
           <input
@@ -83,7 +83,7 @@ export default function NewPlanPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-rose-700 mb-1">
             予算
           </label>
           <input
@@ -97,7 +97,7 @@ export default function NewPlanPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-rose-700 mb-1">
             場所URL
           </label>
           <input

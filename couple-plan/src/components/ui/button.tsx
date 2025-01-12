@@ -13,9 +13,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(
           'rounded-lg font-medium transition-colors',
           {
-            'bg-blue-600 text-white hover:bg-blue-700': variant === 'primary',
-            'bg-gray-200 text-gray-800 hover:bg-gray-300': variant === 'secondary',
-            'border-2 border-gray-300 bg-transparent hover:bg-gray-50': variant === 'outline',
+            'bg-rose-600 text-white hover:bg-rose-700': variant === 'primary',
+            'bg-pink-100 text-rose-800 hover:bg-pink-200': variant === 'secondary',
+            'border-2 border-rose-200 text-rose-700 bg-transparent hover:bg-rose-50': variant === 'outline',
           },
           {
             'px-3 py-1.5 text-sm': size === 'sm',
