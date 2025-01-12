@@ -71,7 +71,7 @@ export default function PublishDialog({ planId, isOpen, onClose }: PublishDialog
       <div className="bg-white rounded-lg p-6 w-full max-w-md">
         <h2 className="text-xl font-bold mb-4">プランの公開設定</h2>
         
-        <p className="mb-4 text-gray-600">
+        <p className="mb-4 text-rose-600">
           {plan?.isPublic 
             ? 'このプランは現在公開されています。非公開にしますか？'
             : 'このプランを公開しますか？公開すると、他のユーザーが閲覧できるようになります。'}

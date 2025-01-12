@@ -59,7 +59,7 @@ export default function PlanDetailPage({ params }: Props) {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-rose-600" />
       </div>
     )
   }
@@ -71,7 +71,7 @@ export default function PlanDetailPage({ params }: Props) {
   return (
     <div className="max-w-3xl mx-auto">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold">{plan.title}</h1>
+        <h1 className="text-2xl font-bold text-rose-950">{plan.title}</h1>
         <div className="flex gap-4">
           <Button
             variant="outline"
@@ -96,24 +96,24 @@ export default function PlanDetailPage({ params }: Props) {
 
       <div className="bg-white rounded-lg shadow p-6 space-y-6">
         <div>
-          <h2 className="text-sm font-semibold text-gray-600 mb-2">説明</h2>
-          <p className="text-gray-800 whitespace-pre-wrap">{plan.description}</p>
+          <h2 className="text-sm font-semibold text-rose-800 mb-2">説明</h2>
+          <p className="text-rose-900 whitespace-pre-wrap">{plan.description}</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
-            <h2 className="text-sm font-semibold text-gray-600 mb-2">日付</h2>
-            <p className="text-gray-800">
+            <h2 className="text-sm font-semibold text-rose-800 mb-2">日付</h2>
+            <p className="text-rose-900">
               {plan.date ? new Date(plan.date).toLocaleDateString() : '未設定'}
             </p>
           </div>
           <div>
-            <h2 className="text-sm font-semibold text-gray-600 mb-2">予算</h2>
-            <p className="text-gray-800">¥{plan.budget.toLocaleString()}</p>
+            <h2 className="text-sm font-semibold text-rose-800 mb-2">予算</h2>
+            <p className="text-rose-900">¥{plan.budget.toLocaleString()}</p>
           </div>
           <div>
-            <h2 className="text-sm font-semibold text-gray-600 mb-2">場所URL</h2>
-            <p className="text-gray-800">
+            <h2 className="text-sm font-semibold text-rose-800 mb-2">場所URL</h2>
+            <p className="text-rose-900">
               {plan.location ? (
                 <a 
                   href={plan.location}
@@ -128,8 +128,8 @@ export default function PlanDetailPage({ params }: Props) {
           </div>
         </div>
 
-        <div className="pt-4 border-t">
-          <div className="flex justify-between text-sm text-gray-500">
+        <div className="pt-4 border-t border-rose-100">
+          <div className="flex justify-between text-sm text-rose-600">
             <span>作成日: {new Date(plan.createdAt).toLocaleDateString()}</span>
             <span>更新日: {new Date(plan.updatedAt).toLocaleDateString()}</span>
           </div>

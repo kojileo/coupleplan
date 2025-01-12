@@ -23,19 +23,19 @@ export function PlanCard({ plan, isPublic }: { plan: Plan, isPublic: boolean }) 
       onClick={handleClick}
     >
       {isPublic && (
-        <span className="absolute top-2 right-2 text-sm text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
+        <span className="absolute top-2 right-2 text-sm text-rose-600 bg-rose-50 px-2 py-1 rounded-full">
           公開プラン
         </span>
       )}
-      <h3 className="font-semibold mb-2">{plan.title}</h3>
-      <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+      <h3 className="font-semibold mb-2 text-rose-950">{plan.title}</h3>
+      <p className="text-sm text-rose-700 mb-4 line-clamp-2">
         {plan.description}
       </p>
-      <div className="flex justify-between text-sm text-gray-500">
+      <div className="flex justify-between text-sm text-rose-600">
         <span>{plan.date ? new Date(plan.date).toLocaleDateString() : '日付未設定'}</span>
         <span>¥{plan.budget.toLocaleString()}</span>
       </div>
-      <div className="mt-2 text-sm text-gray-500">
+      <div className="mt-2 text-sm text-rose-600">
         <span>📍 {plan.location ? (
           <a 
             href={plan.location}

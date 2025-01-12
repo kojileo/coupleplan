@@ -42,7 +42,7 @@ export default function PlanList() {
   if (plans.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-600 mb-4">まだプランがありません</p>
+        <p className="text-rose-600 mb-4">まだプランがありません</p>
         <Link
           href="/plans/new"
           className="text-blue-600 hover:text-blue-800"
@@ -70,7 +70,7 @@ export default function PlanList() {
             )}
           </div>
           
-          <div className="mt-2 text-sm text-gray-600">
+          <div className="mt-2 text-sm text-rose-600">
             {plan.description && (
               <p className="mb-2">{plan.description}</p>
             )}

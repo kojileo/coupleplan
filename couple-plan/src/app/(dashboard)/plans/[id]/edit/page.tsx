@@ -91,7 +91,7 @@ export default function EditPlanPage({ params }: Props) {
   if (!plan) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-500">マイプランが見つかりません</p>
+        <p className="text-rose-500">マイプランが見つかりません</p>
         <Button 
           className="mt-4"
           onClick={() => router.push('/plans')}
@@ -108,7 +108,7 @@ export default function EditPlanPage({ params }: Props) {
       
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-rose-700 mb-1">
             タイトル
           </label>
           <input
@@ -121,7 +121,7 @@ export default function EditPlanPage({ params }: Props) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-rose-700 mb-1">
             説明
           </label>
           <textarea
@@ -133,7 +133,7 @@ export default function EditPlanPage({ params }: Props) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-rose-700 mb-1">
             日付
           </label>
           <input
@@ -145,7 +145,7 @@ export default function EditPlanPage({ params }: Props) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-rose-700 mb-1">
             予算
           </label>
           <input
@@ -159,7 +159,7 @@ export default function EditPlanPage({ params }: Props) {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-rose-700 mb-1">
             場所URL
           </label>
           <input
