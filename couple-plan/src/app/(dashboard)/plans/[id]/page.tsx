@@ -77,7 +77,7 @@ export default function PlanDetailPage({ params }: Props) {
             variant="outline"
             onClick={() => setIsPublishDialogOpen(true)}
           >
-            公開
+            公開設定
           </Button>
           <Button
             variant="outline"
