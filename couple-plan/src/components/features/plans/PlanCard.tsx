@@ -5,6 +5,9 @@ export function PlanCard({ plan, isPublic }: { plan: Plan, isPublic: boolean }) 
   const router = useRouter()
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // 公開プランの場合はクリックを無効化
+    if (isPublic) return
+
     // リンクがクリックされた場合は、カード全体のクリックイベントを防ぐ
     if ((e.target as HTMLElement).tagName === 'A') {
       e.stopPropagation()
@@ -15,7 +18,8 @@ export function PlanCard({ plan, isPublic }: { plan: Plan, isPublic: boolean }) 
 
   return (
     <div
-      className="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow cursor-pointer relative"
+      className={`bg-white rounded-lg shadow p-6 transition-shadow relative
+        ${!isPublic ? 'hover:shadow-md cursor-pointer' : ''}`}
       onClick={handleClick}
     >
       {isPublic && (
