@@ -69,7 +69,7 @@ export default function PublishDialog({ planId, isOpen, onClose }: PublishDialog
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="bg-white rounded-lg p-6 w-full max-w-md">
-        <h2 className="text-xl font-bold mb-4">プランの公開設定</h2>
+        <h2 className="text-2xl font-bold text-rose-950">プランの公開設定</h2>
         
         <p className="mb-4 text-rose-600">
           {plan?.isPublic 
