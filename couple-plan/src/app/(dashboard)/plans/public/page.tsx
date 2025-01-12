@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 import { api } from '@/lib/api'
 import type { Plan } from '@/types/plan'
+import { PlanCard } from '@/components/features/plans/PlanCard'
 
 export default function PublicPlansPage() {
   const { session } = useAuth()
@@ -54,34 +55,6 @@ export default function PublicPlansPage() {
           ))}
         </div>
       )}
-    </div>
-  )
-}
-
-function PlanCard({ plan, isPublic }: { plan: Plan, isPublic: boolean }) {
-  const router = useRouter()
-
-  return (
-    <div
-      className="bg-white rounded-lg shadow p-6 hover:shadow-md transition-shadow cursor-pointer relative"
-      onClick={() => router.push(`/plans/${plan.id}`)}
-    >
-      {isPublic && (
-        <span className="absolute top-2 right-2 text-sm text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
-          公開プラン
-        </span>
-      )}
-      <h3 className="font-semibold mb-2">{plan.title}</h3>
-      <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-        {plan.description}
-      </p>
-      <div className="flex justify-between text-sm text-gray-500">
-        <span>{plan.date ? new Date(plan.date).toLocaleDateString() : '日付未設定'}</span>
-        <span>¥{plan.budget.toLocaleString()}</span>
-      </div>
-      <div className="mt-2 text-sm text-gray-500">
-        <span>📍 {plan.location || '場所未設定'}</span>
-      </div>
     </div>
   )
 }
