@@ -126,8 +126,10 @@ couple-plan/
 │   │   │   ├── auth/   # 認証関連API
 │   │   │   │   ├── login/
 │   │   │   │   │   └── route.ts
-│   │   │   │   └── signup/
-│   │   │   │       └── route.ts
+│   │   │   │   ├── signup/
+│   │   │   │   │   └── route.ts
+│   │   │   │   └── profile/      # 新規追加
+│   │   │   │       └── route.ts  # プロフィール更新API
 │   │   │   └── plans/  # プラン関連API
 │   │   │       ├── route.ts          # プラン一覧
 │   │   │       ├── public/          # 公開プラン一覧

@@ -1,6 +1,5 @@
 'use client'
 
-import { useAuth } from '@/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Button from '@/components/ui/button'
@@ -8,7 +7,6 @@ import { supabase } from '@/lib/supabase-auth'
 import { useState } from 'react'
 
 export default function Navbar() {
-  const { user } = useAuth()
   const router = useRouter()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
@@ -66,9 +64,12 @@ export default function Navbar() {
             >
               公開プラン一覧
             </Link>
-            <span className="text-sm text-rose-600 ml-4">
-              {user?.email}
-            </span>
+            <Link 
+              href="/profile" 
+              className="text-rose-600 hover:text-rose-900 px-3 py-2 rounded-md text-sm"
+            >
+              プロフィール
+            </Link>
             <Button
               variant="outline"
               size="sm"
@@ -95,9 +96,13 @@ export default function Navbar() {
             >
               公開プラン一覧
             </Link>
-            <span className="text-sm text-rose-600 px-3 py-2">
-              {user?.email}
-            </span>
+            <Link 
+              href="/profile" 
+              className="text-rose-600 hover:text-rose-900 px-3 py-2 rounded-md text-sm"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              プロフィール
+            </Link>
             <div className="px-3">
               <Button
                 variant="outline"
