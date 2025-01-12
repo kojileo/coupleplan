@@ -77,7 +77,7 @@ export default function PlanDetailPage({ params }: Props) {
             variant="outline"
             onClick={() => setIsPublishDialogOpen(true)}
           >
-            公開
+            公開設定
           </Button>
           <Button
             variant="outline"
@@ -112,8 +112,19 @@ export default function PlanDetailPage({ params }: Props) {
             <p className="text-gray-800">¥{plan.budget.toLocaleString()}</p>
           </div>
           <div>
-            <h2 className="text-sm font-semibold text-gray-600 mb-2">場所</h2>
-            <p className="text-gray-800">{plan.location || '未設定'}</p>
+            <h2 className="text-sm font-semibold text-gray-600 mb-2">場所URL</h2>
+            <p className="text-gray-800">
+              {plan.location ? (
+                <a 
+                  href={plan.location}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
+                  {new URL(plan.location).hostname}
+                </a>
+              ) : '未設定'}
+            </p>
           </div>
         </div>
 

@@ -160,7 +160,7 @@ export default function EditPlanPage({ params }: Props) {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            場所
+            場所URL
           </label>
           <input
             type="url"
