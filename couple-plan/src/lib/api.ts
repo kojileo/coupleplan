@@ -1,5 +1,6 @@
 import { ApiResponse, LoginRequest, SignUpRequest, PlanRequest } from '@/types/api'
 import type { Plan } from '@/types/plan'
+import type { Profile } from '@/types/profile'
 
 const API_BASE = '/api'
 
@@ -19,6 +20,29 @@ export const api = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
+      })
+      return response.json()
+    },
+  },
+
+  profile: {
+    get: async (token: string, userId: string): Promise<ApiResponse<Profile>> => {
+      const response = await fetch(`${API_BASE}/profile/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      return response.json()
+    },
+
+    update: async (token: string, name: string): Promise<ApiResponse<Profile>> => {
+      const response = await fetch(`${API_BASE}/profile`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ name }),
       })
       return response.json()
     },
