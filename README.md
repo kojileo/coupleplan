@@ -418,3 +418,15 @@ next lint
 3. エラーモニタリングを設定
 
 これらの手順に従うことで、安全かつ効率的にVercelへデプロイすることができます。デプロイ後は、実際のユーザー環境でアプリケーションが正常に動作することを確認してください。
+
+# データベースをリセット
+npx prisma migrate reset --force
+
+# 新しいマイグレーションを作成
+npx prisma migrate dev --name init_database
+
+# スキーマを直接プッシュ
+npx prisma db push
+
+# Prismaクライアントを再生成
+npx prisma generate

@@ -33,6 +33,19 @@ export async function GET(
           { userId: user.id },
           { isPublic: true }
         ]
+      },
+      include: {
+        profile: {
+          select: {
+            name: true
+          }
+        },
+        likes: true,
+        _count: {
+          select: {
+            likes: true
+          }
+        }
       }
     })
 

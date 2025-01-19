@@ -134,4 +134,25 @@ export const api = {
       return response.json()
     },
   },
+
+  likes: {
+    create: async (token: string, planId: string) => {
+      const response = await fetch(`${API_BASE}/plans/${planId}/likes`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      return response.json()
+    },
+    delete: async (token: string, planId: string) => {
+      const response = await fetch(`${API_BASE}/plans/${planId}/likes`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      return response.json()
+    },
+  },
 }
