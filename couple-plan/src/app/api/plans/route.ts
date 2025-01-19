@@ -25,6 +25,13 @@ export async function GET(request: Request) {
       },
       orderBy: {
         updatedAt: 'desc'
+      },
+      include: {
+        profile: {
+          select: {
+            name: true
+          }
+        }
       }
     })
 

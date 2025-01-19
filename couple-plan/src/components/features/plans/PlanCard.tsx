@@ -47,6 +47,9 @@ export function PlanCard({ plan, isPublic }: { plan: Plan, isPublic: boolean }) 
           </a>
         ) : '場所URL未設定'}</span>
       </div>
+      <div className="mt-2 text-sm text-gray-500">
+        作成者: {plan.profile?.name ?? '不明'}
+      </div>
     </div>
   )
 }
