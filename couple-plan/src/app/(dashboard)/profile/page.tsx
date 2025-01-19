@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
-import { supabase } from '@/lib/supabase-auth'
-import { api } from '@/lib/api'
 
 type Profile = {
   name: string
@@ -47,17 +45,15 @@ export default function ProfilePage() {
     setLoading(true)
 
     try {
-      // Supabaseの認証データを更新
-      const { error: authError } = await supabase.auth.updateUser({
-        data: { name: profile?.name }
-      })
-      if (authError) throw authError
+      if (!session?.access_token) {
+        throw new Error('認証セッションが見つかりません')
+      }
 
       // Prismaデータベースのプロフィールを更新
       const response = await fetch('/api/profile', {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${session?.access_token}`,
+          'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -69,7 +65,7 @@ export default function ProfilePage() {
       if (error) throw new Error(error)
       
       if (data) {
-        setProfile(data)  // 更新されたプロフィールで状態を更新
+        setProfile(data)
         alert('プロフィールを更新しました')
       }
     } catch (error) {

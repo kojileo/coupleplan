@@ -18,16 +18,7 @@ export async function PUT(request: NextRequest) {
 
     const { name } = await request.json()
 
-    // Supabaseの認証データを更新
-    const { error: authError } = await supabase.auth.updateUser({
-      data: { name }
-    })
-
-    if (authError) {
-      throw authError
-    }
-
-    // Prismaデータベースのプロフィールを更新
+    // Prismaデータベースのプロフィールのみを更新
     const profile = await prisma.profile.update({
       where: { userId: user.id },
       data: { name },
