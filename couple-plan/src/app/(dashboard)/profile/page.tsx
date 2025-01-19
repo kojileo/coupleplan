@@ -1,32 +1,87 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { supabase } from '@/lib/supabase-auth'
+import { api } from '@/lib/api'
+
+type Profile = {
+  name: string
+  email: string
+}
 
 export default function ProfilePage() {
-  const { user } = useAuth()
+  const { user, session } = useAuth()
   const [loading, setLoading] = useState(false)
-  const [name, setName] = useState(user?.user_metadata?.name || '')
+  const [profile, setProfile] = useState<Profile | null>(null)
+
+  // プロフィールデータの取得
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!user) return
+      try {
+        const response = await fetch(`/api/profile/${user.id}`, {
+          headers: {
+            'Authorization': `Bearer ${session?.access_token}`,
+          },
+        })
+        const responseData = await response.json()
+        console.log('Profile API Response:', responseData)  // レスポンスの確認
+        const { data, error } = responseData
+        if (error) {
+          throw new Error(error)
+        }
+        if (data) {
+          setProfile(data)
+        }
+      } catch (error) {
+        console.error('プロフィール取得エラー:', error)
+      }
+    }
+
+    fetchProfile()
+  }, [user, session])
 
   const handleUpdateProfile = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
 
     try {
-      const { error } = await supabase.auth.updateUser({
-        data: { name: name.trim() }
+      // Supabaseの認証データを更新
+      const { error: authError } = await supabase.auth.updateUser({
+        data: { name: profile?.name }
       })
+      if (authError) throw authError
+
+      // Prismaデータベースのプロフィールを更新
+      const response = await fetch('/api/profile', {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${session?.access_token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: profile?.name,
+        }),
+      })
+
+      const { data, error } = await response.json()
+      if (error) throw new Error(error)
       
-      if (error) throw error
-      
-      alert('プロフィールを更新しました')
+      if (data) {
+        setProfile(data)  // 更新されたプロフィールで状態を更新
+        alert('プロフィールを更新しました')
+      }
     } catch (error) {
       console.error('プロフィール更新エラー:', error)
       alert('プロフィールの更新に失敗しました')
     } finally {
       setLoading(false)
     }
+  }
+
+  if (!profile) {
+    return <div>読み込み中...</div>
   }
 
   return (
@@ -45,8 +100,8 @@ export default function ProfilePage() {
             <input
               type="text"
               id="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={profile.name}
+              onChange={(e) => setProfile({ ...profile, name: e.target.value })}
               className="w-full px-3 py-2 border border-rose-200 rounded-md text-rose-900 focus:outline-none focus:ring-rose-500 focus:border-rose-500"
               required
             />
@@ -58,7 +113,7 @@ export default function ProfilePage() {
             >
               メールアドレス
             </label>
-            <p className="text-rose-600">{user?.email}</p>
+            <p className="text-rose-600">{profile.email}</p>
           </div>
 
           <button
