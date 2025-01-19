@@ -30,6 +30,12 @@ export async function GET(request: NextRequest) {
           select: {
             name: true
           }
+        },
+        likes: true,
+        _count: {
+          select: {
+            likes: true
+          }
         }
       }
     })

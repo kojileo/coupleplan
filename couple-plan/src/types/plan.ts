@@ -12,6 +12,13 @@ export type Plan = {
   profile?: {
     name: string
   } | null
+  likes: {
+    id: string
+    userId: string
+  }[]
+  _count?: {
+    likes: number
+  }
 }
 
 export type CreatePlanInput = Pick<Plan, 'title' | 'description' | 'date' | 'budget' | 'location'>

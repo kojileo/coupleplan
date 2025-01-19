@@ -9,12 +9,13 @@ export interface SignUpRequest {
   name: string
 }
 
-export interface PlanRequest {
+export type PlanRequest = {
   title: string
   description: string
-  date?: string
-  location: string
+  date?: Date | null
+  location?: string | null
   budget: number
+  isPublic: boolean
 }
 
 export interface ApiResponse<T = void> {

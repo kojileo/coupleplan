@@ -26,6 +26,7 @@ export default function EditPlanPage({ params }: Props) {
     date: '',
     budget: 0,
     location: '',
+    isPublic: false,
   })
 
   const { id } = use(params)
@@ -46,6 +47,7 @@ export default function EditPlanPage({ params }: Props) {
             date: response.data.date ? new Date(response.data.date).toISOString().split('T')[0] : '',
             budget: response.data.budget,
             location: response.data.location || '',
+            isPublic: response.data.isPublic,
           })
         }
       } catch (error) {
@@ -67,7 +69,7 @@ export default function EditPlanPage({ params }: Props) {
     try {
       const response = await api.plans.update(session.access_token, id, {
         ...formData,
-        date: formData.date ? new Date(formData.date).toISOString() : undefined,
+        date: formData.date ? new Date(formData.date) : null,
       })
       
       if ('error' in response) throw new Error(response.error)

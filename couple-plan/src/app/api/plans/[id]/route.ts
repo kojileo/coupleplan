@@ -39,6 +39,12 @@ export async function GET(
           select: {
             name: true
           }
+        },
+        likes: true,
+        _count: {
+          select: {
+            likes: true
+          }
         }
       }
     })

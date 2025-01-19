@@ -7,16 +7,21 @@ import Button from '@/components/ui/button'
 import { api } from '@/lib/api'
 import type { PlanRequest } from '@/types/api'
 
+type FormData = Omit<PlanRequest, 'date'> & {
+  date: string | null;
+}
+
 export default function NewPlanPage() {
   const router = useRouter()
   const { session } = useAuth()
   const [saving, setSaving] = useState(false)
-  const [formData, setFormData] = useState<PlanRequest>({
+  const [formData, setFormData] = useState<FormData>({
     title: '',
     description: '',
-    date: '',
+    date: null,
     budget: 0,
     location: '',
+    isPublic: false,
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -27,7 +32,7 @@ export default function NewPlanPage() {
     try {
       const response = await api.plans.create(session.access_token, {
         ...formData,
-        date: formData.date ? new Date(formData.date).toISOString() : undefined,
+        date: formData.date ? new Date(formData.date) : null,
       })
       
       if ('error' in response) throw new Error(response.error)
@@ -77,7 +82,7 @@ export default function NewPlanPage() {
           <input
             type="date"
             className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={formData.date}
+            value={formData.date ?? ''}
             onChange={(e) => setFormData({ ...formData, date: e.target.value })}
           />
         </div>
@@ -103,7 +108,7 @@ export default function NewPlanPage() {
           <input
             type="url"
             className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={formData.location}
+            value={formData.location ?? ''}
             onChange={(e) => setFormData({ ...formData, location: e.target.value })}
           />
         </div>
