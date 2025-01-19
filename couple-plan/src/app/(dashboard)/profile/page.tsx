@@ -2,36 +2,21 @@
 
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
-
-type Profile = {
-  name: string
-  email: string
-}
+import { api } from '@/lib/api'
+import type { Profile } from '@/types/profile'
 
 export default function ProfilePage() {
   const { user, session } = useAuth()
   const [loading, setLoading] = useState(false)
   const [profile, setProfile] = useState<Profile | null>(null)
 
-  // プロフィールデータの取得
   useEffect(() => {
     const fetchProfile = async () => {
-      if (!user) return
+      if (!user || !session?.access_token) return
       try {
-        const response = await fetch(`/api/profile/${user.id}`, {
-          headers: {
-            'Authorization': `Bearer ${session?.access_token}`,
-          },
-        })
-        const responseData = await response.json()
-        console.log('Profile API Response:', responseData)  // レスポンスの確認
-        const { data, error } = responseData
-        if (error) {
-          throw new Error(error)
-        }
-        if (data) {
-          setProfile(data)
-        }
+        const { data, error } = await api.profile.get(session.access_token, user.id)
+        if (error) throw new Error(error)
+        if (data) setProfile(data)
       } catch (error) {
         console.error('プロフィール取得エラー:', error)
       }
@@ -42,28 +27,12 @@ export default function ProfilePage() {
 
   const handleUpdateProfile = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    if (!profile?.name || !session?.access_token) return
     setLoading(true)
 
     try {
-      if (!session?.access_token) {
-        throw new Error('認証セッションが見つかりません')
-      }
-
-      // Prismaデータベースのプロフィールを更新
-      const response = await fetch('/api/profile', {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: profile?.name,
-        }),
-      })
-
-      const { data, error } = await response.json()
+      const { data, error } = await api.profile.update(session.access_token, profile.name)
       if (error) throw new Error(error)
-      
       if (data) {
         setProfile(data)
         alert('プロフィールを更新しました')
