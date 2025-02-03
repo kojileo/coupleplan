@@ -34,11 +34,15 @@ export default function ProfilePage() {
 
   const handleUpdateProfile = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (!profile?.name || !session?.access_token) return
+    if (!profile?.name || !profile?.email || !session?.access_token) return
     setLoading(true)
 
     try {
-      const { data, error } = await api.profile.update(session.access_token, profile.name)
+      const { data, error } = await api.profile.update(
+        session.access_token,
+        profile.name,
+        profile.email
+      )
       if (error) throw new Error(error)
       if (data) {
         setProfile(data)
@@ -109,11 +113,19 @@ export default function ProfilePage() {
 
           <div>
             <label 
+              htmlFor="email"
               className="block text-sm font-medium text-rose-900 mb-2"
             >
               メールアドレス
             </label>
-            <p className="text-rose-600">{profile.email}</p>
+            <input
+              type="email"
+              id="email"
+              value={profile.email}
+              onChange={(e) => setProfile({ ...profile, email: e.target.value })}
+              className="w-full px-3 py-2 border border-rose-200 rounded-md text-rose-900 focus:outline-none focus:ring-rose-500 focus:border-rose-500"
+              required
+            />
           </div>
 
           <button
