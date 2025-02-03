@@ -35,14 +35,14 @@ export const api = {
       return response.json()
     },
 
-    update: async (token: string, name: string): Promise<ApiResponse<Profile>> => {
+    update: async (token: string, name: string, email: string): Promise<ApiResponse<Profile>> => {
       const response = await fetch(`${API_BASE}/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ name }),
+        body: JSON.stringify({ name, email }),
       })
       return response.json()
     },
