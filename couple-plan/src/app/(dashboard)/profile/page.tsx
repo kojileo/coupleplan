@@ -83,6 +83,39 @@ export default function ProfilePage() {
     }
   }
 
+  // 退会処理のハンドラ
+  const handleDeleteAccount = async () => {
+    if (!session?.access_token) return
+
+    if (!confirm('本当に退会しますか？すべてのデータが削除されます。')) {
+      return
+    }
+
+    setLoading(true)
+    try {
+      const res = await fetch('/api/account', {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      })
+      const result = await res.json()
+      if (result.error) {
+        alert(`アカウント削除エラー: ${result.error}`)
+        return
+      }
+      alert('アカウント削除に成功しました。')
+      // 退会後、セッションを破棄してトップページなどにリダイレクト
+      await supabase.auth.signOut()
+      window.location.href = '/'
+    } catch (error) {
+      console.error('アカウント削除エラー:', error)
+      alert('アカウント削除に失敗しました')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   if (!profile) {
     return <div>読み込み中...</div>
   }
@@ -185,6 +218,18 @@ export default function ProfilePage() {
             {loading ? 'パスワード更新中...' : 'パスワードを更新'}
           </Button>
         </form>
+      </div>
+
+      {/* 退会用ボタン */}
+      <div className="bg-white rounded-lg shadow p-6">
+        <h2 className="text-xl font-semibold text-rose-900 mb-6">退会</h2>
+        <button
+          onClick={handleDeleteAccount}
+          disabled={loading}
+          className="w-full px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 disabled:opacity-50"
+        >
+          {loading ? '処理中...' : '退会する'}
+        </button>
       </div>
     </div>
   )
