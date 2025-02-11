@@ -8,7 +8,7 @@ import { api } from '@/lib/api'
 export default function SignUpPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
-  const [, setError] = useState('')
+  const [error, setError] = useState('')  // error状態を保持
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -27,6 +27,7 @@ export default function SignUpPage() {
         name,
       })
       
+      // 成功時には response に error プロパティが存在しないように想定する
       if ('error' in response) throw new Error(response.error)
 
       // メール確認待ちページへリダイレクト
@@ -96,6 +97,11 @@ export default function SignUpPage() {
               すでにアカウントをお持ちの方はこちら
             </Link>
           </div>
+          
+          {/* エラーメッセージがある場合に表示する */}
+          {error && (
+            <p className="mt-4 text-center text-red-500">{error}</p>
+          )}
         </form>
       </div>
     </div>
