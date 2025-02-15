@@ -53,6 +53,7 @@ export default function MyPlansPage() {
         <div className="bg-white rounded-lg shadow p-6 text-center">
           <p className="text-rose-700">プランがまだありません</p>
           <Button 
+            data-testid="empty-create-button"
             className="mt-4"
             onClick={() => router.push('/plans/new')}
           >

@@ -22,21 +22,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-      setUser(session?.user ?? null)
-      setIsLoading(false)
-    })
+    let mounted = true
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event: string, session: Session | null) => {
-      setSession(session)
-      setUser(session?.user ?? null)
-      setIsLoading(false)
-    })
+    const initializeAuth = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        if (!mounted) return
 
-    return () => subscription.unsubscribe()
+        setSession(session)
+        setUser(session?.user ?? null)
+      } catch (error) {
+        console.error('セッションの取得に失敗:', error)
+      } finally {
+        if (mounted) {
+          setIsLoading(false)
+        }
+      }
+    }
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event: string, session: Session | null) => {
+        if (!mounted) return
+
+        setSession(session)
+        setUser(session?.user ?? null)
+        setIsLoading(false)
+      }
+    )
+
+    initializeAuth()
+
+    return () => {
+      mounted = false
+      subscription.unsubscribe()
+    }
   }, [])
 
   return (

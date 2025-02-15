@@ -21,6 +21,7 @@ export function PlanCard({ plan, isPublic }: { plan: Plan, isPublic: boolean }) 
 
   return (
     <div
+      role="article"
       className={`bg-white rounded-lg shadow p-6 transition-shadow relative
         ${!isPublic ? 'hover:shadow-md cursor-pointer' : ''}`}
       onClick={handleClick}

@@ -137,7 +137,7 @@ export default function ProfilePage() {
             <input
               type="text"
               id="name"
-              value={profile.name}
+              value={profile.name ?? ''}
               onChange={(e) => setProfile({ ...profile, name: e.target.value })}
               className="w-full px-3 py-2 border border-rose-200 rounded-md text-rose-900 focus:outline-none focus:ring-rose-500 focus:border-rose-500"
               required
@@ -154,7 +154,7 @@ export default function ProfilePage() {
             <input
               type="email"
               id="email"
-              value={profile.email}
+              value={profile.email ?? ''}
               onChange={(e) => setProfile({ ...profile, email: e.target.value })}
               className="w-full px-3 py-2 border border-rose-200 rounded-md text-rose-900 focus:outline-none focus:ring-rose-500 focus:border-rose-500"
               required

@@ -70,14 +70,14 @@ export const api = {
         })
 
         if (!response.ok) {
-          throw new Error('プランの作成に失敗しました')
+          return { error: 'プランの作成に失敗しました' }
         }
 
         return response.json()
       } catch (error) {
         console.error('API error:', error)
         return {
-          error: error instanceof Error ? error.message : 'プランの作成に失敗しました'
+          error: 'プランの作成に失敗しました'
         }
       }
     },

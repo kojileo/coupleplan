@@ -42,7 +42,7 @@ export function LikeButton({ planId, initialIsLiked, likeCount }: LikeButtonProp
       className={`flex items-center gap-1 text-sm transition-colors
         ${isLiked ? 'text-rose-500' : 'text-gray-500 hover:text-rose-500'}`}
     >
-      <span className={`text-lg ${isLoading ? 'opacity-50' : ''}`}>
+      <span className={isLoading ? 'opacity-50' : ''}>
         {isLiked ? '❤️' : '🤍'}
       </span>
       <span>{count}</span>

@@ -48,8 +48,7 @@ couple-plan/
 │   ├── contexts/           # コンテキスト
 │   │   └── AuthContext.tsx
 │   ├── hooks/              # カスタムフック
-│   │   ├── useRequireAuth.ts
-│   │   └── usePlans.ts
+│   │   └── useRequireAuth.ts
 │   ├── lib/                # ユーティリティ
 │   │   ├── api.ts          # APIクライアント
 │   │   ├── db.ts           # Prismaクライアント
@@ -74,6 +73,9 @@ couple-plan/
 ├── .env                     # 環境変数
 ├── .eslintrc.json           # ESLint設定
 ├── .gitignore               # Git除外設定
+├── jest.config.js           # Next.js 用の Jest 設定
+├── jest.setup.js            # Jest の設定
+├── babel.config.js          # Babel の設定
 ├── next.config.js           # Next.js設定
 ├── package.json             # パッケージ設定
 ├── postcss.config.js        # PostCSS設定
