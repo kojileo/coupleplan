@@ -1,6 +1,5 @@
 'use client'
 
-import { use } from 'react'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
@@ -21,15 +20,22 @@ export default function PlanDetailPage({ params }: Props) {
   const [plan, setPlan] = useState<Plan | null>(null)
   const [loading, setLoading] = useState(true)
   const [isPublishDialogOpen, setIsPublishDialogOpen] = useState(false)
-  
-  const { id } = use(params)
+  const [planId, setPlanId] = useState<string>('')
 
+  // params を解決して planId を設定
   useEffect(() => {
+    params.then(({ id }) => setPlanId(id))
+  }, [params])
+
+  // planId が解決されたらプランデータを取得
+  useEffect(() => {
+    if (!planId) return
+
     const fetchPlan = async () => {
       if (!session) return
 
       try {
-        const response = await api.plans.get(session.access_token, id)
+        const response = await api.plans.get(session.access_token, planId)
         if ('error' in response) throw new Error(response.error)
         setPlan(response.data || null)
       } catch (error) {
@@ -41,22 +47,10 @@ export default function PlanDetailPage({ params }: Props) {
     }
 
     fetchPlan()
-  }, [session, id, router])
+  }, [session, planId, router])
 
-  const handleDelete = async () => {
-    if (!session || !confirm('このプランを削除してもよろしいですか？')) return
-
-    try {
-      const response = await api.plans.delete(session.access_token, id)
-      if ('error' in response) throw new Error(response.error)
-      router.push('/plans')
-    } catch (error) {
-      console.error('プランの削除に失敗しました:', error)
-      alert('プランの削除に失敗しました')
-    }
-  }
-
-  if (loading) {
+  // planId が未解決 or データ取得中はローディング表示
+  if (!planId || loading) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-rose-600" />
@@ -81,13 +75,24 @@ export default function PlanDetailPage({ params }: Props) {
           </Button>
           <Button
             variant="outline"
-            onClick={() => router.push(`/plans/${id}/edit`)}
+            onClick={() => router.push(`/plans/${planId}/edit`)}
           >
             編集
           </Button>
           <Button
             variant="outline"
-            onClick={handleDelete}
+            onClick={async () => {
+              if (!session || !confirm('このプランを削除してもよろしいですか？')) return
+
+              try {
+                const response = await api.plans.delete(session.access_token, planId)
+                if ('error' in response) throw new Error(response.error)
+                router.push('/plans')
+              } catch (error) {
+                console.error('プランの削除に失敗しました:', error)
+                alert('プランの削除に失敗しました')
+              }
+            }}
           >
             削除
           </Button>
@@ -137,7 +142,7 @@ export default function PlanDetailPage({ params }: Props) {
       </div>
 
       <PublishDialog
-        planId={id}
+        planId={planId}
         isOpen={isPublishDialogOpen}
         onClose={() => setIsPublishDialogOpen(false)}
       />
