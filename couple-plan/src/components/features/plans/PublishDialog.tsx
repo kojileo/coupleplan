@@ -52,8 +52,8 @@ export default function PublishDialog({ planId, isOpen, onClose }: PublishDialog
         throw new Error(response.error)
       }
       
+      setPlan(prev => prev ? { ...prev, isPublic: !prev.isPublic } : null)
       if (response.data) {
-        setPlan(prev => prev ? { ...prev, isPublic: !prev.isPublic } : null)
         onClose()
       }
     } catch (error) {
