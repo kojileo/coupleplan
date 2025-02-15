@@ -48,8 +48,7 @@ couple-plan/
 │   ├── contexts/           # コンテキスト
 │   │   └── AuthContext.tsx
 │   ├── hooks/              # カスタムフック
-│   │   ├── useRequireAuth.ts
-│   │   └── usePlans.ts
+│   │   └── useRequireAuth.ts
 │   ├── lib/                # ユーティリティ
 │   │   ├── api.ts          # APIクライアント
 │   │   ├── db.ts           # Prismaクライアント
