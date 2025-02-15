@@ -51,10 +51,11 @@ export default function NewPlanPage() {
       
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label className="block text-sm font-medium text-rose-950 mb-1">
+          <label htmlFor="title" className="block text-sm font-medium text-rose-950 mb-1">
             タイトル
           </label>
           <input
+            id="title"
             type="text"
             required
             className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-rose-950"
@@ -64,10 +65,11 @@ export default function NewPlanPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-rose-950 mb-1">
+          <label htmlFor="description" className="block text-sm font-medium text-rose-950 mb-1">
             説明
           </label>
           <textarea
+            id="description"
             className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-rose-950"
             rows={4}
             value={formData.description}
@@ -76,10 +78,11 @@ export default function NewPlanPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-rose-950 mb-1">
+          <label htmlFor="date" className="block text-sm font-medium text-rose-950 mb-1">
             日付
           </label>
           <input
+            id="date"
             type="date"
             className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-rose-950"
             value={formData.date ?? ''}
@@ -88,10 +91,11 @@ export default function NewPlanPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-rose-950 mb-1">
+          <label htmlFor="budget" className="block text-sm font-medium text-rose-950 mb-1">
             予算
           </label>
           <input
+            id="budget"
             type="number"
             required
             min={0}
@@ -102,10 +106,11 @@ export default function NewPlanPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-rose-950 mb-1">
+          <label htmlFor="location" className="block text-sm font-medium text-rose-950 mb-1">
             場所URL
           </label>
           <input
+            id="location"
             type="url"
             className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 text-rose-950"
             value={formData.location ?? ''}
