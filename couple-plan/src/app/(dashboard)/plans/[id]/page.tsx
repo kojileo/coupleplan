@@ -49,6 +49,9 @@ export default function PlanDetailPage({ params }: Props) {
     fetchPlan()
   }, [session, planId, router])
 
+  // プランの作成者かどうかを判定
+  const isOwner = session?.user?.id === plan?.userId
+
   // planId が未解決 or データ取得中はローディング表示
   if (!planId || loading) {
     return (
@@ -66,37 +69,39 @@ export default function PlanDetailPage({ params }: Props) {
     <div className="max-w-3xl mx-auto">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold text-rose-950">{plan.title}</h1>
-        <div className="flex gap-4">
-          <Button
-            variant="outline"
-            onClick={() => setIsPublishDialogOpen(true)}
-          >
-            公開設定
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => router.push(`/plans/${planId}/edit`)}
-          >
-            編集
-          </Button>
-          <Button
-            variant="outline"
-            onClick={async () => {
-              if (!session || !confirm('このプランを削除してもよろしいですか？')) return
+        {isOwner && ( // 作成者の場合のみボタンを表示
+          <div className="flex gap-4">
+            <Button
+              variant="outline"
+              onClick={() => setIsPublishDialogOpen(true)}
+            >
+              公開設定
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => router.push(`/plans/${planId}/edit`)}
+            >
+              編集
+            </Button>
+            <Button
+              variant="outline"
+              onClick={async () => {
+                if (!session || !confirm('このプランを削除してもよろしいですか？')) return
 
-              try {
-                const response = await api.plans.delete(session.access_token, planId)
-                if ('error' in response) throw new Error(response.error)
-                router.push('/plans')
-              } catch (error) {
-                console.error('プランの削除に失敗しました:', error)
-                alert('プランの削除に失敗しました')
-              }
-            }}
-          >
-            削除
-          </Button>
-        </div>
+                try {
+                  const response = await api.plans.delete(session.access_token, planId)
+                  if ('error' in response) throw new Error(response.error)
+                  router.push('/plans')
+                } catch (error) {
+                  console.error('プランの削除に失敗しました:', error)
+                  alert('プランの削除に失敗しました')
+                }
+              }}
+            >
+              削除
+            </Button>
+          </div>
+        )}
       </div>
 
       <div className="bg-white rounded-lg shadow p-6 space-y-6">
@@ -141,11 +146,13 @@ export default function PlanDetailPage({ params }: Props) {
         </div>
       </div>
 
-      <PublishDialog
-        planId={planId}
-        isOpen={isPublishDialogOpen}
-        onClose={() => setIsPublishDialogOpen(false)}
-      />
+      {isOwner && ( // 作成者の場合のみダイアログを表示
+        <PublishDialog
+          planId={planId}
+          isOpen={isPublishDialogOpen}
+          onClose={() => setIsPublishDialogOpen(false)}
+        />
+      )}
     </div>
   )
 }
