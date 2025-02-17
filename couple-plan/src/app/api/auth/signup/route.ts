@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { supabase } from '@/lib/supabase-auth'
 import type { SignUpRequest } from '@/types/api'
-import { Prisma } from '@prisma/client'
 
 export async function POST(request: Request) {
   try {

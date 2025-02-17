@@ -16,26 +16,45 @@ export async function DELETE(request: NextRequest) {
     if (!authHeader) {
       return NextResponse.json({ error: '認証が必要です' }, { status: 401 })
     }
+
     const token = authHeader.replace('Bearer ', '')
-    const { data: { user }, error } = await supabase.auth.getUser(token)
-    if (error || !user) {
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
+
+    if (authError || !user) {
       return NextResponse.json({ error: '認証が必要です' }, { status: 401 })
     }
 
-    // Supabase Authからユーザーを削除
-    const { error: deleteAuthError } = await supabaseAdmin.auth.admin.deleteUser(user.id)
-    if (deleteAuthError) {
-      return NextResponse.json({ error: deleteAuthError.message }, { status: 400 })
+    try {
+      // Supabase Authからユーザーを削除
+      const { error: deleteAuthError } = await supabaseAdmin.auth.admin.deleteUser(user.id)
+      if (deleteAuthError) {
+        return NextResponse.json(
+          { error: deleteAuthError.message },
+          { status: 400 }
+        )
+      }
+
+      // Prismaのデータベースからユーザープロフィールを削除
+      await prisma.profile.delete({
+        where: { userId: user.id }
+      })
+
+      return NextResponse.json({ data: 'アカウントを削除しました' })
+    } catch (error) {
+      // Supabase/Prismaの操作エラー
+      if (error instanceof Error) {
+        return NextResponse.json(
+          { error: error.message },
+          { status: 400 }
+        )
+      }
+      throw error // 予期せぬエラーは外側のcatchで処理
     }
-
-    // Prismaのデータベースからユーザープロフィールを削除
-    await prisma.profile.delete({
-      where: { userId: user.id }
-    })
-
-    return NextResponse.json({ data: 'アカウントを削除しました' })
   } catch (error) {
     console.error('アカウント削除エラー:', error)
-    return NextResponse.json({ error: 'アカウント削除に失敗しました' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'アカウント削除に失敗しました' },
+      { status: 500 }
+    )
   }
 }

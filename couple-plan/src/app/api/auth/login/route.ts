@@ -1,4 +1,3 @@
-import { NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase-auth'
 import type { LoginRequest } from '@/types/api'
 
