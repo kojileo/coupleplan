@@ -36,7 +36,6 @@ export async function POST(request: Request) {
     })
 
     if (authError) {
-      console.error('Supabase認証エラー:', authError)
       return NextResponse.json(
         { error: authError.message },
         { status: 400 }
@@ -50,34 +49,33 @@ export async function POST(request: Request) {
       )
     }
 
-    // 2. Prismaでプロフィール作成
-    const profile = await prisma.profile.create({
-      data: {
-        userId: authData.user.id,
-        name: data.name || 'ユーザー',
-        email: data.email,
-      },
-    })
+    try {
+      // 2. Prismaでプロフィール作成
+      const profile = await prisma.profile.create({
+        data: {
+          userId: authData.user.id,
+          name: data.name || 'ユーザー',
+          email: data.email,
+        },
+      })
 
-    return NextResponse.json({ 
-      data: { 
-        profile,
-        message: '確認メールを送信しました。メールを確認してください。'
-      } 
-    })
-
-  } catch (error) {
-    console.error('サインアップエラー:', error)
-    
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      if (error.code === 'P2002') {
+      return NextResponse.json({ 
+        data: { 
+          profile,
+          message: '確認メールを送信しました。メールを確認してください。'
+        } 
+      })
+    } catch (error) {
+      if (error && typeof error === 'object' && 'code' in error && error.code === 'P2002') {
         return NextResponse.json(
           { error: 'このメールアドレスは既に登録されています' },
           { status: 400 }
         )
       }
+      throw error
     }
-
+  } catch (error) {
+    console.error('サインアップエラー:', error)
     return NextResponse.json(
       { error: 'ユーザー登録に失敗しました。もう一度お試しください。' },
       { status: 500 }
