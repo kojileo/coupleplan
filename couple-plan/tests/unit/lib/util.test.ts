@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils'
+import { cn, formatDate } from '@/lib/utils'
 
 describe('utils', () => {
   describe('cn', () => {
@@ -38,6 +38,27 @@ describe('utils', () => {
         { 'dark-mode': isDark },
         isDark && 'text-white'
       )).toBe('base-class dark-mode text-white')
+    })
+  })
+
+  describe('formatDate', () => {
+    it('日付文字列を日本語形式でフォーマット', () => {
+      const date = '2024-01-01T09:00:00Z'
+      expect(formatDate(date)).toBe('2024年1月1日 18:00')
+    })
+
+    it('Dateオブジェクトを日本語形式でフォーマット', () => {
+      const date = new Date('2024-01-01T09:00:00Z')
+      expect(formatDate(date)).toBe('2024年1月1日 18:00')
+    })
+
+    it('nullやundefinedの場合は空文字を返す', () => {
+      expect(formatDate(null as any)).toBe('')
+      expect(formatDate(undefined as any)).toBe('')
+    })
+
+    it('無効な日付の場合は空文字を返す', () => {
+      expect(formatDate('invalid-date')).toBe('')
     })
   })
 })

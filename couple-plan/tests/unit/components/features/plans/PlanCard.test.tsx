@@ -1,55 +1,44 @@
 import { render, screen, fireEvent } from '@testing-library/react'
-import { useRouter } from 'next/navigation'
 import { PlanCard } from '@/components/features/plans/PlanCard'
+import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/AuthContext'
 import type { Plan } from '@/types/plan'
 
-// next/navigationのモック
 jest.mock('next/navigation', () => ({
-  useRouter: jest.fn()
+  useRouter: jest.fn(),
 }))
 
-// useAuthのモック
 jest.mock('@/contexts/AuthContext', () => ({
-  useAuth: jest.fn()
+  useAuth: jest.fn(),
 }))
 
 describe('PlanCard', () => {
+  const mockRouter = { push: jest.fn() }
   const mockPlan: Plan = {
     id: '1',
     title: 'テストプラン',
     description: 'テストの説明文',
-    date: '2024-01-01',
+    date: '2024-01-01T09:00:00Z',
     budget: 10000,
     location: 'https://example.com/location',
     isPublic: false,
-    userId: 'user1',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    likes: [
-      { id: 'like1', userId: 'user1' }
-    ],
+    userId: 'test-user',
+    createdAt: new Date('2024-01-01'),
+    updatedAt: new Date('2024-01-01'),
+    likes: [],
     profile: {
-      name: 'テストユーザー'
+      name: 'テストユーザー',
     },
     _count: {
-      likes: 5
-    }
-  } as const
-
-  const mockSession = {
-    user: { id: 'user1' },
-    access_token: 'dummy-token'
-  }
-
-  const mockRouter = {
-    push: jest.fn()
+      likes: 5,
+    },
   }
 
   beforeEach(() => {
-    jest.clearAllMocks()
-    ;(useRouter as jest.Mock).mockReturnValue(mockRouter)
-    ;(useAuth as jest.Mock).mockReturnValue({ session: mockSession })
+    (useRouter as jest.Mock).mockReturnValue(mockRouter)
+    ;(useAuth as jest.Mock).mockReturnValue({
+      session: { user: { id: 'test-user' } },
+    })
   })
 
   it('プランの情報が正しく表示される', () => {
@@ -57,56 +46,52 @@ describe('PlanCard', () => {
 
     expect(screen.getByText('テストプラン')).toBeInTheDocument()
     expect(screen.getByText('テストの説明文')).toBeInTheDocument()
-    expect(screen.getByText('2024/1/1')).toBeInTheDocument()
-    expect(screen.getByText('¥10,000')).toBeInTheDocument()
+    expect(screen.getByText(/2024年1月1日/)).toBeInTheDocument()
+    expect(screen.getByText(/18:00/)).toBeInTheDocument()
+    expect(screen.getByText(/10,000/)).toBeInTheDocument()
+    expect(screen.getByText(/円/)).toBeInTheDocument()
     expect(screen.getByText('example.com')).toBeInTheDocument()
     expect(screen.getByText('作成者: テストユーザー')).toBeInTheDocument()
   })
 
-  it('公開プランの場合、公開バッジが表示される', () => {
-    render(<PlanCard plan={mockPlan} isPublic={true} />)
-    expect(screen.getByText('公開プラン')).toBeInTheDocument()
-  })
-
-  it('非公開プランの場合、クリックでプラン詳細ページに遷移する', () => {
-    render(<PlanCard plan={mockPlan} isPublic={false} />)
+  it('日付がない場合、日時の項目が表示されない', () => {
+    const planWithoutDate: Plan = {
+      ...mockPlan,
+      date: null,
+    }
+    render(<PlanCard plan={planWithoutDate} isPublic={false} />)
     
-    const card = screen.getByRole('article')
-    fireEvent.click(card)
-
-    expect(mockRouter.push).toHaveBeenCalledWith('/plans/1')
-  })
-
-  it('公開プランの場合、クリックしても遷移しない', () => {
-    render(<PlanCard plan={mockPlan} isPublic={true} />)
-    
-    const card = screen.getByRole('article')
-    fireEvent.click(card)
-
-    expect(mockRouter.push).not.toHaveBeenCalled()
+    expect(screen.queryByText('日時：')).not.toBeInTheDocument()
   })
 
   it('場所URLがない場合、代替テキストが表示される', () => {
-    const planWithoutLocation = { ...mockPlan, location: '' }
+    const planWithoutLocation: Plan = {
+      ...mockPlan,
+      location: null,
+    }
     render(<PlanCard plan={planWithoutLocation} isPublic={false} />)
     
-    // 絵文字を含むテキスト全体をチェック
-    expect(screen.getByText(/📍.*場所URL未設定/)).toBeInTheDocument()
-  })
-
-  it('日付がない場合、代替テキストが表示される', () => {
-    const planWithoutDate = { ...mockPlan, date: null }
-    render(<PlanCard plan={planWithoutDate} isPublic={false} />)
-    
-    expect(screen.getByText('日付未設定')).toBeInTheDocument()
+    expect(screen.getByText(/場所URL未設定/)).toBeInTheDocument()
   })
 
   it('場所URLをクリックしても親要素のクリックイベントが発火しない', () => {
     render(<PlanCard plan={mockPlan} isPublic={false} />)
     
-    const locationLink = screen.getByText('example.com')
+    const locationLink = screen.getByRole('link', { name: 'example.com' })
     fireEvent.click(locationLink)
-
+    
     expect(mockRouter.push).not.toHaveBeenCalled()
+  })
+
+  it('非公開プランの場合、編集リンクが表示される', () => {
+    render(<PlanCard plan={mockPlan} isPublic={false} />)
+    
+    expect(screen.getByText('編集する')).toBeInTheDocument()
+  })
+
+  it('公開プランの場合、編集リンクが表示されない', () => {
+    render(<PlanCard plan={mockPlan} isPublic={true} />)
+    
+    expect(screen.queryByText('編集する')).not.toBeInTheDocument()
   })
 })
