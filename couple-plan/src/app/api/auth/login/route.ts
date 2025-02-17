@@ -12,18 +12,30 @@ export async function POST(request: Request) {
     })
 
     if (error) {
-      return NextResponse.json(
-        { error: 'ログインに失敗しました' },
-        { status: 401 }
+      return new Response(
+        JSON.stringify({ error: 'ログインに失敗しました' }),
+        { 
+          status: 401,
+          headers: { 'Content-Type': 'application/json' }
+        }
       )
     }
 
-    return NextResponse.json({ data })
+    return new Response(
+      JSON.stringify({ data }),
+      { 
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      }
+    )
   } catch (error) {
     console.error('ログインエラー:', error)
-    return NextResponse.json(
-      { error: 'サーバーエラーが発生しました' },
-      { status: 500 }
+    return new Response(
+      JSON.stringify({ error: 'サーバーエラーが発生しました' }),
+      { 
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      }
     )
   }
 }
