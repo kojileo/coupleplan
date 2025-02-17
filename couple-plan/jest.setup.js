@@ -1,4 +1,23 @@
 import '@testing-library/jest-dom'
+import { Request, Response } from 'node-fetch'
+
+// グローバルに Request と Response を定義
+global.Request = Request
+global.Response = Response
+
+// NextResponse のモック
+jest.mock('next/server', () => ({
+  ...jest.requireActual('next/server'),
+  NextResponse: {
+    json: (data, init) => new Response(JSON.stringify(data), {
+      ...init,
+      headers: {
+        'content-type': 'application/json',
+        ...init?.headers,
+      },
+    })
+  }
+}))
 
 // 既存の console.error をラップして、特定のエラーメッセージをフィルタリングする
 const originalConsoleError = console.error;
