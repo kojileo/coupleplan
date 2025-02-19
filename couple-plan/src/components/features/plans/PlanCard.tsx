@@ -2,7 +2,6 @@
 
 import { formatDate } from '@/lib/utils'
 import { Plan } from '@/types/plan'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { LikeButton } from './LikeButton'
 import { useAuth } from '@/contexts/AuthContext'
@@ -72,19 +71,6 @@ export function PlanCard({ plan, isPublic = false, onPublishToggle }: PlanCardPr
           {plan.budget.toLocaleString()}円
         </p>
       </div>
-
-      {!isPublic && (
-        <div className="mt-4 flex justify-end">
-          <Link
-            href={`/plans/${plan.id}/edit`}
-            className="text-rose-600 hover:text-rose-700 text-sm font-medium"
-            onClick={(e) => e.stopPropagation()}
-          >
-            編集する
-          </Link>
-        </div>
-      )}
-
       <div className="mt-4 flex justify-between items-center">
         <span className="text-sm text-gray-500">
           作成者: {plan.profile?.name ?? '不明'}

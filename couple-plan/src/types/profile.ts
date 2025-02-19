@@ -1,7 +1,7 @@
-export type Profile = {
+export interface Profile {
   userId: string
-  name: string | null
-  email: string | null
+  name: string
+  email: string
   createdAt: Date
   updatedAt: Date
 }
