@@ -1,3 +1,5 @@
+import type { Profile } from './profile'
+
 export interface LoginRequest {
   email: string
   password: string
@@ -18,12 +20,18 @@ export type PlanRequest = {
   isPublic: boolean
 }
 
-export interface ApiResponse<T = void> {
+export type ApiResponse<T = void> = {
   data?: T
   error?: string
-  message?: string
 }
 
 export type ShareInvitationRequest = {
   email: string
 }
+
+export type ProfileUpdateRequest = {
+  name: string
+  email: string
+}
+
+export type ProfileResponse = ApiResponse<Profile>
