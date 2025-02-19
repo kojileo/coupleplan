@@ -1,4 +1,14 @@
-import { cn, formatDate } from '@/lib/utils'
+import { cn, formatDate, auth } from '@/lib/utils'
+import { NextRequest } from 'next/server'
+import { supabase } from '@/lib/supabase-auth'
+
+jest.mock('@/lib/supabase-auth', () => ({
+  supabase: {
+    auth: {
+      getUser: jest.fn(),
+    },
+  },
+}))
 
 describe('utils', () => {
   describe('cn', () => {
@@ -59,6 +69,62 @@ describe('utils', () => {
 
     it('無効な日付の場合は空文字を返す', () => {
       expect(formatDate('invalid-date')).toBe('')
+    })
+
+    it('正しい日付文字列を返す', () => {
+      const date = new Date('2024-03-20T15:30:00')
+      expect(formatDate(date)).toBe('2024年3月20日 15:30')
+    })
+
+    it('無効な入力の場合は空文字を返す', () => {
+      expect(formatDate(null)).toBe('')
+      expect(formatDate(undefined)).toBe('')
+      expect(formatDate('invalid-date')).toBe('')
+    })
+  })
+
+  describe('auth', () => {
+    beforeEach(() => {
+      jest.clearAllMocks()
+    })
+
+    it('有効なトークンの場合、トークンを返す', async () => {
+      const mockToken = 'valid-token'
+      const req = new NextRequest('http://localhost', {
+        headers: {
+          Authorization: `Bearer ${mockToken}`,
+        },
+      })
+
+      ;(supabase.auth.getUser as jest.Mock).mockResolvedValueOnce({
+        data: { user: { id: 'test-user' } },
+        error: null,
+      })
+
+      const result = await auth(req)
+      expect(result).toBe(mockToken)
+    })
+
+    it('認証ヘッダーがない場合、nullを返す', async () => {
+      const req = new NextRequest('http://localhost')
+      const result = await auth(req)
+      expect(result).toBeNull()
+    })
+
+    it('無効なトークンの場合、nullを返す', async () => {
+      const req = new NextRequest('http://localhost', {
+        headers: {
+          Authorization: 'Bearer invalid-token',
+        },
+      })
+
+      ;(supabase.auth.getUser as jest.Mock).mockResolvedValueOnce({
+        data: { user: null },
+        error: new Error('Invalid token'),
+      })
+
+      const result = await auth(req)
+      expect(result).toBeNull()
     })
   })
 })
