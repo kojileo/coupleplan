@@ -6,9 +6,19 @@ if (!global.fetch) {
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import ProfilePage from '@/app/(dashboard)/profile/page';
 import { useProfile } from '@/hooks/useProfile';
+import { useAuth } from '@/contexts/AuthContext';
+import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase-auth';
 
 // モックの設定
+jest.mock('next/navigation', () => ({
+  useRouter: jest.fn(),
+}));
+
+jest.mock('@/contexts/AuthContext', () => ({
+  useAuth: jest.fn(),
+}));
+
 jest.mock('@/hooks/useProfile', () => ({
   useProfile: jest.fn(),
 }));
@@ -28,14 +38,29 @@ describe('ProfilePage コンポーネント', () => {
     email: 'test@example.com',
   };
   const mockSession = { access_token: 'dummy-token' };
+  const pushMock = jest.fn();
 
   beforeEach(() => {
+    // useRouterのモック
+    (useRouter as jest.Mock).mockReturnValue({
+      push: pushMock,
+    });
+
+    // useAuthのモック
+    (useAuth as jest.Mock).mockReturnValue({
+      user: { id: 'test-user-id' },
+      session: mockSession,
+      isLoading: false,
+      signOut: jest.fn(),
+    });
+
+    // useProfileのモック
     (useProfile as jest.Mock).mockReturnValue({
       profile: mockProfile,
-      loading: false,
+      isLoading: false,
       error: null,
       updateProfile: jest.fn(),
-      session: mockSession,
+      deleteAccount: jest.fn(),
     });
   });
 
@@ -45,11 +70,11 @@ describe('ProfilePage コンポーネント', () => {
 
   it('ローディング中は「読み込み中...」を表示する', () => {
     (useProfile as jest.Mock).mockReturnValue({
-      loading: true,
+      isLoading: true,
       profile: null,
       error: null,
       updateProfile: jest.fn(),
-      session: null,
+      deleteAccount: jest.fn(),
     });
 
     render(<ProfilePage />);
@@ -58,15 +83,15 @@ describe('ProfilePage コンポーネント', () => {
 
   it('エラーが発生した場合はエラーメッセージを表示する', () => {
     (useProfile as jest.Mock).mockReturnValue({
-      loading: false,
+      isLoading: false,
       profile: null,
-      error: 'エラーが発生しました',
+      error: { message: 'エラーが発生しました' },
       updateProfile: jest.fn(),
-      session: null,
+      deleteAccount: jest.fn(),
     });
 
     render(<ProfilePage />);
-    expect(screen.getByText('エラーが発生しました')).toBeInTheDocument();
+    expect(screen.getByText('エラー: エラーが発生しました')).toBeInTheDocument();
   });
 
   it('プロフィール情報が正しく表示される', () => {
@@ -80,22 +105,22 @@ describe('ProfilePage コンポーネント', () => {
     const mockUpdateProfile = jest.fn().mockResolvedValue({ data: mockProfile });
     (useProfile as jest.Mock).mockReturnValue({
       profile: mockProfile,
-      loading: false,
+      isLoading: false,
       error: null,
       updateProfile: mockUpdateProfile,
-      session: mockSession,
+      deleteAccount: jest.fn(),
     });
 
     render(<ProfilePage />);
 
     // フォームの入力を変更
-    const nameInput = screen.getByLabelText('お名前');
+    const nameInput = screen.getByLabelText('名前');
     const emailInput = screen.getByLabelText('メールアドレス');
     fireEvent.change(nameInput, { target: { value: 'Updated Name' } });
     fireEvent.change(emailInput, { target: { value: 'updated@example.com' } });
 
     // フォームを送信
-    const submitButton = screen.getByRole('button', { name: /プロフィールを更新/i });
+    const submitButton = screen.getByRole('button', { name: /更新する/i });
     fireEvent.click(submitButton);
 
     await waitFor(() => {
@@ -103,65 +128,58 @@ describe('ProfilePage コンポーネント', () => {
     });
   });
 
-  it('パスワード更新で不一致エラーを表示する', async () => {
-    const alertMock = jest.spyOn(window, 'alert').mockImplementation();
+  it('アカウント削除ボタンをクリックすると確認ダイアログが表示される', () => {
     render(<ProfilePage />);
-
-    // パスワードフォームに異なる値を入力
-    const newPasswordInput = screen.getByLabelText('新しいパスワード');
-    const confirmPasswordInput = screen.getByLabelText('新しいパスワード（確認）');
-    fireEvent.change(newPasswordInput, { target: { value: 'password123' } });
-    fireEvent.change(confirmPasswordInput, { target: { value: 'different123' } });
-
-    // フォームを送信
-    const submitButton = screen.getByRole('button', { name: /パスワードを更新/i });
-    fireEvent.click(submitButton);
-
-    expect(alertMock).toHaveBeenCalledWith('新しいパスワードが一致しません');
-  });
-
-  it('パスワード更新が成功する', async () => {
-    const alertMock = jest.spyOn(window, 'alert').mockImplementation();
-    (supabase.auth.updateUser as jest.Mock).mockResolvedValueOnce({ error: null });
-
-    render(<ProfilePage />);
-
-    // パスワードフォームに同じ値を入力
-    const newPasswordInput = screen.getByLabelText('新しいパスワード');
-    const confirmPasswordInput = screen.getByLabelText('新しいパスワード（確認）');
-    fireEvent.change(newPasswordInput, { target: { value: 'newpass123' } });
-    fireEvent.change(confirmPasswordInput, { target: { value: 'newpass123' } });
-
-    // フォームを送信
-    const submitButton = screen.getByRole('button', { name: /パスワードを更新/i });
-    fireEvent.click(submitButton);
-
-    await waitFor(() => {
-      expect(supabase.auth.updateUser).toHaveBeenCalledWith({ password: 'newpass123' });
-      expect(alertMock).toHaveBeenCalledWith('パスワードを更新しました');
-    });
+    
+    // 削除ボタンをクリック
+    const deleteButton = screen.getByRole('button', { name: /アカウントを削除/i });
+    fireEvent.click(deleteButton);
+    
+    // 確認ダイアログが表示されることを確認
+    expect(screen.getByText('本当にアカウントを削除しますか？')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /削除する/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /キャンセル/i })).toBeInTheDocument();
   });
 
   it('退会処理が正しく動作する', async () => {
-    const confirmMock = jest.spyOn(window, 'confirm').mockReturnValue(true);
-    const alertMock = jest.spyOn(window, 'alert').mockImplementation();
-    global.fetch = jest.fn().mockResolvedValueOnce({
-      json: () => Promise.resolve({}),
+    const mockDeleteAccount = jest.fn().mockResolvedValue(true);
+    (useProfile as jest.Mock).mockReturnValue({
+      profile: mockProfile,
+      isLoading: false,
+      error: null,
+      updateProfile: jest.fn(),
+      deleteAccount: mockDeleteAccount,
     });
 
     render(<ProfilePage />);
 
-    const deleteButton = screen.getByRole('button', { name: /退会する/i });
+    // 削除ボタンをクリック（確認ダイアログを表示）
+    const deleteButton = screen.getByRole('button', { name: /アカウントを削除/i });
     fireEvent.click(deleteButton);
+    
+    // 確認ダイアログの「削除する」ボタンをクリック
+    const confirmDeleteButton = screen.getByRole('button', { name: /削除する/i });
+    fireEvent.click(confirmDeleteButton);
 
-    expect(confirmMock).toHaveBeenCalled();
     await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledWith('/api/account', {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${mockSession.access_token}` },
-      });
-      expect(supabase.auth.signOut).toHaveBeenCalled();
-      expect(alertMock).toHaveBeenCalledWith('アカウント削除に成功しました。');
+      expect(mockDeleteAccount).toHaveBeenCalled();
+      expect(pushMock).toHaveBeenCalledWith('/login');
     });
+  });
+
+  it('退会処理がキャンセルできる', () => {
+    render(<ProfilePage />);
+    
+    // 削除ボタンをクリック（確認ダイアログを表示）
+    const deleteButton = screen.getByRole('button', { name: /アカウントを削除/i });
+    fireEvent.click(deleteButton);
+    
+    // キャンセルボタンをクリック
+    const cancelButton = screen.getByRole('button', { name: /キャンセル/i });
+    fireEvent.click(cancelButton);
+    
+    // 確認ダイアログが非表示になることを確認
+    expect(screen.queryByText('本当にアカウントを削除しますか？')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /アカウントを削除/i })).toBeInTheDocument();
   });
 });

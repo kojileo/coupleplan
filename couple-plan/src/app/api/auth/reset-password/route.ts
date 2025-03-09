@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ 
-      message: 'パスワードリセットメールを送信しました。メールボックスを確認してください。'
+      message: 'パスワードリセットメールを送信しました'
     })
   } catch (error) {
     console.error('パスワードリセットエラー:', error)
