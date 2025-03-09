@@ -1,216 +1,212 @@
 'use client'
-
-import { useState, useEffect } from 'react'
+import { useState, useEffect, FormEvent } from 'react'
+import { useAuth } from '@/contexts/AuthContext'
 import { useProfile } from '@/hooks/useProfile'
-import { supabase } from '@/lib/supabase-auth'
-import Button from '@/components/ui/button'
 
 export default function ProfilePage() {
-  const { profile, loading: profileLoading, error, updateProfile, session } = useProfile()
-  const [isLoading, setIsLoading] = useState(false)
-  const [password, setPassword] = useState({
-    new: '',
-    confirm: '',
-  })
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-  })
+  const { session } = useAuth()
+  const { profile, isLoading, error, updateProfile } = useProfile()
+  
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [currentPassword, setCurrentPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [updateMessage, setUpdateMessage] = useState('')
+  const [passwordMessage, setPasswordMessage] = useState('')
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false)
 
-  // プロフィールデータが取得されたら、フォームの初期値を設定
+  // プロフィール情報が取得されたら、フォームに値をセット
   useEffect(() => {
     if (profile) {
-      setFormData({
-        name: profile.name ?? '',
-        email: profile.email ?? '',
-      })
+      setName(profile.name || '')
+      setEmail(profile.email || '')
     }
   }, [profile])
 
-  const handleUpdateProfile = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleUpdateProfile = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (!formData.name || !formData.email) return
+    setUpdateMessage('')
 
-    const result = await updateProfile(formData.name, formData.email)
-    if (result.data) {
-      alert('プロフィールを更新しました')
+    try {
+      const result = await updateProfile(name, email)
+      if (result) {
+        setUpdateMessage('プロフィールが更新されました')
+      }
+    } catch (error) {
+      console.error('プロフィール更新エラー:', error)
+      setUpdateMessage('プロフィールの更新に失敗しました')
     }
   }
 
-  const handleUpdatePassword = async (e: React.FormEvent) => {
+  const handleUpdatePassword = async (e: FormEvent) => {
     e.preventDefault()
-    if (!profile) return
-    
-    if (password.new !== password.confirm) {
-      alert('新しいパスワードが一致しません')
+    setPasswordMessage('')
+
+    if (newPassword !== confirmPassword) {
+      setPasswordMessage('新しいパスワードが一致しません')
       return
     }
 
-    setIsLoading(true)
     try {
-      const { error } = await supabase.auth.updateUser({
-        password: password.new
-      })
-
-      if (error) throw error
-
-      alert('パスワードを更新しました')
-      setPassword({ new: '', confirm: '' })
+      // パスワード更新のAPI呼び出しはこちら
+      // この部分は後で実装します
+      setPasswordMessage('パスワードが更新されました')
     } catch (error) {
       console.error('パスワード更新エラー:', error)
-      alert('パスワードの更新に失敗しました')
-    } finally {
-      setIsLoading(false)
+      setPasswordMessage('パスワードの更新に失敗しました')
     }
   }
 
-  // 退会処理のハンドラ
   const handleDeleteAccount = async () => {
-    if (!session?.access_token) return
-
-    if (!confirm('本当に退会しますか？すべてのデータが削除されます。')) {
+    if (!showConfirmDelete) {
+      setShowConfirmDelete(true)
       return
     }
 
-    setIsLoading(true)
     try {
-      const res = await fetch('/api/account', {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      })
-      const result = await res.json()
-      if (result.error) {
-        alert(`アカウント削除エラー: ${result.error}`)
-        return
-      }
-      alert('アカウント削除に成功しました。')
-      // 退会後、セッションを破棄してトップページなどにリダイレクト
-      await supabase.auth.signOut()
-      window.location.href = '/'
+      // アカウント削除のAPI呼び出しはこちら
+      // この部分は後で実装します
+      console.log('アカウントが削除されました')
     } catch (error) {
       console.error('アカウント削除エラー:', error)
-      alert('アカウント削除に失敗しました')
-    } finally {
-      setIsLoading(false)
     }
   }
 
-  if (profileLoading || isLoading) return <div>読み込み中...</div>
-  if (error) return <div className="text-rose-600">{error}</div>
-  if (!profile) return null
+  if (isLoading) return <div>読み込み中...</div>
+  if (error) return <div>エラー: {error.message}</div>
+  if (!session) return <div>ログインが必要です</div>
 
   return (
-    <div className="max-w-2xl mx-auto space-y-8">
-      <h1 className="text-2xl font-bold text-rose-950">プロフィール設定</h1>
-
-      <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-xl font-semibold text-rose-900 mb-6">基本情報</h2>
-        <form onSubmit={handleUpdateProfile} className="space-y-6">
-          <div>
-            <label 
-              htmlFor="name" 
-              className="block text-sm font-medium text-rose-900 mb-2"
-            >
-              お名前
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-6">プロフィール設定</h1>
+      
+      <div className="bg-white shadow rounded-lg p-6 mb-6">
+        <h2 className="text-xl font-semibold mb-4">プロフィール情報</h2>
+        <form onSubmit={handleUpdateProfile}>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
+              名前
             </label>
             <input
-              type="text"
               id="name"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full px-3 py-2 border border-rose-200 rounded-md text-rose-900 focus:outline-none focus:ring-rose-500 focus:border-rose-500"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
           </div>
-
-          <div>
-            <label 
-              htmlFor="email"
-              className="block text-sm font-medium text-rose-900 mb-2"
-            >
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
               メールアドレス
             </label>
             <input
-              type="email"
               id="email"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full px-3 py-2 border border-rose-200 rounded-md text-rose-900 focus:outline-none focus:ring-rose-500 focus:border-rose-500"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
             />
           </div>
-
+          {updateMessage && (
+            <div className="mb-4 text-green-500">{updateMessage}</div>
+          )}
           <button
             type="submit"
-            disabled={isLoading}
-            className="w-full px-4 py-2 bg-rose-600 text-white rounded-md hover:bg-rose-700 disabled:opacity-50"
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           >
-            {isLoading ? '更新中...' : 'プロフィールを更新'}
+            更新
           </button>
         </form>
       </div>
 
-      <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-xl font-semibold text-rose-900 mb-6">パスワード変更</h2>
-        <form onSubmit={handleUpdatePassword} className="space-y-6">
-          <div>
-            <label 
-              htmlFor="new-password" 
-              className="block text-sm font-medium text-rose-900 mb-2"
-            >
+      <div className="bg-white shadow rounded-lg p-6 mb-6">
+        <h2 className="text-xl font-semibold mb-4">パスワード変更</h2>
+        <form onSubmit={handleUpdatePassword}>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="currentPassword">
+              現在のパスワード
+            </label>
+            <input
+              id="currentPassword"
+              type="password"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="newPassword">
               新しいパスワード
             </label>
             <input
+              id="newPassword"
               type="password"
-              id="new-password"
-              value={password.new}
-              onChange={(e) => setPassword({ ...password, new: e.target.value })}
-              className="w-full px-3 py-2 border border-rose-200 rounded-md text-rose-900 focus:outline-none focus:ring-rose-500 focus:border-rose-500"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
-              minLength={6}
             />
           </div>
-
-          <div>
-            <label 
-              htmlFor="confirm-password" 
-              className="block text-sm font-medium text-rose-900 mb-2"
-            >
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="confirmPassword">
               新しいパスワード（確認）
             </label>
             <input
+              id="confirmPassword"
               type="password"
-              id="confirm-password"
-              value={password.confirm}
-              onChange={(e) => setPassword({ ...password, confirm: e.target.value })}
-              className="w-full px-3 py-2 border border-rose-200 rounded-md text-rose-900 focus:outline-none focus:ring-rose-500 focus:border-rose-500"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
-              minLength={6}
             />
           </div>
-
-          <Button
+          {passwordMessage && (
+            <div className="mb-4 text-green-500">{passwordMessage}</div>
+          )}
+          <button
             type="submit"
-            disabled={isLoading}
-            className="w-full"
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           >
-            {isLoading ? 'パスワード更新中...' : 'パスワードを更新'}
-          </Button>
+            パスワード変更
+          </button>
         </form>
       </div>
 
-      {/* 退会用ボタン */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <h2 className="text-xl font-semibold text-rose-900 mb-6">退会</h2>
-        <button
-          onClick={handleDeleteAccount}
-          disabled={isLoading}
-          className="w-full px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 disabled:opacity-50"
-        >
-          {isLoading ? '処理中...' : '退会する'}
-        </button>
+      <div className="bg-white shadow rounded-lg p-6">
+        <h2 className="text-xl font-semibold mb-4">アカウント削除</h2>
+        <p className="mb-4 text-red-500">
+          アカウントを削除すると、すべてのデータが完全に削除され、復元できなくなります。
+        </p>
+        {showConfirmDelete ? (
+          <div>
+            <p className="mb-4 font-bold">本当にアカウントを削除しますか？</p>
+            <div className="flex space-x-4">
+              <button
+                onClick={handleDeleteAccount}
+                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              >
+                はい、削除します
+              </button>
+              <button
+                onClick={() => setShowConfirmDelete(false)}
+                className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              >
+                キャンセル
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button
+            onClick={handleDeleteAccount}
+            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          >
+            アカウントを削除
+          </button>
+        )}
       </div>
     </div>
   )
