@@ -2,11 +2,18 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { supabase } from '@/lib/supabase-auth'
 
+// パラメータの型定義を修正
+type RouteParams = {
+  params: Promise<{ userId: string }>
+}
+
+// Next.js App Routerの型定義に合わせて修正
 export async function GET(
   request: NextRequest,
-  { params }: { params: { userId: string } }
-): Promise<NextResponse> {
+  { params }: RouteParams
+) {
   try {
+    const { userId } = await params
     const authHeader = request.headers.get('Authorization')
     if (!authHeader) {
       return NextResponse.json({ error: '認証が必要です' }, { status: 401 })
@@ -18,8 +25,6 @@ export async function GET(
     if (error || !user) {
       return NextResponse.json({ error: '認証が必要です' }, { status: 401 })
     }
-
-    const userId = params.userId
 
     // 指定されたユーザーIDのプロフィールを取得
     const profile = await prisma.profile.findUnique({

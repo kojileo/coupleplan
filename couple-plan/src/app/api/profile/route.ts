@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { supabase } from '@/lib/supabase-auth'
-import { auth } from '@/lib/utils'
-import type { Profile } from '@/types/profile'
 
 // プロフィール情報の取得
 export async function GET(request: NextRequest): Promise<NextResponse> {

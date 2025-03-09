@@ -9,11 +9,7 @@ export default function ProfilePage() {
   
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
-  const [currentPassword, setCurrentPassword] = useState('')
-  const [newPassword, setNewPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
   const [updateMessage, setUpdateMessage] = useState('')
-  const [passwordMessage, setPasswordMessage] = useState('')
   const [showConfirmDelete, setShowConfirmDelete] = useState(false)
 
   // プロフィール情報が取得されたら、フォームに値をセット
@@ -36,25 +32,6 @@ export default function ProfilePage() {
     } catch (error) {
       console.error('プロフィール更新エラー:', error)
       setUpdateMessage('プロフィールの更新に失敗しました')
-    }
-  }
-
-  const handleUpdatePassword = async (e: FormEvent) => {
-    e.preventDefault()
-    setPasswordMessage('')
-
-    if (newPassword !== confirmPassword) {
-      setPasswordMessage('新しいパスワードが一致しません')
-      return
-    }
-
-    try {
-      // パスワード更新のAPI呼び出しはこちら
-      // この部分は後で実装します
-      setPasswordMessage('パスワードが更新されました')
-    } catch (error) {
-      console.error('パスワード更新エラー:', error)
-      setPasswordMessage('パスワードの更新に失敗しました')
     }
   }
 
@@ -118,60 +95,6 @@ export default function ProfilePage() {
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
           >
             更新
-          </button>
-        </form>
-      </div>
-
-      <div className="bg-white shadow rounded-lg p-6 mb-6">
-        <h2 className="text-xl font-semibold mb-4">パスワード変更</h2>
-        <form onSubmit={handleUpdatePassword}>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="currentPassword">
-              現在のパスワード
-            </label>
-            <input
-              id="currentPassword"
-              type="password"
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="newPassword">
-              新しいパスワード
-            </label>
-            <input
-              id="newPassword"
-              type="password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="confirmPassword">
-              新しいパスワード（確認）
-            </label>
-            <input
-              id="confirmPassword"
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              required
-            />
-          </div>
-          {passwordMessage && (
-            <div className="mb-4 text-green-500">{passwordMessage}</div>
-          )}
-          <button
-            type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          >
-            パスワード変更
           </button>
         </form>
       </div>

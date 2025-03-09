@@ -1,4 +1,3 @@
-import type { ProfileResponse, ProfileUpdateRequest } from '@/types/api'
 import { Profile } from '@/types/profile'
 
 export const profileApi = {

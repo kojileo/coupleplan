@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { profileApi } from '@/lib/api/profile'
 import type { Profile } from '@/types/profile'
@@ -9,13 +9,8 @@ export function useProfile() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
 
-  useEffect(() => {
-    if (session?.access_token) {
-      fetchUserProfile()
-    }
-  }, [session])
-
-  const fetchUserProfile = async () => {
+  // useCallbackを使用して関数をメモ化
+  const fetchUserProfile = useCallback(async () => {
     if (!session?.access_token) return
 
     setIsLoading(true)
@@ -30,7 +25,13 @@ export function useProfile() {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [session])
+
+  useEffect(() => {
+    if (session?.access_token) {
+      fetchUserProfile()
+    }
+  }, [session, fetchUserProfile])
 
   const updateUserProfile = async (name: string, email: string) => {
     if (!session?.access_token) return null
