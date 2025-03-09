@@ -2,15 +2,19 @@
 import { useState, useEffect, FormEvent } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { useProfile } from '@/hooks/useProfile'
+import { useRouter } from 'next/navigation'
 
 export default function ProfilePage() {
+  const router = useRouter()
   const { session } = useAuth()
-  const { profile, isLoading, error, updateProfile } = useProfile()
+  const { profile, isLoading, error, updateProfile, deleteAccount } = useProfile()
   
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [updateMessage, setUpdateMessage] = useState('')
   const [showConfirmDelete, setShowConfirmDelete] = useState(false)
+  const [deleteError, setDeleteError] = useState('')
+  const [isDeleting, setIsDeleting] = useState(false)
 
   // プロフィール情報が取得されたら、フォームに値をセット
   useEffect(() => {
@@ -41,13 +45,33 @@ export default function ProfilePage() {
       return
     }
 
+    setIsDeleting(true)
+    setDeleteError('')
+
     try {
-      // アカウント削除のAPI呼び出しはこちら
-      // この部分は後で実装します
-      console.log('アカウントが削除されました')
+      console.log('アカウント削除処理を開始します')
+      const success = await deleteAccount()
+      
+      if (success) {
+        console.log('アカウント削除に成功しました。ログインページにリダイレクトします')
+        // 削除成功後、ログインページにリダイレクト
+        router.push('/login')
+      } else {
+        console.error('アカウント削除に失敗しました（成功フラグがfalse）')
+        setDeleteError('アカウントの削除に失敗しました')
+      }
     } catch (error) {
       console.error('アカウント削除エラー:', error)
+      const errorMessage = error instanceof Error ? error.message : 'アカウントの削除に失敗しました'
+      setDeleteError(errorMessage)
+    } finally {
+      setIsDeleting(false)
     }
+  }
+
+  const handleCancelDelete = () => {
+    setShowConfirmDelete(false)
+    setDeleteError('')
   }
 
   if (isLoading) return <div>読み込み中...</div>
@@ -55,68 +79,77 @@ export default function ProfilePage() {
   if (!session) return <div>ログインが必要です</div>
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-6">プロフィール設定</h1>
       
-      <div className="bg-white shadow rounded-lg p-6 mb-6">
+      <div className="bg-white shadow-md rounded-lg p-6 mb-8">
         <h2 className="text-xl font-semibold mb-4">プロフィール情報</h2>
+        
+        {updateMessage && (
+          <div className="bg-green-50 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+            {updateMessage}
+          </div>
+        )}
+        
         <form onSubmit={handleUpdateProfile}>
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
-              名前
-            </label>
+            <label htmlFor="name" className="block text-gray-700 mb-2">名前</label>
             <input
-              id="name"
               type="text"
+              id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500"
             />
           </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-              メールアドレス
-            </label>
+          
+          <div className="mb-6">
+            <label htmlFor="email" className="block text-gray-700 mb-2">メールアドレス</label>
             <input
-              id="email"
               type="email"
+              id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500"
             />
           </div>
-          {updateMessage && (
-            <div className="mb-4 text-green-500">{updateMessage}</div>
-          )}
+          
           <button
             type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="bg-rose-600 text-white px-4 py-2 rounded-md hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500"
           >
-            更新
+            更新する
           </button>
         </form>
       </div>
-
-      <div className="bg-white shadow rounded-lg p-6">
+      
+      <div className="bg-white shadow-md rounded-lg p-6">
         <h2 className="text-xl font-semibold mb-4">アカウント削除</h2>
-        <p className="mb-4 text-red-500">
+        <p className="text-gray-600 mb-4">
           アカウントを削除すると、すべてのデータが完全に削除され、復元できなくなります。
         </p>
+        
+        {deleteError && (
+          <div className="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            {deleteError}
+          </div>
+        )}
+        
         {showConfirmDelete ? (
-          <div>
-            <p className="mb-4 font-bold">本当にアカウントを削除しますか？</p>
+          <div className="bg-red-50 border border-red-200 p-4 rounded-md mb-4">
+            <p className="font-bold text-red-700 mb-2">本当にアカウントを削除しますか？</p>
+            <p className="text-red-600 mb-4">この操作は取り消せません。</p>
             <div className="flex space-x-4">
               <button
                 onClick={handleDeleteAccount}
-                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                disabled={isDeleting}
+                className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
               >
-                はい、削除します
+                {isDeleting ? '削除中...' : '削除する'}
               </button>
               <button
-                onClick={() => setShowConfirmDelete(false)}
-                className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                onClick={handleCancelDelete}
+                className="bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500"
               >
                 キャンセル
               </button>
@@ -125,7 +158,7 @@ export default function ProfilePage() {
         ) : (
           <button
             onClick={handleDeleteAccount}
-            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
           >
             アカウントを削除
           </button>

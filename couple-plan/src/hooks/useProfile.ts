@@ -4,7 +4,7 @@ import { profileApi } from '@/lib/api/profile'
 import type { Profile } from '@/types/profile'
 
 export function useProfile() {
-  const { session } = useAuth()
+  const { session, signOut } = useAuth()
   const [profile, setProfile] = useState<Profile | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
@@ -52,11 +52,32 @@ export function useProfile() {
     }
   }
 
+  const deleteUserAccount = async () => {
+    if (!session?.access_token) return false
+
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      await profileApi.deleteAccount(session.access_token)
+      // アカウント削除後、ログアウト処理を行う
+      await signOut()
+      return true
+    } catch (err) {
+      console.error('アカウント削除エラー:', err)
+      setError(err instanceof Error ? err : new Error('アカウントの削除に失敗しました'))
+      return false
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return {
     profile,
     isLoading,
     error,
     fetchProfile: fetchUserProfile,
-    updateProfile: updateUserProfile
+    updateProfile: updateUserProfile,
+    deleteAccount: deleteUserAccount
   }
 }

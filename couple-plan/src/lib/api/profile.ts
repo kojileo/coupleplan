@@ -57,5 +57,23 @@ export const profileApi = {
 
     const { data } = await response.json()
     return data
+  },
+
+  // アカウントを削除する関数
+  deleteAccount: async (token: string): Promise<{ data: string }> => {
+    const response = await fetch('/api/account', {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.error || 'アカウントの削除に失敗しました')
+    }
+
+    return await response.json()
   }
 }
