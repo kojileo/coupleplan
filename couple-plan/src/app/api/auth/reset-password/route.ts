@@ -5,11 +5,30 @@ export async function POST(request: NextRequest) {
   try {
     const { email } = await request.json()
 
+    if (!email) {
+      return NextResponse.json(
+        { error: 'メールアドレスは必須です' },
+        { status: 400 }
+      )
+    }
+
+    // アプリケーションURLが設定されているか確認
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL
+    if (!appUrl) {
+      console.error('環境変数 NEXT_PUBLIC_APP_URL が設定されていません')
+      return NextResponse.json(
+        { error: 'サーバー設定エラー' },
+        { status: 500 }
+      )
+    }
+
+    // パスワードリセットメールを送信
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/reset-password`,
+      redirectTo: `${appUrl}/reset-password`,
     })
 
     if (error) {
+      console.error('Supabaseパスワードリセットエラー:', error)
       return NextResponse.json(
         { error: 'パスワードリセットメールの送信に失敗しました' },
         { status: 400 }
@@ -17,7 +36,7 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({ 
-      message: 'パスワードリセットメールを送信しました'
+      message: 'パスワードリセットメールを送信しました。メールボックスを確認してください。'
     })
   } catch (error) {
     console.error('パスワードリセットエラー:', error)

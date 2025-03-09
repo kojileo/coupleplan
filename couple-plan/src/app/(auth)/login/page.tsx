@@ -72,6 +72,15 @@ export default function LoginPage() {
               {loading ? 'ログイン中...' : 'ログイン'}
             </Button>
           </div>
+          
+          <div className="text-center mt-4">
+            <a 
+              href="/forgot-password" 
+              className="text-sm text-rose-600 hover:text-rose-800"
+            >
+              パスワードをお忘れですか？
+            </a>
+          </div>
         </form>
       </div>
     </div>
