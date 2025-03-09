@@ -11,107 +11,107 @@ jest.mock('@/contexts/AuthContext', () => ({
 
 jest.mock('@/lib/api/profile', () => ({
   profileApi: {
-    get: jest.fn(),
-    update: jest.fn(),
+    fetchProfile: jest.fn(),
+    updateProfile: jest.fn(),
+    deleteAccount: jest.fn(),
   },
 }))
 
 describe('useProfile', () => {
   const mockUser = { id: 'test-user' }
   const mockSession = { access_token: 'dummy-token' }
-  const mockProfile = {
-    userId: 'test-user',
+  const mockProfile: Profile = {
     name: 'Test User',
     email: 'test@example.com',
+    userId: 'test-user-id',
     createdAt: new Date(),
     updatedAt: new Date(),
-  } as const
+  }
 
   beforeEach(() => {
-    (useAuth as jest.Mock).mockReturnValue({
+    jest.clearAllMocks()
+    // useAuthのモック
+    ;(useAuth as jest.Mock).mockReturnValue({
       user: mockUser,
       session: mockSession,
+      isLoading: false,
     })
-  })
-
-  afterEach(() => {
-    jest.clearAllMocks()
   })
 
   it('初期状態ではローディング中で、プロフィールはnull', () => {
     const { result } = renderHook(() => useProfile())
     
-    expect(result.current.loading).toBe(true)
+    expect(result.current.isLoading).toBe(true)
     expect(result.current.profile).toBeNull()
     expect(result.current.error).toBeNull()
   })
 
   it('プロフィール取得に成功した場合、プロフィールが設定される', async () => {
-    (profileApi.get as jest.Mock).mockResolvedValueOnce({
-      data: mockProfile,
-    })
+    (profileApi.fetchProfile as jest.Mock).mockResolvedValueOnce(mockProfile)
 
     const { result } = renderHook(() => useProfile())
 
-    // プロフィール取得が完了するまで待機
+    // 初期レンダリング後にuseEffectが実行される
     await act(async () => {
+      // useEffectの非同期処理を待機
       await new Promise(resolve => setTimeout(resolve, 0))
     })
 
-    expect(result.current.loading).toBe(false)
+    expect(result.current.isLoading).toBe(false)
     expect(result.current.profile).toEqual(mockProfile)
     expect(result.current.error).toBeNull()
   })
 
   it('プロフィール取得に失敗した場合、エラーが設定される', async () => {
-    (profileApi.get as jest.Mock).mockResolvedValueOnce({
-      error: 'プロフィールの取得に失敗しました',
-    })
+    const errorMessage = 'プロフィールの取得に失敗しました'
+    const mockError = new Error(errorMessage)
+    
+    // fetchProfileがエラーをスローするようにモック
+    ;(profileApi.fetchProfile as jest.Mock).mockRejectedValueOnce(mockError)
 
     const { result } = renderHook(() => useProfile())
 
+    // 初期レンダリング後にuseEffectが実行される
     await act(async () => {
+      // useEffectの非同期処理を待機
       await new Promise(resolve => setTimeout(resolve, 0))
     })
 
-    expect(result.current.loading).toBe(false)
+    expect(result.current.isLoading).toBe(false)
     expect(result.current.profile).toBeNull()
-    expect(result.current.error).toBe('プロフィールの取得に失敗しました')
+    expect(result.current.error).toEqual(mockError)
   })
 
-  it('認証情報がない場合、プロフィール取得を実行しない', () => {
-    (useAuth as jest.Mock).mockReturnValue({
+  it('セッションがない場合、プロフィールは取得されない', () => {
+    // セッションがない状態をモック
+    ;(useAuth as jest.Mock).mockReturnValue({
       user: null,
       session: null,
+      isLoading: false,
     })
 
     renderHook(() => useProfile())
 
-    expect(profileApi.get).not.toHaveBeenCalled()
+    expect(profileApi.fetchProfile).not.toHaveBeenCalled()
   })
 
   it('プロフィール更新が成功した場合、新しいプロフィールが設定される', async () => {
-    const updatedData = {
-      userId: 'test-user',
+    const updatedProfile: Profile = {
+      ...mockProfile,
       name: 'Updated Name',
       email: 'updated@example.com',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    } as const
+    }
 
     // 両方のモックを先に設定
-    (profileApi.get as jest.Mock).mockResolvedValueOnce({
-      data: mockProfile,
-    })
+    ;(profileApi.fetchProfile as jest.Mock).mockResolvedValueOnce(mockProfile)
     
-    ;(profileApi.update as jest.Mock).mockResolvedValueOnce({
-      data: updatedData,
-    })
+    ;(profileApi.updateProfile as jest.Mock).mockResolvedValueOnce(updatedProfile)
 
     const { result } = renderHook(() => useProfile())
 
-    // 初期データ取得の完了を待つ
+    // 初期レンダリング後にuseEffectが実行される
     await act(async () => {
+      // useEffectの非同期処理を待機
       await new Promise(resolve => setTimeout(resolve, 0))
     })
 
@@ -121,10 +121,10 @@ describe('useProfile', () => {
         'Updated Name',
         'updated@example.com'
       )
-      expect(response.data).toBeDefined()
+      expect(response).toEqual(updatedProfile)
     })
 
-    expect(result.current.loading).toBe(false)
+    expect(result.current.isLoading).toBe(false)
     expect(result.current.profile?.name).toBe('Updated Name')
     expect(result.current.profile?.email).toBe('updated@example.com')
     expect(result.current.error).toBeNull()
@@ -132,32 +132,81 @@ describe('useProfile', () => {
 
   it('プロフィール更新が失敗した場合、エラーが返される', async () => {
     const errorMessage = 'プロフィールの更新に失敗しました'
-    ;(profileApi.update as jest.Mock).mockResolvedValueOnce({
-      error: errorMessage,
-    })
+    const mockError = new Error(errorMessage)
+    
+    // updateProfileがエラーをスローするようにモック
+    ;(profileApi.updateProfile as jest.Mock).mockRejectedValueOnce(mockError)
 
     const { result } = renderHook(() => useProfile())
 
+    // プロフィール更新を実行
     await act(async () => {
       const response = await result.current.updateProfile('New Name', 'new@example.com')
-      expect(response.error).toBe(errorMessage)
+      expect(response).toBeNull()
     })
 
-    expect(result.current.loading).toBe(false)
-    expect(result.current.error).toBe(errorMessage)
+    expect(result.current.isLoading).toBe(false)
+    expect(result.current.error).toEqual(mockError)
   })
 
   it('認証情報がない場合、プロフィール更新を実行できない', async () => {
-    (useAuth as jest.Mock).mockReturnValue({
+    // セッションがない状態をモック
+    ;(useAuth as jest.Mock).mockReturnValue({
       user: null,
       session: null,
+      isLoading: false,
     })
 
     const { result } = renderHook(() => useProfile())
 
     await act(async () => {
       const response = await result.current.updateProfile('New Name', 'new@example.com')
-      expect(response.error).toBe('認証が必要です')
+      expect(response).toBeNull()
     })
   })
-})
+
+  it('アカウント削除が成功した場合、trueを返す', async () => {
+    // deleteAccountが成功するようにモック
+    ;(profileApi.deleteAccount as jest.Mock).mockResolvedValueOnce({})
+    
+    // signOutのモック
+    const mockSignOut = jest.fn().mockResolvedValueOnce({})
+    ;(useAuth as jest.Mock).mockReturnValue({
+      user: mockUser,
+      session: mockSession,
+      isLoading: false,
+      signOut: mockSignOut,
+    })
+
+    const { result } = renderHook(() => useProfile())
+
+    // アカウント削除を実行
+    await act(async () => {
+      const success = await result.current.deleteAccount()
+      expect(success).toBe(true)
+    })
+
+    expect(profileApi.deleteAccount).toHaveBeenCalledWith(mockSession.access_token)
+    expect(mockSignOut).toHaveBeenCalled()
+    expect(result.current.isLoading).toBe(false)
+  })
+
+  it('アカウント削除が失敗した場合、falseを返す', async () => {
+    const errorMessage = 'アカウントの削除に失敗しました'
+    const mockError = new Error(errorMessage)
+    
+    // deleteAccountがエラーをスローするようにモック
+    ;(profileApi.deleteAccount as jest.Mock).mockRejectedValueOnce(mockError)
+
+    const { result } = renderHook(() => useProfile())
+
+    // アカウント削除を実行
+    await act(async () => {
+      const success = await result.current.deleteAccount()
+      expect(success).toBe(false)
+    })
+
+    expect(result.current.isLoading).toBe(false)
+    expect(result.current.error).toEqual(mockError)
+  })
+});
