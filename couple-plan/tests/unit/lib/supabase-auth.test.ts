@@ -13,6 +13,7 @@ describe('supabase-auth', () => {
   const originalEnv = process.env
 
   beforeEach(() => {
+    jest.resetModules() // モジュールキャッシュをリセット
     jest.clearAllMocks()
     // 環境変数をモック
     process.env = {
@@ -28,7 +29,10 @@ describe('supabase-auth', () => {
   })
 
   it('環境変数が設定されている場合、Supabaseクライアントを作成', () => {
-    require('@/lib/supabase-auth')
+    // isolateModulesを使用して、モジュールを隔離して実行
+    jest.isolateModules(() => {
+      require('@/lib/supabase-auth')
+    })
 
     expect(mockCreateClient).toHaveBeenCalledWith(
       'https://test.supabase.co',

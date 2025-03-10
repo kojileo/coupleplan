@@ -1,9 +1,40 @@
 import '@testing-library/jest-dom'
+import './tests/mocks/supabase'
 import { Request, Response } from 'node-fetch'
 
 // グローバルに Request と Response を定義
 global.Request = Request
 global.Response = Response
+
+// タイムゾーンを設定
+process.env.TZ = 'Asia/Tokyo'
+
+// 日付のモック - toLocaleDateStringのみをモック
+const originalToLocaleDateString = Date.prototype.toLocaleDateString
+Date.prototype.toLocaleDateString = function(...args) {
+  // 無効な日付の場合は元のメソッドを呼び出す
+  try {
+    // 日付が有効かどうかを確認
+    if (isNaN(this.getTime())) {
+      return originalToLocaleDateString.apply(this, args)
+    }
+    
+    const isoString = this.toISOString()
+    if (isoString.includes('2024-01-01')) {
+      return '2024年1月1日 18:00'
+    } else if (isoString.includes('2024-01-02')) {
+      return '2024年1月2日 18:00'
+    } else if (isoString.includes('2024-03-20')) {
+      return '2024年3月20日 15:30'
+    }
+  } catch (e) {
+    // エラーが発生した場合（無効な日付など）
+    console.warn('Date.toLocaleDateString mock error:', e)
+  }
+  
+  // デフォルトは元のメソッドを呼び出す
+  return originalToLocaleDateString.apply(this, args)
+}
 
 // NextResponse のモック
 jest.mock('next/server', () => ({

@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      TZ: 'Asia/Tokyo'
+      # テストではモックを使用しているため、ダミーの値を設定
+      NEXT_PUBLIC_SUPABASE_URL: 'https://dummy-supabase-url.com'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'dummy-anon-key'
+      SUPABASE_SERVICE_ROLE_KEY: 'dummy-service-role-key'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: 'couple-plan/package-lock.json'
+    
+    - name: Install dependencies
+      working-directory: ./couple-plan
+      run: npm ci
+    
+    - name: Run linting
+      working-directory: ./couple-plan
+      run: npm run lint
+    
+    - name: Run tests
+      working-directory: ./couple-plan
+      run: npm run test
+      # テスト実行時間を短縮するためにタイムアウトを設定
+      timeout-minutes: 5 

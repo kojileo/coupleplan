@@ -51,16 +51,40 @@ describe('NewPlanPage コンポーネント', () => {
     fireEvent.click(screen.getByRole('button', { name: /作成/i }));
 
     await waitFor(() => {
-      expect(api.plans.create).toHaveBeenCalledWith('token123', expect.objectContaining({
-        title: 'Test Plan',
-        description: 'Plan description',
-        budget: 1000,
-        location: 'https://example.com',
-        // date は Date 型に変換されるので any Date で検証
-        date: expect.any(Date),
-        isPublic: false,
-      }));
+      // api.plans.createが呼ばれたことを確認
+      expect(api.plans.create).toHaveBeenCalled();
+      
+      // 呼び出し引数を取得
+      const args = (api.plans.create as jest.Mock).mock.calls[0];
+      
+      // 第1引数はトークン
+      expect(args[0]).toBe('token123');
+      
+      // 第2引数はプランデータ
+      const planData = args[1];
+      
+      // タイトル、説明、予算、場所、公開設定を検証
+      expect(planData.title).toBe('Test Plan');
+      expect(planData.description).toBe('Plan description');
+      expect(planData.budget).toBe(1000);
+      expect(planData.location).toBe('https://example.com');
+      expect(planData.isPublic).toBe(false);
+      
+      // 日付を検証
+      const date = planData.date;
+      expect(date).toBeTruthy();
+      expect(typeof date).toBe('object');
+      
+      // 日付の値を検証（年月日）
+      if (date && typeof date.getFullYear === 'function') {
+        expect(date.getFullYear()).toBe(2023);
+        expect(date.getMonth()).toBe(9); // 10月は9（0-indexed）
+        expect(date.getDate()).toBe(12);
+      } else {
+        fail('date is not a valid Date object');
+      }
     });
+    
     await waitFor(() => {
       expect(push).toHaveBeenCalledWith('/plans');
     });
