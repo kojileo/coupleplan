@@ -97,4 +97,39 @@ describe('POST /api/auth/reset-password', () => {
     const data = await response.json()
     expect(data.error).toBe('パスワードリセットに失敗しました')
   })
+
+  it('メールアドレスが提供されていない場合、400エラーを返す', async () => {
+    const request = new NextRequest('http://localhost/api/auth/reset-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        // emailフィールドを意図的に省略
+      }),
+    })
+
+    const response = await POST(request)
+    expect(response.status).toBe(400)
+
+    const data = await response.json()
+    expect(data.error).toBe('メールアドレスは必須です')
+  })
+
+  it('NEXT_PUBLIC_APP_URLが設定されていない場合、500エラーを返す', async () => {
+    // 環境変数をクリア
+    delete process.env.NEXT_PUBLIC_APP_URL
+
+    const request = new NextRequest('http://localhost/api/auth/reset-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: 'test@example.com',
+      }),
+    })
+
+    const response = await POST(request)
+    expect(response.status).toBe(500)
+
+    const data = await response.json()
+    expect(data.error).toBe('サーバー設定エラー')
+  })
 })

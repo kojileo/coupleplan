@@ -9,6 +9,7 @@ jest.mock('@/lib/supabase-auth', () => ({
     auth: {
       getSession: jest.fn(),
       onAuthStateChange: jest.fn(),
+      signOut: jest.fn(),
     },
   },
 }))
@@ -57,6 +58,7 @@ describe('AuthContext', () => {
     ;(supabase.auth.onAuthStateChange as jest.Mock).mockReturnValue({
       data: { subscription: mockSubscription },
     })
+    ;(supabase.auth.signOut as jest.Mock).mockResolvedValue({ error: null })
   })
 
   it('初期状態ではローディング中', () => {
@@ -146,5 +148,119 @@ describe('AuthContext', () => {
     expect(screen.getByTestId('loading')).toHaveTextContent('loaded')
     expect(screen.getByTestId('user')).toHaveTextContent('no user')
     expect(screen.getByTestId('session')).toHaveTextContent('no session')
+  })
+
+  it('signOut関数が正しく動作する', async () => {
+    // signOut関数を使用するためのテストコンポーネント
+    const SignOutTestComponent = () => {
+      const { signOut } = useAuth()
+      return <button onClick={() => signOut()} data-testid="sign-out-button">Sign Out</button>
+    }
+    
+    render(
+      <AuthProvider>
+        <SignOutTestComponent />
+      </AuthProvider>
+    )
+    
+    // ボタンをクリック
+    const button = screen.getByTestId('sign-out-button')
+    await act(async () => {
+      button.click()
+    })
+    
+    // supabaseのsignOutが呼ばれたことを確認
+    expect(supabase.auth.signOut).toHaveBeenCalled()
+  })
+
+  it('signOutでエラーが発生した場合、コンソールにエラーを出力', async () => {
+    // コンソールエラーをモック
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation()
+    
+    // signOutでエラーを発生させる
+    const mockError = new Error('Sign out failed')
+    ;(supabase.auth.signOut as jest.Mock).mockRejectedValueOnce(mockError)
+    
+    // signOut関数を使用するためのテストコンポーネント
+    const SignOutTestComponent = () => {
+      const { signOut } = useAuth()
+      return <button onClick={() => signOut()} data-testid="sign-out-button">Sign Out</button>
+    }
+    
+    render(
+      <AuthProvider>
+        <SignOutTestComponent />
+      </AuthProvider>
+    )
+    
+    // ボタンをクリック
+    const button = screen.getByTestId('sign-out-button')
+    await act(async () => {
+      button.click()
+    })
+    
+    // コンソールエラーが呼ばれたことを確認
+    expect(consoleSpy).toHaveBeenCalledWith('ログアウトエラー:', mockError)
+    
+    // スパイをリストア
+    consoleSpy.mockRestore()
+  })
+
+  it('AuthProviderがisLoadingの状態を正しく管理する', async () => {
+    // getSessionの解決を遅延させる
+    let resolveGetSession: (value: any) => void
+    const getSessionPromise = new Promise(resolve => {
+      resolveGetSession = resolve
+    })
+    
+    ;(supabase.auth.getSession as jest.Mock).mockImplementation(() => getSessionPromise)
+    
+    render(
+      <AuthProvider>
+        <TestComponent />
+      </AuthProvider>
+    )
+    
+    // 初期状態ではローディング中
+    expect(screen.getByTestId('loading')).toHaveTextContent('loading')
+    
+    // getSessionを解決
+    await act(async () => {
+      resolveGetSession!({ data: { session: mockSession } })
+    })
+    
+    // 状態更新を待機 - 別のactブロックで実行
+    await waitFor(() => {
+      expect(screen.getByTestId('loading')).toHaveTextContent('loaded')
+    })
+    
+    // ローディングが完了し、ユーザー情報が表示されていることを確認
+    expect(screen.getByTestId('user')).toHaveTextContent(mockUser.email!)
+    expect(screen.getByTestId('session')).toHaveTextContent('has session')
+  })
+
+  it('マウント解除後にセッション更新が行われない', async () => {
+    let authCallback: (event: string, session: Session | null) => void
+    ;(supabase.auth.onAuthStateChange as jest.Mock).mockImplementation((callback) => {
+      authCallback = callback
+      return { data: { subscription: mockSubscription } }
+    })
+    
+    const { unmount } = render(
+      <AuthProvider>
+        <TestComponent />
+      </AuthProvider>
+    )
+    
+    // コンポーネントをアンマウント
+    unmount()
+    
+    // アンマウント後に認証状態の変更をシミュレート
+    await act(async () => {
+      authCallback!('SIGNED_IN', mockSession)
+    })
+    
+    // サブスクリプションが解除されたことを確認
+    expect(mockSubscription.unsubscribe).toHaveBeenCalled()
   })
 })

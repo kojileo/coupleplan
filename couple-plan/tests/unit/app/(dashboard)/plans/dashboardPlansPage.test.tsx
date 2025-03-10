@@ -32,6 +32,8 @@ describe('MyPlansPage コンポーネント', () => {
   beforeEach(() => {
     (useRouter as jest.Mock).mockReturnValue({ push });
     (useAuth as jest.Mock).mockReturnValue({ session: { access_token: 'token123' } });
+    // console.error をモック化して、テスト中のエラーログを抑制
+    jest.spyOn(console, 'error').mockImplementation(() => {});
   });
 
   afterEach(() => {
@@ -43,6 +45,75 @@ describe('MyPlansPage コンポーネント', () => {
     render(<MyPlansPage />);
     const spinner = document.querySelector('.animate-spin');
     expect(spinner).toBeInTheDocument();
+  });
+
+  it('セッションがない場合、APIが呼ばれずにローディング状態が解除される', async () => {
+    // セッションがない状態をモック
+    (useAuth as jest.Mock).mockReturnValue({ session: null });
+    render(<MyPlansPage />);
+    
+    // ローディング表示が終わるまで待機
+    await waitFor(() => {
+      const spinner = document.querySelector('.animate-spin');
+      expect(spinner).not.toBeInTheDocument();
+    });
+    
+    // APIが呼ばれていないことを確認
+    expect(api.plans.list).not.toHaveBeenCalled();
+    
+    // プランが空の状態で表示されることを確認
+    expect(screen.getByText('プランがまだありません')).toBeInTheDocument();
+  });
+
+  it('APIエラーが発生した場合、エラーがログに出力され、ローディング状態が解除される', async () => {
+    // APIエラーをモック
+    (api.plans.list as jest.Mock).mockRejectedValueOnce(new Error('API error'));
+    render(<MyPlansPage />);
+    
+    // ローディング表示が終わるまで待機
+    await waitFor(() => {
+      const spinner = document.querySelector('.animate-spin');
+      expect(spinner).not.toBeInTheDocument();
+    });
+    
+    // コンソールエラーが出力されていることを確認
+    expect(console.error).toHaveBeenCalledWith('プランの取得に失敗しました:', expect.any(Error));
+    
+    // プランが空の状態で表示されることを確認
+    expect(screen.getByText('プランがまだありません')).toBeInTheDocument();
+  });
+
+  it('APIレスポンスにエラーが含まれる場合、エラーがログに出力される', async () => {
+    // エラーレスポンスをモック
+    (api.plans.list as jest.Mock).mockResolvedValueOnce({ error: 'データの取得に失敗しました' });
+    render(<MyPlansPage />);
+    
+    // ローディング表示が終わるまで待機
+    await waitFor(() => {
+      const spinner = document.querySelector('.animate-spin');
+      expect(spinner).not.toBeInTheDocument();
+    });
+    
+    // コンソールエラーが出力されていることを確認
+    expect(console.error).toHaveBeenCalled();
+    
+    // プランが空の状態で表示されることを確認
+    expect(screen.getByText('プランがまだありません')).toBeInTheDocument();
+  });
+
+  it('APIレスポンスにdataフィールドがない場合、空の配列が使用される', async () => {
+    // dataフィールドがないレスポンスをモック
+    (api.plans.list as jest.Mock).mockResolvedValueOnce({});
+    render(<MyPlansPage />);
+    
+    // ローディング表示が終わるまで待機
+    await waitFor(() => {
+      const spinner = document.querySelector('.animate-spin');
+      expect(spinner).not.toBeInTheDocument();
+    });
+    
+    // プランが空の状態で表示されることを確認
+    expect(screen.getByText('プランがまだありません')).toBeInTheDocument();
   });
 
   it('プランが存在しない場合、適切なメッセージと新規作成ボタンが表示され、ボタン押下で /plans/new に遷移する', async () => {
@@ -68,5 +139,20 @@ describe('MyPlansPage コンポーネント', () => {
     await waitFor(() => {
       expect(screen.getAllByTestId('plan-card').length).toBe(2);
     });
+  });
+
+  it('ヘッダーの新規プラン作成ボタンをクリックすると、/plans/new に遷移する', async () => {
+    (api.plans.list as jest.Mock).mockResolvedValueOnce({ data: [] });
+    render(<MyPlansPage />);
+    
+    // ローディング表示が終わるまで待機
+    await waitFor(() => {
+      const spinner = document.querySelector('.animate-spin');
+      expect(spinner).not.toBeInTheDocument();
+    });
+    
+    // ヘッダーの新規プラン作成ボタンをクリック
+    fireEvent.click(screen.getByTestId('header-create-button'));
+    expect(push).toHaveBeenCalledWith('/plans/new');
   });
 });

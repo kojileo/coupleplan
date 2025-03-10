@@ -16,7 +16,10 @@ export default function MyPlansPage() {
 
   useEffect(() => {
     const fetchPlans = async () => {
-      if (!session) return
+      if (!session) {
+        setLoading(false)
+        return
+      }
 
       try {
         const response = await api.plans.list(session.access_token)
@@ -44,7 +47,10 @@ export default function MyPlansPage() {
     <div>
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold text-rose-950">マイプラン一覧</h1>
-        <Button onClick={() => router.push('/plans/new')}>
+        <Button 
+          data-testid="header-create-button"
+          onClick={() => router.push('/plans/new')}
+        >
           新規プラン作成
         </Button>
       </div>

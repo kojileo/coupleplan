@@ -119,4 +119,68 @@ describe('PlanList', () => {
     
     consoleSpy.mockRestore()
   })
+
+  it('セッションがない場合、何も表示しない', async () => {
+    (useAuth as jest.Mock).mockReturnValue({ session: null })
+    
+    render(<PlanList />)
+    
+    // ローディングが終わるのを待つ
+    await waitFor(() => {
+      expect(screen.queryByTestId('loading-skeleton')).not.toBeInTheDocument()
+    })
+    
+    // APIが呼ばれていないことを確認
+    expect(api.plans.list).not.toHaveBeenCalled()
+    
+    // 何も表示されていないことを確認（または適切なメッセージが表示されていることを確認）
+    expect(screen.queryByText('まだプランがありません')).toBeInTheDocument()
+  })
+
+  it('プランの詳細情報（日付、場所）を正しく表示する', async () => {
+    (api.plans.list as jest.Mock).mockResolvedValueOnce({ data: mockPlans })
+    
+    render(<PlanList />)
+    
+    await waitFor(() => {
+      expect(screen.getByText('📅 2024/1/1')).toBeInTheDocument()
+      expect(screen.getByText('📅 2024/1/2')).toBeInTheDocument()
+      expect(screen.getByText('📍 https://example.com/1')).toBeInTheDocument()
+      expect(screen.getByText('📍 https://example.com/2')).toBeInTheDocument()
+    })
+  })
+
+  it('APIからエラーレスポンスが返された場合を処理する', async () => {
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation()
+    ;(api.plans.list as jest.Mock).mockResolvedValueOnce({ error: 'API Error' })
+    
+    render(<PlanList />)
+    
+    await waitFor(() => {
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'マイプラン一覧の取得に失敗:',
+        expect.any(Error)
+      )
+    })
+    
+    consoleSpy.mockRestore()
+  })
+
+  it('説明がないプランを正しく表示する', async () => {
+    const plansWithoutDescription = [
+      {
+        ...mockPlans[0],
+        description: ''
+      }
+    ]
+    
+    ;(api.plans.list as jest.Mock).mockResolvedValueOnce({ data: plansWithoutDescription })
+    
+    render(<PlanList />)
+    
+    await waitFor(() => {
+      expect(screen.getByText('テストプラン1')).toBeInTheDocument()
+      expect(screen.queryByText('説明1')).not.toBeInTheDocument()
+    })
+  })
 })

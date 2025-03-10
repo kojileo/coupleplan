@@ -29,6 +29,16 @@ jest.mock('@/lib/db', () => ({
   },
 }))
 
+// コンソールエラーをモック化
+const originalConsoleError = console.error;
+beforeAll(() => {
+  console.error = jest.fn();
+});
+
+afterAll(() => {
+  console.error = originalConsoleError;
+});
+
 describe('GET /api/profile/[userId]', () => {
   const mockUserId = 'test-user'
   const mockDate = new Date('2025-02-19T12:07:49.103Z')
@@ -58,7 +68,7 @@ describe('GET /api/profile/[userId]', () => {
     const req = new NextRequest('http://localhost/api/profile/test-user')
 
     const res = await GET(req, {
-      params: { userId: mockUserId }
+      params: Promise.resolve({ userId: mockUserId })
     })
     const data = await res.json()
 
@@ -82,7 +92,31 @@ describe('GET /api/profile/[userId]', () => {
     })
 
     const res = await GET(req, {
-      params: { userId: mockUserId }
+      params: Promise.resolve({ userId: mockUserId })
+    })
+    const data = await res.json()
+
+    expect(res.status).toBe(401)
+    expect(data).toEqual({
+      error: '認証が必要です',
+    })
+  })
+
+  it('ユーザーがnullの場合、401エラーを返す', async () => {
+    // ユーザーがnullの場合
+    ;(supabase.auth.getUser as jest.Mock).mockResolvedValueOnce({
+      data: { user: null },
+      error: null,
+    })
+
+    const req = new NextRequest('http://localhost/api/profile/test-user', {
+      headers: {
+        authorization: 'Bearer valid-token',
+      },
+    })
+
+    const res = await GET(req, {
+      params: Promise.resolve({ userId: mockUserId })
     })
     const data = await res.json()
 
@@ -100,7 +134,7 @@ describe('GET /api/profile/[userId]', () => {
     })
 
     const res = await GET(req, {
-      params: { userId: mockUserId }
+      params: Promise.resolve({ userId: mockUserId })
     })
     const data = await res.json()
 
@@ -130,7 +164,7 @@ describe('GET /api/profile/[userId]', () => {
     })
 
     const res = await GET(req, {
-      params: { userId: mockUserId }
+      params: Promise.resolve({ userId: mockUserId })
     })
     const data = await res.json()
 
@@ -138,5 +172,69 @@ describe('GET /api/profile/[userId]', () => {
     expect(data).toEqual({
       error: 'プロフィールが見つかりません',
     })
+  })
+
+  it('Prismaでエラーが発生した場合、500エラーを返す', async () => {
+    // Prismaでエラーが発生する場合をモック
+    ;(prisma.profile.findUnique as jest.Mock).mockRejectedValueOnce(new Error('Database error'))
+
+    const req = new NextRequest('http://localhost/api/profile/test-user', {
+      headers: {
+        authorization: 'Bearer valid-token',
+      },
+    })
+
+    const res = await GET(req, {
+      params: Promise.resolve({ userId: mockUserId })
+    })
+    const data = await res.json()
+
+    expect(res.status).toBe(500)
+    expect(data).toEqual({
+      error: 'プロフィールの取得に失敗しました',
+    })
+    expect(console.error).toHaveBeenCalledWith('プロフィール取得エラー:', 'Database error')
+  })
+
+  it('非Errorオブジェクトのエラーの場合も適切に処理される', async () => {
+    // 非Errorオブジェクトのエラーが発生する場合をモック
+    ;(prisma.profile.findUnique as jest.Mock).mockRejectedValueOnce('文字列エラー')
+
+    const req = new NextRequest('http://localhost/api/profile/test-user', {
+      headers: {
+        authorization: 'Bearer valid-token',
+      },
+    })
+
+    const res = await GET(req, {
+      params: Promise.resolve({ userId: mockUserId })
+    })
+    const data = await res.json()
+
+    expect(res.status).toBe(500)
+    expect(data).toEqual({
+      error: 'プロフィールの取得に失敗しました',
+    })
+    expect(console.error).toHaveBeenCalledWith('プロフィール取得エラー:', 'Unknown error')
+  })
+
+  it('paramsの取得中にエラーが発生した場合、500エラーを返す', async () => {
+    const req = new NextRequest('http://localhost/api/profile/test-user', {
+      headers: {
+        authorization: 'Bearer valid-token',
+      },
+    })
+
+    // paramsの解決時にエラーが発生する場合をモック
+    const res = await GET(req, {
+      params: Promise.reject(new Error('Params error'))
+    })
+    const data = await res.json()
+
+    expect(res.status).toBe(500)
+    expect(data).toEqual({
+      error: 'プロフィールの取得に失敗しました',
+    })
+    expect(console.error).toHaveBeenCalled()
   })
 })

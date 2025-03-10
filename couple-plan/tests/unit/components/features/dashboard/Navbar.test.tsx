@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { useRouter } from 'next/navigation'
 import Navbar from '@/components/features/dashboard/Navbar'
 import { supabase } from '@/lib/supabase-auth'
@@ -80,11 +80,10 @@ describe('Navbar', () => {
     await fireEvent.click(logoutButton as Element)
 
     // 非同期処理が完了するのを待つ
-    await new Promise(resolve => setTimeout(resolve, 0))
-
-    // ログアウト処理の確認
-    expect(supabase.auth.signOut).toHaveBeenCalled()
-    expect(mockPush).toHaveBeenCalledWith('/')
+    await waitFor(() => {
+      expect(supabase.auth.signOut).toHaveBeenCalled()
+      expect(mockPush).toHaveBeenCalledWith('/')
+    })
   })
 
   it('モバイルメニューのリンクをクリックするとメニューが閉じる', () => {
@@ -100,5 +99,112 @@ describe('Navbar', () => {
     // メニューが閉じることを確認
     const mobileMenu = screen.getByRole('navigation').querySelector('[class*="hidden md:hidden"]')
     expect(mobileMenu).toHaveClass('hidden')
+  })
+
+  it('モバイルメニューの「公開プラン一覧」リンクをクリックするとメニューが閉じる', () => {
+    render(<Navbar />)
+
+    // メニューを開く
+    fireEvent.click(screen.getByRole('button', { name: 'メニューを開く' }))
+    
+    // モバイルメニューの「公開プラン一覧」リンクをクリック
+    const publicPlanLinks = screen.getAllByText('公開プラン一覧')
+    expect(publicPlanLinks.length).toBe(2) // デスクトップとモバイルの両方
+    fireEvent.click(publicPlanLinks[1]) // モバイルメニューのリンクを選択
+
+    // メニューが閉じることを確認
+    const mobileMenu = screen.getByRole('navigation').querySelector('[class*="hidden md:hidden"]')
+    expect(mobileMenu).toHaveClass('hidden')
+  })
+
+  it('モバイルメニューの「プロフィール」リンクをクリックするとメニューが閉じる', () => {
+    render(<Navbar />)
+
+    // メニューを開く
+    fireEvent.click(screen.getByRole('button', { name: 'メニューを開く' }))
+    
+    // モバイルメニューの「プロフィール」リンクをクリック
+    const profileLinks = screen.getAllByText('プロフィール')
+    expect(profileLinks.length).toBe(2) // デスクトップとモバイルの両方
+    fireEvent.click(profileLinks[1]) // モバイルメニューのリンクを選択
+
+    // メニューが閉じることを確認
+    const mobileMenu = screen.getByRole('navigation').querySelector('[class*="hidden md:hidden"]')
+    expect(mobileMenu).toHaveClass('hidden')
+  })
+
+  it('モバイルメニューのログアウトボタンをクリックするとログアウト処理が実行される', async () => {
+    // supabase.auth.signOutの成功レスポンスをモック
+    (supabase.auth.signOut as jest.Mock).mockResolvedValueOnce({ error: null })
+    
+    render(<Navbar />)
+
+    // メニューを開く
+    fireEvent.click(screen.getByRole('button', { name: 'メニューを開く' }))
+    
+    // モバイルメニューのログアウトボタンを特定
+    const mobileLogoutButtons = screen.getAllByText('ログアウト')
+    expect(mobileLogoutButtons.length).toBe(2) // デスクトップとモバイルの両方
+    
+    // モバイルメニューのログアウトボタンをクリック
+    await fireEvent.click(mobileLogoutButtons[1]) // モバイルメニューのボタン
+    
+    // 非同期処理が完了するのを待つ
+    await waitFor(() => {
+      expect(supabase.auth.signOut).toHaveBeenCalled()
+      expect(mockPush).toHaveBeenCalledWith('/')
+    })
+  })
+
+  it('ログアウト処理でエラーが発生した場合も、ホームページにリダイレクトされる', async () => {
+    // supabase.auth.signOutのエラーレスポンスをモック
+    (supabase.auth.signOut as jest.Mock).mockResolvedValueOnce({ 
+      error: new Error('ログアウトエラー') 
+    })
+    
+    // コンソールエラーをモック化して抑制
+    const originalConsoleError = console.error
+    console.error = jest.fn()
+    
+    render(<Navbar />)
+    
+    // ログアウトボタンをクリック
+    const logoutButton = screen.getByRole('navigation')
+      .querySelector('.hidden.md\\:flex button')
+    await fireEvent.click(logoutButton as Element)
+    
+    // エラーがあってもホームページにリダイレクトされることを確認
+    await waitFor(() => {
+      expect(supabase.auth.signOut).toHaveBeenCalled()
+      expect(mockPush).toHaveBeenCalledWith('/')
+    })
+    
+    // コンソールエラーを元に戻す
+    console.error = originalConsoleError
+  })
+
+  it('ログアウト処理で例外が投げられた場合も、ホームページにリダイレクトされる', async () => {
+    // supabase.auth.signOutが例外を投げるようにモック
+    (supabase.auth.signOut as jest.Mock).mockRejectedValueOnce(new Error('ネットワークエラー'))
+    
+    // コンソールエラーをモック化して抑制
+    const originalConsoleError = console.error
+    console.error = jest.fn()
+    
+    render(<Navbar />)
+    
+    // ログアウトボタンをクリック
+    const logoutButton = screen.getByRole('navigation')
+      .querySelector('.hidden.md\\:flex button')
+    await fireEvent.click(logoutButton as Element)
+    
+    // 例外が発生してもホームページにリダイレクトされることを確認
+    await waitFor(() => {
+      expect(supabase.auth.signOut).toHaveBeenCalled()
+      expect(mockPush).toHaveBeenCalledWith('/')
+    })
+    
+    // コンソールエラーを元に戻す
+    console.error = originalConsoleError
   })
 })

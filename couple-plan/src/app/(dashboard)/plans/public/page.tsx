@@ -13,7 +13,10 @@ export default function PublicPlansPage() {
 
   useEffect(() => {
     const fetchPlans = async () => {
-      if (!session) return
+      if (!session) {
+        setLoading(false)
+        return
+      }
 
       try {
         const publicResponse = await api.plans.listPublic(session.access_token)

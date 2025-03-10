@@ -39,7 +39,10 @@ export default function EditPlanPage({ params }: Props) {
     if (!planId) return
 
     const fetchPlan = async () => {
-      if (!session) return
+      if (!session) {
+        setLoading(false)
+        return
+      }
 
       try {
         const response = await api.plans.get(session.access_token, planId)

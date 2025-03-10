@@ -11,8 +11,13 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut()
-    router.push('/')
+    try {
+      await supabase.auth.signOut()
+    } catch (error) {
+      console.error('ログアウト中にエラーが発生しました:', error)
+    } finally {
+      router.push('/')
+    }
   }
 
   return (

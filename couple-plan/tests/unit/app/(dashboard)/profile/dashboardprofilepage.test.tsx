@@ -39,6 +39,16 @@ describe('ProfilePage コンポーネント', () => {
   };
   const mockSession = { access_token: 'dummy-token' };
   const pushMock = jest.fn();
+  
+  // コンソールエラーをモック化
+  const originalConsoleError = console.error;
+  beforeAll(() => {
+    console.error = jest.fn();
+  });
+  
+  afterAll(() => {
+    console.error = originalConsoleError;
+  });
 
   beforeEach(() => {
     // useRouterのモック
@@ -94,6 +104,18 @@ describe('ProfilePage コンポーネント', () => {
     expect(screen.getByText('エラー: エラーが発生しました')).toBeInTheDocument();
   });
 
+  it('セッションがない場合は「ログインが必要です」を表示する', () => {
+    (useAuth as jest.Mock).mockReturnValue({
+      user: null,
+      session: null,
+      isLoading: false,
+      signOut: jest.fn(),
+    });
+
+    render(<ProfilePage />);
+    expect(screen.getByText('ログインが必要です')).toBeInTheDocument();
+  });
+
   it('プロフィール情報が正しく表示される', () => {
     render(<ProfilePage />);
     
@@ -125,6 +147,49 @@ describe('ProfilePage コンポーネント', () => {
 
     await waitFor(() => {
       expect(mockUpdateProfile).toHaveBeenCalledWith('Updated Name', 'updated@example.com');
+    });
+  });
+
+  it('プロフィール更新が成功した場合、成功メッセージが表示される', async () => {
+    const mockUpdateProfile = jest.fn().mockResolvedValue(true);
+    (useProfile as jest.Mock).mockReturnValue({
+      profile: mockProfile,
+      isLoading: false,
+      error: null,
+      updateProfile: mockUpdateProfile,
+      deleteAccount: jest.fn(),
+    });
+
+    render(<ProfilePage />);
+
+    // フォームを送信
+    const submitButton = screen.getByRole('button', { name: /更新する/i });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText('プロフィールが更新されました')).toBeInTheDocument();
+    });
+  });
+
+  it('プロフィール更新でエラーが発生した場合、エラーメッセージが表示される', async () => {
+    const mockUpdateProfile = jest.fn().mockRejectedValue(new Error('更新エラー'));
+    (useProfile as jest.Mock).mockReturnValue({
+      profile: mockProfile,
+      isLoading: false,
+      error: null,
+      updateProfile: mockUpdateProfile,
+      deleteAccount: jest.fn(),
+    });
+
+    render(<ProfilePage />);
+
+    // フォームを送信
+    const submitButton = screen.getByRole('button', { name: /更新する/i });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      expect(console.error).toHaveBeenCalledWith('プロフィール更新エラー:', expect.any(Error));
+      expect(screen.getByText('プロフィールの更新に失敗しました')).toBeInTheDocument();
     });
   });
 
@@ -167,6 +232,85 @@ describe('ProfilePage コンポーネント', () => {
     });
   });
 
+  it('退会処理が失敗した場合（成功フラグがfalse）、エラーメッセージが表示される', async () => {
+    const mockDeleteAccount = jest.fn().mockResolvedValue(false);
+    (useProfile as jest.Mock).mockReturnValue({
+      profile: mockProfile,
+      isLoading: false,
+      error: null,
+      updateProfile: jest.fn(),
+      deleteAccount: mockDeleteAccount,
+    });
+
+    render(<ProfilePage />);
+
+    // 削除ボタンをクリック（確認ダイアログを表示）
+    const deleteButton = screen.getByRole('button', { name: /アカウントを削除/i });
+    fireEvent.click(deleteButton);
+    
+    // 確認ダイアログの「削除する」ボタンをクリック
+    const confirmDeleteButton = screen.getByRole('button', { name: /削除する/i });
+    fireEvent.click(confirmDeleteButton);
+
+    await waitFor(() => {
+      expect(console.error).toHaveBeenCalledWith('アカウント削除に失敗しました（成功フラグがfalse）');
+      expect(screen.getByText('アカウントの削除に失敗しました')).toBeInTheDocument();
+    });
+  });
+
+  it('退会処理でエラーが発生した場合、エラーメッセージが表示される', async () => {
+    const testError = new Error('削除エラー');
+    const mockDeleteAccount = jest.fn().mockRejectedValue(testError);
+    (useProfile as jest.Mock).mockReturnValue({
+      profile: mockProfile,
+      isLoading: false,
+      error: null,
+      updateProfile: jest.fn(),
+      deleteAccount: mockDeleteAccount,
+    });
+
+    render(<ProfilePage />);
+
+    // 削除ボタンをクリック（確認ダイアログを表示）
+    const deleteButton = screen.getByRole('button', { name: /アカウントを削除/i });
+    fireEvent.click(deleteButton);
+    
+    // 確認ダイアログの「削除する」ボタンをクリック
+    const confirmDeleteButton = screen.getByRole('button', { name: /削除する/i });
+    fireEvent.click(confirmDeleteButton);
+
+    await waitFor(() => {
+      expect(console.error).toHaveBeenCalledWith('アカウント削除エラー:', testError);
+      expect(screen.getByText('削除エラー')).toBeInTheDocument();
+    });
+  });
+
+  it('退会処理でエラーオブジェクトがErrorインスタンスでない場合、デフォルトメッセージが表示される', async () => {
+    const mockDeleteAccount = jest.fn().mockRejectedValue('文字列エラー');
+    (useProfile as jest.Mock).mockReturnValue({
+      profile: mockProfile,
+      isLoading: false,
+      error: null,
+      updateProfile: jest.fn(),
+      deleteAccount: mockDeleteAccount,
+    });
+
+    render(<ProfilePage />);
+
+    // 削除ボタンをクリック（確認ダイアログを表示）
+    const deleteButton = screen.getByRole('button', { name: /アカウントを削除/i });
+    fireEvent.click(deleteButton);
+    
+    // 確認ダイアログの「削除する」ボタンをクリック
+    const confirmDeleteButton = screen.getByRole('button', { name: /削除する/i });
+    fireEvent.click(confirmDeleteButton);
+
+    await waitFor(() => {
+      expect(console.error).toHaveBeenCalledWith('アカウント削除エラー:', '文字列エラー');
+      expect(screen.getByText('アカウントの削除に失敗しました')).toBeInTheDocument();
+    });
+  });
+
   it('退会処理がキャンセルできる', () => {
     render(<ProfilePage />);
     
@@ -181,5 +325,40 @@ describe('ProfilePage コンポーネント', () => {
     // 確認ダイアログが非表示になることを確認
     expect(screen.queryByText('本当にアカウントを削除しますか？')).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: /アカウントを削除/i })).toBeInTheDocument();
+  });
+
+  it('削除中は削除ボタンが無効化され、テキストが「削除中...」に変わる', async () => {
+    // 削除処理が完了する前に状態を確認するため、resolveしない Promise を返す
+    const mockDeleteAccount = jest.fn().mockImplementation(() => {
+      return new Promise((resolve) => {
+        // テスト内で手動で解決しないPromise
+        setTimeout(() => resolve(true), 1000);
+      });
+    });
+    
+    (useProfile as jest.Mock).mockReturnValue({
+      profile: mockProfile,
+      isLoading: false,
+      error: null,
+      updateProfile: jest.fn(),
+      deleteAccount: mockDeleteAccount,
+    });
+
+    render(<ProfilePage />);
+
+    // 削除ボタンをクリック（確認ダイアログを表示）
+    const deleteButton = screen.getByRole('button', { name: /アカウントを削除/i });
+    fireEvent.click(deleteButton);
+    
+    // 確認ダイアログの「削除する」ボタンをクリック
+    const confirmDeleteButton = screen.getByRole('button', { name: /削除する/i });
+    fireEvent.click(confirmDeleteButton);
+
+    // 削除中のボタンテキストと無効化状態を確認
+    await waitFor(() => {
+      const deletingButton = screen.getByText('削除中...');
+      expect(deletingButton).toBeInTheDocument();
+      expect(deletingButton).toBeDisabled();
+    });
   });
 });

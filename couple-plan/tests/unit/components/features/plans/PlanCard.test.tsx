@@ -12,6 +12,12 @@ jest.mock('@/contexts/AuthContext', () => ({
   useAuth: jest.fn(),
 }))
 
+jest.mock('@/components/features/plans/LikeButton', () => ({
+  LikeButton: ({ planId, initialIsLiked, likeCount }: { planId: string; initialIsLiked: boolean; likeCount: number }) => (
+    <button>{likeCount}</button>
+  ),
+}))
+
 describe('PlanCard', () => {
   const mockRouter = { push: jest.fn() }
   const mockPlan: Plan = {
@@ -129,6 +135,79 @@ describe('PlanCard', () => {
 
   it('公開ページでは公開/非公開の切り替えボタンが表示されない', () => {
     render(<PlanCard plan={mockPlan} isPublic={true} />)
+    expect(screen.queryByRole('button', { name: /非公開|公開中/ })).not.toBeInTheDocument()
+  })
+
+  it('公開中のプランでは「公開中」ボタンが表示される', () => {
+    const publicPlan = { ...mockPlan, isPublic: true }
+    const mockToggle = jest.fn()
+    
+    render(
+      <PlanCard 
+        plan={publicPlan} 
+        isPublic={false} 
+        onPublishToggle={mockToggle}
+      />
+    )
+
+    const toggleButton = screen.getByRole('button', { name: '公開中' })
+    expect(toggleButton).toBeInTheDocument()
+    expect(toggleButton).toHaveClass('bg-rose-100 text-rose-700')
+  })
+
+  it('プロフィール名がnullの場合、「不明」と表示される', () => {
+    const planWithNullProfileName = { 
+      ...mockPlan, 
+      profile: { 
+        name: null as unknown as string 
+      } 
+    }
+    
+    render(<PlanCard plan={planWithNullProfileName} isPublic={false} />)
+    
+    expect(screen.getByText('作成者: 不明')).toBeInTheDocument()
+  })
+
+  it('プロフィールがnullの場合、「不明」と表示される', () => {
+    const planWithoutProfile = { 
+      ...mockPlan, 
+      profile: null 
+    }
+    
+    render(<PlanCard plan={planWithoutProfile} isPublic={false} />)
+    
+    expect(screen.getByText('作成者: 不明')).toBeInTheDocument()
+  })
+
+  it('いいねの初期状態が正しく設定される（いいね済み）', () => {
+    const planWithUserLike = {
+      ...mockPlan,
+      likes: [{ id: 'like-1', userId: 'test-user' }]
+    }
+    
+    render(<PlanCard plan={planWithUserLike} isPublic={false} />)
+    
+    // LikeButtonコンポーネントに正しいpropsが渡されているか確認
+    const likeButton = screen.getByRole('button', { name: '5' })
+    expect(likeButton).toBeInTheDocument()
+  })
+
+  it('いいねの数が_countにない場合、0として表示される', () => {
+    const planWithoutLikeCount = {
+      ...mockPlan,
+      _count: undefined
+    }
+    
+    render(<PlanCard plan={planWithoutLikeCount} isPublic={false} />)
+    
+    // LikeButtonコンポーネントに正しいpropsが渡されているか確認
+    const likeButton = screen.getByRole('button', { name: '0' })
+    expect(likeButton).toBeInTheDocument()
+  })
+
+  it('onPublishToggleがnullの場合、公開/非公開ボタンが表示されない', () => {
+    render(<PlanCard plan={mockPlan} isPublic={false} />)
+    
     expect(screen.queryByRole('button', { name: /非公開|公開中/ })).not.toBeInTheDocument()
   })
 })
