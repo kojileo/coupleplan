@@ -35,6 +35,7 @@ describe('useProfile', () => {
       user: mockUser,
       session: mockSession,
       isLoading: false,
+      signOut: jest.fn().mockResolvedValue(undefined),
     })
   })
 
@@ -163,6 +164,9 @@ describe('useProfile', () => {
       const response = await result.current.updateProfile('New Name', 'new@example.com')
       expect(response).toBeNull()
     })
+
+    // APIが呼ばれていないことを確認
+    expect(profileApi.updateProfile).not.toHaveBeenCalled()
   })
 
   it('アカウント削除が成功した場合、trueを返す', async () => {
@@ -208,5 +212,110 @@ describe('useProfile', () => {
 
     expect(result.current.isLoading).toBe(false)
     expect(result.current.error).toEqual(mockError)
+  })
+
+  it('認証情報がない場合、アカウント削除を実行できない', async () => {
+    // セッションがない状態をモック
+    ;(useAuth as jest.Mock).mockReturnValue({
+      user: null,
+      session: null,
+      isLoading: false,
+      signOut: jest.fn(),
+    })
+
+    const { result } = renderHook(() => useProfile())
+
+    // アカウント削除を実行
+    let success: boolean | undefined
+    await act(async () => {
+      success = await result.current.deleteAccount()
+    })
+
+    // 戻り値がfalseであることを確認
+    expect(success).toBe(false)
+    
+    // APIが呼ばれていないことを確認
+    expect(profileApi.deleteAccount).not.toHaveBeenCalled()
+    // セッションがない場合はsetIsLoadingが呼ばれないため、isLoadingはtrueのまま
+    expect(result.current.isLoading).toBe(true)
+  })
+
+  it('非Errorオブジェクトがスローされた場合も適切に処理される（fetchProfile）', async () => {
+    // 文字列エラーをスローするようにモック
+    ;(profileApi.fetchProfile as jest.Mock).mockRejectedValueOnce('文字列エラー')
+
+    const { result } = renderHook(() => useProfile())
+
+    // 初期レンダリング後にuseEffectが実行される
+    await act(async () => {
+      // useEffectの非同期処理を待機
+      await new Promise(resolve => setTimeout(resolve, 0))
+    })
+
+    expect(result.current.isLoading).toBe(false)
+    expect(result.current.profile).toBeNull()
+    expect(result.current.error).toBeInstanceOf(Error)
+    expect(result.current.error?.message).toBe('プロフィールの取得に失敗しました')
+  })
+
+  it('非Errorオブジェクトがスローされた場合も適切に処理される（updateProfile）', async () => {
+    // 文字列エラーをスローするようにモック
+    ;(profileApi.updateProfile as jest.Mock).mockRejectedValueOnce('文字列エラー')
+
+    const { result } = renderHook(() => useProfile())
+
+    // プロフィール更新を実行
+    await act(async () => {
+      const response = await result.current.updateProfile('New Name', 'new@example.com')
+      expect(response).toBeNull()
+    })
+
+    expect(result.current.isLoading).toBe(false)
+    expect(result.current.error).toBeInstanceOf(Error)
+    expect(result.current.error?.message).toBe('プロフィールの更新に失敗しました')
+  })
+
+  it('非Errorオブジェクトがスローされた場合も適切に処理される（deleteAccount）', async () => {
+    // 文字列エラーをスローするようにモック
+    ;(profileApi.deleteAccount as jest.Mock).mockRejectedValueOnce('文字列エラー')
+
+    const { result } = renderHook(() => useProfile())
+
+    // アカウント削除を実行
+    await act(async () => {
+      const success = await result.current.deleteAccount()
+      expect(success).toBe(false)
+    })
+
+    expect(result.current.isLoading).toBe(false)
+    expect(result.current.error).toBeInstanceOf(Error)
+    expect(result.current.error?.message).toBe('アカウントの削除に失敗しました')
+  })
+
+  it('fetchProfileを手動で呼び出すことができる', async () => {
+    ;(profileApi.fetchProfile as jest.Mock).mockResolvedValueOnce(mockProfile)
+
+    const { result } = renderHook(() => useProfile())
+
+    // 手動でfetchProfileを呼び出す前の状態をリセット
+    await act(async () => {
+      // 初期状態のuseEffectによる呼び出しを待機
+      await new Promise(resolve => setTimeout(resolve, 0))
+    })
+
+    // fetchProfileのモックをリセットして再設定
+    ;(profileApi.fetchProfile as jest.Mock).mockClear()
+    ;(profileApi.fetchProfile as jest.Mock).mockResolvedValueOnce(mockProfile)
+
+    // 手動でfetchProfileを呼び出す
+    await act(async () => {
+      await result.current.fetchProfile()
+      // 状態更新を待機
+      await new Promise(resolve => setTimeout(resolve, 0))
+    })
+
+    expect(profileApi.fetchProfile).toHaveBeenCalledWith(mockSession.access_token)
+    expect(result.current.profile).toEqual(mockProfile)
+    expect(result.current.isLoading).toBe(false)
   })
 });

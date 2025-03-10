@@ -13,7 +13,10 @@ export default function PlanList() {
 
   useEffect(() => {
     const fetchPlans = async () => {
-      if (!session) return
+      if (!session) {
+        setLoading(false)
+        return
+      }
 
       try {
         const response = await api.plans.list(session.access_token)

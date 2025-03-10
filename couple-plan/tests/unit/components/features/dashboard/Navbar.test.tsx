@@ -101,6 +101,38 @@ describe('Navbar', () => {
     expect(mobileMenu).toHaveClass('hidden')
   })
 
+  it('モバイルメニューの「公開プラン一覧」リンクをクリックするとメニューが閉じる', () => {
+    render(<Navbar />)
+
+    // メニューを開く
+    fireEvent.click(screen.getByRole('button', { name: 'メニューを開く' }))
+    
+    // モバイルメニューの「公開プラン一覧」リンクをクリック
+    const publicPlanLinks = screen.getAllByText('公開プラン一覧')
+    expect(publicPlanLinks.length).toBe(2) // デスクトップとモバイルの両方
+    fireEvent.click(publicPlanLinks[1]) // モバイルメニューのリンクを選択
+
+    // メニューが閉じることを確認
+    const mobileMenu = screen.getByRole('navigation').querySelector('[class*="hidden md:hidden"]')
+    expect(mobileMenu).toHaveClass('hidden')
+  })
+
+  it('モバイルメニューの「プロフィール」リンクをクリックするとメニューが閉じる', () => {
+    render(<Navbar />)
+
+    // メニューを開く
+    fireEvent.click(screen.getByRole('button', { name: 'メニューを開く' }))
+    
+    // モバイルメニューの「プロフィール」リンクをクリック
+    const profileLinks = screen.getAllByText('プロフィール')
+    expect(profileLinks.length).toBe(2) // デスクトップとモバイルの両方
+    fireEvent.click(profileLinks[1]) // モバイルメニューのリンクを選択
+
+    // メニューが閉じることを確認
+    const mobileMenu = screen.getByRole('navigation').querySelector('[class*="hidden md:hidden"]')
+    expect(mobileMenu).toHaveClass('hidden')
+  })
+
   it('モバイルメニューのログアウトボタンをクリックするとログアウト処理が実行される', async () => {
     // supabase.auth.signOutの成功レスポンスをモック
     (supabase.auth.signOut as jest.Mock).mockResolvedValueOnce({ error: null })
