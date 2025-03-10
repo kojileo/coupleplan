@@ -2,6 +2,8 @@
 
 カップル向けのデートプラン共有アプリケーション
 
+[![CI](https://github.com/kojileo/coupleplan/actions/workflows/ci.yml/badge.svg)](https://github.com/kojileo/coupleplan/actions/workflows/ci.yml)
+
 ## セットアップ
 
 1. リポジトリのクローン
