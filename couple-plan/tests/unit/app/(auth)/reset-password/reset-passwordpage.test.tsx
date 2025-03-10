@@ -36,6 +36,12 @@ describe('ResetPasswordPage コンポーネント', () => {
     (useRouter as jest.Mock).mockReturnValue({ push: pushMock });
     window.location.hash = '#type=recovery';
     jest.clearAllMocks();
+    // console.error をモック化して、テスト中のエラーログを抑制
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   it('有効なセッションの場合、パスワードリセットフォームが表示されること', async () => {
@@ -66,6 +72,48 @@ describe('ResetPasswordPage コンポーネント', () => {
     expect(screen.getByRole('button', { name: /パスワードを更新/i })).toBeInTheDocument();
   });
 
+  it('セッションはないがハッシュに type=recovery が含まれる場合、パスワードリセットフォームが表示されること', async () => {
+    // セッションなしをモック
+    (supabase.auth.getSession as jest.Mock).mockResolvedValueOnce({
+      data: { session: null },
+      error: null,
+    });
+    
+    // ハッシュに type=recovery を設定
+    window.location.hash = '#type=recovery&access_token=test';
+
+    const { container } = render(<ResetPasswordPage />);
+
+    // isValidSessionがtrueになるまで待機
+    await waitFor(() => {
+      expect(screen.getByText('新しいパスワードを設定')).toBeInTheDocument();
+      // メッセージが表示されることを確認
+      expect(screen.getByText('新しいパスワードを設定してください')).toBeInTheDocument();
+    });
+
+    // フォームが表示されていることを確認
+    const form = container.querySelector('form');
+    expect(form).toBeInTheDocument();
+  });
+
+  it('セッション取得時にエラーが発生した場合、エラーメッセージが表示されること', async () => {
+    // セッション取得エラーをモック
+    (supabase.auth.getSession as jest.Mock).mockResolvedValueOnce({
+      data: { session: null },
+      error: new Error('セッション取得エラー'),
+    });
+
+    render(<ResetPasswordPage />);
+
+    // エラーメッセージが表示されるまで待機
+    await waitFor(() => {
+      expect(screen.getByText('セッションの確認中にエラーが発生しました。再度リセットメールを送信してください。')).toBeInTheDocument();
+    });
+
+    // コンソールエラーが出力されていることを確認
+    expect(console.error).toHaveBeenCalled();
+  });
+
   it('無効なセッションの場合、エラーメッセージが表示されること', async () => {
     // 無効なセッションをモック
     (supabase.auth.getSession as jest.Mock).mockResolvedValueOnce({
@@ -83,6 +131,27 @@ describe('ResetPasswordPage コンポーネント', () => {
 
     // リンクの確認
     expect(screen.getByText('パスワードリセットをやり直す')).toBeInTheDocument();
+  });
+
+  it('無効なパスワードリセットリンクエラーの場合、パスワードリセットページへのリンクが表示されること', async () => {
+    // 無効なセッションをモック
+    (supabase.auth.getSession as jest.Mock).mockResolvedValueOnce({
+      data: { session: null },
+      error: null,
+    });
+    window.location.hash = ''; // 無効なハッシュ
+
+    render(<ResetPasswordPage />);
+
+    // エラーメッセージが表示されるまで待機
+    await waitFor(() => {
+      expect(screen.getByText('無効なパスワードリセットリンクです。再度リセットメールを送信してください。')).toBeInTheDocument();
+    });
+
+    // パスワードリセットページへのリンクが表示されることを確認
+    const resetLink = screen.getByText('パスワードリセットページへ');
+    expect(resetLink).toBeInTheDocument();
+    expect(resetLink).toHaveAttribute('href', '/forgot-password');
   });
 
   it('セッション確認でエラーが発生した場合、エラーメッセージが表示されること', async () => {
@@ -240,5 +309,76 @@ describe('ResetPasswordPage コンポーネント', () => {
     await waitFor(() => {
       expect(screen.getByText('パスワード更新に失敗しました')).toBeInTheDocument();
     });
+  });
+
+  it('Errorインスタンスでないエラーの場合、デフォルトエラーメッセージが表示されること', async () => {
+    // 有効なセッションをモック
+    (supabase.auth.getSession as jest.Mock).mockResolvedValueOnce({
+      data: { session: { user: { id: '123' } } },
+      error: null,
+    });
+
+    // Errorインスタンスでないエラーをモック
+    (supabase.auth.updateUser as jest.Mock).mockImplementationOnce(() => {
+      throw 'エラーオブジェクトではない文字列';
+    });
+
+    const { container } = render(<ResetPasswordPage />);
+
+    // isValidSessionがtrueになるまで待機
+    await waitFor(() => {
+      const form = container.querySelector('form');
+      expect(form).toBeInTheDocument();
+    });
+
+    // 有効なパスワードを入力
+    const passwordInput = screen.getByLabelText('新しいパスワード');
+    const confirmPasswordInput = screen.getByLabelText('パスワード（確認）');
+    
+    fireEvent.change(passwordInput, { target: { value: 'newpassword123' } });
+    fireEvent.change(confirmPasswordInput, { target: { value: 'newpassword123' } });
+    fireEvent.click(screen.getByRole('button', { name: /パスワードを更新/i }));
+
+    // デフォルトのエラーメッセージが表示されることを確認
+    await waitFor(() => {
+      expect(screen.getByText('パスワードの更新に失敗しました')).toBeInTheDocument();
+    });
+
+    // コンソールエラーが出力されていることを確認
+    expect(console.error).toHaveBeenCalled();
+  });
+
+  it('ローディング中はボタンが無効化され、テキストが「更新中...」に変わる', async () => {
+    // 有効なセッションをモック
+    (supabase.auth.getSession as jest.Mock).mockResolvedValueOnce({
+      data: { session: { user: { id: '123' } } },
+      error: null,
+    });
+
+    // 更新処理が完了しない Promise を返す
+    (supabase.auth.updateUser as jest.Mock).mockImplementationOnce(() => new Promise(() => {}));
+
+    const { container } = render(<ResetPasswordPage />);
+
+    // isValidSessionがtrueになるまで待機
+    await waitFor(() => {
+      const form = container.querySelector('form');
+      expect(form).toBeInTheDocument();
+    });
+
+    // 有効なパスワードを入力
+    const passwordInput = screen.getByLabelText('新しいパスワード');
+    const confirmPasswordInput = screen.getByLabelText('パスワード（確認）');
+    
+    fireEvent.change(passwordInput, { target: { value: 'newpassword123' } });
+    fireEvent.change(confirmPasswordInput, { target: { value: 'newpassword123' } });
+    
+    // フォーム送信
+    fireEvent.click(screen.getByRole('button', { name: /パスワードを更新/i }));
+
+    // ボタンが無効化され、テキストが変わることを確認
+    const updateButton = screen.getByRole('button', { name: /更新中/i });
+    expect(updateButton).toBeDisabled();
+    expect(updateButton).toHaveTextContent('更新中...');
   });
 }); 

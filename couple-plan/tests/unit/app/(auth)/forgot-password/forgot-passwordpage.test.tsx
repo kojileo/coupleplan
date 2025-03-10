@@ -8,6 +8,12 @@ global.fetch = fetchMock as any;
 describe('ForgotPasswordPage コンポーネント', () => {
   beforeEach(() => {
     fetchMock.resetMocks();
+    // console.error をモック化して、テスト中のエラーログを抑制
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   it('パスワードリセットフォームが正しくレンダリングされること', () => {
@@ -52,6 +58,9 @@ describe('ForgotPasswordPage コンポーネント', () => {
       expect(screen.getByText('パスワードリセットメールを送信しました')).toBeInTheDocument();
     });
     
+    // ローディング状態が解除されることを確認
+    expect(screen.getByRole('button', { name: /リセットメールを送信/i })).toBeInTheDocument();
+    
     // APIが正しく呼び出されたことを確認
     expect(fetchMock).toHaveBeenCalledWith('/api/auth/reset-password', {
       method: 'POST',
@@ -60,6 +69,25 @@ describe('ForgotPasswordPage コンポーネント', () => {
       },
       body: JSON.stringify({ email: 'test@example.com' }),
     });
+  });
+
+  it('レスポンスにメッセージがない場合、デフォルトメッセージが表示されること', async () => {
+    // メッセージフィールドがないAPIレスポンスのモック
+    fetchMock.mockResponseOnce(JSON.stringify({}));
+    
+    render(<ForgotPasswordPage />);
+    
+    // フォームに入力して送信
+    fireEvent.change(screen.getByPlaceholderText('メールアドレス'), { target: { value: 'test@example.com' } });
+    fireEvent.click(screen.getByRole('button', { name: /リセットメールを送信/i }));
+    
+    // デフォルトの成功メッセージが表示されることを確認
+    await waitFor(() => {
+      expect(screen.getByText('パスワードリセットメールを送信しました')).toBeInTheDocument();
+    });
+    
+    // ローディング状態が解除されることを確認
+    expect(screen.getByRole('button', { name: /リセットメールを送信/i })).toBeInTheDocument();
   });
 
   it('パスワードリセット失敗時にエラーメッセージが表示されること', async () => {
@@ -76,6 +104,28 @@ describe('ForgotPasswordPage コンポーネント', () => {
     await waitFor(() => {
       expect(screen.getByText('メールアドレスが見つかりません')).toBeInTheDocument();
     });
+    
+    // ローディング状態が解除されることを確認
+    expect(screen.getByRole('button', { name: /リセットメールを送信/i })).toBeInTheDocument();
+  });
+
+  it('エラーレスポンスにエラーメッセージがない場合、デフォルトエラーメッセージが表示されること', async () => {
+    // エラーメッセージフィールドがないAPIエラーレスポンスのモック
+    fetchMock.mockResponseOnce(JSON.stringify({}), { status: 500 });
+    
+    render(<ForgotPasswordPage />);
+    
+    // フォームに入力して送信
+    fireEvent.change(screen.getByPlaceholderText('メールアドレス'), { target: { value: 'test@example.com' } });
+    fireEvent.click(screen.getByRole('button', { name: /リセットメールを送信/i }));
+    
+    // デフォルトのエラーメッセージが表示されることを確認
+    await waitFor(() => {
+      expect(screen.getByText('パスワードリセットに失敗しました')).toBeInTheDocument();
+    });
+    
+    // ローディング状態が解除されることを確認
+    expect(screen.getByRole('button', { name: /リセットメールを送信/i })).toBeInTheDocument();
   });
 
   it('ネットワークエラー時にエラーメッセージが表示されること', async () => {
@@ -92,5 +142,40 @@ describe('ForgotPasswordPage コンポーネント', () => {
     await waitFor(() => {
       expect(screen.getByText('ネットワークエラー')).toBeInTheDocument();
     });
+    
+    // ローディング状態が解除されることを確認
+    expect(screen.getByRole('button', { name: /リセットメールを送信/i })).toBeInTheDocument();
+    
+    // コンソールエラーが出力されていることを確認
+    expect(console.error).toHaveBeenCalled();
+  });
+
+  it('Errorインスタンスでないエラーの場合、デフォルトエラーメッセージが表示されること', async () => {
+    // Errorインスタンスでないエラーのモック
+    // fetchMockを直接使わず、グローバルfetchをモック化して非Errorオブジェクトをスローする
+    const originalFetch = global.fetch;
+    global.fetch = jest.fn().mockImplementationOnce(() => {
+      throw { message: 'これはErrorインスタンスではありません' };
+    });
+    
+    render(<ForgotPasswordPage />);
+    
+    // フォームに入力して送信
+    fireEvent.change(screen.getByPlaceholderText('メールアドレス'), { target: { value: 'test@example.com' } });
+    fireEvent.click(screen.getByRole('button', { name: /リセットメールを送信/i }));
+    
+    // デフォルトのエラーメッセージが表示されることを確認
+    await waitFor(() => {
+      expect(screen.getByText('パスワードリセットに失敗しました')).toBeInTheDocument();
+    });
+    
+    // ローディング状態が解除されることを確認
+    expect(screen.getByRole('button', { name: /リセットメールを送信/i })).toBeInTheDocument();
+    
+    // コンソールエラーが出力されていることを確認
+    expect(console.error).toHaveBeenCalled();
+    
+    // グローバルfetchを元に戻す
+    global.fetch = originalFetch;
   });
 }); 

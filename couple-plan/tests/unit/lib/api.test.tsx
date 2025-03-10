@@ -31,6 +31,31 @@ describe('api', () => {
       })
     })
 
+    it('ログイン失敗時のエラーレスポンスを処理', async () => {
+      const mockCredentials = { email: 'test@example.com', password: 'wrong-password' }
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        json: () => Promise.resolve({ error: '認証に失敗しました' }),
+      })
+
+      const result = await api.auth.login(mockCredentials)
+      expect(result).toEqual({ error: '認証に失敗しました' })
+    })
+
+    it('ログイン時のネットワークエラーを処理', async () => {
+      const mockCredentials = { email: 'test@example.com', password: 'password' }
+      mockFetch.mockRejectedValueOnce(new Error('Network error'))
+
+      try {
+        await api.auth.login(mockCredentials)
+        // エラーがスローされなかった場合、テストを失敗させる
+        fail('Expected an error to be thrown')
+      } catch (error) {
+        expect(error).toBeInstanceOf(Error)
+        expect((error as Error).message).toBe('Network error')
+      }
+    })
+
     it('サインアップリクエストを送信', async () => {
       const mockData = { email: 'test@example.com', password: 'password', name: 'Test User' }
       mockFetch.mockResolvedValueOnce({
@@ -45,6 +70,17 @@ describe('api', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(mockData),
       })
+    })
+
+    it('サインアップ失敗時のエラーレスポンスを処理', async () => {
+      const mockData = { email: 'existing@example.com', password: 'password', name: 'Test User' }
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        json: () => Promise.resolve({ error: 'このメールアドレスは既に使用されています' }),
+      })
+
+      const result = await api.auth.signup(mockData)
+      expect(result).toEqual({ error: 'このメールアドレスは既に使用されています' })
     })
   })
 
@@ -70,6 +106,16 @@ describe('api', () => {
       })
     })
 
+    it('プロフィール取得失敗時のエラーレスポンスを処理', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        json: () => Promise.resolve({ error: 'プロフィールが見つかりません' }),
+      })
+
+      const result = await api.profile.get(mockToken, 'non-existent-user')
+      expect(result).toEqual({ error: 'プロフィールが見つかりません' })
+    })
+
     it('プロフィール情報を更新', async () => {
       const updateData = { name: 'Updated Name', email: 'updated@example.com' }
       mockFetch.mockResolvedValueOnce({
@@ -87,6 +133,17 @@ describe('api', () => {
         },
         body: JSON.stringify(updateData),
       })
+    })
+
+    it('プロフィール更新失敗時のエラーレスポンスを処理', async () => {
+      const updateData = { name: 'Updated Name', email: 'invalid-email' }
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        json: () => Promise.resolve({ error: '無効なメールアドレスです' }),
+      })
+
+      const result = await api.profile.update(mockToken, updateData.name, updateData.email)
+      expect(result).toEqual({ error: '無効なメールアドレスです' })
     })
   })
 
@@ -116,6 +173,16 @@ describe('api', () => {
       expect(mockFetch).toHaveBeenCalledWith('/api/plans', {
         headers: { Authorization: `Bearer ${mockToken}` },
       })
+    })
+
+    it('プラン一覧取得失敗時のエラーレスポンスを処理', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        json: () => Promise.resolve({ error: '認証が必要です' }),
+      })
+
+      const result = await api.plans.list('invalid-token')
+      expect(result).toEqual({ error: '認証が必要です' })
     })
 
     it('プランを作成', async () => {
@@ -155,6 +222,126 @@ describe('api', () => {
       })
     })
 
+    it('プラン作成時のレスポンスエラーを処理', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        json: () => Promise.resolve({ error: 'タイトルは必須です' }),
+      })
+
+      const result = await api.plans.create(mockToken, { title: '' } as any)
+
+      expect(result).toEqual({
+        error: 'プランの作成に失敗しました'
+      })
+    })
+
+    it('特定のプランを取得', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ data: mockPlan }),
+      })
+
+      await api.plans.get(mockToken, mockPlan.id)
+
+      expect(mockFetch).toHaveBeenCalledWith(`/api/plans/${mockPlan.id}`, {
+        headers: { Authorization: `Bearer ${mockToken}` },
+      })
+    })
+
+    it('プラン取得失敗時のエラーレスポンスを処理', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        json: () => Promise.resolve({ error: 'プランが見つかりません' }),
+      })
+
+      const result = await api.plans.get(mockToken, 'non-existent-plan')
+      expect(result).toEqual({ error: 'プランが見つかりません' })
+    })
+
+    it('プランを更新', async () => {
+      const updateData = {
+        title: 'Updated Plan',
+        description: 'Updated Description',
+        date: new Date('2024-02-01'),
+        location: 'Updated Location',
+        budget: 2000,
+        isPublic: true,
+      }
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ data: { ...mockPlan, ...updateData } }),
+      })
+
+      await api.plans.update(mockToken, mockPlan.id, updateData)
+
+      expect(mockFetch).toHaveBeenCalledWith(`/api/plans/${mockPlan.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${mockToken}`,
+        },
+        body: JSON.stringify(updateData),
+      })
+    })
+
+    it('プラン更新失敗時のエラーレスポンスを処理', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        json: () => Promise.resolve({ error: 'プランの更新に失敗しました' }),
+      })
+
+      const result = await api.plans.update(mockToken, mockPlan.id, { title: '' } as any)
+      expect(result).toEqual({ error: 'プランの更新に失敗しました' })
+    })
+
+    it('プランを削除', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ data: null }),
+      })
+
+      await api.plans.delete(mockToken, mockPlan.id)
+
+      expect(mockFetch).toHaveBeenCalledWith(`/api/plans/${mockPlan.id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${mockToken}` },
+      })
+    })
+
+    it('プラン削除失敗時のエラーレスポンスを処理', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        json: () => Promise.resolve({ error: 'プランの削除に失敗しました' }),
+      })
+
+      const result = await api.plans.delete(mockToken, mockPlan.id)
+      expect(result).toEqual({ error: 'プランの削除に失敗しました' })
+    })
+
+    it('公開プラン一覧を取得', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ data: [mockPlan] }),
+      })
+
+      await api.plans.listPublic(mockToken)
+
+      expect(mockFetch).toHaveBeenCalledWith('/api/plans/public', {
+        headers: { Authorization: `Bearer ${mockToken}` },
+      })
+    })
+
+    it('公開プラン一覧取得失敗時のエラーレスポンスを処理', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        json: () => Promise.resolve({ error: '認証が必要です' }),
+      })
+
+      const result = await api.plans.listPublic('invalid-token')
+      expect(result).toEqual({ error: '認証が必要です' })
+    })
+
     it('プランの公開設定を更新', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -171,6 +358,16 @@ describe('api', () => {
         },
         body: JSON.stringify({ isPublic: true }),
       })
+    })
+
+    it('プラン公開設定更新失敗時のエラーレスポンスを処理', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        json: () => Promise.resolve({ error: 'プランの公開設定の更新に失敗しました' }),
+      })
+
+      const result = await api.plans.publish(mockToken, mockPlan.id, true)
+      expect(result).toEqual({ error: 'プランの公開設定の更新に失敗しました' })
     })
   })
 
@@ -190,6 +387,17 @@ describe('api', () => {
       })
     })
 
+    it('いいね作成失敗時のエラーレスポンスを処理', async () => {
+      const planId = 'plan-1'
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        json: () => Promise.resolve({ error: 'いいねの作成に失敗しました' }),
+      })
+
+      const result = await api.likes.create(mockToken, planId)
+      expect(result).toEqual({ error: 'いいねの作成に失敗しました' })
+    })
+
     it('いいねを削除', async () => {
       const planId = 'plan-1'
       mockFetch.mockResolvedValueOnce({
@@ -203,6 +411,17 @@ describe('api', () => {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${mockToken}` },
       })
+    })
+
+    it('いいね削除失敗時のエラーレスポンスを処理', async () => {
+      const planId = 'plan-1'
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        json: () => Promise.resolve({ error: 'いいねの削除に失敗しました' }),
+      })
+
+      const result = await api.likes.delete(mockToken, planId)
+      expect(result).toEqual({ error: 'いいねの削除に失敗しました' })
     })
   })
 })
