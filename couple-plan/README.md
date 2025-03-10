@@ -2,6 +2,9 @@
 
 ```
 couple-plan/
+├── .github/                 # GitHub関連設定
+│   └── workflows/          # GitHub Actions
+│       └── ci.yml          # CI設定
 ├── .next/                   # Next.jsのビルド出力
 ├── coverage/                # テストカバレッジレポート
 ├── prisma/                  # Prisma関連
@@ -88,4 +91,31 @@ couple-plan/
 ├── postcss.config.mjs       # PostCSS設定
 ├── tailwind.config.ts       # Tailwind CSS設定
 └── tsconfig.json            # TypeScript設定
-``` 
+```
+
+## テストとカバレッジ
+
+プロジェクトには自動テストが組み込まれており、以下のコマンドで実行できます：
+
+```bash
+# 通常のテスト実行
+npm test
+
+# ウォッチモードでテスト実行（ファイル変更時に自動実行）
+npm run test:watch
+
+# カバレッジレポート付きでテスト実行
+npm run test:coverage
+
+# CI環境用のテスト実行（GitHub Actions用）
+npm run test:ci
+```
+
+### 自動テスト実行
+
+このプロジェクトでは以下のタイミングで自動的にテストが実行されます：
+
+1. **プルリクエスト作成時**：GitHub Actionsによりテストが実行され、カバレッジレポートが生成されます
+2. **Vercelへのデプロイ時**：ビルドプロセスの一部としてテストが実行されます
+
+テストカバレッジレポートは `coverage/` ディレクトリに生成され、GitHub Actionsの実行結果からも確認できます。 

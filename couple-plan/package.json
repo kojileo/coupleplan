@@ -10,7 +10,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "vercel-build": "prisma generate && prisma migrate deploy && next build",
+    "test:ci": "jest --ci --coverage",
+    "vercel-build": "prisma generate && prisma migrate deploy && jest --ci --coverage && next build",
     "postinstall": "prisma generate"
   },
   "dependencies": {
