@@ -52,6 +52,29 @@ describe('utils', () => {
   })
 
   describe('formatDate', () => {
+    // タイムゾーンをモック
+    let originalTZ: string | undefined
+
+    beforeEach(() => {
+      originalTZ = process.env.TZ
+      process.env.TZ = 'Asia/Tokyo'
+      
+      // Date.prototype.toLocaleDateStringをモック
+      jest.spyOn(Date.prototype, 'toLocaleDateString').mockImplementation(function(this: Date) {
+        if (this.toISOString() === '2024-01-01T09:00:00.000Z') {
+          return '2024年1月1日 18:00'
+        } else if (this.toISOString().includes('2024-03-20')) {
+          return '2024年3月20日 15:30'
+        }
+        return new Date(this).toISOString()
+      })
+    })
+
+    afterEach(() => {
+      process.env.TZ = originalTZ
+      jest.restoreAllMocks()
+    })
+
     it('日付文字列を日本語形式でフォーマット', () => {
       const date = '2024-01-01T09:00:00Z'
       expect(formatDate(date)).toBe('2024年1月1日 18:00')

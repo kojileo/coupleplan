@@ -1,17 +1,24 @@
 name: CI
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
+    branches: [ main ]
+  push:
     branches: [ main ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      TZ: 'Asia/Tokyo'
+      # テストではモックを使用しているため、ダミーの値を設定
+      NEXT_PUBLIC_SUPABASE_URL: 'https://dummy-supabase-url.com'
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'dummy-anon-key'
+      SUPABASE_SERVICE_ROLE_KEY: 'dummy-service-role-key'
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
     
     - name: Setup Node.js
       uses: actions/setup-node@v4
@@ -31,6 +38,8 @@ jobs:
     - name: Run tests with coverage
       working-directory: ./couple-plan
       run: npm run test:ci
+      # テスト実行時間を短縮するためにタイムアウトを設定
+      timeout-minutes: 5
     
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v4
@@ -45,4 +54,6 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: coverage-report
-        path: couple-plan/coverage 
+        path: couple-plan/coverage
+        # アーティファクトの保持期間を短くして、ストレージを節約
+        retention-days: 7 

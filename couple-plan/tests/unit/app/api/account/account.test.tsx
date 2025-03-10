@@ -13,6 +13,22 @@ jest.mock('@/lib/supabase-auth', () => ({
   },
 }))
 
+// createClientのモック
+jest.mock('@supabase/supabase-js', () => {
+  const mockDeleteUser = jest.fn().mockResolvedValue({ data: {}, error: null })
+  
+  return {
+    createClient: jest.fn().mockReturnValue({
+      auth: {
+        getUser: jest.fn(),
+        admin: {
+          deleteUser: mockDeleteUser
+        }
+      }
+    })
+  }
+})
+
 // Prismaのモックを単純化
 jest.mock('@/lib/db', () => {
   // モックオブジェクト
@@ -28,30 +44,12 @@ jest.mock('@/lib/db', () => {
     },
     $transaction: jest.fn().mockImplementation(async (callback) => {
       if (typeof callback === 'function') {
-        return await callback(mockPrisma);
+        return await callback(mockPrisma)
       }
-      return Promise.all(callback);
+      return await Promise.all(callback)
     }),
-  };
-
-  return {
-    prisma: mockPrisma,
-  };
-})
-
-// Supabaseのモックを単純化
-jest.mock('@supabase/supabase-js', () => {
-  const mockAdminDeleteUser = jest.fn()
-  const mockSupabaseAdmin = {
-    auth: {
-      admin: {
-        deleteUser: mockAdminDeleteUser,
-      },
-    },
   }
-  return {
-    createClient: jest.fn(() => mockSupabaseAdmin),
-  }
+  return { prisma: mockPrisma }
 })
 
 describe('DELETE /api/account', () => {
