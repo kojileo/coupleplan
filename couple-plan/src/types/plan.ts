@@ -1,26 +1,26 @@
 export type Plan = {
-  id: string
-  title: string
-  description?: string | null
-  date?: string | Date | null
-  budget: number
-  location?: string | null
-  isPublic: boolean
-  userId: string
-  createdAt: Date
-  updatedAt: Date
+  id: string;
+  title: string;
+  description?: string | null;
+  date?: string | Date | null;
+  budget: number;
+  location?: string | null;
+  isPublic: boolean;
+  userId: string;
+  createdAt: Date;
+  updatedAt: Date;
   profile?: {
-    name: string
-  } | null
+    name: string;
+  } | null;
   likes: {
-    id: string
-    userId: string
-  }[]
+    id: string;
+    userId: string;
+  }[];
   _count?: {
-    likes: number
-  }
-}
+    likes: number;
+  };
+};
 
-export type CreatePlanInput = Pick<Plan, 'title' | 'description' | 'date' | 'budget' | 'location'>
+export type CreatePlanInput = Pick<Plan, 'title' | 'description' | 'date' | 'budget' | 'location'>;
 
-export type UpdatePlanInput = Partial<CreatePlanInput>
+export type UpdatePlanInput = Partial<CreatePlanInput>;

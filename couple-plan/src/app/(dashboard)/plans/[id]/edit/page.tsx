@@ -1,25 +1,27 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { useAuth } from '@/contexts/AuthContext'
-import Button from '@/components/ui/button'
-import { api } from '@/lib/api'
-import type { Plan } from '@/types/plan'
+import { useRouter } from 'next/navigation';
+import type { FormEvent, ReactElement } from 'react';
+import { useEffect, useState } from 'react';
+
+import Button from '@/components/ui/button';
+import { useAuth } from '@/contexts/AuthContext';
+import { api } from '@/lib/api';
+import type { Plan } from '@/types/plan';
 
 type Props = {
   params: Promise<{
-    id: string
-  }>
-}
+    id: string;
+  }>;
+};
 
-export default function EditPlanPage({ params }: Props) {
-  const router = useRouter()
-  const { session } = useAuth()
-  const [planId, setPlanId] = useState<string>('')
-  const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
-  const [plan, setPlan] = useState<Plan | null>(null)
+export default function EditPlanPage({ params }: Props): ReactElement {
+  const router = useRouter();
+  const { session } = useAuth();
+  const [planId, setPlanId] = useState<string>('');
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [plan, setPlan] = useState<Plan | null>(null);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -27,48 +29,71 @@ export default function EditPlanPage({ params }: Props) {
     budget: 0,
     location: '',
     isPublic: false,
-  })
+  });
 
   // params が解決されたら planId を設定
   useEffect(() => {
-    params.then(({ id }) => setPlanId(id))
-  }, [params])
+    void params.then(({ id }) => setPlanId(id));
+  }, [params]);
 
   // planId 有りの場合にプランデータを取得する
   useEffect(() => {
-    if (!planId) return
+    if (!planId) return;
 
-    const fetchPlan = async () => {
+    const fetchPlan = async (): Promise<void> => {
       if (!session) {
-        setLoading(false)
-        return
+        setLoading(false);
+        return;
       }
 
       try {
-        const response = await api.plans.get(session.access_token, planId)
-        if ('error' in response) throw new Error(response.error)
+        const response = await api.plans.get(session.access_token, planId);
+        if ('error' in response) throw new Error(response.error);
 
-        setPlan(response.data || null)
+        setPlan(response.data || null);
         if (response.data) {
           setFormData({
             title: response.data.title,
             description: response.data.description || '',
-            date: response.data.date ? new Date(response.data.date).toISOString().split('T')[0] : '',
+            date: response.data.date
+              ? new Date(response.data.date).toISOString().split('T')[0]
+              : '',
             budget: response.data.budget,
             location: response.data.location || '',
             isPublic: response.data.isPublic,
-          })
+          });
         }
       } catch (error) {
-        console.error('プランの取得に失敗しました:', error)
-        router.push('/plans')
+        console.error('プランの取得に失敗しました:', error);
+        void router.push('/plans');
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchPlan()
-  }, [session, planId, router])
+    void fetchPlan();
+  }, [session, planId, router]);
+
+  const handleSubmit = async (e: FormEvent): Promise<void> => {
+    e.preventDefault();
+    if (!session) return;
+
+    setSaving(true);
+    try {
+      const response = await api.plans.update(session.access_token, planId, {
+        ...formData,
+        date: formData.date ? new Date(formData.date) : null,
+      });
+
+      if ('error' in response) throw new Error(response.error);
+      void router.push(`/plans/${planId}`);
+    } catch (error) {
+      console.error('プランの更新に失敗しました:', error);
+      alert('プランの更新に失敗しました');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   // planId 未解決 or データフェッチ中はローディングを表示
   if (!planId || loading) {
@@ -76,49 +101,35 @@ export default function EditPlanPage({ params }: Props) {
       <div className="flex justify-center items-center min-h-[400px]">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
       </div>
-    )
+    );
   }
 
   if (!plan) {
     return (
       <div className="text-center py-12">
         <p className="text-rose-500">マイプランが見つかりません</p>
-        <Button 
+        <Button
           className="mt-4"
-          onClick={() => router.push('/plans')}
+          onClick={(): void => {
+            void router.push('/plans');
+          }}
         >
           マイプラン一覧に戻る
         </Button>
       </div>
-    )
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!session) return
-
-    setSaving(true)
-    try {
-      const response = await api.plans.update(session.access_token, planId, {
-        ...formData,
-        date: formData.date ? new Date(formData.date) : null,
-      })
-      
-      if ('error' in response) throw new Error(response.error)
-      router.push(`/plans/${planId}`)
-    } catch (error) {
-      console.error('プランの更新に失敗しました:', error)
-      alert('プランの更新に失敗しました')
-    } finally {
-      setSaving(false)
-    }
+    );
   }
 
   return (
     <div className="max-w-2xl mx-auto">
       <h1 className="text-2xl font-bold text-rose-950">マイプランの編集</h1>
-      
-      <form onSubmit={handleSubmit} className="space-y-6">
+
+      <form
+        onSubmit={(e): void => {
+          void handleSubmit(e);
+        }}
+        className="space-y-6"
+      >
         <div>
           <label htmlFor="title" className="block text-sm font-medium text-rose-700 mb-1">
             タイトル
@@ -191,18 +202,17 @@ export default function EditPlanPage({ params }: Props) {
           <Button
             type="button"
             variant="outline"
-            onClick={() => router.back()}
+            onClick={(): void => {
+              void router.back();
+            }}
           >
             キャンセル
           </Button>
-          <Button
-            type="submit"
-            disabled={saving}
-          >
+          <Button type="submit" disabled={saving}>
             {saving ? '保存中...' : '保存'}
           </Button>
         </div>
       </form>
     </div>
-  )
+  );
 }

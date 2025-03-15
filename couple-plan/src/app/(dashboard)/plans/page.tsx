@@ -1,55 +1,59 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { useAuth } from '@/contexts/AuthContext'
-import Button from '@/components/ui/button'
-import { api } from '@/lib/api'
-import type { Plan } from '@/types/plan'
-import { PlanCard } from '@/components/features/plans/PlanCard'
+import { useRouter } from 'next/navigation';
+import type { ReactElement } from 'react';
+import { useEffect, useState } from 'react';
 
-export default function MyPlansPage() {
-  const router = useRouter()
-  const { session } = useAuth()
-  const [plans, setPlans] = useState<Plan[]>([])
-  const [loading, setLoading] = useState(true)
+import { PlanCard } from '@/components/features/plans/PlanCard';
+import Button from '@/components/ui/button';
+import { useAuth } from '@/contexts/AuthContext';
+import { api } from '@/lib/api';
+import type { Plan } from '@/types/plan';
+
+export default function MyPlansPage(): ReactElement {
+  const router = useRouter();
+  const { session } = useAuth();
+  const [plans, setPlans] = useState<Plan[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchPlans = async () => {
+    const fetchPlans = async (): Promise<void> => {
       if (!session) {
-        setLoading(false)
-        return
+        setLoading(false);
+        return;
       }
 
       try {
-        const response = await api.plans.list(session.access_token)
-        if ('error' in response) throw new Error(response.error)
-        setPlans(response.data || [])
+        const response = await api.plans.list(session.access_token);
+        if ('error' in response) throw new Error(response.error);
+        setPlans(response.data || []);
       } catch (error) {
-        console.error('プランの取得に失敗しました:', error)
+        console.error('プランの取得に失敗しました:', error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchPlans()
-  }, [session])
+    void fetchPlans();
+  }, [session]);
 
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-rose-600" />
       </div>
-    )
+    );
   }
 
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold text-rose-950">マイプラン一覧</h1>
-        <Button 
+        <Button
           data-testid="header-create-button"
-          onClick={() => router.push('/plans/new')}
+          onClick={(): void => {
+            void router.push('/plans/new');
+          }}
         >
           新規プラン作成
         </Button>
@@ -58,10 +62,12 @@ export default function MyPlansPage() {
       {plans.length === 0 ? (
         <div className="bg-white rounded-lg shadow p-6 text-center">
           <p className="text-rose-700">プランがまだありません</p>
-          <Button 
+          <Button
             data-testid="empty-create-button"
             className="mt-4"
-            onClick={() => router.push('/plans/new')}
+            onClick={(): void => {
+              void router.push('/plans/new');
+            }}
           >
             新規プラン作成
           </Button>
@@ -74,5 +80,5 @@ export default function MyPlansPage() {
         </div>
       )}
     </div>
-  )
+  );
 }

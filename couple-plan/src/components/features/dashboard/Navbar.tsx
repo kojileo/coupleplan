@@ -1,41 +1,48 @@
-'use client'
+'use client';
 
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import Button from '@/components/ui/button'
-import { supabase } from '@/lib/supabase-auth'
-import { useState } from 'react'
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import type { ReactElement } from 'react';
 
-export default function Navbar() {
-  const router = useRouter()
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+import Button from '@/components/ui/button';
+import { supabase } from '@/lib/supabase-auth';
 
-  const handleSignOut = async () => {
+export default function Navbar(): ReactElement {
+  const router = useRouter();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleSignOut = async (): Promise<void> => {
     try {
-      await supabase.auth.signOut()
+      await supabase.auth.signOut();
     } catch (error) {
-      console.error('ログアウト中にエラーが発生しました:', error)
+      console.error('ログアウト中にエラーが発生しました:', error);
     } finally {
-      router.push('/')
+      void router.push('/');
     }
-  }
+  };
+
+  const onSignOutClick = (): void => {
+    void handleSignOut();
+  };
+
+  const toggleMenu = (): void => {
+    setIsMenuOpen(!isMenuOpen);
+  };
 
   return (
     <nav className="bg-white shadow-sm">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
-            <Link 
-              href="/plans" 
-              className="text-xl font-semibold text-rose-900"
-            >
+            <Link href="/plans" className="text-xl font-semibold text-rose-900">
               Couple Plan
             </Link>
           </div>
 
           <div className="md:hidden">
             <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              onClick={toggleMenu}
               className="inline-flex items-center justify-center p-2 rounded-md text-rose-600 hover:text-rose-900 hover:bg-rose-50 focus:outline-none"
             >
               <span className="sr-only">メニューを開く</span>
@@ -50,36 +57,32 @@ export default function Navbar() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d={isMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
+                  d={isMenuOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}
                 />
               </svg>
             </button>
           </div>
 
           <div className="hidden md:flex md:items-center md:space-x-4">
-            <Link 
-              href="/plans" 
+            <Link
+              href="/plans"
               className="text-rose-600 hover:text-rose-900 px-3 py-2 rounded-md text-sm"
             >
               マイプラン一覧
             </Link>
-            <Link 
-              href="/plans/public" 
+            <Link
+              href="/plans/public"
               className="text-rose-600 hover:text-rose-900 px-3 py-2 rounded-md text-sm"
             >
               公開プラン一覧
             </Link>
-            <Link 
-              href="/profile" 
+            <Link
+              href="/profile"
               className="text-rose-600 hover:text-rose-900 px-3 py-2 rounded-md text-sm"
             >
               プロフィール
             </Link>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleSignOut}
-            >
+            <Button variant="outline" size="sm" onClick={onSignOutClick}>
               ログアウト
             </Button>
           </div>
@@ -87,34 +90,29 @@ export default function Navbar() {
 
         <div className={`${isMenuOpen ? 'block' : 'hidden'} md:hidden pb-4`}>
           <div className="flex flex-col space-y-2">
-            <Link 
-              href="/plans" 
+            <Link
+              href="/plans"
               className="text-rose-600 hover:text-rose-900 px-3 py-2 rounded-md text-sm"
-              onClick={() => setIsMenuOpen(false)}
+              onClick={toggleMenu}
             >
               マイプラン一覧
             </Link>
-            <Link 
-              href="/plans/public" 
+            <Link
+              href="/plans/public"
               className="text-rose-600 hover:text-rose-900 px-3 py-2 rounded-md text-sm"
-              onClick={() => setIsMenuOpen(false)}
+              onClick={toggleMenu}
             >
               公開プラン一覧
             </Link>
-            <Link 
-              href="/profile" 
+            <Link
+              href="/profile"
               className="text-rose-600 hover:text-rose-900 px-3 py-2 rounded-md text-sm"
-              onClick={() => setIsMenuOpen(false)}
+              onClick={toggleMenu}
             >
               プロフィール
             </Link>
             <div className="px-3">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleSignOut}
-                className="w-full"
-              >
+              <Button variant="outline" size="sm" onClick={onSignOutClick} className="w-full">
                 ログアウト
               </Button>
             </div>
@@ -122,5 +120,5 @@ export default function Navbar() {
         </div>
       </div>
     </nav>
-  )
+  );
 }

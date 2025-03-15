@@ -1,24 +1,34 @@
-'use client'
+'use client';
 
-import { formatDate } from '@/lib/utils'
-import { Plan } from '@/types/plan'
-import { useRouter } from 'next/navigation'
-import { LikeButton } from './LikeButton'
-import { useAuth } from '@/contexts/AuthContext'
+import { useRouter } from 'next/navigation';
+import type { MouseEvent, ReactElement } from 'react';
+
+import { useAuth } from '@/contexts/AuthContext';
+import { formatDate } from '@/lib/utils';
+import type { Plan } from '@/types/plan';
+
+import { LikeButton } from './LikeButton';
 
 type PlanCardProps = {
-  plan: Plan
-  isPublic?: boolean
-  onPublishToggle?: (planId: string, isPublic: boolean) => Promise<void>
-}
+  plan: Plan;
+  isPublic?: boolean;
+  onPublishToggle?: (planId: string, isPublic: boolean) => Promise<void>;
+};
 
-export function PlanCard({ plan, isPublic = false, onPublishToggle }: PlanCardProps) {
-  const router = useRouter()
-  const { session } = useAuth()
+export function PlanCard({ plan, isPublic = false, onPublishToggle }: PlanCardProps): ReactElement {
+  const router = useRouter();
+  const { session } = useAuth();
 
-  const handleClick = () => {
-    router.push(`/plans/${plan.id}`)
-  }
+  const handleClick = (): void => {
+    void router.push(`/plans/${plan.id}`);
+  };
+
+  const handlePublishToggle = (e: MouseEvent): void => {
+    e.stopPropagation();
+    if (onPublishToggle) {
+      void onPublishToggle(plan.id, !plan.isPublic);
+    }
+  };
 
   return (
     <div
@@ -30,10 +40,7 @@ export function PlanCard({ plan, isPublic = false, onPublishToggle }: PlanCardPr
         <h3 className="text-xl font-semibold text-rose-950">{plan.title}</h3>
         {!isPublic && onPublishToggle && (
           <button
-            onClick={(e) => {
-              e.stopPropagation()
-              onPublishToggle(plan.id, !plan.isPublic)
-            }}
+            onClick={handlePublishToggle}
             className={`px-3 py-1 rounded-full text-sm ${
               plan.isPublic
                 ? 'bg-rose-100 text-rose-700 hover:bg-rose-200'
@@ -54,17 +61,24 @@ export function PlanCard({ plan, isPublic = false, onPublishToggle }: PlanCardPr
           </p>
         )}
         <div className="text-sm text-rose-600">
-          <span>📍 {plan.location ? (
-            <a 
-              href={plan.location}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 hover:underline"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {new URL(plan.location).hostname}
-            </a>
-          ) : '場所URL未設定'}</span>
+          <span>
+            📍{' '}
+            {plan.location ? (
+              <a
+                href={plan.location}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline"
+                onClick={(e): void => {
+                  e.stopPropagation();
+                }}
+              >
+                {new URL(plan.location).hostname}
+              </a>
+            ) : (
+              '場所URL未設定'
+            )}
+          </span>
         </div>
         <p className="text-sm">
           <span className="font-medium">予算：</span>
@@ -72,15 +86,13 @@ export function PlanCard({ plan, isPublic = false, onPublishToggle }: PlanCardPr
         </p>
       </div>
       <div className="mt-4 flex justify-between items-center">
-        <span className="text-sm text-gray-500">
-          作成者: {plan.profile?.name ?? '不明'}
-        </span>
+        <span className="text-sm text-gray-500">作成者: {plan.profile?.name ?? '不明'}</span>
         <LikeButton
           planId={plan.id}
-          initialIsLiked={plan.likes?.some(like => like.userId === session?.user?.id) ?? false}
+          initialIsLiked={plan.likes?.some((like) => like.userId === session?.user?.id) ?? false}
           likeCount={plan._count?.likes ?? 0}
         />
       </div>
     </div>
-  )
+  );
 }

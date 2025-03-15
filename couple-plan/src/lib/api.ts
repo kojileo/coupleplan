@@ -1,8 +1,8 @@
-import { ApiResponse, LoginRequest, SignUpRequest, PlanRequest } from '@/types/api'
-import type { Plan } from '@/types/plan'
-import type { Profile } from '@/types/profile'
+import { ApiResponse, LoginRequest, SignUpRequest, PlanRequest } from '@/types/api';
+import type { Plan } from '@/types/plan';
+import type { Profile } from '@/types/profile';
 
-const API_BASE = '/api'
+const API_BASE = '/api';
 
 export const api = {
   auth: {
@@ -11,51 +11,71 @@ export const api = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
-      })
-      return response.json()
+      });
+      return (await response.json()) as ApiResponse;
     },
 
     signup: async (data: SignUpRequest): Promise<ApiResponse> => {
-      const response = await fetch(`${API_BASE}/auth/signup`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      })
-      return response.json()
+      try {
+        const response = await fetch(`${API_BASE}/auth/signup`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        return (await response.json()) as ApiResponse;
+      } catch (error) {
+        console.error('Signup error:', error);
+        return { error: 'サインアップに失敗しました' };
+      }
     },
   },
 
   profile: {
     get: async (token: string, userId: string): Promise<ApiResponse<Profile>> => {
-      const response = await fetch(`${API_BASE}/profile/${userId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      return response.json()
+      try {
+        const response = await fetch(`${API_BASE}/profile/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        return (await response.json()) as ApiResponse<Profile>;
+      } catch (error) {
+        console.error('Profile get error:', error);
+        return { error: 'プロフィールの取得に失敗しました' };
+      }
     },
 
     update: async (token: string, name: string, email: string): Promise<ApiResponse<Profile>> => {
-      const response = await fetch(`${API_BASE}/profile`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ name, email }),
-      })
-      return response.json()
+      try {
+        const response = await fetch(`${API_BASE}/profile`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ name, email }),
+        });
+        return (await response.json()) as ApiResponse<Profile>;
+      } catch (error) {
+        console.error('Profile update error:', error);
+        return { error: 'プロフィールの更新に失敗しました' };
+      }
     },
   },
 
   plans: {
     list: async (token: string): Promise<ApiResponse<Plan[]>> => {
-      const response = await fetch(`${API_BASE}/plans`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      return response.json()
+      try {
+        const response = await fetch(`${API_BASE}/plans`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        return (await response.json()) as ApiResponse<Plan[]>;
+      } catch (error) {
+        console.error('Plans list error:', error);
+        return { error: 'プラン一覧の取得に失敗しました' };
+      }
     },
 
     create: async (token: string, data: PlanRequest): Promise<ApiResponse<Plan>> => {
@@ -67,92 +87,130 @@ export const api = {
             Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(data),
-        })
+        });
 
         if (!response.ok) {
-          return { error: 'プランの作成に失敗しました' }
+          return { error: 'プランの作成に失敗しました' };
         }
 
-        return response.json()
+        return (await response.json()) as ApiResponse<Plan>;
       } catch (error) {
-        console.error('API error:', error)
-        return {
-          error: 'プランの作成に失敗しました'
-        }
+        console.error('Plan create error:', error);
+        return { error: 'プランの作成に失敗しました' };
       }
     },
 
     get: async (token: string, id: string): Promise<ApiResponse<Plan>> => {
-      const response = await fetch(`${API_BASE}/plans/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      return response.json()
+      try {
+        const response = await fetch(`${API_BASE}/plans/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        return (await response.json()) as ApiResponse<Plan>;
+      } catch (error) {
+        console.error('Plan get error:', error);
+        return { error: 'プランの取得に失敗しました' };
+      }
     },
 
     update: async (token: string, id: string, data: PlanRequest): Promise<ApiResponse<Plan>> => {
-      const response = await fetch(`${API_BASE}/plans/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(data),
-      })
-      return response.json()
+      try {
+        const response = await fetch(`${API_BASE}/plans/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(data),
+        });
+        return (await response.json()) as ApiResponse<Plan>;
+      } catch (error) {
+        console.error('Plan update error:', error);
+        return { error: 'プランの更新に失敗しました' };
+      }
     },
 
     delete: async (token: string, id: string): Promise<ApiResponse> => {
-      const response = await fetch(`${API_BASE}/plans/${id}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      return response.json()
+      try {
+        const response = await fetch(`${API_BASE}/plans/${id}`, {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        return (await response.json()) as ApiResponse;
+      } catch (error) {
+        console.error('Plan delete error:', error);
+        return { error: 'プランの削除に失敗しました' };
+      }
     },
 
     listPublic: async (token: string): Promise<ApiResponse<Plan[]>> => {
-      const response = await fetch(`${API_BASE}/plans/public`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      return response.json()
+      try {
+        const response = await fetch(`${API_BASE}/plans/public`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        return (await response.json()) as ApiResponse<Plan[]>;
+      } catch (error) {
+        console.error('Public plans list error:', error);
+        return { error: '公開プラン一覧の取得に失敗しました' };
+      }
     },
 
-    publish: async (token: string, planId: string, isPublic: boolean): Promise<ApiResponse<Plan>> => {
-      const response = await fetch(`${API_BASE}/plans/${planId}/publish`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ isPublic }),
-      })
-      return response.json()
+    publish: async (
+      token: string,
+      planId: string,
+      isPublic: boolean
+    ): Promise<ApiResponse<Plan>> => {
+      try {
+        const response = await fetch(`${API_BASE}/plans/${planId}/publish`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ isPublic }),
+        });
+        return (await response.json()) as ApiResponse<Plan>;
+      } catch (error) {
+        console.error('Plan publish error:', error);
+        return { error: 'プランの公開設定の更新に失敗しました' };
+      }
     },
   },
 
   likes: {
-    create: async (token: string, planId: string) => {
-      const response = await fetch(`${API_BASE}/plans/${planId}/likes`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      return response.json()
+    create: async (token: string, planId: string): Promise<ApiResponse> => {
+      try {
+        const response = await fetch(`${API_BASE}/plans/${planId}/likes`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        return (await response.json()) as ApiResponse;
+      } catch (error) {
+        console.error('Like create error:', error);
+        return { error: 'いいねの追加に失敗しました' };
+      }
     },
-    delete: async (token: string, planId: string) => {
-      const response = await fetch(`${API_BASE}/plans/${planId}/likes`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      return response.json()
+
+    delete: async (token: string, planId: string): Promise<ApiResponse> => {
+      try {
+        const response = await fetch(`${API_BASE}/plans/${planId}/likes`, {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        return (await response.json()) as ApiResponse;
+      } catch (error) {
+        console.error('Like delete error:', error);
+        return { error: 'いいねの削除に失敗しました' };
+      }
     },
   },
-}
+};

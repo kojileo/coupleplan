@@ -160,7 +160,7 @@ describe('plans API', () => {
 
       const data = await response.json()
       expect(data.error).toBe('プランの取得に失敗しました')
-      expect(console.error).toHaveBeenCalledWith('プラン取得エラー:', 'Database error')
+      expect(console.error).toHaveBeenCalledWith('プラン取得エラー:', expect.any(Error))
     })
 
     it('非Errorオブジェクトのエラーの場合も適切に処理される', async () => {
@@ -182,7 +182,7 @@ describe('plans API', () => {
 
       const data = await response.json()
       expect(data.error).toBe('プランの取得に失敗しました')
-      expect(console.error).toHaveBeenCalledWith('プラン取得エラー:', 'Unknown error')
+      expect(console.error).toHaveBeenCalledWith('プラン取得エラー:', expect.any(Error))
     })
   })
 

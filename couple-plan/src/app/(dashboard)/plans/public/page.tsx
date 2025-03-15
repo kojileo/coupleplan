@@ -1,43 +1,45 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
-import { useAuth } from '@/contexts/AuthContext'
-import { api } from '@/lib/api'
-import type { Plan } from '@/types/plan'
-import { PlanCard } from '@/components/features/plans/PlanCard'
+import type { ReactElement } from 'react';
+import { useEffect, useState } from 'react';
 
-export default function PublicPlansPage() {
-  const { session } = useAuth()
-  const [publicPlans, setPublicPlans] = useState<Plan[]>([])
-  const [loading, setLoading] = useState(true)
+import { PlanCard } from '@/components/features/plans/PlanCard';
+import { useAuth } from '@/contexts/AuthContext';
+import { api } from '@/lib/api';
+import type { Plan } from '@/types/plan';
+
+export default function PublicPlansPage(): ReactElement {
+  const { session } = useAuth();
+  const [publicPlans, setPublicPlans] = useState<Plan[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchPlans = async () => {
+    const fetchPlans = async (): Promise<void> => {
       if (!session) {
-        setLoading(false)
-        return
+        setLoading(false);
+        return;
       }
 
       try {
-        const publicResponse = await api.plans.listPublic(session.access_token)
-        if ('error' in publicResponse) throw new Error(publicResponse.error)
-        setPublicPlans(publicResponse.data || [])
+        const publicResponse = await api.plans.listPublic(session.access_token);
+        if ('error' in publicResponse) throw new Error(publicResponse.error);
+        setPublicPlans(publicResponse.data || []);
       } catch (error) {
-        console.error('公開プランの取得に失敗しました:', error)
+        console.error('公開プランの取得に失敗しました:', error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchPlans()
-  }, [session])
+    void fetchPlans();
+  }, [session]);
 
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-rose-600" />
       </div>
-    )
+    );
   }
 
   return (
@@ -58,5 +60,5 @@ export default function PublicPlansPage() {
         </div>
       )}
     </div>
-  )
+  );
 }
