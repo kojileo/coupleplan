@@ -9,7 +9,7 @@
     "lint": "next lint",
     "test": "jest",
     "test:unit": "jest --testPathPattern=tests/unit --reporters=default --reporters=jest-junit",
-    "test:unit:html": "jest --testPathPattern=tests/unit --reporters=default --reporters=jest-html-reporter",
+    "test:unit:html": "jest --testPathPattern=tests/unit --reporters=default --reporters=jest-junit --reporters=jest-html-reporter",
     "test:integration": "jest --testPathPattern=tests/integration --coverage",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
@@ -60,7 +60,7 @@
     "typescript": "^5"
   },
   "jest-junit": {
-    "outputDirectory": ".",
+    "outputDirectory": "./",
     "outputName": "junit.xml",
     "classNameTemplate": "{classname}",
     "titleTemplate": "{title}",
@@ -72,6 +72,6 @@
     "outputPath": "test-report.html",
     "includeFailureMsg": true,
     "includeConsoleLog": true,
-    "theme": "darkTheme"
+    "theme": "defaultTheme"
   }
 }

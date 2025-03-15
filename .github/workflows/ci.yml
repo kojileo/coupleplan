@@ -6,6 +6,13 @@ on:
   push:
     branches: [ main ]
 
+# GitHub APIへのアクセス権限を設定
+permissions:
+  checks: write
+  contents: read
+  issues: read
+  pull-requests: write
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -64,14 +71,15 @@ jobs:
       uses: EnricoMi/publish-unit-test-result-action@v2
       if: always()
       with:
-        files: couple-plan/junit.xml
+        files: ./couple-plan/junit.xml
+        github_token: ${{ github.token }}
         
     - name: Upload unit test results (XML)
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: unit-test-results-xml
-        path: couple-plan/junit.xml
+        path: ./couple-plan/junit.xml
         retention-days: 7
         
     - name: Upload unit test results (HTML)
@@ -79,7 +87,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: unit-test-results-html
-        path: couple-plan/test-report.html
+        path: ./couple-plan/test-report.html
         retention-days: 7
 
   integration-tests:
