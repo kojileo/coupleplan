@@ -6,6 +6,13 @@ on:
   push:
     branches: [ main ]
 
+# GitHub APIへのアクセス権限を設定
+permissions:
+  checks: write
+  contents: read
+  issues: read
+  pull-requests: write
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -24,7 +31,7 @@ jobs:
     
     - name: Install dependencies
       working-directory: ./couple-plan
-      run: npm ci
+      run: npm install
     
     - name: Run linting
       working-directory: ./couple-plan
@@ -53,19 +60,34 @@ jobs:
     
     - name: Install dependencies
       working-directory: ./couple-plan
-      run: npm ci
+      run: npm install
     
-    - name: Run unit tests
+    - name: Run unit tests with HTML report
       working-directory: ./couple-plan
-      run: npm run test:unit
+      run: npm run test:unit:html
       timeout-minutes: 3
       
-    - name: Upload unit test results
+    - name: Publish Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v2
+      if: always()
+      with:
+        files: ./couple-plan/junit.xml
+        github_token: ${{ github.token }}
+        
+    - name: Upload unit test results (XML)
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: unit-test-results
-        path: couple-plan/junit.xml
+        name: unit-test-results-xml
+        path: ./couple-plan/junit.xml
+        retention-days: 7
+        
+    - name: Upload unit test results (HTML)
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: unit-test-results-html
+        path: ./couple-plan/test-report.html
         retention-days: 7
 
   integration-tests:
@@ -91,7 +113,7 @@ jobs:
     
     - name: Install dependencies
       working-directory: ./couple-plan
-      run: npm ci
+      run: npm install
     
     - name: Run integration tests
       working-directory: ./couple-plan
