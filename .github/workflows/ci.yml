@@ -24,7 +24,7 @@ jobs:
     
     - name: Install dependencies
       working-directory: ./couple-plan
-      run: npm ci
+      run: npm install
     
     - name: Run linting
       working-directory: ./couple-plan
@@ -53,7 +53,7 @@ jobs:
     
     - name: Install dependencies
       working-directory: ./couple-plan
-      run: npm ci
+      run: npm install
     
     - name: Run unit tests with HTML report
       working-directory: ./couple-plan
@@ -105,7 +105,7 @@ jobs:
     
     - name: Install dependencies
       working-directory: ./couple-plan
-      run: npm ci
+      run: npm install
     
     - name: Run integration tests
       working-directory: ./couple-plan
