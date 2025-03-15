@@ -62,7 +62,7 @@ jobs:
       
     - name: Upload unit test results
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: unit-test-results
         path: couple-plan/junit.xml
@@ -100,7 +100,7 @@ jobs:
       
     - name: Upload test coverage
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: integration-test-coverage
         path: couple-plan/coverage/
