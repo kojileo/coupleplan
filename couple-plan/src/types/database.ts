@@ -1,5 +1,5 @@
-import { PrismaClient } from '@prisma/client'
-import { SupabaseClient } from '@supabase/supabase-js'
+import { PrismaClient } from '@prisma/client';
+import { SupabaseClient } from '@supabase/supabase-js';
 
 // ESLintルールを無効化
 /* eslint-disable @typescript-eslint/no-namespace */
@@ -8,9 +8,9 @@ import { SupabaseClient } from '@supabase/supabase-js'
 
 declare global {
   interface Global {
-    prisma: PrismaClient | undefined
+    prisma: PrismaClient | undefined;
   }
 }
 
-export type Database = PrismaClient
-export type Auth = SupabaseClient
+export type Database = PrismaClient;
+export type Auth = SupabaseClient;

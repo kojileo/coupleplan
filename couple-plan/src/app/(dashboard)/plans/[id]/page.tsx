@@ -1,59 +1,75 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { useAuth } from '@/contexts/AuthContext'
-import Button from '@/components/ui/button'
-import PublishDialog from '@/components/features/plans/PublishDialog'
-import { api } from '@/lib/api'
-import type { Plan } from '@/types/plan'
+import { useRouter } from 'next/navigation';
+import type { MouseEvent, ReactElement } from 'react';
+import { useEffect, useState } from 'react';
+
+import PublishDialog from '@/components/features/plans/PublishDialog';
+import Button from '@/components/ui/button';
+import { useAuth } from '@/contexts/AuthContext';
+import { api } from '@/lib/api';
+import type { Plan } from '@/types/plan';
 
 type Props = {
   params: Promise<{
-    id: string
-  }>
-}
+    id: string;
+  }>;
+};
 
-export default function PlanDetailPage({ params }: Props) {
-  const router = useRouter()
-  const { session } = useAuth()
-  const [plan, setPlan] = useState<Plan | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [isPublishDialogOpen, setIsPublishDialogOpen] = useState(false)
-  const [planId, setPlanId] = useState<string>('')
+export default function PlanDetailPage({ params }: Props): ReactElement {
+  const router = useRouter();
+  const { session } = useAuth();
+  const [plan, setPlan] = useState<Plan | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [isPublishDialogOpen, setIsPublishDialogOpen] = useState(false);
+  const [planId, setPlanId] = useState<string>('');
 
   // params を解決して planId を設定
   useEffect(() => {
-    params.then(({ id }) => setPlanId(id))
-  }, [params])
+    void params.then(({ id }) => setPlanId(id));
+  }, [params]);
 
   // planId が解決されたらプランデータを取得
   useEffect(() => {
-    if (!planId) return
+    if (!planId) return;
 
-    const fetchPlan = async () => {
+    const fetchPlan = async (): Promise<void> => {
       if (!session) {
-        setLoading(false)
-        return
+        setLoading(false);
+        return;
       }
 
       try {
-        const response = await api.plans.get(session.access_token, planId)
-        if ('error' in response) throw new Error(response.error)
-        setPlan(response.data || null)
+        const response = await api.plans.get(session.access_token, planId);
+        if ('error' in response) throw new Error(response.error);
+        setPlan(response.data || null);
       } catch (error) {
-        console.error('プランの取得に失敗しました:', error)
-        router.push('/plans')
+        console.error('プランの取得に失敗しました:', error);
+        void router.push('/plans');
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchPlan()
-  }, [session, planId, router])
+    void fetchPlan();
+  }, [session, planId, router]);
+
+  const handleDelete = async (e: MouseEvent<HTMLButtonElement>): Promise<void> => {
+    e.preventDefault();
+    if (!session || !confirm('このプランを削除してもよろしいですか？')) return;
+
+    try {
+      const response = await api.plans.delete(session.access_token, planId);
+      if ('error' in response) throw new Error(response.error);
+      void router.push('/plans');
+    } catch (error) {
+      console.error('プランの削除に失敗しました:', error);
+      alert('プランの削除に失敗しました');
+    }
+  };
 
   // プランの作成者かどうかを判定
-  const isOwner = session?.user?.id === plan?.userId
+  const isOwner = session?.user?.id === plan?.userId;
 
   // planId が未解決 or データ取得中はローディング表示
   if (!planId || loading) {
@@ -61,11 +77,11 @@ export default function PlanDetailPage({ params }: Props) {
       <div className="flex justify-center items-center min-h-[400px]">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-rose-600" />
       </div>
-    )
+    );
   }
 
   if (!plan) {
-    return null
+    return <div />;
   }
 
   return (
@@ -74,31 +90,21 @@ export default function PlanDetailPage({ params }: Props) {
         <h1 className="text-2xl font-bold text-rose-950">{plan.title}</h1>
         {isOwner && ( // 作成者の場合のみボタンを表示
           <div className="flex gap-4">
-            <Button
-              variant="outline"
-              onClick={() => setIsPublishDialogOpen(true)}
-            >
+            <Button variant="outline" onClick={(): void => setIsPublishDialogOpen(true)}>
               公開設定
             </Button>
             <Button
               variant="outline"
-              onClick={() => router.push(`/plans/${planId}/edit`)}
+              onClick={(): void => {
+                void router.push(`/plans/${planId}/edit`);
+              }}
             >
               編集
             </Button>
             <Button
               variant="outline"
-              onClick={async () => {
-                if (!session || !confirm('このプランを削除してもよろしいですか？')) return
-
-                try {
-                  const response = await api.plans.delete(session.access_token, planId)
-                  if ('error' in response) throw new Error(response.error)
-                  router.push('/plans')
-                } catch (error) {
-                  console.error('プランの削除に失敗しました:', error)
-                  alert('プランの削除に失敗しました')
-                }
+              onClick={(e): void => {
+                void handleDelete(e);
               }}
             >
               削除
@@ -128,7 +134,7 @@ export default function PlanDetailPage({ params }: Props) {
             <h2 className="text-sm font-semibold text-rose-800 mb-2">場所URL</h2>
             <p className="text-rose-900">
               {plan.location ? (
-                <a 
+                <a
                   href={plan.location}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -136,7 +142,9 @@ export default function PlanDetailPage({ params }: Props) {
                 >
                   {new URL(plan.location).hostname}
                 </a>
-              ) : '未設定'}
+              ) : (
+                '未設定'
+              )}
             </p>
           </div>
         </div>
@@ -153,9 +161,9 @@ export default function PlanDetailPage({ params }: Props) {
         <PublishDialog
           planId={planId}
           isOpen={isPublishDialogOpen}
-          onClose={() => setIsPublishDialogOpen(false)}
+          onClose={(): void => setIsPublishDialogOpen(false)}
         />
       )}
     </div>
-  )
+  );
 }

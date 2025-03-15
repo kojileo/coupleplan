@@ -1,18 +1,20 @@
-'use client'
+'use client';
 
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { useAuth } from '@/contexts/AuthContext'
+import { User } from '@supabase/supabase-js';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
-export function useRequireAuth() {
-  const { user, isLoading } = useAuth()
-  const router = useRouter()
+import { useAuth } from '@/contexts/AuthContext';
+
+export function useRequireAuth(): { user: User | null; isLoading: boolean } {
+  const { user, isLoading } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
     if (!isLoading && !user) {
-      router.push('/')
+      router.push('/');
     }
-  }, [user, isLoading, router])
+  }, [user, isLoading, router]);
 
-  return { user, isLoading }
+  return { user, isLoading };
 }

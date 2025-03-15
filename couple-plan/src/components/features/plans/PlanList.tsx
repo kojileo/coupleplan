@@ -1,37 +1,39 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import { useAuth } from '@/contexts/AuthContext'
-import { api } from '@/lib/api'
-import type { Plan } from '@/types/plan'
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import type { ReactElement } from 'react';
 
-export default function PlanList() {
-  const { session } = useAuth()
-  const [plans, setPlans] = useState<Plan[]>([])
-  const [loading, setLoading] = useState(true)
+import { useAuth } from '@/contexts/AuthContext';
+import { api } from '@/lib/api';
+import type { Plan } from '@/types/plan';
+
+export default function PlanList(): ReactElement {
+  const { session } = useAuth();
+  const [plans, setPlans] = useState<Plan[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchPlans = async () => {
+    const fetchPlans = async (): Promise<void> => {
       if (!session) {
-        setLoading(false)
-        return
+        setLoading(false);
+        return;
       }
 
       try {
-        const response = await api.plans.list(session.access_token)
-        if ('error' in response) throw new Error(response.error)
-        
-        setPlans(response.data || [])
-      } catch (error) {
-        console.error('マイプラン一覧の取得に失敗:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
+        const response = await api.plans.list(session.access_token);
+        if ('error' in response) throw new Error(response.error);
 
-    fetchPlans()
-  }, [session])
+        setPlans(response.data || []);
+      } catch (error) {
+        console.error('マイプラン一覧の取得に失敗:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    void fetchPlans();
+  }, [session]);
 
   if (loading) {
     return (
@@ -39,21 +41,18 @@ export default function PlanList() {
         <div className="h-32 bg-gray-200 rounded-lg mb-4"></div>
         <div className="h-32 bg-gray-200 rounded-lg mb-4"></div>
       </div>
-    )
+    );
   }
 
   if (plans.length === 0) {
     return (
       <div className="text-center py-12">
         <p className="text-rose-600 mb-4">まだプランがありません</p>
-        <Link
-          href="/plans/new"
-          className="text-blue-600 hover:text-blue-800"
-        >
+        <Link href="/plans/new" className="text-blue-600 hover:text-blue-800">
           新しいプランを作成する
         </Link>
       </div>
-    )
+    );
   }
 
   return (
@@ -72,23 +71,15 @@ export default function PlanList() {
               </span>
             )}
           </div>
-          
+
           <div className="mt-2 text-sm text-rose-600">
-            {plan.description && (
-              <p className="mb-2">{plan.description}</p>
-            )}
-            {plan.date && (
-              <p>📅 {new Date(plan.date).toLocaleDateString()}</p>
-            )}
-            {plan.budget > 0 && (
-              <p>💰 {plan.budget.toLocaleString()}円</p>
-            )}
-            {plan.location && (
-              <p>📍 {plan.location}</p>
-            )}
+            {plan.description && <p className="mb-2">{plan.description}</p>}
+            {plan.date && <p>📅 {new Date(plan.date).toLocaleDateString()}</p>}
+            {plan.budget > 0 && <p>💰 {plan.budget.toLocaleString()}円</p>}
+            {plan.location && <p>📍 {plan.location}</p>}
           </div>
         </Link>
       ))}
     </div>
-  )
+  );
 }

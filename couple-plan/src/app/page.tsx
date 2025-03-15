@@ -1,20 +1,22 @@
-'use client'
+'use client';
 
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { useAuth } from '@/contexts/AuthContext'
-import Link from 'next/link'
-import Button from '@/components/ui/button'
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
+import type { ReactElement } from 'react';
 
-export default function Home() {
-  const router = useRouter()
-  const { user, isLoading } = useAuth()
+import Button from '@/components/ui/button';
+import { useAuth } from '@/contexts/AuthContext';
+
+export default function Home(): ReactElement {
+  const router = useRouter();
+  const { user, isLoading } = useAuth();
 
   useEffect(() => {
     if (!isLoading && user) {
-      router.push('/plans')
+      void router.push('/plans');
     }
-  }, [user, isLoading, router])
+  }, [user, isLoading, router]);
 
   // 認証状態確認中はローディング表示
   if (isLoading) {
@@ -22,7 +24,7 @@ export default function Home() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
       </div>
-    )
+    );
   }
 
   return (
@@ -66,13 +68,11 @@ export default function Home() {
               </Button>
             </Link>
             <Link href="/signup">
-              <Button size="lg">
-                新規登録
-              </Button>
+              <Button size="lg">新規登録</Button>
             </Link>
           </div>
         </div>
       </main>
     </div>
-  )
+  );
 }

@@ -1,20 +1,22 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { useAuth } from '@/contexts/AuthContext'
-import Button from '@/components/ui/button'
-import { api } from '@/lib/api'
-import type { PlanRequest } from '@/types/api'
+import { useRouter } from 'next/navigation';
+import type { FormEvent, ReactElement } from 'react';
+import { useState } from 'react';
+
+import Button from '@/components/ui/button';
+import { useAuth } from '@/contexts/AuthContext';
+import { api } from '@/lib/api';
+import type { PlanRequest } from '@/types/api';
 
 type FormData = Omit<PlanRequest, 'date'> & {
   date: string | null;
-}
+};
 
-export default function NewPlanPage() {
-  const router = useRouter()
-  const { session } = useAuth()
-  const [saving, setSaving] = useState(false)
+export default function NewPlanPage(): ReactElement {
+  const router = useRouter();
+  const { session } = useAuth();
+  const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     title: '',
     description: '',
@@ -22,34 +24,38 @@ export default function NewPlanPage() {
     budget: 0,
     location: '',
     isPublic: false,
-  })
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!session) return
+  const handleSubmit = async (e: FormEvent): Promise<void> => {
+    e.preventDefault();
+    if (!session) return;
 
-    setSaving(true)
+    setSaving(true);
     try {
       const response = await api.plans.create(session.access_token, {
         ...formData,
         date: formData.date ? new Date(formData.date) : null,
-      })
-      
-      if ('error' in response) throw new Error(response.error)
-      router.push('/plans')
+      });
+
+      if ('error' in response) throw new Error(response.error);
+      void router.push('/plans');
     } catch (error) {
-      console.error('プランの作成に失敗しました:', error)
-      alert('プランの作成に失敗しました')
+      console.error('プランの作成に失敗しました:', error);
+      alert('プランの作成に失敗しました');
     } finally {
-      setSaving(false)
+      setSaving(false);
     }
-  }
+  };
+
+  const onSubmit = (e: FormEvent): void => {
+    void handleSubmit(e);
+  };
 
   return (
     <div className="max-w-2xl mx-auto">
       <h1 className="text-2xl font-bold text-rose-950">新規プラン作成</h1>
-      
-      <form onSubmit={handleSubmit} className="space-y-6">
+
+      <form onSubmit={onSubmit} className="space-y-6">
         <div>
           <label htmlFor="title" className="block text-sm font-medium text-rose-950 mb-1">
             タイトル
@@ -122,18 +128,17 @@ export default function NewPlanPage() {
           <Button
             type="button"
             variant="outline"
-            onClick={() => router.back()}
+            onClick={(): void => {
+              void router.back();
+            }}
           >
             キャンセル
           </Button>
-          <Button
-            type="submit"
-            disabled={saving}
-          >
+          <Button type="submit" disabled={saving}>
             {saving ? '作成中...' : '作成'}
           </Button>
         </div>
       </form>
     </div>
-  )
+  );
 }

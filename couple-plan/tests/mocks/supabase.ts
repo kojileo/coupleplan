@@ -10,6 +10,8 @@ export const mockSupabase = {
   auth: {
     signUp: jest.fn(),
     signIn: jest.fn(),
+    signInWithPassword: jest.fn(),
+    resetPasswordForEmail: jest.fn(),
     signOut: jest.fn(),
     onAuthStateChange: jest.fn(),
     getSession: jest.fn().mockReturnValue({ data: { session: null }, error: null }),
