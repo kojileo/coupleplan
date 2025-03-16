@@ -40,7 +40,10 @@ export default function MyPlansPage(): ReactElement {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-rose-600" />
+        <div
+          data-testid="loading-spinner"
+          className="animate-spin rounded-full h-8 w-8 border-b-2 border-rose-600"
+        />
       </div>
     );
   }
@@ -59,7 +62,14 @@ export default function MyPlansPage(): ReactElement {
         </Button>
       </div>
 
-      {plans.length === 0 ? (
+      {loading ? (
+        <div className="flex justify-center items-center h-64">
+          <div
+            data-testid="loading-spinner"
+            className="animate-spin rounded-full h-8 w-8 border-b-2 border-rose-600"
+          />
+        </div>
+      ) : plans.length === 0 ? (
         <div className="bg-white rounded-lg shadow p-6 text-center">
           <p className="text-rose-700">プランがまだありません</p>
           <Button

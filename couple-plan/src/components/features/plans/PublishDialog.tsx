@@ -79,7 +79,11 @@ export default function PublishDialog({
             : 'このプランを公開しますか？公開すると、他のユーザーが閲覧できるようになります。'}
         </p>
 
-        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+        {error && (
+          <p className="text-red-500 text-sm mb-4" data-testid="error-message">
+            {error}
+          </p>
+        )}
 
         <div className="flex gap-4">
           <Button type="button" variant="outline" onClick={onClose}>
@@ -91,6 +95,7 @@ export default function PublishDialog({
               void handlePublish();
             }}
             disabled={loading}
+            data-testid={loading ? 'loading-button' : 'action-button'}
           >
             {loading ? '更新中...' : plan?.isPublic ? '非公開にする' : '公開する'}
           </Button>
