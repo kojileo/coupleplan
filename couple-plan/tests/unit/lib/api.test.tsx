@@ -12,76 +12,81 @@ describe('api', () => {
 
   beforeEach(() => {
     mockFetch.mockClear()
+    jest.clearAllMocks()
+    jest.spyOn(console, 'error').mockImplementation(() => {})
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
   })
 
   describe('auth', () => {
     it('ログインリクエストを送信', async () => {
-      const mockCredentials = { email: 'test@example.com', password: 'password' }
-      mockFetch.mockResolvedValueOnce({
+      const mockResponse = {
         ok: true,
-        json: () => Promise.resolve({ data: { token: mockToken } }),
-      })
+        json: jest.fn().mockResolvedValue({ user: { id: 'user-123' } }),
+      };
+      (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      await api.auth.login(mockCredentials)
+      const result = await api.auth.login({ email: 'test@example.com', password: 'password' });
 
-      expect(mockFetch).toHaveBeenCalledWith('/api/auth/login', {
+      expect(fetch).toHaveBeenCalledWith('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(mockCredentials),
-      })
-    })
+        body: JSON.stringify({ email: 'test@example.com', password: 'password' }),
+      });
+      expect(result).toEqual({ user: { id: 'user-123' } });
+    });
 
     it('ログイン失敗時のエラーレスポンスを処理', async () => {
-      const mockCredentials = { email: 'test@example.com', password: 'wrong-password' }
-      mockFetch.mockResolvedValueOnce({
+      const mockResponse = {
         ok: false,
-        json: () => Promise.resolve({ error: '認証に失敗しました' }),
-      })
+        json: jest.fn().mockResolvedValue({ error: 'Invalid credentials' }),
+      };
+      (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      const result = await api.auth.login(mockCredentials)
-      expect(result).toEqual({ error: '認証に失敗しました' })
-    })
+      const result = await api.auth.login({ email: 'test@example.com', password: 'wrong-password' });
 
-    it('ログイン時のネットワークエラーを処理', async () => {
-      const mockCredentials = { email: 'test@example.com', password: 'password' }
-      mockFetch.mockRejectedValueOnce(new Error('Network error'))
-
-      try {
-        await api.auth.login(mockCredentials)
-        // エラーがスローされなかった場合、テストを失敗させる
-        fail('Expected an error to be thrown')
-      } catch (error) {
-        expect(error).toBeInstanceOf(Error)
-        expect((error as Error).message).toBe('Network error')
-      }
-    })
+      expect(result).toEqual({ error: 'Invalid credentials' });
+    });
 
     it('サインアップリクエストを送信', async () => {
-      const mockData = { email: 'test@example.com', password: 'password', name: 'Test User' }
-      mockFetch.mockResolvedValueOnce({
+      const mockResponse = {
         ok: true,
-        json: () => Promise.resolve({ data: { token: mockToken } }),
-      })
+        json: jest.fn().mockResolvedValue({ user: { id: 'user-123' } }),
+      };
+      (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      await api.auth.signup(mockData)
+      const result = await api.auth.signup({ email: 'test@example.com', password: 'password', name: 'Test User' });
 
-      expect(mockFetch).toHaveBeenCalledWith('/api/auth/signup', {
+      expect(fetch).toHaveBeenCalledWith('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(mockData),
-      })
-    })
+        body: JSON.stringify({ email: 'test@example.com', password: 'password', name: 'Test User' }),
+      });
+      expect(result).toEqual({ user: { id: 'user-123' } });
+    });
 
     it('サインアップ失敗時のエラーレスポンスを処理', async () => {
-      const mockData = { email: 'existing@example.com', password: 'password', name: 'Test User' }
-      mockFetch.mockResolvedValueOnce({
+      const mockResponse = {
         ok: false,
-        json: () => Promise.resolve({ error: 'このメールアドレスは既に使用されています' }),
-      })
+        json: jest.fn().mockResolvedValue({ error: 'Email already exists' }),
+      };
+      (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      const result = await api.auth.signup(mockData)
-      expect(result).toEqual({ error: 'このメールアドレスは既に使用されています' })
-    })
+      const result = await api.auth.signup({ email: 'existing@example.com', password: 'password', name: 'Test User' });
+
+      expect(result).toEqual({ error: 'Email already exists' });
+    });
+
+    it('サインアップ時のネットワークエラーを処理', async () => {
+      (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
+
+      const result = await api.auth.signup({ email: 'test@example.com', password: 'password', name: 'Test User' });
+
+      expect(result).toEqual({ error: 'サインアップに失敗しました' });
+      expect(console.error).toHaveBeenCalledWith('Signup error:', expect.any(Error));
+    });
   })
 
   describe('profile', () => {
@@ -94,57 +99,81 @@ describe('api', () => {
     }
 
     it('プロフィール情報を取得', async () => {
-      mockFetch.mockResolvedValueOnce({
+      const mockResponse = {
         ok: true,
-        json: () => Promise.resolve({ data: mockProfile }),
-      })
+        json: jest.fn().mockResolvedValue({ name: 'Test User' }),
+      };
+      (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      await api.profile.get(mockToken, mockUserId)
+      const result = await api.profile.get('token-123', 'user-123');
 
-      expect(mockFetch).toHaveBeenCalledWith(`/api/profile/${mockUserId}`, {
-        headers: { Authorization: `Bearer ${mockToken}` },
-      })
-    })
+      expect(fetch).toHaveBeenCalledWith('/api/profile/user-123', {
+        headers: { Authorization: 'Bearer token-123' },
+      });
+      expect(result).toEqual({ name: 'Test User' });
+    });
 
     it('プロフィール取得失敗時のエラーレスポンスを処理', async () => {
-      mockFetch.mockResolvedValueOnce({
+      const mockResponse = {
         ok: false,
-        json: () => Promise.resolve({ error: 'プロフィールが見つかりません' }),
-      })
+        json: jest.fn().mockResolvedValue({ error: 'Unauthorized' }),
+      };
+      (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      const result = await api.profile.get(mockToken, 'non-existent-user')
-      expect(result).toEqual({ error: 'プロフィールが見つかりません' })
-    })
+      const result = await api.profile.get('invalid-token', 'user-123');
+
+      expect(result).toEqual({ error: 'Unauthorized' });
+    });
+
+    it('プロフィール取得時のネットワークエラーを処理', async () => {
+      (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
+
+      const result = await api.profile.get('token-123', 'user-123');
+
+      expect(result).toEqual({ error: 'プロフィールの取得に失敗しました' });
+      expect(console.error).toHaveBeenCalledWith('Profile get error:', expect.any(Error));
+    });
 
     it('プロフィール情報を更新', async () => {
-      const updateData = { name: 'Updated Name', email: 'updated@example.com' }
-      mockFetch.mockResolvedValueOnce({
+      const mockResponse = {
         ok: true,
-        json: () => Promise.resolve({ data: { ...mockProfile, ...updateData } }),
-      })
+        json: jest.fn().mockResolvedValue({ name: 'Updated Name', email: 'updated@example.com' }),
+      };
+      (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      await api.profile.update(mockToken, updateData.name, updateData.email)
+      const result = await api.profile.update('token-123', 'Updated Name', 'updated@example.com');
 
-      expect(mockFetch).toHaveBeenCalledWith('/api/profile', {
+      expect(fetch).toHaveBeenCalledWith('/api/profile', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${mockToken}`,
+          Authorization: 'Bearer token-123',
         },
-        body: JSON.stringify(updateData),
-      })
-    })
+        body: JSON.stringify({ name: 'Updated Name', email: 'updated@example.com' }),
+      });
+      expect(result).toEqual({ name: 'Updated Name', email: 'updated@example.com' });
+    });
 
     it('プロフィール更新失敗時のエラーレスポンスを処理', async () => {
-      const updateData = { name: 'Updated Name', email: 'invalid-email' }
-      mockFetch.mockResolvedValueOnce({
+      const mockResponse = {
         ok: false,
-        json: () => Promise.resolve({ error: '無効なメールアドレスです' }),
-      })
+        json: jest.fn().mockResolvedValue({ error: 'Validation failed' }),
+      };
+      (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      const result = await api.profile.update(mockToken, updateData.name, updateData.email)
-      expect(result).toEqual({ error: '無効なメールアドレスです' })
-    })
+      const result = await api.profile.update('token-123', '', 'invalid-email');
+
+      expect(result).toEqual({ error: 'Validation failed' });
+    });
+
+    it('プロフィール更新時のネットワークエラーを処理', async () => {
+      (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
+
+      const result = await api.profile.update('token-123', 'Updated Name', 'updated@example.com');
+
+      expect(result).toEqual({ error: 'プロフィールの更新に失敗しました' });
+      expect(console.error).toHaveBeenCalledWith('Profile update error:', expect.any(Error));
+    });
   })
 
   describe('plans', () => {
@@ -163,265 +192,386 @@ describe('api', () => {
     }
 
     it('プラン一覧を取得', async () => {
-      mockFetch.mockResolvedValueOnce({
+      const mockResponse = {
         ok: true,
-        json: () => Promise.resolve({ data: [mockPlan] }),
-      })
+        json: jest.fn().mockResolvedValue({ data: [{ id: 'plan-123', title: 'Test Plan' }] }),
+      };
+      (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      await api.plans.list(mockToken)
+      const result = await api.plans.list('token-123');
 
-      expect(mockFetch).toHaveBeenCalledWith('/api/plans', {
-        headers: { Authorization: `Bearer ${mockToken}` },
-      })
-    })
+      expect(fetch).toHaveBeenCalledWith('/api/plans', {
+        headers: { Authorization: 'Bearer token-123' },
+      });
+      expect(result).toEqual({ data: [{ id: 'plan-123', title: 'Test Plan' }] });
+    });
 
     it('プラン一覧取得失敗時のエラーレスポンスを処理', async () => {
-      mockFetch.mockResolvedValueOnce({
+      const mockResponse = {
         ok: false,
-        json: () => Promise.resolve({ error: '認証が必要です' }),
-      })
+        json: jest.fn().mockResolvedValue({ error: 'Unauthorized' }),
+      };
+      (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      const result = await api.plans.list('invalid-token')
-      expect(result).toEqual({ error: '認証が必要です' })
-    })
+      const result = await api.plans.list('invalid-token');
+
+      expect(result).toEqual({ error: 'Unauthorized' });
+    });
+
+    it('プラン一覧取得時のネットワークエラーを処理', async () => {
+      (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
+
+      const result = await api.plans.list('token-123');
+
+      expect(result).toEqual({ error: 'プラン一覧の取得に失敗しました' });
+      expect(console.error).toHaveBeenCalledWith('Plans list error:', expect.any(Error));
+    });
 
     it('プランを作成', async () => {
-      const planData = {
-        title: mockPlan.title,
-        description: mockPlan.description ?? '',
-        date: mockPlan.date instanceof Date ? mockPlan.date : null,
-        location: mockPlan.location ?? null,
-        budget: mockPlan.budget,
-        isPublic: mockPlan.isPublic,
-      }
-
-      mockFetch.mockResolvedValueOnce({
+      const mockResponse = {
         ok: true,
-        json: () => Promise.resolve({ data: mockPlan }),
-      })
+        json: jest.fn().mockResolvedValue({ data: { id: 'plan-123', title: 'New Plan' } }),
+      };
+      (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      await api.plans.create(mockToken, planData)
+      const planData = { 
+        title: 'New Plan', 
+        description: '',
+        date: new Date(), 
+        budget: 5000,
+        isPublic: false
+      };
+      const result = await api.plans.create('token-123', planData);
 
-      expect(mockFetch).toHaveBeenCalledWith('/api/plans', {
+      expect(fetch).toHaveBeenCalledWith('/api/plans', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${mockToken}`,
+          Authorization: 'Bearer token-123',
         },
         body: JSON.stringify(planData),
-      })
-    })
+      });
+      expect(result).toEqual({ data: { id: 'plan-123', title: 'New Plan' } });
+    });
 
     it('プラン作成時のエラーハンドリング', async () => {
-      mockFetch.mockRejectedValueOnce(new Error('Network error'))
+      (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
 
-      const result = await api.plans.create(mockToken, {} as any)
+      const planData = { 
+        title: 'New Plan', 
+        description: '',
+        date: new Date(), 
+        budget: 5000,
+        isPublic: false
+      };
+      const result = await api.plans.create('token-123', planData);
 
-      expect(result).toEqual({
-        error: 'プランの作成に失敗しました'
-      })
-    })
+      expect(result).toEqual({ error: 'プランの作成に失敗しました' });
+      expect(console.error).toHaveBeenCalledWith('Plan create error:', expect.any(Error));
+    });
 
     it('プラン作成時のレスポンスエラーを処理', async () => {
-      mockFetch.mockResolvedValueOnce({
+      const mockResponse = {
         ok: false,
-        json: () => Promise.resolve({ error: 'タイトルは必須です' }),
-      })
+        json: jest.fn().mockResolvedValue({ error: 'プランの作成に失敗しました' }),
+      };
+      (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      const result = await api.plans.create(mockToken, { title: '' } as any)
+      const planData = { 
+        title: '', 
+        description: '',
+        date: new Date(), 
+        budget: 5000,
+        isPublic: false
+      };
+      const result = await api.plans.create('token-123', planData);
 
-      expect(result).toEqual({
-        error: 'プランの作成に失敗しました'
-      })
-    })
+      expect(result).toEqual({ error: 'プランの作成に失敗しました' });
+    });
 
     it('特定のプランを取得', async () => {
-      mockFetch.mockResolvedValueOnce({
+      const mockResponse = {
         ok: true,
-        json: () => Promise.resolve({ data: mockPlan }),
-      })
+        json: jest.fn().mockResolvedValue({ data: { id: 'plan-123', title: 'Test Plan' } }),
+      };
+      (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      await api.plans.get(mockToken, mockPlan.id)
+      const result = await api.plans.get('token-123', 'plan-123');
 
-      expect(mockFetch).toHaveBeenCalledWith(`/api/plans/${mockPlan.id}`, {
-        headers: { Authorization: `Bearer ${mockToken}` },
-      })
-    })
+      expect(fetch).toHaveBeenCalledWith('/api/plans/plan-123', {
+        headers: { Authorization: 'Bearer token-123' },
+      });
+      expect(result).toEqual({ data: { id: 'plan-123', title: 'Test Plan' } });
+    });
 
     it('プラン取得失敗時のエラーレスポンスを処理', async () => {
-      mockFetch.mockResolvedValueOnce({
+      const mockResponse = {
         ok: false,
-        json: () => Promise.resolve({ error: 'プランが見つかりません' }),
-      })
+        json: jest.fn().mockResolvedValue({ error: 'Plan not found' }),
+      };
+      (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      const result = await api.plans.get(mockToken, 'non-existent-plan')
-      expect(result).toEqual({ error: 'プランが見つかりません' })
-    })
+      const result = await api.plans.get('token-123', 'nonexistent-plan');
+
+      expect(result).toEqual({ error: 'Plan not found' });
+    });
+
+    it('プラン取得時のネットワークエラーを処理', async () => {
+      (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
+
+      const result = await api.plans.get('token-123', 'plan-123');
+
+      expect(result).toEqual({ error: 'プランの取得に失敗しました' });
+      expect(console.error).toHaveBeenCalledWith('Plan get error:', expect.any(Error));
+    });
 
     it('プランを更新', async () => {
-      const updateData = {
-        title: 'Updated Plan',
-        description: 'Updated Description',
-        date: new Date('2024-02-01'),
-        location: 'Updated Location',
-        budget: 2000,
-        isPublic: true,
-      }
-
-      mockFetch.mockResolvedValueOnce({
+      const mockResponse = {
         ok: true,
-        json: () => Promise.resolve({ data: { ...mockPlan, ...updateData } }),
-      })
+        json: jest.fn().mockResolvedValue({ data: { id: 'plan-123', title: 'Updated Plan' } }),
+      };
+      (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      await api.plans.update(mockToken, mockPlan.id, updateData)
+      const planData = { 
+        title: 'Updated Plan', 
+        description: '',
+        budget: 6000,
+        isPublic: false
+      };
+      const result = await api.plans.update('token-123', 'plan-123', planData);
 
-      expect(mockFetch).toHaveBeenCalledWith(`/api/plans/${mockPlan.id}`, {
+      expect(fetch).toHaveBeenCalledWith('/api/plans/plan-123', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${mockToken}`,
+          Authorization: 'Bearer token-123',
         },
-        body: JSON.stringify(updateData),
-      })
-    })
+        body: JSON.stringify(planData),
+      });
+      expect(result).toEqual({ data: { id: 'plan-123', title: 'Updated Plan' } });
+    });
 
     it('プラン更新失敗時のエラーレスポンスを処理', async () => {
-      mockFetch.mockResolvedValueOnce({
+      const mockResponse = {
         ok: false,
-        json: () => Promise.resolve({ error: 'プランの更新に失敗しました' }),
-      })
+        json: jest.fn().mockResolvedValue({ error: 'Validation failed' }),
+      };
+      (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      const result = await api.plans.update(mockToken, mockPlan.id, { title: '' } as any)
-      expect(result).toEqual({ error: 'プランの更新に失敗しました' })
-    })
+      const planData = { 
+        title: '', 
+        description: '',
+        budget: 5000,
+        isPublic: false
+      };
+      const result = await api.plans.update('token-123', 'plan-123', planData);
+
+      expect(result).toEqual({ error: 'Validation failed' });
+    });
+
+    it('プラン更新時のネットワークエラーを処理', async () => {
+      (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
+
+      const planData = { 
+        title: 'Updated Plan', 
+        description: '',
+        budget: 5000,
+        isPublic: false
+      };
+      const result = await api.plans.update('token-123', 'plan-123', planData);
+
+      expect(result).toEqual({ error: 'プランの更新に失敗しました' });
+      expect(console.error).toHaveBeenCalledWith('Plan update error:', expect.any(Error));
+    });
 
     it('プランを削除', async () => {
-      mockFetch.mockResolvedValueOnce({
+      const mockResponse = {
         ok: true,
-        json: () => Promise.resolve({ data: null }),
-      })
+        json: jest.fn().mockResolvedValue({ success: true }),
+      };
+      (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      await api.plans.delete(mockToken, mockPlan.id)
+      const result = await api.plans.delete('token-123', 'plan-123');
 
-      expect(mockFetch).toHaveBeenCalledWith(`/api/plans/${mockPlan.id}`, {
+      expect(fetch).toHaveBeenCalledWith('/api/plans/plan-123', {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${mockToken}` },
-      })
-    })
+        headers: { Authorization: 'Bearer token-123' },
+      });
+      expect(result).toEqual({ success: true });
+    });
 
     it('プラン削除失敗時のエラーレスポンスを処理', async () => {
-      mockFetch.mockResolvedValueOnce({
+      const mockResponse = {
         ok: false,
-        json: () => Promise.resolve({ error: 'プランの削除に失敗しました' }),
-      })
+        json: jest.fn().mockResolvedValue({ error: 'Plan not found' }),
+      };
+      (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      const result = await api.plans.delete(mockToken, mockPlan.id)
-      expect(result).toEqual({ error: 'プランの削除に失敗しました' })
-    })
+      const result = await api.plans.delete('token-123', 'nonexistent-plan');
+
+      expect(result).toEqual({ error: 'Plan not found' });
+    });
+
+    it('プラン削除時のネットワークエラーを処理', async () => {
+      (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
+
+      const result = await api.plans.delete('token-123', 'plan-123');
+
+      expect(result).toEqual({ error: 'プランの削除に失敗しました' });
+      expect(console.error).toHaveBeenCalledWith('Plan delete error:', expect.any(Error));
+    });
 
     it('公開プラン一覧を取得', async () => {
-      mockFetch.mockResolvedValueOnce({
+      const mockResponse = {
         ok: true,
-        json: () => Promise.resolve({ data: [mockPlan] }),
-      })
+        json: jest.fn().mockResolvedValue({ data: [{ id: 'plan-123', title: 'Public Plan' }] }),
+      };
+      (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      await api.plans.listPublic(mockToken)
+      const result = await api.plans.listPublic('token-123');
 
-      expect(mockFetch).toHaveBeenCalledWith('/api/plans/public', {
-        headers: { Authorization: `Bearer ${mockToken}` },
-      })
-    })
+      expect(fetch).toHaveBeenCalledWith('/api/plans/public', {
+        headers: { Authorization: 'Bearer token-123' },
+      });
+      expect(result).toEqual({ data: [{ id: 'plan-123', title: 'Public Plan' }] });
+    });
 
     it('公開プラン一覧取得失敗時のエラーレスポンスを処理', async () => {
-      mockFetch.mockResolvedValueOnce({
+      const mockResponse = {
         ok: false,
-        json: () => Promise.resolve({ error: '認証が必要です' }),
-      })
+        json: jest.fn().mockResolvedValue({ error: 'Unauthorized' }),
+      };
+      (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      const result = await api.plans.listPublic('invalid-token')
-      expect(result).toEqual({ error: '認証が必要です' })
-    })
+      const result = await api.plans.listPublic('invalid-token');
+
+      expect(result).toEqual({ error: 'Unauthorized' });
+    });
+
+    it('公開プラン一覧取得時のネットワークエラーを処理', async () => {
+      (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
+
+      const result = await api.plans.listPublic('token-123');
+
+      expect(result).toEqual({ error: '公開プラン一覧の取得に失敗しました' });
+      expect(console.error).toHaveBeenCalledWith('Public plans list error:', expect.any(Error));
+    });
 
     it('プランの公開設定を更新', async () => {
-      mockFetch.mockResolvedValueOnce({
+      const mockResponse = {
         ok: true,
-        json: () => Promise.resolve({ data: { ...mockPlan, isPublic: true } }),
-      })
+        json: jest.fn().mockResolvedValue({ data: { id: 'plan-123', isPublic: true } }),
+      };
+      (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      await api.plans.publish(mockToken, mockPlan.id, true)
+      const result = await api.plans.publish('token-123', 'plan-123', true);
 
-      expect(mockFetch).toHaveBeenCalledWith(`/api/plans/${mockPlan.id}/publish`, {
+      expect(fetch).toHaveBeenCalledWith('/api/plans/plan-123/publish', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${mockToken}`,
+          Authorization: 'Bearer token-123',
         },
         body: JSON.stringify({ isPublic: true }),
-      })
-    })
+      });
+      expect(result).toEqual({ data: { id: 'plan-123', isPublic: true } });
+    });
 
     it('プラン公開設定更新失敗時のエラーレスポンスを処理', async () => {
-      mockFetch.mockResolvedValueOnce({
+      const mockResponse = {
         ok: false,
-        json: () => Promise.resolve({ error: 'プランの公開設定の更新に失敗しました' }),
-      })
+        json: jest.fn().mockResolvedValue({ error: 'Plan not found' }),
+      };
+      (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      const result = await api.plans.publish(mockToken, mockPlan.id, true)
-      expect(result).toEqual({ error: 'プランの公開設定の更新に失敗しました' })
-    })
+      const result = await api.plans.publish('token-123', 'nonexistent-plan', true);
+
+      expect(result).toEqual({ error: 'Plan not found' });
+    });
+
+    it('プラン公開設定更新時のネットワークエラーを処理', async () => {
+      (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
+
+      const result = await api.plans.publish('token-123', 'plan-123', true);
+
+      expect(result).toEqual({ error: 'プランの公開設定の更新に失敗しました' });
+      expect(console.error).toHaveBeenCalledWith('Plan publish error:', expect.any(Error));
+    });
   })
 
   describe('likes', () => {
     it('いいねを作成', async () => {
-      const planId = 'plan-1'
-      mockFetch.mockResolvedValueOnce({
+      const mockResponse = {
         ok: true,
-        json: () => Promise.resolve({ data: { id: 'like-1' } }),
-      })
+        json: jest.fn().mockResolvedValue({ success: true }),
+      };
+      (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      await api.likes.create(mockToken, planId)
+      const result = await api.likes.create('token-123', 'plan-123');
 
-      expect(mockFetch).toHaveBeenCalledWith(`/api/plans/${planId}/likes`, {
+      expect(fetch).toHaveBeenCalledWith('/api/plans/plan-123/likes', {
         method: 'POST',
-        headers: { Authorization: `Bearer ${mockToken}` },
-      })
-    })
+        headers: { Authorization: 'Bearer token-123' },
+      });
+      expect(result).toEqual({ success: true });
+    });
 
     it('いいね作成失敗時のエラーレスポンスを処理', async () => {
-      const planId = 'plan-1'
-      mockFetch.mockResolvedValueOnce({
+      const mockResponse = {
         ok: false,
-        json: () => Promise.resolve({ error: 'いいねの作成に失敗しました' }),
-      })
+        json: jest.fn().mockResolvedValue({ error: 'Already liked' }),
+      };
+      (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      const result = await api.likes.create(mockToken, planId)
-      expect(result).toEqual({ error: 'いいねの作成に失敗しました' })
-    })
+      const result = await api.likes.create('token-123', 'plan-123');
+
+      expect(result).toEqual({ error: 'Already liked' });
+    });
+
+    it('いいね作成時のネットワークエラーを処理', async () => {
+      (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
+
+      const result = await api.likes.create('token-123', 'plan-123');
+
+      expect(result).toEqual({ error: 'いいねの追加に失敗しました' });
+      expect(console.error).toHaveBeenCalledWith('Like create error:', expect.any(Error));
+    });
 
     it('いいねを削除', async () => {
-      const planId = 'plan-1'
-      mockFetch.mockResolvedValueOnce({
+      const mockResponse = {
         ok: true,
-        json: () => Promise.resolve({ data: null }),
-      })
+        json: jest.fn().mockResolvedValue({ success: true }),
+      };
+      (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      await api.likes.delete(mockToken, planId)
+      const result = await api.likes.delete('token-123', 'plan-123');
 
-      expect(mockFetch).toHaveBeenCalledWith(`/api/plans/${planId}/likes`, {
+      expect(fetch).toHaveBeenCalledWith('/api/plans/plan-123/likes', {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${mockToken}` },
-      })
-    })
+        headers: { Authorization: 'Bearer token-123' },
+      });
+      expect(result).toEqual({ success: true });
+    });
 
     it('いいね削除失敗時のエラーレスポンスを処理', async () => {
-      const planId = 'plan-1'
-      mockFetch.mockResolvedValueOnce({
+      const mockResponse = {
         ok: false,
-        json: () => Promise.resolve({ error: 'いいねの削除に失敗しました' }),
-      })
+        json: jest.fn().mockResolvedValue({ error: 'Like not found' }),
+      };
+      (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      const result = await api.likes.delete(mockToken, planId)
-      expect(result).toEqual({ error: 'いいねの削除に失敗しました' })
-    })
+      const result = await api.likes.delete('token-123', 'plan-123');
+
+      expect(result).toEqual({ error: 'Like not found' });
+    });
+
+    it('いいね削除時のネットワークエラーを処理', async () => {
+      (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
+
+      const result = await api.likes.delete('token-123', 'plan-123');
+
+      expect(result).toEqual({ error: 'いいねの削除に失敗しました' });
+      expect(console.error).toHaveBeenCalledWith('Like delete error:', expect.any(Error));
+    });
   })
 })

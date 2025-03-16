@@ -197,7 +197,7 @@ describe('PublishDialogコンポーネント統合テスト', () => {
 
   it('プラン取得APIがエラーを返した場合はエラーメッセージが表示される', async () => {
     // APIエラーをモック
-    (api.plans.get as jest.Mock).mockResolvedValue({ error: 'プランの取得に失敗しました' });
+    (api.plans.get as jest.Mock).mockRejectedValueOnce(new Error('プランの取得に失敗しました'));
     
     render(
       <PublishDialog

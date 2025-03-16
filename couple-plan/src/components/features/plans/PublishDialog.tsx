@@ -51,7 +51,9 @@ export default function PublishDialog({
       const response = await api.plans.publish(session.access_token, planId, !plan.isPublic);
 
       if ('error' in response) {
-        throw new Error(response.error);
+        setError('公開設定の更新に失敗しました');
+        console.error('公開設定の更新に失敗しました:', new Error(response.error));
+        return;
       }
 
       setPlan((prev) => (prev ? { ...prev, isPublic: !prev.isPublic } : null));
@@ -91,9 +93,7 @@ export default function PublishDialog({
           </Button>
           <Button
             type="button"
-            onClick={(): void => {
-              void handlePublish();
-            }}
+            onClick={() => void handlePublish()}
             disabled={loading}
             data-testid={loading ? 'loading-button' : 'action-button'}
           >
