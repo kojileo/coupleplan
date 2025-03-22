@@ -2,6 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import PublicPlansPage from '@/app/(dashboard)/plans/public/page';
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
+import { TEST_AUTH } from '@tests/utils/test-constants';
 
 jest.mock('@/contexts/AuthContext', () => ({
   useAuth: jest.fn(),
@@ -21,7 +22,7 @@ jest.mock('@/components/features/plans/PlanCard', () => ({
 
 describe('PublicPlansPage コンポーネント', () => {
   beforeEach(() => {
-    (useAuth as jest.Mock).mockReturnValue({ session: { access_token: 'token123' } });
+    (useAuth as jest.Mock).mockReturnValue({ session: { access_token: TEST_AUTH.ACCESS_TOKEN } });
     // console.error をモック化して、テスト中のエラーログを抑制
     jest.spyOn(console, 'error').mockImplementation(() => {});
   });

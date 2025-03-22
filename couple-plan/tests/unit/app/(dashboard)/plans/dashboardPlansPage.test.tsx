@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
 import React from 'react';
+import { TEST_AUTH } from '@tests/utils/test-constants';
 
 // PlanCard コンポーネントを簡易モック化
 jest.mock('@/components/features/plans/PlanCard', () => ({
@@ -31,7 +32,7 @@ describe('MyPlansPage コンポーネント', () => {
 
   beforeEach(() => {
     (useRouter as jest.Mock).mockReturnValue({ push });
-    (useAuth as jest.Mock).mockReturnValue({ session: { access_token: 'token123' } });
+    (useAuth as jest.Mock).mockReturnValue({ session: { access_token: TEST_AUTH.ACCESS_TOKEN } });
     // console.error をモック化して、テスト中のエラーログを抑制
     jest.spyOn(console, 'error').mockImplementation(() => {});
   });

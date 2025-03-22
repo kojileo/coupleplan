@@ -3,6 +3,7 @@ import NewPlanPage from '@/app/(dashboard)/plans/new/page';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
+import { TEST_AUTH } from '@tests/utils/test-constants';
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
@@ -26,7 +27,7 @@ describe('NewPlanPage コンポーネント', () => {
 
   beforeEach(() => {
     (useRouter as jest.Mock).mockReturnValue({ push, back });
-    (useAuth as jest.Mock).mockReturnValue({ session: { access_token: 'token123' } });
+    (useAuth as jest.Mock).mockReturnValue({ session: { access_token: TEST_AUTH.ACCESS_TOKEN } });
     // console.error をモック化して、テスト中のエラーログを抑制
     jest.spyOn(console, 'error').mockImplementation(() => {});
   });
@@ -58,7 +59,7 @@ describe('NewPlanPage コンポーネント', () => {
       const args = (api.plans.create as jest.Mock).mock.calls[0];
       
       // 第1引数はトークン
-      expect(args[0]).toBe('token123');
+      expect(args[0]).toBe(TEST_AUTH.ACCESS_TOKEN);
       
       // 第2引数はプランデータ
       const planData = args[1];
@@ -214,7 +215,7 @@ describe('NewPlanPage コンポーネント', () => {
     fireEvent.click(screen.getByRole('button', { name: /作成/i }));
 
     await waitFor(() => {
-      expect(api.plans.create).toHaveBeenCalledWith('token123', expect.objectContaining({
+      expect(api.plans.create).toHaveBeenCalledWith(TEST_AUTH.ACCESS_TOKEN, expect.objectContaining({
         title: 'Test Plan',
         date: null,
         budget: 1000,

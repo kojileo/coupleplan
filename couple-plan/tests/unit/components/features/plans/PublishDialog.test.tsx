@@ -3,6 +3,7 @@ import PublishDialog from '@/components/features/plans/PublishDialog'
 import { useAuth } from '@/contexts/AuthContext'
 import { api } from '@/lib/api'
 import type { Plan } from '@/types/plan'
+import { TEST_USER, TEST_AUTH } from '@tests/utils/test-constants'
 
 // useAuthのモック
 jest.mock('@/contexts/AuthContext', () => ({
@@ -28,15 +29,15 @@ describe('PublishDialog', () => {
     budget: 10000,
     location: 'https://example.com',
     isPublic: false,
-    userId: 'user1',
+    userId: TEST_USER.ID,
     createdAt: new Date(),
     updatedAt: new Date(),
     likes: []
   }
 
   const mockSession = {
-    user: { id: 'user1' },
-    access_token: 'dummy-token'
+    user: { id: TEST_USER.ID },
+    access_token: TEST_AUTH.ACCESS_TOKEN
   }
 
   const mockOnClose = jest.fn()
@@ -111,7 +112,7 @@ describe('PublishDialog', () => {
     await waitFor(async () => {
       await fireEvent.click(publishButton)
       expect(api.plans.publish).toHaveBeenCalledWith(
-        mockSession.access_token,
+        TEST_AUTH.ACCESS_TOKEN,
         '1',
         true
       )
