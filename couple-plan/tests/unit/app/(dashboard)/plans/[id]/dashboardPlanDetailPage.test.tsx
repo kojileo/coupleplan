@@ -3,6 +3,7 @@ import PlanDetailPage from '@/app/(dashboard)/plans/[id]/page';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
+import { TEST_USER, TEST_AUTH, createMockSession } from '@tests/utils/test-constants';
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
@@ -31,7 +32,9 @@ jest.mock('@/components/features/plans/PublishDialog', () => ({
 
 describe('PlanDetailPage コンポーネント', () => {
   const push = jest.fn();
-  const mockUserId = 'user-123';
+  const mockUserId = TEST_USER.ID;
+  const mockToken = TEST_AUTH.ACCESS_TOKEN;
+  const mockSession = createMockSession(mockUserId);
   const mockPlan = {
     id: '123',
     title: 'Plan Detail Title',
@@ -56,7 +59,7 @@ describe('PlanDetailPage コンポーネント', () => {
 
   it('ロード中にスピナーが表示される', () => {
     (useAuth as jest.Mock).mockReturnValue({ 
-      session: { access_token: 'token123', user: { id: mockUserId } }
+      session: { access_token: mockToken, user: { id: mockUserId } }
     });
     (api.plans.get as jest.Mock).mockReturnValue(new Promise(() => {}));
     render(<PlanDetailPage params={Promise.resolve({ id: '123' })} />);
@@ -66,7 +69,7 @@ describe('PlanDetailPage コンポーネント', () => {
 
   it('プラン作成者の場合、編集系のボタンが表示される', async () => {
     (useAuth as jest.Mock).mockReturnValue({ 
-      session: { access_token: 'token123', user: { id: mockUserId } }
+      session: { access_token: mockToken, user: { id: mockUserId } }
     });
     (api.plans.get as jest.Mock).mockResolvedValueOnce({ data: mockPlan });
     render(<PlanDetailPage params={Promise.resolve({ id: '123' })} />);
@@ -83,7 +86,7 @@ describe('PlanDetailPage コンポーネント', () => {
 
   it('プラン作成者以外の場合、編集系のボタンが表示されない', async () => {
     (useAuth as jest.Mock).mockReturnValue({ 
-      session: { access_token: 'token123', user: { id: 'different-user' } }
+      session: { access_token: mockToken, user: { id: 'different-user' } }
     });
     (api.plans.get as jest.Mock).mockResolvedValueOnce({ data: mockPlan });
     render(<PlanDetailPage params={Promise.resolve({ id: '123' })} />);
@@ -100,7 +103,7 @@ describe('PlanDetailPage コンポーネント', () => {
 
   it('プラン作成者の場合、削除処理が実行できる', async () => {
     (useAuth as jest.Mock).mockReturnValue({ 
-      session: { access_token: 'token123', user: { id: mockUserId } }
+      session: { access_token: mockToken, user: { id: mockUserId } }
     });
     (api.plans.get as jest.Mock).mockResolvedValueOnce({ data: mockPlan });
     (api.plans.delete as jest.Mock).mockResolvedValueOnce({});
@@ -114,14 +117,14 @@ describe('PlanDetailPage コンポーネント', () => {
     fireEvent.click(screen.getByRole('button', { name: /削除/i }));
 
     await waitFor(() => {
-      expect(api.plans.delete).toHaveBeenCalledWith('token123', '123');
+      expect(api.plans.delete).toHaveBeenCalledWith(mockToken, '123');
       expect(push).toHaveBeenCalledWith('/plans');
     });
   });
 
   it('削除確認ダイアログでキャンセルした場合、削除処理が実行されない', async () => {
     (useAuth as jest.Mock).mockReturnValue({ 
-      session: { access_token: 'token123', user: { id: mockUserId } }
+      session: { access_token: mockToken, user: { id: mockUserId } }
     });
     (api.plans.get as jest.Mock).mockResolvedValueOnce({ data: mockPlan });
     window.confirm = jest.fn(() => false); // キャンセルを選択
@@ -140,7 +143,7 @@ describe('PlanDetailPage コンポーネント', () => {
 
   it('プラン削除に失敗した場合、エラーメッセージが表示される', async () => {
     (useAuth as jest.Mock).mockReturnValue({ 
-      session: { access_token: 'token123', user: { id: mockUserId } }
+      session: { access_token: mockToken, user: { id: mockUserId } }
     });
     (api.plans.get as jest.Mock).mockResolvedValueOnce({ data: mockPlan });
     (api.plans.delete as jest.Mock).mockResolvedValueOnce({ error: '削除に失敗しました' });
@@ -155,7 +158,7 @@ describe('PlanDetailPage コンポーネント', () => {
     fireEvent.click(screen.getByRole('button', { name: /削除/i }));
 
     await waitFor(() => {
-      expect(api.plans.delete).toHaveBeenCalledWith('token123', '123');
+      expect(api.plans.delete).toHaveBeenCalledWith(mockToken, '123');
       expect(window.alert).toHaveBeenCalledWith('プランの削除に失敗しました');
       expect(push).not.toHaveBeenCalledWith('/plans');
     });
@@ -163,7 +166,7 @@ describe('PlanDetailPage コンポーネント', () => {
 
   it('プラン作成者の場合、公開設定ダイアログを開ける', async () => {
     (useAuth as jest.Mock).mockReturnValue({ 
-      session: { access_token: 'token123', user: { id: mockUserId } }
+      session: { access_token: mockToken, user: { id: mockUserId } }
     });
     (api.plans.get as jest.Mock).mockResolvedValueOnce({ data: mockPlan });
     render(<PlanDetailPage params={Promise.resolve({ id: '123' })} />);
@@ -182,7 +185,7 @@ describe('PlanDetailPage コンポーネント', () => {
 
   it('プランの詳細情報が正しく表示される', async () => {
     (useAuth as jest.Mock).mockReturnValue({ 
-      session: { access_token: 'token123', user: { id: mockUserId } }
+      session: { access_token: mockToken, user: { id: mockUserId } }
     });
     (api.plans.get as jest.Mock).mockResolvedValueOnce({ data: mockPlan });
     render(<PlanDetailPage params={Promise.resolve({ id: '123' })} />);
@@ -212,7 +215,7 @@ describe('PlanDetailPage コンポーネント', () => {
 
   it('プラン作成者以外でも詳細情報を閲覧できる', async () => {
     (useAuth as jest.Mock).mockReturnValue({ 
-      session: { access_token: 'token123', user: { id: 'different-user' } }
+      session: { access_token: mockToken, user: { id: 'different-user' } }
     });
     (api.plans.get as jest.Mock).mockResolvedValueOnce({ data: mockPlan });
     render(<PlanDetailPage params={Promise.resolve({ id: '123' })} />);
@@ -250,7 +253,7 @@ describe('PlanDetailPage コンポーネント', () => {
 
   it('プランデータの取得に失敗した場合、プラン一覧ページにリダイレクトされる', async () => {
     (useAuth as jest.Mock).mockReturnValue({ 
-      session: { access_token: 'token123', user: { id: mockUserId } }
+      session: { access_token: mockToken, user: { id: mockUserId } }
     });
     // エラーレスポンスをモック
     (api.plans.get as jest.Mock).mockResolvedValueOnce({ error: 'プランの取得に失敗しました' });
@@ -266,7 +269,7 @@ describe('PlanDetailPage コンポーネント', () => {
 
   it('プランが見つからない場合、何も表示されない', async () => {
     (useAuth as jest.Mock).mockReturnValue({ 
-      session: { access_token: 'token123', user: { id: mockUserId } }
+      session: { access_token: mockToken, user: { id: mockUserId } }
     });
     // データがnullのレスポンスをモック
     (api.plans.get as jest.Mock).mockResolvedValueOnce({ data: null });
@@ -284,7 +287,7 @@ describe('PlanDetailPage コンポーネント', () => {
 
   it('paramsの解決に失敗した場合、ローディング表示が継続される', () => {
     (useAuth as jest.Mock).mockReturnValue({ 
-      session: { access_token: 'token123', user: { id: mockUserId } }
+      session: { access_token: mockToken, user: { id: mockUserId } }
     });
     
     // paramsの解決に失敗するPromiseをモック
@@ -302,7 +305,7 @@ describe('PlanDetailPage コンポーネント', () => {
 
   it('編集ボタンをクリックすると、編集ページに遷移する', async () => {
     (useAuth as jest.Mock).mockReturnValue({ 
-      session: { access_token: 'token123', user: { id: mockUserId } }
+      session: { access_token: mockToken, user: { id: mockUserId } }
     });
     (api.plans.get as jest.Mock).mockResolvedValueOnce({ data: mockPlan });
     render(<PlanDetailPage params={Promise.resolve({ id: '123' })} />);
@@ -320,7 +323,7 @@ describe('PlanDetailPage コンポーネント', () => {
 
   it('PublishDialogのonCloseコールバックが呼ばれると、ダイアログが閉じる', async () => {
     (useAuth as jest.Mock).mockReturnValue({ 
-      session: { access_token: 'token123', user: { id: mockUserId } }
+      session: { access_token: mockToken, user: { id: mockUserId } }
     });
     (api.plans.get as jest.Mock).mockResolvedValueOnce({ data: mockPlan });
     
@@ -365,7 +368,7 @@ describe('PlanDetailPage コンポーネント', () => {
 
   it('場所URLのリンクがクリック可能であることを確認', async () => {
     (useAuth as jest.Mock).mockReturnValue({ 
-      session: { access_token: 'token123', user: { id: mockUserId } }
+      session: { access_token: mockToken, user: { id: mockUserId } }
     });
     (api.plans.get as jest.Mock).mockResolvedValueOnce({ data: mockPlan });
     
@@ -392,7 +395,7 @@ describe('PlanDetailPage コンポーネント', () => {
 
   it('場所URLが設定されていない場合、「未設定」と表示される', async () => {
     (useAuth as jest.Mock).mockReturnValue({ 
-      session: { access_token: 'token123', user: { id: mockUserId } }
+      session: { access_token: mockToken, user: { id: mockUserId } }
     });
     // locationがnullのプランをモック
     const planWithoutLocation = { ...mockPlan, location: null };
@@ -409,7 +412,7 @@ describe('PlanDetailPage コンポーネント', () => {
 
   it('日付が設定されていない場合、「未設定」と表示される', async () => {
     (useAuth as jest.Mock).mockReturnValue({ 
-      session: { access_token: 'token123', user: { id: mockUserId } }
+      session: { access_token: mockToken, user: { id: mockUserId } }
     });
     // dateがnullのプランをモック
     const planWithoutDate = { ...mockPlan, date: null };

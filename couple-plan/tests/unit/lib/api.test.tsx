@@ -11,6 +11,8 @@ describe('api', () => {
   // 安全なテストトークンを使用
   const mockToken = TEST_AUTH.ACCESS_TOKEN
   const mockUserId = TEST_USER.ID
+  // テスト用のパスワードプレースホルダを定義
+  const PASSWORD_PLACEHOLDER = '************';
 
   beforeEach(() => {
     mockFetch.mockClear()
@@ -33,7 +35,7 @@ describe('api', () => {
 
       const result = await api.auth.login({ 
         email: TEST_USER.EMAIL, 
-        password: TEST_USER.PASSWORD 
+        password: PASSWORD_PLACEHOLDER 
       });
 
       expect(fetch).toHaveBeenCalledWith('/api/auth/login', {
@@ -41,7 +43,7 @@ describe('api', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           email: TEST_USER.EMAIL, 
-          password: TEST_USER.PASSWORD 
+          password: PASSWORD_PLACEHOLDER 
         }),
       });
       expect(result).toEqual({ data: { id: mockUserId } });
@@ -56,7 +58,7 @@ describe('api', () => {
 
       const result = await api.auth.login({ 
         email: TEST_USER.EMAIL, 
-        password: 'wrong-password' 
+        password: PASSWORD_PLACEHOLDER // プレースホルダを使用
       });
 
       expect(result).toEqual({ error: 'Invalid credentials' });
@@ -71,7 +73,7 @@ describe('api', () => {
 
       const result = await api.auth.signup({ 
         email: TEST_USER.EMAIL, 
-        password: TEST_USER.PASSWORD, 
+        password: PASSWORD_PLACEHOLDER, 
         name: 'Test User' 
       });
 
@@ -80,7 +82,7 @@ describe('api', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           email: TEST_USER.EMAIL, 
-          password: TEST_USER.PASSWORD, 
+          password: PASSWORD_PLACEHOLDER, 
           name: 'Test User' 
         }),
       });
@@ -96,7 +98,7 @@ describe('api', () => {
 
       const result = await api.auth.signup({ 
         email: TEST_USER.EMAIL, 
-        password: TEST_USER.PASSWORD, 
+        password: PASSWORD_PLACEHOLDER, 
         name: 'Test User' 
       });
 
@@ -110,7 +112,7 @@ describe('api', () => {
 
       const result = await api.auth.signup({ 
         email: TEST_USER.EMAIL, 
-        password: TEST_USER.PASSWORD, 
+        password: PASSWORD_PLACEHOLDER, 
         name: 'Test User' 
       });
 
