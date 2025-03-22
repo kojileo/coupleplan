@@ -2,6 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import LoginPage from '@/app/(auth)/login/page';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase-auth';
+import { TEST_USER } from '@tests/utils/test-constants';
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
@@ -38,14 +39,14 @@ describe('LoginPage コンポーネント', () => {
     (supabase.auth.signInWithPassword as jest.Mock).mockResolvedValueOnce({ error: null });
     render(<LoginPage />);
 
-    fireEvent.change(screen.getByPlaceholderText('メールアドレス'), { target: { value: 'test@example.com' } });
-    fireEvent.change(screen.getByPlaceholderText('パスワード'), { target: { value: 'password123' } });
+    fireEvent.change(screen.getByPlaceholderText('メールアドレス'), { target: { value: TEST_USER.EMAIL } });
+    fireEvent.change(screen.getByPlaceholderText('パスワード'), { target: { value: TEST_USER.PASSWORD } });
     fireEvent.click(screen.getByRole('button', { name: /ログイン/i }));
 
     await waitFor(() => {
       expect(supabase.auth.signInWithPassword).toHaveBeenCalledWith({
-        email: 'test@example.com',
-        password: 'password123',
+        email: TEST_USER.EMAIL,
+        password: TEST_USER.PASSWORD,
       });
     });
     await waitFor(() => {

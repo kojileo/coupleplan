@@ -1,6 +1,7 @@
 import { POST } from '@/app/api/auth/login/route';
 import { supabase } from '@/lib/supabase-auth';
 import { NextRequest } from 'next/server';
+import { TEST_USER } from '@tests/utils/test-constants';
 
 // supabase のモック設定
 jest.mock('@/lib/supabase-auth', () => ({
@@ -17,7 +18,7 @@ describe('POST /api/auth/login', () => {
   });
 
   it('正しい認証情報の場合、200 とユーザーデータを返す', async () => {
-    const mockUserData = { user: { id: 'user1', email: 'test@example.com' } };
+    const mockUserData = { user: { id: TEST_USER.ID, email: TEST_USER.EMAIL } };
     (supabase.auth.signInWithPassword as jest.Mock).mockResolvedValueOnce({
       data: mockUserData,
       error: null,
@@ -27,8 +28,8 @@ describe('POST /api/auth/login', () => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email: 'test@example.com',
-        password: 'password123',
+        email: TEST_USER.EMAIL,
+        password: TEST_USER.PASSWORD,
       }),
     });
 
@@ -64,7 +65,7 @@ describe('POST /api/auth/login', () => {
     // supabase 呼び出しで例外が発生するケース
     (supabase.auth.signInWithPassword as jest.Mock).mockRejectedValueOnce(new Error('Unexpected error'));
 
-    const payload = { email: 'test@example.com', password: 'password123' };
+    const payload = { email: TEST_USER.EMAIL, password: TEST_USER.PASSWORD };
     const request = new NextRequest('http://localhost/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

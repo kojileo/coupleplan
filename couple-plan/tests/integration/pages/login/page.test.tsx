@@ -2,6 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import LoginPage from '@/app/(auth)/login/page';
 import { supabase } from '@/lib/supabase-auth';
 import { useRouter } from 'next/navigation';
+import { TEST_USER } from '@tests/utils/test-constants';
 
 // モック
 jest.mock('@/lib/supabase-auth', () => ({
@@ -58,20 +59,20 @@ describe('ログインページ統合テスト', () => {
     render(<LoginPage />);
     
     // 各フィールドに入力
-    fireEvent.change(screen.getByPlaceholderText('メールアドレス'), { target: { value: 'test@example.com' } });
-    fireEvent.change(screen.getByPlaceholderText('パスワード'), { target: { value: 'password123' } });
+    fireEvent.change(screen.getByPlaceholderText('メールアドレス'), { target: { value: TEST_USER.EMAIL } });
+    fireEvent.change(screen.getByPlaceholderText('パスワード'), { target: { value: TEST_USER.PASSWORD } });
     
     // 入力値が反映されていることを確認
-    expect(screen.getByPlaceholderText('メールアドレス')).toHaveValue('test@example.com');
-    expect(screen.getByPlaceholderText('パスワード')).toHaveValue('password123');
+    expect(screen.getByPlaceholderText('メールアドレス')).toHaveValue(TEST_USER.EMAIL);
+    expect(screen.getByPlaceholderText('パスワード')).toHaveValue(TEST_USER.PASSWORD);
   });
 
   it('フォーム送信時にSupabaseが呼ばれる', async () => {
     render(<LoginPage />);
     
     // 各フィールドに入力
-    fireEvent.change(screen.getByPlaceholderText('メールアドレス'), { target: { value: 'test@example.com' } });
-    fireEvent.change(screen.getByPlaceholderText('パスワード'), { target: { value: 'password123' } });
+    fireEvent.change(screen.getByPlaceholderText('メールアドレス'), { target: { value: TEST_USER.EMAIL } });
+    fireEvent.change(screen.getByPlaceholderText('パスワード'), { target: { value: TEST_USER.PASSWORD } });
     
     // フォームを送信
     fireEvent.click(screen.getByRole('button', { name: 'ログイン' }));
@@ -79,8 +80,8 @@ describe('ログインページ統合テスト', () => {
     // Supabaseが呼ばれることを確認
     await waitFor(() => {
       expect(supabase.auth.signInWithPassword).toHaveBeenCalledWith({
-        email: 'test@example.com',
-        password: 'password123',
+        email: TEST_USER.EMAIL,
+        password: TEST_USER.PASSWORD,
       });
     });
     
@@ -95,7 +96,7 @@ describe('ログインページ統合テスト', () => {
     fireEvent.change(screen.getByPlaceholderText('メールアドレス'), { target: { value: '' } });
     
     // パスワードを入力
-    fireEvent.change(screen.getByPlaceholderText('パスワード'), { target: { value: 'password123' } });
+    fireEvent.change(screen.getByPlaceholderText('パスワード'), { target: { value: TEST_USER.PASSWORD } });
     
     // フォームを送信
     const submitButton = screen.getByRole('button', { name: 'ログイン' });
@@ -114,8 +115,8 @@ describe('ログインページ統合テスト', () => {
     render(<LoginPage />);
     
     // 各フィールドに入力
-    fireEvent.change(screen.getByPlaceholderText('メールアドレス'), { target: { value: 'test@example.com' } });
-    fireEvent.change(screen.getByPlaceholderText('パスワード'), { target: { value: 'password123' } });
+    fireEvent.change(screen.getByPlaceholderText('メールアドレス'), { target: { value: TEST_USER.EMAIL } });
+    fireEvent.change(screen.getByPlaceholderText('パスワード'), { target: { value: TEST_USER.PASSWORD } });
     
     // フォームを送信
     fireEvent.click(screen.getByRole('button', { name: 'ログイン' }));
@@ -141,8 +142,8 @@ describe('ログインページ統合テスト', () => {
     render(<LoginPage />);
     
     // 各フィールドに入力
-    fireEvent.change(screen.getByPlaceholderText('メールアドレス'), { target: { value: 'test@example.com' } });
-    fireEvent.change(screen.getByPlaceholderText('パスワード'), { target: { value: 'password123' } });
+    fireEvent.change(screen.getByPlaceholderText('メールアドレス'), { target: { value: TEST_USER.EMAIL } });
+    fireEvent.change(screen.getByPlaceholderText('パスワード'), { target: { value: TEST_USER.PASSWORD } });
     
     // フォームを送信
     fireEvent.click(screen.getByRole('button', { name: 'ログイン' }));

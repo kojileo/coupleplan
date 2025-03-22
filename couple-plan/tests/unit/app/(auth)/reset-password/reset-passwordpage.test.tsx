@@ -2,6 +2,7 @@ import { render, screen, fireEvent, waitFor, act } from '@testing-library/react'
 import ResetPasswordPage from '@/app/(auth)/reset-password/page';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase-auth';
+import { TEST_AUTH, TEST_USER } from '@tests/utils/test-constants';
 
 // モックの設定
 jest.mock('next/navigation', () => ({
@@ -47,7 +48,7 @@ describe('ResetPasswordPage コンポーネント', () => {
   it('有効なセッションの場合、パスワードリセットフォームが表示されること', async () => {
     // 有効なセッションをモック
     (supabase.auth.getSession as jest.Mock).mockResolvedValueOnce({
-      data: { session: { user: { id: '123' } } },
+      data: { session: { user: { id: TEST_USER.ID } } },
       error: null,
     });
 
@@ -80,7 +81,7 @@ describe('ResetPasswordPage コンポーネント', () => {
     });
     
     // ハッシュに type=recovery を設定
-    window.location.hash = '#type=recovery&access_token=test';
+    window.location.hash = `#type=recovery&access_token=${TEST_AUTH.ACCESS_TOKEN}`;
 
     const { container } = render(<ResetPasswordPage />);
 
@@ -169,7 +170,7 @@ describe('ResetPasswordPage コンポーネント', () => {
   it('パスワードが一致しない場合、エラーメッセージが表示されること', async () => {
     // 有効なセッションをモック
     (supabase.auth.getSession as jest.Mock).mockResolvedValueOnce({
-      data: { session: { user: { id: '123' } } },
+      data: { session: { user: { id: TEST_USER.ID } } },
       error: null,
     });
 
@@ -196,7 +197,7 @@ describe('ResetPasswordPage コンポーネント', () => {
   it('パスワードが短すぎる場合、エラーメッセージが表示されること', async () => {
     // 有効なセッションをモック
     (supabase.auth.getSession as jest.Mock).mockResolvedValueOnce({
-      data: { session: { user: { id: '123' } } },
+      data: { session: { user: { id: TEST_USER.ID } } },
       error: null,
     });
 
@@ -226,13 +227,13 @@ describe('ResetPasswordPage コンポーネント', () => {
     
     // 有効なセッションをモック
     (supabase.auth.getSession as jest.Mock).mockResolvedValueOnce({
-      data: { session: { user: { id: '123' } } },
+      data: { session: { user: { id: TEST_USER.ID } } },
       error: null,
     });
 
       // パスワード更新成功をモック
       (supabase.auth.updateUser as jest.Mock).mockResolvedValueOnce({
-        data: { user: { id: '123' } },
+        data: { user: { id: TEST_USER.ID } },
         error: null,
       });
 
@@ -248,8 +249,8 @@ describe('ResetPasswordPage コンポーネント', () => {
     const passwordInput = screen.getByLabelText('新しいパスワード');
     const confirmPasswordInput = screen.getByLabelText('パスワード（確認）');
     
-    fireEvent.change(passwordInput, { target: { value: 'newpassword123' } });
-    fireEvent.change(confirmPasswordInput, { target: { value: 'newpassword123' } });
+    fireEvent.change(passwordInput, { target: { value: TEST_USER.PASSWORD } });
+    fireEvent.change(confirmPasswordInput, { target: { value: TEST_USER.PASSWORD } });
     
     // フォーム送信
     fireEvent.click(screen.getByRole('button', { name: /パスワードを更新/i }));
@@ -261,7 +262,7 @@ describe('ResetPasswordPage コンポーネント', () => {
 
     // APIが正しく呼び出されたことを確認
     expect(supabase.auth.updateUser).toHaveBeenCalledWith({
-      password: 'newpassword123',
+      password: TEST_USER.PASSWORD,
     });
 
     // タイマーを進める
@@ -279,7 +280,7 @@ describe('ResetPasswordPage コンポーネント', () => {
   it('パスワード更新失敗時にエラーメッセージが表示されること', async () => {
     // 有効なセッションをモック
     (supabase.auth.getSession as jest.Mock).mockResolvedValueOnce({
-      data: { session: { user: { id: '123' } } },
+      data: { session: { user: { id: TEST_USER.ID } } },
       error: null,
     });
 
@@ -301,8 +302,8 @@ describe('ResetPasswordPage コンポーネント', () => {
     const passwordInput = screen.getByLabelText('新しいパスワード');
     const confirmPasswordInput = screen.getByLabelText('パスワード（確認）');
     
-    fireEvent.change(passwordInput, { target: { value: 'newpassword123' } });
-    fireEvent.change(confirmPasswordInput, { target: { value: 'newpassword123' } });
+    fireEvent.change(passwordInput, { target: { value: TEST_USER.PASSWORD } });
+    fireEvent.change(confirmPasswordInput, { target: { value: TEST_USER.PASSWORD } });
     fireEvent.click(screen.getByRole('button', { name: /パスワードを更新/i }));
 
     // エラーメッセージが表示されることを確認
@@ -314,7 +315,7 @@ describe('ResetPasswordPage コンポーネント', () => {
   it('Errorインスタンスでないエラーの場合、デフォルトエラーメッセージが表示されること', async () => {
     // 有効なセッションをモック
     (supabase.auth.getSession as jest.Mock).mockResolvedValueOnce({
-      data: { session: { user: { id: '123' } } },
+      data: { session: { user: { id: TEST_USER.ID } } },
       error: null,
     });
 
@@ -335,8 +336,8 @@ describe('ResetPasswordPage コンポーネント', () => {
     const passwordInput = screen.getByLabelText('新しいパスワード');
     const confirmPasswordInput = screen.getByLabelText('パスワード（確認）');
     
-    fireEvent.change(passwordInput, { target: { value: 'newpassword123' } });
-    fireEvent.change(confirmPasswordInput, { target: { value: 'newpassword123' } });
+    fireEvent.change(passwordInput, { target: { value: TEST_USER.PASSWORD } });
+    fireEvent.change(confirmPasswordInput, { target: { value: TEST_USER.PASSWORD } });
     fireEvent.click(screen.getByRole('button', { name: /パスワードを更新/i }));
 
     // デフォルトのエラーメッセージが表示されることを確認
@@ -351,7 +352,7 @@ describe('ResetPasswordPage コンポーネント', () => {
   it('ローディング中はボタンが無効化され、テキストが「更新中...」に変わる', async () => {
     // 有効なセッションをモック
     (supabase.auth.getSession as jest.Mock).mockResolvedValueOnce({
-      data: { session: { user: { id: '123' } } },
+      data: { session: { user: { id: TEST_USER.ID } } },
       error: null,
     });
 
@@ -370,8 +371,8 @@ describe('ResetPasswordPage コンポーネント', () => {
     const passwordInput = screen.getByLabelText('新しいパスワード');
     const confirmPasswordInput = screen.getByLabelText('パスワード（確認）');
     
-    fireEvent.change(passwordInput, { target: { value: 'newpassword123' } });
-    fireEvent.change(confirmPasswordInput, { target: { value: 'newpassword123' } });
+    fireEvent.change(passwordInput, { target: { value: TEST_USER.PASSWORD } });
+    fireEvent.change(confirmPasswordInput, { target: { value: TEST_USER.PASSWORD } });
     
     // フォーム送信
     fireEvent.click(screen.getByRole('button', { name: /パスワードを更新/i }));

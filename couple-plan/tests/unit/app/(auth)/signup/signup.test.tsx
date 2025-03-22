@@ -2,6 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import SignUpPage from '@/app/(auth)/signup/page';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
+import { TEST_USER } from '@tests/utils/test-constants';
 
 // next/navigation の useRouter をモック化
 jest.mock('next/navigation', () => ({
@@ -42,20 +43,20 @@ describe('SignUpPage コンポーネント', () => {
     render(<SignUpPage />);
 
     fireEvent.change(screen.getByPlaceholderText('お名前'), { target: { value: 'Test User' } });
-    fireEvent.change(screen.getByPlaceholderText('メールアドレス'), { target: { value: 'test@example.com' } });
-    fireEvent.change(screen.getByPlaceholderText('パスワード'), { target: { value: 'password123' } });
+    fireEvent.change(screen.getByPlaceholderText('メールアドレス'), { target: { value: TEST_USER.EMAIL } });
+    fireEvent.change(screen.getByPlaceholderText('パスワード'), { target: { value: TEST_USER.PASSWORD } });
     fireEvent.click(screen.getByRole('button', { name: /アカウント作成/i }));
 
     await waitFor(() => {
       expect(api.auth.signup).toHaveBeenCalledWith({
         name: 'Test User',
-        email: 'test@example.com',
-        password: 'password123',
+        email: TEST_USER.EMAIL,
+        password: TEST_USER.PASSWORD,
       });
     });
     // 成功時はメール確認待ち画面へリダイレクトされる
     await waitFor(() => {
-      expect(push).toHaveBeenCalledWith('/verify-email?email=test%40example.com');
+      expect(push).toHaveBeenCalledWith(`/verify-email?email=${encodeURIComponent(TEST_USER.EMAIL)}`);
     });
   });
 

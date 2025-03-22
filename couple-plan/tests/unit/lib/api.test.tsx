@@ -1,14 +1,16 @@
 import { api } from '@/lib/api'
 import type { Plan } from '@/types/plan'
 import type { Profile } from '@/types/profile'
+import { TEST_AUTH, TEST_USER } from '@tests/utils/test-constants'
 
 // グローバルのfetchをモック化
 const mockFetch = jest.fn()
 global.fetch = mockFetch
 
 describe('api', () => {
-  const mockToken = 'test-token'
-  const mockUserId = 'user-1'
+  // 安全なテストトークンを使用
+  const mockToken = TEST_AUTH.ACCESS_TOKEN
+  const mockUserId = TEST_USER.ID
 
   beforeEach(() => {
     mockFetch.mockClear()
