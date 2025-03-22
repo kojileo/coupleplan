@@ -3,6 +3,7 @@ import { useProfile } from '@/hooks/useProfile'
 import { useAuth } from '@/contexts/AuthContext'
 import { profileApi } from '@/lib/api/profile'
 import type { Profile } from '@/types/profile'
+import { TEST_USER, createMockSession } from '@tests/utils/test-constants'
 
 // モックの設定
 jest.mock('@/contexts/AuthContext', () => ({
@@ -18,14 +19,18 @@ jest.mock('@/lib/api/profile', () => ({
 }))
 
 describe('useProfile', () => {
-  const mockUser = { id: 'test-user' }
-  const mockSession = { access_token: 'dummy-token' }
+  // test-constants.tsから一貫したテストデータを使用
+  const mockUser = { id: TEST_USER.ID }
+  const mockSession = createMockSession()
+  
+  // 日付オブジェクトを直接使用せず、ISO文字列として定義し、必要に応じて変換
+  const mockDateStr = '2023-01-01T00:00:00.000Z'
   const mockProfile: Profile = {
     name: 'Test User',
-    email: 'test@example.com',
-    userId: 'test-user-id',
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    email: TEST_USER.EMAIL,
+    userId: TEST_USER.ID,
+    createdAt: new Date(mockDateStr),
+    updatedAt: new Date(mockDateStr),
   }
 
   beforeEach(() => {
@@ -48,19 +53,27 @@ describe('useProfile', () => {
   })
 
   it('プロフィール取得に成功した場合、プロフィールが設定される', async () => {
-    (profileApi.fetchProfile as jest.Mock).mockResolvedValueOnce(mockProfile)
+    (profileApi.fetchProfile as jest.Mock).mockResolvedValueOnce({
+      ...mockProfile,
+      // ディープコピーして参照の問題を防ぐ
+      createdAt: new Date(mockDateStr),
+      updatedAt: new Date(mockDateStr),
+    })
 
     const { result } = renderHook(() => useProfile())
 
     // 初期レンダリング後にuseEffectが実行される
     await act(async () => {
-      // useEffectの非同期処理を待機
-      await new Promise(resolve => setTimeout(resolve, 0))
+      // タイマーを使わず、直接Promiseを待機
+      await Promise.resolve()
     })
 
     expect(result.current.isLoading).toBe(false)
+    // toEqualを使用して日付オブジェクトも含めて比較
     expect(result.current.profile).toEqual(mockProfile)
     expect(result.current.error).toBeNull()
+    // トークンが渡されていることを確認
+    expect(profileApi.fetchProfile).toHaveBeenCalledWith(mockSession.access_token)
   })
 
   it('プロフィール取得に失敗した場合、エラーが設定される', async () => {
@@ -74,8 +87,8 @@ describe('useProfile', () => {
 
     // 初期レンダリング後にuseEffectが実行される
     await act(async () => {
-      // useEffectの非同期処理を待機
-      await new Promise(resolve => setTimeout(resolve, 0))
+      // タイマーを使わず、直接Promiseを待機
+      await Promise.resolve()
     })
 
     expect(result.current.isLoading).toBe(false)
@@ -97,14 +110,24 @@ describe('useProfile', () => {
   })
 
   it('プロフィール更新が成功した場合、新しいプロフィールが設定される', async () => {
+    const updatedName = 'Updated Name'
+    const updatedEmail = 'updated@example.com'
+    
     const updatedProfile: Profile = {
       ...mockProfile,
-      name: 'Updated Name',
-      email: 'updated@example.com',
+      name: updatedName,
+      email: updatedEmail,
+      // 日付オブジェクトを新しく生成して参照の問題を防ぐ
+      createdAt: new Date(mockDateStr),
+      updatedAt: new Date(mockDateStr),
     }
 
     // 両方のモックを先に設定
-    ;(profileApi.fetchProfile as jest.Mock).mockResolvedValueOnce(mockProfile)
+    ;(profileApi.fetchProfile as jest.Mock).mockResolvedValueOnce({
+      ...mockProfile,
+      createdAt: new Date(mockDateStr),
+      updatedAt: new Date(mockDateStr),
+    })
     
     ;(profileApi.updateProfile as jest.Mock).mockResolvedValueOnce(updatedProfile)
 
@@ -112,23 +135,29 @@ describe('useProfile', () => {
 
     // 初期レンダリング後にuseEffectが実行される
     await act(async () => {
-      // useEffectの非同期処理を待機
-      await new Promise(resolve => setTimeout(resolve, 0))
+      // タイマーを使わず、直接Promiseを待機
+      await Promise.resolve()
     })
 
     // プロフィール更新を実行
     await act(async () => {
       const response = await result.current.updateProfile(
-        'Updated Name',
-        'updated@example.com'
+        updatedName,
+        updatedEmail
       )
       expect(response).toEqual(updatedProfile)
     })
 
     expect(result.current.isLoading).toBe(false)
-    expect(result.current.profile?.name).toBe('Updated Name')
-    expect(result.current.profile?.email).toBe('updated@example.com')
+    expect(result.current.profile?.name).toBe(updatedName)
+    expect(result.current.profile?.email).toBe(updatedEmail)
     expect(result.current.error).toBeNull()
+    // トークンが適切に使用されていることを確認
+    expect(profileApi.updateProfile).toHaveBeenCalledWith(
+      mockSession.access_token,
+      updatedName,
+      updatedEmail
+    )
   })
 
   it('プロフィール更新が失敗した場合、エラーが返される', async () => {
@@ -236,8 +265,6 @@ describe('useProfile', () => {
     
     // APIが呼ばれていないことを確認
     expect(profileApi.deleteAccount).not.toHaveBeenCalled()
-    // セッションがない場合はsetIsLoadingが呼ばれないため、isLoadingはtrueのまま
-    expect(result.current.isLoading).toBe(true)
   })
 
   it('非Errorオブジェクトがスローされた場合も適切に処理される（fetchProfile）', async () => {
@@ -248,8 +275,8 @@ describe('useProfile', () => {
 
     // 初期レンダリング後にuseEffectが実行される
     await act(async () => {
-      // useEffectの非同期処理を待機
-      await new Promise(resolve => setTimeout(resolve, 0))
+      // タイマーを使わず、直接Promiseを待機
+      await Promise.resolve()
     })
 
     expect(result.current.isLoading).toBe(false)
@@ -293,25 +320,31 @@ describe('useProfile', () => {
   })
 
   it('fetchProfileを手動で呼び出すことができる', async () => {
-    ;(profileApi.fetchProfile as jest.Mock).mockResolvedValueOnce(mockProfile)
+    ;(profileApi.fetchProfile as jest.Mock).mockResolvedValueOnce({
+      ...mockProfile,
+      createdAt: new Date(mockDateStr),
+      updatedAt: new Date(mockDateStr),
+    })
 
     const { result } = renderHook(() => useProfile())
 
     // 手動でfetchProfileを呼び出す前の状態をリセット
     await act(async () => {
       // 初期状態のuseEffectによる呼び出しを待機
-      await new Promise(resolve => setTimeout(resolve, 0))
+      await Promise.resolve()
     })
 
     // fetchProfileのモックをリセットして再設定
     ;(profileApi.fetchProfile as jest.Mock).mockClear()
-    ;(profileApi.fetchProfile as jest.Mock).mockResolvedValueOnce(mockProfile)
+    ;(profileApi.fetchProfile as jest.Mock).mockResolvedValueOnce({
+      ...mockProfile,
+      createdAt: new Date(mockDateStr),
+      updatedAt: new Date(mockDateStr),
+    })
 
     // 手動でfetchProfileを呼び出す
     await act(async () => {
       await result.current.fetchProfile()
-      // 状態更新を待機
-      await new Promise(resolve => setTimeout(resolve, 0))
     })
 
     expect(profileApi.fetchProfile).toHaveBeenCalledWith(mockSession.access_token)

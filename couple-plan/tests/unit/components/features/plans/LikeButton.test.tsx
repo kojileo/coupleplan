@@ -2,6 +2,7 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import { LikeButton } from '@/components/features/plans/LikeButton'
 import { useAuth } from '@/contexts/AuthContext'
 import { api } from '@/lib/api'
+import { TEST_AUTH } from '@tests/utils/test-constants'
 
 // useAuthのモック
 jest.mock('@/contexts/AuthContext', () => ({
@@ -20,7 +21,7 @@ jest.mock('@/lib/api', () => ({
 
 describe('LikeButton', () => {
   const mockSession = {
-    access_token: 'dummy-token'
+    access_token: TEST_AUTH.ACCESS_TOKEN
   }
 
   beforeEach(() => {
@@ -64,7 +65,7 @@ describe('LikeButton', () => {
     // 非同期更新を待つ
     await screen.findByText('❤️')
 
-    expect(api.likes.create).toHaveBeenCalledWith(mockSession.access_token, '1')
+    expect(api.likes.create).toHaveBeenCalledWith(TEST_AUTH.ACCESS_TOKEN, '1')
     expect(button).toHaveTextContent('❤️')
     expect(button).toHaveTextContent('6')
   })
@@ -79,7 +80,7 @@ describe('LikeButton', () => {
     // 非同期更新を待つ
     await screen.findByText('🤍')
 
-    expect(api.likes.delete).toHaveBeenCalledWith(mockSession.access_token, '1')
+    expect(api.likes.delete).toHaveBeenCalledWith(TEST_AUTH.ACCESS_TOKEN, '1')
     expect(button).toHaveTextContent('🤍')
     expect(button).toHaveTextContent('4')
   })

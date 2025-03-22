@@ -3,6 +3,7 @@ import PlanList from '@/components/features/plans/PlanList'
 import { useAuth } from '@/contexts/AuthContext'
 import { api } from '@/lib/api'
 import type { Plan } from '@/types/plan'
+import { TEST_USER, TEST_AUTH } from '@tests/utils/test-constants'
 
 // useAuthのモック
 jest.mock('@/contexts/AuthContext', () => ({
@@ -20,8 +21,8 @@ jest.mock('@/lib/api', () => ({
 
 describe('PlanList', () => {
   const mockSession = {
-    user: { id: 'user1' },
-    access_token: 'dummy-token'
+    user: { id: TEST_USER.ID },
+    access_token: TEST_AUTH.ACCESS_TOKEN
   }
 
   const mockPlans: Plan[] = [
@@ -33,7 +34,7 @@ describe('PlanList', () => {
       budget: 10000,
       location: 'https://example.com/1',
       isPublic: false,
-      userId: 'user1',
+      userId: TEST_USER.ID,
       createdAt: new Date(),
       updatedAt: new Date(),
       likes: []
