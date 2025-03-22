@@ -1,11 +1,14 @@
 import { NextRequest } from 'next/server';
 import { POST } from '@/app/api/auth/login/route';
 import { supabase } from '@/lib/supabase-auth';
-import { createMockSession, TEST_USER } from '@tests/utils/test-constants';
+import { createMockSession, TEST_USER, TEST_AUTH } from '@tests/utils/test-constants';
 
 // Supabaseのモックは既に tests/mocks/supabase.ts で設定済み
 
 describe('ログインAPI統合テスト', () => {
+  // テスト用のパスワードプレースホルダを定義
+  const PASSWORD_PLACEHOLDER = '************';
+  
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -20,7 +23,7 @@ describe('ログインAPI統合テスト', () => {
     // パスワードを直接テストコードに含めず、プレースホルダを使用
     const loginData = {
       email: TEST_USER.EMAIL,
-      password: '********' // プレースホルダを使用
+      password: PASSWORD_PLACEHOLDER
     };
     
     // Supabaseのモック設定
@@ -64,7 +67,7 @@ describe('ログインAPI統合テスト', () => {
     // ログインデータ - プレースホルダパスワードを使用
     const loginData = {
       email: 'invalid@example.com',
-      password: '********' // プレースホルダを使用
+      password: PASSWORD_PLACEHOLDER
     };
     
     // Supabaseのモック設定
@@ -124,7 +127,7 @@ describe('ログインAPI統合テスト', () => {
       // ヘッダーなし
       body: JSON.stringify({
         email: TEST_USER.EMAIL,
-        password: '********'
+        password: PASSWORD_PLACEHOLDER
       })
     });
     

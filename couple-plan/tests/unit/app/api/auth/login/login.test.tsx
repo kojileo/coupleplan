@@ -13,6 +13,9 @@ jest.mock('@/lib/supabase-auth', () => ({
 }));
 
 describe('ログインAPI統合テスト', () => {
+  // テスト用のパスワードプレースホルダを定義
+  const PASSWORD_PLACEHOLDER = '************';
+  
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -27,7 +30,7 @@ describe('ログインAPI統合テスト', () => {
     const loginData = {
       email: TEST_USER.EMAIL,
       // パスワードを直接テストコードに含めず、プレースホルダ文字列を使用
-      password: '********'
+      password: PASSWORD_PLACEHOLDER
     };
     
     // Supabaseのモック設定
@@ -44,7 +47,7 @@ describe('ログインAPI統合テスト', () => {
       },
       body: JSON.stringify({
         email: TEST_USER.EMAIL,
-        password: '********' // 実際のパスワードは使用しない
+        password: PASSWORD_PLACEHOLDER // 実際のパスワードは使用しない
       })
     });
     
@@ -73,7 +76,7 @@ describe('ログインAPI統合テスト', () => {
     // ログインデータ - 実際のパスワードは使用しない
     const loginData = {
       email: 'invalid@example.com',
-      password: '********'
+      password: PASSWORD_PLACEHOLDER
     };
     
     // Supabaseのモック設定
