@@ -3,6 +3,7 @@ import NewPlanPage from '@/app/(dashboard)/plans/new/page';
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
 import { useRouter } from 'next/navigation';
+import { createMockSession, TEST_AUTH } from '@tests/utils/test-constants';
 
 // モック
 jest.mock('@/contexts/AuthContext', () => ({
@@ -27,12 +28,9 @@ describe('プラン作成ページ統合テスト', () => {
     back: jest.fn(),
   };
   
-  const mockSession = {
-    user: {
-      id: 'user-123',
-    },
-    access_token: 'test-token',
-  };
+  // 安全なモックセッションを生成
+  const testUserId = 'user-123';
+  const mockSession = createMockSession(testUserId);
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -102,7 +100,7 @@ describe('プラン作成ページ統合テスト', () => {
     
     // APIが呼ばれることを確認
     await waitFor(() => {
-      expect(api.plans.create).toHaveBeenCalledWith('test-token', {
+      expect(api.plans.create).toHaveBeenCalledWith(TEST_AUTH.ACCESS_TOKEN, {
         title: 'テストプラン',
         description: 'テスト用の説明文',
         date: expect.any(Date),

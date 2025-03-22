@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { POST } from '@/app/api/auth/login/route';
 import { supabase } from '@/lib/supabase-auth';
+import { createMockSession } from '@tests/utils/test-constants';
 
 // Supabaseのモックは既に tests/mocks/supabase.ts で設定済み
 
@@ -12,7 +13,10 @@ describe('ログインAPI統合テスト', () => {
   it('有効な認証情報でログインできる', async () => {
     // モックデータの設定
     const mockUser = { id: 'user-123', email: 'test@example.com' };
-    const mockSession = { access_token: 'test-token', user: mockUser };
+    // 安全なモックセッションを生成
+    const mockSession = createMockSession(mockUser.id);
+    mockSession.user = mockUser; // ユーザー情報を上書き
+    
     const loginData = {
       email: 'test@example.com',
       password: 'password123'

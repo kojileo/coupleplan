@@ -1,9 +1,10 @@
 import { createClient } from '@supabase/supabase-js'
+import { TEST_SUPABASE } from '../utils/test-constants'
 
-// テスト用の環境変数設定
-process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://test-supabase-url.com'
-process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'test-anon-key'
-process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-service-role-key'
+// テスト用の環境変数設定 - 定数から取得
+const SUPABASE_URL = TEST_SUPABASE.URL
+const SUPABASE_ANON_KEY = TEST_SUPABASE.ANON_KEY
+const SUPABASE_SERVICE_ROLE_KEY = TEST_SUPABASE.SERVICE_ROLE_KEY
 
 // テスト用のモックSupabaseクライアント
 export const mockSupabase = {
@@ -47,4 +48,4 @@ jest.mock('@supabase/supabase-js', () => ({
   createClient: jest.fn().mockImplementation(() => mockSupabase),
 }))
 
-export const supabase = createClient('https://test-supabase-url.com', 'test-anon-key') 
+export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY) 
