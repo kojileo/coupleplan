@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
 import { useRouter } from 'next/navigation';
 import type { Plan } from '@/types/plan';
+import { createMockSession, TEST_AUTH } from '@tests/utils/test-constants';
 
 // モック
 jest.mock('@/contexts/AuthContext', () => ({
@@ -50,12 +51,9 @@ describe('プラン詳細ページ統合テスト', () => {
     push: jest.fn(),
   };
   
-  const mockSession = {
-    user: {
-      id: 'user-123',
-    },
-    access_token: 'test-token',
-  };
+  // 安全なモックセッションを生成
+  const testUserId = 'user-123';
+  const mockSession = createMockSession(testUserId);
 
   // params のモック
   const mockParams = {
@@ -112,13 +110,11 @@ describe('プラン詳細ページ統合テスト', () => {
 
   it('他のユーザーのプランの場合は編集・削除ボタンが表示されない', async () => {
     // 別のユーザーのセッションをモック
+    const otherUserId = 'other-user';
+    const otherUserSession = createMockSession(otherUserId);
+    
     (useAuth as jest.Mock).mockReturnValue({
-      session: {
-        user: {
-          id: 'other-user',
-        },
-        access_token: 'test-token',
-      },
+      session: otherUserSession
     });
     
     render(<PlanDetailPage {...mockParams} />);
@@ -168,7 +164,7 @@ describe('プラン詳細ページ統合テスト', () => {
     
     // 削除APIが呼び出されることを確認
     await waitFor(() => {
-      expect(api.plans.delete).toHaveBeenCalledWith('test-token', 'plan-123');
+      expect(api.plans.delete).toHaveBeenCalledWith(TEST_AUTH.ACCESS_TOKEN, 'plan-123');
     });
     
     // 削除後にプラン一覧ページに遷移することを確認

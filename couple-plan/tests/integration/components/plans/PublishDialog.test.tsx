@@ -3,6 +3,7 @@ import PublishDialog from '@/components/features/plans/PublishDialog';
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
 import type { Plan } from '@/types/plan';
+import { createMockSession, TEST_AUTH } from '@tests/utils/test-constants';
 
 // モック
 jest.mock('@/contexts/AuthContext', () => ({
@@ -40,13 +41,9 @@ const mockPlan: Plan = {
 };
 
 describe('PublishDialogコンポーネント統合テスト', () => {
-  const mockSession = {
-    user: {
-      id: 'user-123',
-    },
-    access_token: 'test-token',
-  };
-
+  // 安全なモックセッションを生成
+  const testUserId = 'user-123';
+  const mockSession = createMockSession(testUserId);
   const mockOnClose = jest.fn();
 
   beforeEach(() => {
@@ -90,7 +87,7 @@ describe('PublishDialogコンポーネント統合テスト', () => {
     
     // プランデータが取得されるまで待機
     await waitFor(() => {
-      expect(api.plans.get).toHaveBeenCalledWith('test-token', 'plan-123');
+      expect(api.plans.get).toHaveBeenCalledWith(TEST_AUTH.ACCESS_TOKEN, 'plan-123');
     });
     
     // 非公開プランの場合のメッセージが表示されることを確認
@@ -158,7 +155,7 @@ describe('PublishDialogコンポーネント統合テスト', () => {
     
     // APIが呼ばれることを確認
     await waitFor(() => {
-      expect(api.plans.publish).toHaveBeenCalledWith('test-token', 'plan-123', true);
+      expect(api.plans.publish).toHaveBeenCalledWith(TEST_AUTH.ACCESS_TOKEN, 'plan-123', true);
     });
     
     // 成功するとonCloseが呼ばれることを確認
@@ -188,7 +185,7 @@ describe('PublishDialogコンポーネント統合テスト', () => {
     
     // APIが呼ばれることを確認
     await waitFor(() => {
-      expect(api.plans.publish).toHaveBeenCalledWith('test-token', 'plan-123', false);
+      expect(api.plans.publish).toHaveBeenCalledWith(TEST_AUTH.ACCESS_TOKEN, 'plan-123', false);
     });
     
     // 成功するとonCloseが呼ばれることを確認

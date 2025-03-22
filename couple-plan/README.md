@@ -82,6 +82,7 @@ couple-plan/
 │   └── e2e/                 # エンドツーエンドテスト
 ├── .env                     # 環境変数
 ├── .env.local               # ローカル環境変数
+├── .env.test.local          # テスト環境変数
 ├── .eslintrc.json           # ESLint設定
 ├── .gitignore               # Git除外設定
 ├── jest.config.js           # Jest設定
@@ -119,3 +120,108 @@ npm run test:ci
 2. **Vercelへのデプロイ時**：ビルドプロセスの一部としてテストが実行されます
 
 テストカバレッジレポートは `coverage/` ディレクトリに生成され、GitHub Actionsの実行結果からも確認できます。 
+
+## テスト環境のセットアップ
+
+テスト実行時は専用のデータベースと環境変数を使用します。
+
+1. `.env.test.local` ファイルを作成してテスト用の秘密情報を設定：
+```
+# テスト環境用の非公開環境変数（GitHubにコミットしない）
+
+# Supabase テスト環境のキー
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
+
+# テスト用のデータベース接続情報（ローカルのPostgreSQLを使用）
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/couple_plan_test
+
+# テスト用ユーザー情報
+TEST_USER_ID=test-user-id-123
+TEST_USER_EMAIL=test@example.com
+TEST_USER_PASSWORD=Test123!
+
+# テスト用トークン情報（実際の環境では使用されない）
+TEST_ACCESS_TOKEN="test-secure-token-for-testing-only"
+TEST_REFRESH_TOKEN="test-secure-refresh-token-for-testing-only"
+```
+
+2. テスト用データベースを作成：
+```bash
+# PostgreSQLに接続
+psql -U postgres
+
+# テスト用データベース作成（存在しない場合）
+CREATE DATABASE couple_plan_test;
+
+# 終了
+\q
+```
+
+3. テスト用データベースにスキーマを適用：
+```bash
+# テスト環境用のスキーマを適用
+npx prisma db push --schema=./prisma/schema.prisma
+```
+
+4. 環境変数が正しく設定されていることを確認するテストを実行：
+```bash
+# 環境変数設定テストのみ実行
+npx jest tests/unit/env.test.ts
+
+# または全てのテストを実行
+npm test
+```
+
+### テスト用ユーティリティ
+
+`tests/utils/` ディレクトリにはテストに便利なユーティリティが用意されています：
+
+- `test-constants.ts`: 環境変数から読み込んだテスト用の定数
+- `test-db.ts`: テスト用データベースを操作するためのヘルパー関数
+- `setup-env.js`: テスト実行前に環境変数を読み込むスクリプト
+
+テスト内でデータベースを初期化するには、以下のように使用します：
+
+```typescript
+import { initializeTestDatabase, createTestUserProfile } from '@tests/utils/test-db';
+import { TEST_USER } from '@tests/utils/test-constants';
+
+// テスト前にデータベースを初期化
+beforeAll(async () => {
+  await initializeTestDatabase();
+});
+
+// テスト用プロフィールを作成
+test('プロフィールの作成', async () => {
+  const profile = await createTestUserProfile(TEST_USER.ID);
+  expect(profile).toBeDefined();
+});
+```
+
+### 安全なトークン管理
+
+テスト内でハードコードされたアクセストークン（例: `access_token: 'test-token'`）を使用すると、セキュリティ脆弱性としてフラグが立つ可能性があります。このプロジェクトでは、以下の方法でテスト用トークンを安全に管理しています：
+
+1. 環境変数経由でのトークン提供
+   - `.env.test.local` ファイルに `TEST_ACCESS_TOKEN` を設定
+   - 実際の本番環境では使用されないテスト専用のトークン
+
+2. 動的なトークン生成
+   - `test-constants.ts` ファイルで `randomUUID()` を使用して毎回異なるトークンを生成
+   - トークンの予測可能性を低減
+
+3. セッション生成ヘルパー
+   - `createMockSession()` 関数を使用して一貫したセッションオブジェクトを生成
+   - テスト間で一貫性を保ちながらもセキュリティを確保
+
+テストを書く際は、固定文字列のトークンを直接コードに書かず、常に定数ファイルから提供される値を使用してください：
+
+```typescript
+// 悪い例 ❌
+const mockSession = { access_token: 'test-token', user: mockUser };
+
+// 良い例 ✅
+import { createMockSession } from '@tests/utils/test-constants';
+const mockSession = createMockSession(mockUser.id);
+``` 

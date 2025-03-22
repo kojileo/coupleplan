@@ -3,6 +3,7 @@ import PlanList from '@/components/features/plans/PlanList';
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
 import type { Plan } from '@/types/plan';
+import { TEST_USER, createMockSession } from '@tests/utils/test-constants';
 
 // モック
 jest.mock('@/contexts/AuthContext', () => ({
@@ -60,12 +61,10 @@ const mockPlans: Plan[] = [
 ];
 
 describe('PlanListコンポーネント統合テスト', () => {
-  const mockSession = {
-    user: {
-      id: 'user-123',
-    },
-    access_token: 'test-token',
-  };
+  // 共通のテストユーザーIDを使用
+  const testUserId = 'user-123';
+  // 安全なモックセッションを生成
+  const mockSession = createMockSession(testUserId);
 
   beforeEach(() => {
     jest.clearAllMocks();

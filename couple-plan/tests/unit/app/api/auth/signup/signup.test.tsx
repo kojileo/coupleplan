@@ -3,6 +3,7 @@ import { supabase } from '@/lib/supabase-auth'
 import { prisma } from '@/lib/db'
 import { NextRequest } from 'next/server'
 import { Prisma } from '@prisma/client'
+import { TEST_USER } from '@tests/utils/test-constants'
 
 // モックの設定
 jest.mock('@/lib/supabase-auth', () => ({
@@ -36,8 +37,8 @@ class MockPrismaError extends Error {
 
 describe('POST /api/auth/signup', () => {
   const mockUser = {
-    id: 'user-1',
-    email: 'test@example.com',
+    id: TEST_USER.ID,
+    email: TEST_USER.EMAIL,
   }
 
   const mockProfile = {
@@ -64,8 +65,8 @@ describe('POST /api/auth/signup', () => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email: 'test@example.com',
-        password: 'password123',
+        email: TEST_USER.EMAIL,
+        password: TEST_USER.PASSWORD,
         name: 'Test User',
       }),
     })
@@ -83,7 +84,7 @@ describe('POST /api/auth/signup', () => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email: 'test@example.com',
+        email: TEST_USER.EMAIL,
         password: '12345',
         name: 'Test User',
       }),
@@ -102,7 +103,7 @@ describe('POST /api/auth/signup', () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         email: 'invalid-email',
-        password: 'password123',
+        password: TEST_USER.PASSWORD,
         name: 'Test User',
       }),
     })
@@ -124,8 +125,8 @@ describe('POST /api/auth/signup', () => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email: 'test@example.com',
-        password: 'password123',
+        email: TEST_USER.EMAIL,
+        password: TEST_USER.PASSWORD,
         name: 'Test User',
       }),
     })
@@ -154,8 +155,8 @@ describe('POST /api/auth/signup', () => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email: 'test@example.com',
-        password: 'password123',
+        email: TEST_USER.EMAIL,
+        password: TEST_USER.PASSWORD,
         name: 'Test User',
       }),
     })
@@ -176,8 +177,8 @@ describe('POST /api/auth/signup', () => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email: 'test@example.com',
-        password: 'password123',
+        email: TEST_USER.EMAIL,
+        password: TEST_USER.PASSWORD,
         name: 'Test User',
       }),
     })

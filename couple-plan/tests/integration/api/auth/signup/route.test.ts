@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { POST } from '@/app/api/auth/signup/route';
 import { prisma } from '@/lib/db';
 import { supabase } from '@/lib/supabase-auth';
+import { TEST_USER } from '@tests/utils/test-constants';
 
 // Prismaのモック
 jest.mock('@/lib/db', () => ({
@@ -21,11 +22,11 @@ describe('サインアップAPI統合テスト', () => {
 
   it('有効なデータでユーザー登録できる', async () => {
     // モックデータの設定
-    const mockUser = { id: 'user-123', email: 'test@example.com' };
+    const mockUser = { id: TEST_USER.ID, email: TEST_USER.EMAIL };
     const signupData = {
       name: 'テストユーザー',
-      email: 'test@example.com',
-      password: 'password123'
+      email: TEST_USER.EMAIL,
+      password: TEST_USER.PASSWORD
     };
     const mockProfile = {
       id: 'profile-123',
@@ -92,7 +93,7 @@ describe('サインアップAPI統合テスト', () => {
     // 無効なデータ（短いパスワード）
     const signupData = {
       name: 'テストユーザー',
-      email: 'test@example.com',
+      email: TEST_USER.EMAIL,
       password: '12345' // 6文字未満
     };
     
@@ -122,7 +123,7 @@ describe('サインアップAPI統合テスト', () => {
     const signupData = {
       name: 'テストユーザー',
       email: 'invalid-email', // @がない
-      password: 'password123'
+      password: TEST_USER.PASSWORD
     };
     
     // リクエストの作成
@@ -150,8 +151,8 @@ describe('サインアップAPI統合テスト', () => {
     // 有効なデータ
     const signupData = {
       name: 'テストユーザー',
-      email: 'test@example.com',
-      password: 'password123'
+      email: TEST_USER.EMAIL,
+      password: TEST_USER.PASSWORD
     };
     
     // Supabaseのモック設定（エラーを返す）
@@ -183,11 +184,11 @@ describe('サインアップAPI統合テスト', () => {
 
   it('Prisma一意制約エラーで400エラーを返す', async () => {
     // モックデータの設定
-    const mockUser = { id: 'user-123', email: 'test@example.com' };
+    const mockUser = { id: TEST_USER.ID, email: TEST_USER.EMAIL };
     const signupData = {
       name: 'テストユーザー',
-      email: 'test@example.com',
-      password: 'password123'
+      email: TEST_USER.EMAIL,
+      password: TEST_USER.PASSWORD
     };
     
     // Supabaseのモック設定

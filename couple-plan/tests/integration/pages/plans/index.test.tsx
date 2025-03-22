@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
 import { useRouter } from 'next/navigation';
 import type { Plan } from '@/types/plan';
+import { createMockSession } from '@tests/utils/test-constants';
 
 // モック
 jest.mock('@/contexts/AuthContext', () => ({
@@ -69,12 +70,9 @@ describe('マイプラン一覧ページ統合テスト', () => {
     push: jest.fn(),
   };
   
-  const mockSession = {
-    user: {
-      id: 'user-123',
-    },
-    access_token: 'test-token',
-  };
+  // 安全なモックセッションを生成
+  const testUserId = 'user-123';
+  const mockSession = createMockSession(testUserId);
 
   beforeEach(() => {
     jest.clearAllMocks();

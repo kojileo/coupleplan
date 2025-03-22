@@ -2,6 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { LikeButton } from '@/components/features/plans/LikeButton';
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
+import { createMockSession, TEST_AUTH } from '@tests/utils/test-constants';
 
 // モック
 jest.mock('@/contexts/AuthContext', () => ({
@@ -18,12 +19,9 @@ jest.mock('@/lib/api', () => ({
 }));
 
 describe('LikeButtonコンポーネント統合テスト', () => {
-  const mockSession = {
-    user: {
-      id: 'user-123',
-    },
-    access_token: 'test-token',
-  };
+  // 安全なモックセッションを生成
+  const testUserId = 'user-123';
+  const mockSession = createMockSession(testUserId);
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -78,7 +76,7 @@ describe('LikeButtonコンポーネント統合テスト', () => {
     fireEvent.click(screen.getByText('🤍'));
     
     // APIが正しく呼び出されたことを確認
-    expect(api.likes.create).toHaveBeenCalledWith('test-token', 'plan-123');
+    expect(api.likes.create).toHaveBeenCalledWith(TEST_AUTH.ACCESS_TOKEN, 'plan-123');
     
     // 状態が更新されたことを確認
     await waitFor(() => {
@@ -103,7 +101,7 @@ describe('LikeButtonコンポーネント統合テスト', () => {
     fireEvent.click(screen.getByText('❤️'));
     
     // APIが正しく呼び出されたことを確認
-    expect(api.likes.delete).toHaveBeenCalledWith('test-token', 'plan-123');
+    expect(api.likes.delete).toHaveBeenCalledWith(TEST_AUTH.ACCESS_TOKEN, 'plan-123');
     
     // 状態が更新されたことを確認
     await waitFor(() => {
