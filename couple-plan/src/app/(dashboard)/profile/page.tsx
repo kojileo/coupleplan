@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useRouter } from 'next/navigation';
 import type { FormEvent, ReactElement } from 'react';
@@ -78,16 +78,16 @@ export default function ProfilePage(): ReactElement {
     setDeleteError('');
   };
 
-  if (isLoading) return <div>読み込み中...</div>;
-  if (error) return <div>エラー: {error.message}</div>;
-  if (!session) return <div>ログインが必要です</div>;
+  if (isLoading) return <div className="text-rose-950 mb-6">読み込み中...</div>;
+  if (error) return <div className="text-rose-950 mb-6">エラー: {error.message}</div>;
+  if (!session) return <div className="text-rose-950 mb-6">ログインが必要です</div>;
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">プロフィール設定</h1>
+      <h1 className="text-2xl font-bold text-rose-950 mb-6">プロフィール設定</h1>
 
       <div className="bg-white shadow-md rounded-lg p-6 mb-8">
-        <h2 className="text-xl font-semibold mb-4">プロフィール情報</h2>
+        <h2 className="text-2xl font-bold text-rose-950 mb-6">プロフィール情報</h2>
 
         {updateMessage && (
           <div className="bg-green-50 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
@@ -101,7 +101,7 @@ export default function ProfilePage(): ReactElement {
           }}
         >
           <div className="mb-4">
-            <label htmlFor="name" className="block text-gray-700 mb-2">
+            <label htmlFor="name" className="block text-rose-950 mb-6">
               名前
             </label>
             <input
@@ -114,7 +114,7 @@ export default function ProfilePage(): ReactElement {
           </div>
 
           <div className="mb-6">
-            <label htmlFor="email" className="block text-gray-700 mb-2">
+            <label htmlFor="email" className="block text-rose-950 mb-6">
               メールアドレス
             </label>
             <input
@@ -136,7 +136,7 @@ export default function ProfilePage(): ReactElement {
       </div>
 
       <div className="bg-white shadow-md rounded-lg p-6">
-        <h2 className="text-xl font-semibold mb-4">アカウント削除</h2>
+        <h2 className="text-2xl font-bold text-rose-950 mb-6">アカウント削除</h2>
         <p className="text-gray-600 mb-4">
           アカウントを削除すると、すべてのデータが完全に削除され、復元できなくなります。
         </p>
