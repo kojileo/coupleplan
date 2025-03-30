@@ -407,7 +407,12 @@ describe('PlanDetailPage コンポーネント', () => {
     });
 
     // 場所URLが「未設定」と表示されることを確認
-    expect(screen.getByText('未設定')).toBeInTheDocument();
+    expect(screen.getByText('場所URL')).toBeInTheDocument();
+    expect(screen.getByText('場所URL').nextElementSibling).toHaveTextContent('未設定');
+
+    // 地域が「未設定」と表示されることを確認
+    expect(screen.getByText('地域')).toBeInTheDocument();
+    expect(screen.getByText('地域').nextElementSibling).toHaveTextContent('未設定');
   });
 
   it('日付が設定されていない場合、「未設定」と表示される', async () => {
@@ -424,6 +429,7 @@ describe('PlanDetailPage コンポーネント', () => {
     });
 
     // 日付が「未設定」と表示されることを確認
-    expect(screen.getByText('未設定')).toBeInTheDocument();
+    expect(screen.getByText('日付')).toBeInTheDocument();
+    expect(screen.getByText('日付').nextElementSibling).toHaveTextContent('未設定');
   });
 });

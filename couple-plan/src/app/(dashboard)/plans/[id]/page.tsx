@@ -150,6 +150,26 @@ export default function PlanDetailPage({ params }: Props): ReactElement {
               )}
             </p>
           </div>
+          <div>
+            <h2 className="text-sm font-semibold text-rose-800 mb-2">地域</h2>
+            <p className="text-rose-900">
+              {plan.region ? (
+                <span>
+                  {plan.region === 'tokyo' && '東京'}
+                  {plan.region === 'osaka' && '大阪'}
+                  {plan.region === 'kyoto' && '京都'}
+                  {plan.region === 'fukuoka' && '福岡'}
+                  {plan.region === 'sapporo' && '札幌'}
+                  {plan.region === 'nagoya' && '名古屋'}
+                  {plan.region === 'yokohama' && '横浜'}
+                  {plan.region === 'kobe' && '神戸'}
+                  {plan.region === 'other' && 'その他'}
+                </span>
+              ) : (
+                '未設定'
+              )}
+            </p>
+          </div>
         </div>
 
         <div className="pt-4 border-t border-rose-100">

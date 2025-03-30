@@ -5,6 +5,7 @@ export type Plan = {
   date?: string | Date | null;
   budget: number;
   location?: string | null;
+  region?: string | null;
   isPublic: boolean;
   userId: string;
   createdAt: Date;
@@ -21,6 +22,9 @@ export type Plan = {
   };
 };
 
-export type CreatePlanInput = Pick<Plan, 'title' | 'description' | 'date' | 'budget' | 'location'>;
+export type CreatePlanInput = Pick<
+  Plan,
+  'title' | 'description' | 'date' | 'budget' | 'location' | 'region'
+>;
 
 export type UpdatePlanInput = Partial<CreatePlanInput>;

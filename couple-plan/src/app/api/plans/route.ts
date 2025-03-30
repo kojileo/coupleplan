@@ -77,32 +77,38 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     const planData = body;
 
-    const plan = await prisma.plan.create({
-      data: {
-        title: planData.title,
-        description: planData.description,
-        date: planData.date,
-        location: planData.location,
-        budget: planData.budget,
-        isPublic: planData.isPublic,
-        userId: user.id,
-      },
-      include: {
-        profile: {
-          select: {
-            name: true,
+    try {
+      const plan = await prisma.plan.create({
+        data: {
+          title: planData.title,
+          description: planData.description,
+          date: planData.date,
+          location: planData.location,
+          region: planData.region,
+          budget: planData.budget,
+          isPublic: planData.isPublic,
+          userId: user.id,
+        },
+        include: {
+          profile: {
+            select: {
+              name: true,
+            },
+          },
+          likes: true,
+          _count: {
+            select: {
+              likes: true,
+            },
           },
         },
-        likes: true,
-        _count: {
-          select: {
-            likes: true,
-          },
-        },
-      },
-    });
+      });
 
-    return NextResponse.json({ data: plan });
+      return NextResponse.json({ data: plan }, { status: 201 });
+    } catch (error) {
+      console.error('Prismaエラー:', error);
+      return NextResponse.json({ error: 'プランの作成に失敗しました' }, { status: 500 });
+    }
   } catch (error) {
     const err = error instanceof Error ? error : new Error('Unknown error');
     console.error('プラン作成エラー:', err);
@@ -119,6 +125,7 @@ function isPlanRequest(data: unknown): data is PlanRequest {
     typeof request.description === 'string' &&
     typeof request.date === 'string' &&
     typeof request.location === 'string' &&
+    typeof request.region === 'string' &&
     typeof request.budget === 'number' &&
     typeof request.isPublic === 'boolean'
   );

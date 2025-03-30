@@ -10,6 +10,7 @@ const customJestConfig = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1'
   },
+  testMatch: ['**/tests/**/*.test.[jt]s?(x)'],
   maxWorkers: '50%',
   testTimeout: 10000,
   bail: 5,

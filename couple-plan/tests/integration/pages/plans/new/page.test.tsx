@@ -94,18 +94,20 @@ describe('プラン作成ページ統合テスト', () => {
     fireEvent.change(screen.getByLabelText('日付'), { target: { value: '2024-01-01' } });
     fireEvent.change(screen.getByLabelText('予算'), { target: { value: '5000' } });
     fireEvent.change(screen.getByLabelText('場所URL'), { target: { value: 'https://example.com' } });
+    fireEvent.change(screen.getByLabelText('地域'), { target: { value: 'tokyo' } });
     
     // フォームを送信
     fireEvent.click(screen.getByText('作成'));
     
     // APIが呼ばれることを確認
     await waitFor(() => {
-      expect(api.plans.create).toHaveBeenCalledWith(TEST_AUTH.ACCESS_TOKEN, {
+      expect(api.plans.create).toHaveBeenCalledWith(mockSession.access_token, {
         title: 'テストプラン',
         description: 'テスト用の説明文',
-        date: expect.any(Date),
+        date: new Date('2024-01-01'),
         budget: 5000,
         location: 'https://example.com',
+        region: 'tokyo',
         isPublic: false,
       });
     });
