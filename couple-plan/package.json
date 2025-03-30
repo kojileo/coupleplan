@@ -14,7 +14,7 @@
     "test:integration": "jest --testPathPattern=tests/integration --coverage",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "vercel-build": "prisma generate && prisma migrate deploy --accept-data-loss && next build",
+    "vercel-build": "prisma generate && prisma migrate deploy --accept-data-loss && next build --debug",
     "postinstall": "prisma generate"
   },
   "dependencies": {
