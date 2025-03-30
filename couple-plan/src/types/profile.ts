@@ -1,5 +1,5 @@
 export interface Profile {
-  userId: string;
+  id: string;
   name: string;
   email: string;
   createdAt: Date;

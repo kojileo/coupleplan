@@ -87,7 +87,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams): Promis
         id,
         userId: user.id,
       },
-      data: body,
+      data: {
+        ...body,
+        region: body.region,
+      },
     });
 
     return NextResponse.json({ data: plan });

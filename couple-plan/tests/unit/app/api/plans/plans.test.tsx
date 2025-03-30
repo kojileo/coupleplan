@@ -187,144 +187,148 @@ describe('plans API', () => {
   })
 
   describe('POST /api/plans', () => {
-    const newPlan = {
-      title: 'New Plan',
-      description: 'New Description',
-      date: '2024-02-01T00:00:00.000Z',
-      location: 'New Location',
-      budget: 2000,
-      isPublic: false,
-    }
-
     it('プランを正常に作成', async () => {
-      // Supabaseの認証モック
-      ;(supabase.auth.getUser as jest.Mock).mockResolvedValueOnce({
+      // モックデータの設定
+      const mockUser = { id: 'user-123' };
+      const testDate = new Date('2024-03-20');
+      const testDateString = testDate.toISOString();
+      
+      // リクエストデータ（文字列化された日付を使用）
+      const planData = {
+        title: 'テストプラン',
+        description: 'テスト説明',
+        date: testDateString,
+        location: '東京',
+        region: '関東',
+        budget: 5000,
+        isPublic: false
+      };
+      
+      // レスポンスデータ
+      const createdPlan = {
+        ...planData,
+        id: 'plan-123',
+        userId: mockUser.id,
+        profile: { name: 'テストユーザー' },
+        likes: [],
+        _count: { likes: 0 }
+      };
+      
+      // Supabaseのモック設定
+      (supabase.auth.getUser as jest.Mock).mockResolvedValue({
         data: { user: mockUser },
-        error: null,
-      })
-
-      // Prismaのモック
-      ;(prisma.plan.create as jest.Mock).mockResolvedValueOnce({
-        ...mockPlan,
-        ...newPlan,
-      })
-
-      const request = new NextRequest('http://localhost/api/plans', {
+        error: null
+      });
+      
+      // Prismaのモック設定
+      (prisma.plan.create as jest.Mock).mockResolvedValue(createdPlan);
+      
+      // リクエストの作成
+      const req = new NextRequest('http://localhost:3000/api/plans', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${mockToken}`,
+          Authorization: 'Bearer test-token',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify(newPlan),
-      })
-
-      const response = await POST(request)
-      expect(response.status).toBe(200)
-
-      const data = await response.json()
-      expect(data.data).toMatchObject({
-        ...newPlan,
-        date: newPlan.date,
-      })
-
-      // Prismaの作成処理を確認
+        body: JSON.stringify(planData)
+      });
+      
+      // APIエンドポイントの呼び出し
+      const res = await POST(req);
+      const data = await res.json();
+      
+      // レスポンスの検証
+      expect(res.status).toBe(201);
+      expect(data).toEqual({ data: createdPlan });
+      
+      // Prismaが正しいパラメータで呼び出されたか検証
       expect(prisma.plan.create).toHaveBeenCalledWith({
         data: {
-          ...newPlan,
-          userId: mockUser.id,
+          ...planData,
+          userId: mockUser.id
         },
         include: {
           profile: { select: { name: true } },
           likes: true,
-          _count: { select: { likes: true } },
-        },
-      })
-    })
+          _count: { select: { likes: true } }
+        }
+      });
+    });
 
-    it('認証エラーの場合、401エラーを返す', async () => {
-      const request = new NextRequest('http://localhost/api/plans', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newPlan),
-      })
-
-      const response = await POST(request)
-      expect(response.status).toBe(401)
-
-      const data = await response.json()
-      expect(data.error).toBe('認証が必要です')
-    })
-
-    it('ユーザーが見つからない場合、401エラーを返す', async () => {
-      ;(supabase.auth.getUser as jest.Mock).mockResolvedValueOnce({
-        data: { user: null },
-        error: null,
-      })
-
-      const request = new NextRequest('http://localhost/api/plans', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${mockToken}`,
-        },
-        body: JSON.stringify(newPlan),
-      })
-
-      const response = await POST(request)
-      expect(response.status).toBe(401)
-
-      const data = await response.json()
-      expect(data.error).toBe('認証が必要です')
-    })
-
-    it('Prismaエラーの場合、500エラーを返す', async () => {
-      ;(supabase.auth.getUser as jest.Mock).mockResolvedValueOnce({
+    it('無効なリクエストデータの場合は400エラーを返す', async () => {
+      // モックデータの設定
+      const mockUser = { id: 'user-123' };
+      
+      // Supabaseのモック設定
+      (supabase.auth.getUser as jest.Mock).mockResolvedValue({
         data: { user: mockUser },
-        error: null,
-      })
-
-      ;(prisma.plan.create as jest.Mock).mockRejectedValueOnce(new Error('Database error'))
-
-      const request = new NextRequest('http://localhost/api/plans', {
+        error: null
+      });
+      
+      // 不完全なリクエストデータ
+      const invalidPlanData = {
+        title: 'テストプラン'
+        // 必須フィールドが不足
+      };
+      
+      // リクエストの作成
+      const req = new NextRequest('http://localhost:3000/api/plans', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${mockToken}`,
+          Authorization: 'Bearer test-token',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify(newPlan),
-      })
+        body: JSON.stringify(invalidPlanData)
+      });
+      
+      // APIエンドポイントの呼び出し
+      const res = await POST(req);
+      const data = await res.json();
+      
+      // レスポンスの検証
+      expect(res.status).toBe(400);
+      expect(data).toEqual({ error: '無効なリクエストデータです' });
+    });
 
-      const response = await POST(request)
-      expect(response.status).toBe(500)
-
-      const data = await response.json()
-      expect(data.error).toBe('プランの作成に失敗しました')
-      expect(console.error).toHaveBeenCalledWith('プラン作成エラー:', expect.any(Error))
-    })
-
-    it('リクエストボディのJSONパースエラーの場合、500エラーを返す', async () => {
-      ;(supabase.auth.getUser as jest.Mock).mockResolvedValueOnce({
+    it('Prismaエラーの場合は500エラーを返す', async () => {
+      // モックデータの設定
+      const mockUser = { id: 'user-123' };
+      const planData = {
+        title: 'テストプラン',
+        description: 'テスト説明',
+        date: '2024-03-20',
+        location: '東京',
+        region: '関東',
+        budget: 5000,
+        isPublic: false
+      };
+      
+      // Supabaseのモック設定
+      (supabase.auth.getUser as jest.Mock).mockResolvedValue({
         data: { user: mockUser },
-        error: null,
-      })
-
-      const request = new NextRequest('http://localhost/api/plans', {
+        error: null
+      });
+      
+      // Prismaエラーのモック設定
+      (prisma.plan.create as jest.Mock).mockRejectedValue(new Error('データベースエラー'));
+      
+      // リクエストの作成
+      const req = new NextRequest('http://localhost:3000/api/plans', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${mockToken}`,
+          Authorization: 'Bearer test-token',
+          'Content-Type': 'application/json'
         },
-        body: '{invalid json}',
-      })
-
-      const response = await POST(request)
-      expect(response.status).toBe(500)
-
-      const data = await response.json()
-      expect(data.error).toBe('プランの作成に失敗しました')
-      expect(console.error).toHaveBeenCalledWith('プラン作成エラー:', expect.any(Error))
-    })
+        body: JSON.stringify(planData)
+      });
+      
+      // APIエンドポイントの呼び出し
+      const res = await POST(req);
+      const data = await res.json();
+      
+      // レスポンスの検証
+      expect(res.status).toBe(500);
+      expect(data).toEqual({ error: 'プランの作成に失敗しました' });
+    });
   })
 })

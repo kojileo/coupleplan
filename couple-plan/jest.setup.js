@@ -64,3 +64,28 @@ console.error = (...args) => {
   }
   originalConsoleError(...args);
 };
+
+// モックの設定
+jest.mock('next/navigation', () => ({
+  useRouter() {
+    return {
+      push: jest.fn(),
+      replace: jest.fn(),
+      prefetch: jest.fn(),
+      back: jest.fn(),
+    };
+  },
+  usePathname() {
+    return '';
+  },
+  useSearchParams() {
+    return new URLSearchParams();
+  },
+}));
+
+// グローバルなモックの設定
+global.ResizeObserver = class ResizeObserver {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+};

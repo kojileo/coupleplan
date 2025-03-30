@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\"",
     "test": "jest",
     "test:unit": "jest --testPathPattern=tests/unit --reporters=default --reporters=jest-junit",
     "test:unit:html": "jest --testPathPattern=tests/unit --reporters=default --reporters=jest-junit --reporters=jest-html-reporter",

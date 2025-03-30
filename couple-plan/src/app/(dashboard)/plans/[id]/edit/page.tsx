@@ -28,6 +28,7 @@ export default function EditPlanPage({ params }: Props): ReactElement {
     date: '',
     budget: 0,
     location: '',
+    region: '',
     isPublic: false,
   });
 
@@ -60,6 +61,7 @@ export default function EditPlanPage({ params }: Props): ReactElement {
               : '',
             budget: response.data.budget,
             location: response.data.location || '',
+            region: response.data.region || '',
             isPublic: response.data.isPublic,
           });
         }
@@ -196,6 +198,29 @@ export default function EditPlanPage({ params }: Props): ReactElement {
             value={formData.location}
             onChange={(e) => setFormData({ ...formData, location: e.target.value })}
           />
+        </div>
+
+        <div>
+          <label htmlFor="region" className="block text-sm font-medium text-rose-700 mb-1">
+            地域
+          </label>
+          <select
+            id="region"
+            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={formData.region}
+            onChange={(e) => setFormData({ ...formData, region: e.target.value })}
+          >
+            <option value="">選択してください</option>
+            <option value="tokyo">東京</option>
+            <option value="osaka">大阪</option>
+            <option value="kyoto">京都</option>
+            <option value="fukuoka">福岡</option>
+            <option value="sapporo">札幌</option>
+            <option value="nagoya">名古屋</option>
+            <option value="yokohama">横浜</option>
+            <option value="kobe">神戸</option>
+            <option value="other">その他</option>
+          </select>
         </div>
 
         <div className="flex gap-4">

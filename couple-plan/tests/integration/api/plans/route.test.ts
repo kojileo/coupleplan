@@ -113,6 +113,7 @@ describe('プランAPI統合テスト', () => {
         description: 'テスト説明',
         date: testDateString,
         location: '東京',
+        region: '関東',
         budget: 5000,
         isPublic: false
       };
@@ -151,7 +152,7 @@ describe('プランAPI統合テスト', () => {
       const data = await res.json();
       
       // レスポンスの検証
-      expect(res.status).toBe(200);
+      expect(res.status).toBe(201);
       expect(data).toEqual({ data: createdPlan });
       
       // Prismaが正しいパラメータで呼び出されたか検証

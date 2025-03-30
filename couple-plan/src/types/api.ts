@@ -16,6 +16,7 @@ export type PlanRequest = {
   description: string;
   date?: Date | null;
   location?: string | null;
+  region?: string | null;
   budget: number;
   isPublic: boolean;
 };

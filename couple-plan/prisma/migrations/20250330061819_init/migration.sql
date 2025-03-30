@@ -17,6 +17,7 @@ CREATE TABLE "plans" (
     "description" TEXT NOT NULL,
     "date" TIMESTAMPTZ(6),
     "location" VARCHAR(255),
+    "region" VARCHAR(50),
     "budget" INTEGER NOT NULL DEFAULT 0,
     "is_public" BOOLEAN NOT NULL DEFAULT false,
     "user_id" UUID NOT NULL,
