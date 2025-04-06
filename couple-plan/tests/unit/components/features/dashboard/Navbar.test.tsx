@@ -40,7 +40,8 @@ describe('Navbar', () => {
     const desktopLinks = desktopMenu?.querySelectorAll('a')
     expect(desktopLinks?.[0]).toHaveTextContent('マイプラン一覧')
     expect(desktopLinks?.[1]).toHaveTextContent('公開プラン一覧')
-    expect(desktopLinks?.[2]).toHaveTextContent('プロフィール')
+    expect(desktopLinks?.[2]).toHaveTextContent('おすすめプラン')
+    expect(desktopLinks?.[3]).toHaveTextContent('プロフィール')
     
     const desktopLogoutButton = desktopMenu?.querySelector('button')
     expect(desktopLogoutButton).toHaveTextContent('ログアウト')
