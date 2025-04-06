@@ -150,7 +150,7 @@ describe('api', () => {
     // ISO文字列による日付の定義で参照の問題を防ぐ
     const mockDateStr = '2023-01-01T00:00:00.000Z';
     const mockProfile: Profile = {
-      userId: mockUserId,
+      id: mockUserId,
       name: 'Test User',
       email: TEST_USER.EMAIL,
       createdAt: new Date(mockDateStr),

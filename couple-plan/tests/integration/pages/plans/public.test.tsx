@@ -4,6 +4,9 @@ import PublicPlansPage from '@/app/(dashboard)/plans/public/page';
 import { api } from '@/lib/api';
 import { AuthProvider } from '@/contexts/AuthContext';
 
+// テスト用の定数
+const TEST_ACCESS_TOKEN = 'test-token-123';
+
 // APIのモック
 jest.mock('@/lib/api', () => ({
   api: {
@@ -31,7 +34,7 @@ jest.mock('@/lib/supabase-auth', () => ({
               id: 'user1',
               email: 'test@example.com',
             },
-            access_token: 'test-token',
+            access_token: 'test-token-123', // 直接文字列を使用
           },
         },
       }),
