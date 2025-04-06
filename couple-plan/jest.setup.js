@@ -37,18 +37,21 @@ Date.prototype.toLocaleDateString = function(...args) {
 }
 
 // NextResponse のモック
-jest.mock('next/server', () => ({
-  ...jest.requireActual('next/server'),
-  NextResponse: {
-    json: (data, init) => new Response(JSON.stringify(data), {
-      ...init,
-      headers: {
-        'content-type': 'application/json',
-        ...init?.headers,
-      },
-    })
+jest.mock('next/server', () => {
+  const actual = jest.requireActual('next/server')
+  return {
+    ...actual,
+    NextResponse: {
+      json: (data, init) => new Response(JSON.stringify(data), {
+        ...init,
+        headers: {
+          'content-type': 'application/json',
+          ...init?.headers,
+        },
+      })
+    }
   }
-}))
+})
 
 // 既存の console.error をラップして、特定のエラーメッセージをフィルタリングする
 const originalConsoleError = console.error;
