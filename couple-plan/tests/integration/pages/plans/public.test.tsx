@@ -3,9 +3,7 @@ import userEvent from '@testing-library/user-event';
 import PublicPlansPage from '@/app/(dashboard)/plans/public/page';
 import { api } from '@/lib/api';
 import { AuthProvider } from '@/contexts/AuthContext';
-
-// テスト用の定数
-const TEST_ACCESS_TOKEN = 'test-token-123';
+import { createMockSession } from '@tests/utils/test-constants';
 
 // APIのモック
 jest.mock('@/lib/api', () => ({
@@ -30,11 +28,13 @@ jest.mock('@/lib/supabase-auth', () => ({
       getSession: jest.fn().mockResolvedValue({
         data: {
           session: {
+            access_token: 'test-token',
+            refresh_token: 'test-refresh-token',
+            expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
             user: {
               id: 'user1',
               email: 'test@example.com',
             },
-            access_token: 'test-token-123', // 直接文字列を使用
           },
         },
       }),

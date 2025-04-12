@@ -53,14 +53,12 @@ export const TEST_AUTH = {
  * @param userId ユーザーID (省略時はTEST_USER.IDを使用)
  * @returns モックセッションオブジェクト
  */
-export function createMockSession(userId = TEST_USER.ID) {
-  return {
-    access_token: TEST_AUTH.ACCESS_TOKEN,
-    refresh_token: TEST_AUTH.REFRESH_TOKEN, 
-    expires_at: TEST_AUTH.EXPIRES_AT,
-    user: {
-      id: userId,
-      email: TEST_USER.EMAIL,
-    }
-  };
-} 
+export const createMockSession = (userId: string = TEST_USER.ID) => ({
+  access_token: TEST_AUTH.ACCESS_TOKEN,
+  refresh_token: TEST_AUTH.REFRESH_TOKEN, 
+  expires_at: TEST_AUTH.EXPIRES_AT,
+  user: {
+    id: userId,
+    email: TEST_USER.EMAIL,
+  }
+}); 
