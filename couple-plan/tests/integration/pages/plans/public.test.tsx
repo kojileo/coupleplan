@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import PublicPlansPage from '@/app/(dashboard)/plans/public/page';
 import { api } from '@/lib/api';
 import { AuthProvider } from '@/contexts/AuthContext';
-import { createMockSession } from '@tests/utils/test-constants';
+import { randomUUID } from 'crypto';
 
 // APIのモック
 jest.mock('@/lib/api', () => ({
@@ -15,32 +15,36 @@ jest.mock('@/lib/api', () => ({
 }));
 
 // supabase-authのモック
-jest.mock('@/lib/supabase-auth', () => ({
-  supabase: {
-    auth: {
-      onAuthStateChange: jest.fn().mockReturnValue({
-        data: {
-          subscription: {
-            unsubscribe: jest.fn(),
-          },
-        },
-      }),
-      getSession: jest.fn().mockResolvedValue({
-        data: {
-          session: {
-            access_token: 'test-token',
-            refresh_token: 'test-refresh-token',
-            expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-            user: {
-              id: 'user1',
-              email: 'test@example.com',
+jest.mock('@/lib/supabase-auth', () => {
+  const generateMockSession = () => ({
+    access_token: process.env.TEST_ACCESS_TOKEN || `test-token-${randomUUID()}`,
+    refresh_token: process.env.TEST_REFRESH_TOKEN || `refresh-token-${randomUUID()}`,
+    expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+    user: {
+      id: process.env.TEST_USER_ID || 'test-user-id-123',
+      email: process.env.TEST_USER_EMAIL || 'test@example.com',
+    },
+  });
+
+  return {
+    supabase: {
+      auth: {
+        onAuthStateChange: jest.fn().mockReturnValue({
+          data: {
+            subscription: {
+              unsubscribe: jest.fn(),
             },
           },
-        },
-      }),
+        }),
+        getSession: jest.fn().mockResolvedValue({
+          data: {
+            session: generateMockSession(),
+          },
+        }),
+      },
     },
-  },
-}));
+  };
+});
 
 describe('PublicPlansPage', () => {
   const mockPlans = [
