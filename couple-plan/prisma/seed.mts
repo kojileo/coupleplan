@@ -1,9 +1,27 @@
+/// <reference types="node" />
+
 import { PrismaClient } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
 
 const prisma = new PrismaClient();
 
+async function cleanDatabase() {
+  // 外部キー制約を考慮して、正しい順序で削除
+  console.log('データベースのクリーンアップを開始します...');
+  
+  // 各テーブルのデータを削除
+  await prisma.recommendedPlan.deleteMany();
+  await prisma.profile.deleteMany();
+  
+  console.log('データベースのクリーンアップが完了しました');
+}
+
 async function main() {
+  // データベースをクリーンアップ
+  await cleanDatabase();
+  
+  console.log('シードデータの作成を開始します...');
+
   // 管理者ユーザーの作成
   const adminUser = await prisma.profile.upsert({
     where: { email: 'admin@example.com' },

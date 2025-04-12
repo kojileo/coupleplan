@@ -3,7 +3,6 @@ import userEvent from '@testing-library/user-event';
 import PublicPlansPage from '@/app/(dashboard)/plans/public/page';
 import { api } from '@/lib/api';
 import { AuthProvider } from '@/contexts/AuthContext';
-import { createMockSession } from '@tests/utils/test-constants';
 
 // APIのモック
 jest.mock('@/lib/api', () => ({
@@ -15,32 +14,38 @@ jest.mock('@/lib/api', () => ({
 }));
 
 // supabase-authのモック
-jest.mock('@/lib/supabase-auth', () => ({
-  supabase: {
-    auth: {
-      onAuthStateChange: jest.fn().mockReturnValue({
-        data: {
-          subscription: {
-            unsubscribe: jest.fn(),
-          },
-        },
-      }),
-      getSession: jest.fn().mockResolvedValue({
-        data: {
-          session: {
-            access_token: 'test-token',
-            refresh_token: 'test-refresh-token',
-            expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-            user: {
-              id: 'user1',
-              email: 'test@example.com',
+jest.mock('@/lib/supabase-auth', () => {
+  // テスト用の固定トークンを使用
+  const TEST_TOKEN = 'test-token-' + Date.now();
+  const TEST_REFRESH_TOKEN = 'test-refresh-token-' + Date.now();
+  
+  return {
+    supabase: {
+      auth: {
+        onAuthStateChange: jest.fn().mockReturnValue({
+          data: {
+            subscription: {
+              unsubscribe: jest.fn(),
             },
           },
-        },
-      }),
+        }),
+        getSession: jest.fn().mockResolvedValue({
+          data: {
+            session: {
+              access_token: process.env.TEST_ACCESS_TOKEN || TEST_TOKEN,
+              refresh_token: process.env.TEST_REFRESH_TOKEN || TEST_REFRESH_TOKEN,
+              expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+              user: {
+                id: process.env.TEST_USER_ID || 'test-user-id-123',
+                email: process.env.TEST_USER_EMAIL || 'test@example.com',
+              },
+            },
+          },
+        }),
+      },
     },
-  },
-}));
+  };
+});
 
 describe('PublicPlansPage', () => {
   const mockPlans = [
