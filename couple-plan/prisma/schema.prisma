@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["metrics"]
 }
 
 datasource db {
@@ -14,6 +15,7 @@ model Profile {
   email     String?  @unique @db.VarChar(255)
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz(6)
+  isAdmin   Boolean  @default(false) @map("is_admin")
   likes     Like[]
   plans     Plan[]
 
@@ -52,4 +54,19 @@ model Like {
   @@index([userId])
   @@index([planId])
   @@map("likes")
+}
+
+model RecommendedPlan {
+  id          String   @id @default(cuid())
+  title       String   @db.VarChar(255)
+  description String
+  location    String?  @db.VarChar(255)
+  region      String?  @db.VarChar(50)
+  budget      Int      @default(0)
+  imageUrl    String?  @map("image_url") @db.VarChar(255)
+  category    String   @db.VarChar(50)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@map("recommended_plans")
 }
