@@ -50,18 +50,25 @@ export function PlanCard({ plan, isPublic = false, onPublishToggle }: PlanCardPr
     >
       <div className="flex justify-between items-start mb-4">
         <h3 className="text-xl font-semibold text-rose-950">{plan.title}</h3>
-        {!isPublic && onPublishToggle && (
-          <button
-            onClick={handlePublishToggle}
-            className={`px-3 py-1 rounded-full text-sm ${
-              plan.isPublic
-                ? 'bg-rose-100 text-rose-700 hover:bg-rose-200'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
-          >
-            {plan.isPublic ? '公開中' : '非公開'}
-          </button>
-        )}
+        <div className="flex items-center gap-2">
+          {plan.isRecommended && (
+            <span className="px-2 py-1 rounded-full text-xs bg-amber-100 text-amber-800">
+              おすすめ
+            </span>
+          )}
+          {!isPublic && onPublishToggle && (
+            <button
+              onClick={handlePublishToggle}
+              className={`px-3 py-1 rounded-full text-sm ${
+                plan.isPublic
+                  ? 'bg-rose-100 text-rose-700 hover:bg-rose-200'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              {plan.isPublic ? '公開中' : '非公開'}
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="space-y-2 text-gray-600">

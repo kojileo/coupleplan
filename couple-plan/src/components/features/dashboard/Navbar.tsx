@@ -71,16 +71,10 @@ export default function Navbar(): ReactElement {
               マイプラン一覧
             </Link>
             <Link
-              href="/plans/public"
+              href="/plans/explore"
               className="text-rose-600 hover:text-rose-900 px-3 py-2 rounded-md text-sm"
             >
-              公開プラン一覧
-            </Link>
-            <Link
-              href="/recommended"
-              className="text-rose-600 hover:text-rose-900 px-3 py-2 rounded-md text-sm"
-            >
-              おすすめプラン
+              プランを探す
             </Link>
             <Link
               href="/profile"
@@ -104,18 +98,11 @@ export default function Navbar(): ReactElement {
               マイプラン一覧
             </Link>
             <Link
-              href="/plans/public"
+              href="/plans/explore"
               className="text-rose-600 hover:text-rose-900 px-3 py-2 rounded-md text-sm"
               onClick={toggleMenu}
             >
-              公開プラン一覧
-            </Link>
-            <Link
-              href="/recommended"
-              className="text-rose-600 hover:text-rose-900 px-3 py-2 rounded-md text-sm"
-              onClick={toggleMenu}
-            >
-              おすすめプラン
+              プランを探す
             </Link>
             <Link
               href="/profile"
