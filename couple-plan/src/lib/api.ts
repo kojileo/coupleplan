@@ -146,13 +146,9 @@ export const api = {
       }
     },
 
-    listPublic: async (token: string): Promise<ApiResponse<Plan[]>> => {
+    listPublic: async (): Promise<ApiResponse<Plan[]>> => {
       try {
-        const response = await fetch(`${API_BASE}/plans/public`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(`${API_BASE}/plans/public`);
         return (await response.json()) as ApiResponse<Plan[]>;
       } catch (error) {
         console.error('Public plans list error:', error);
