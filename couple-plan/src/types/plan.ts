@@ -1,31 +1,25 @@
-export type Plan = {
-  id: string;
-  title: string;
-  description?: string | null;
-  date?: string | Date | null;
-  budget: number;
-  location?: string | null;
-  region?: string | null;
-  isPublic: boolean;
-  userId: string;
-  createdAt: Date;
-  updatedAt: Date;
-  profile?: {
-    name: string;
-  } | null;
-  likes: {
-    id: string;
-    userId: string;
-  }[];
+import type { Plan as PrismaBasePlan, Profile, Like } from '@prisma/client';
+
+export type ExtendedPlan = PrismaBasePlan & {
+  profile?: Profile | null;
+  likes?: Like[];
   _count?: {
     likes: number;
   };
 };
 
-export type CreatePlanInput = Pick<
-  Plan,
-  'title' | 'description' | 'date' | 'budget' | 'location' | 'region'
->;
+export type { PrismaBasePlan as Plan };
+
+export type CreatePlanInput = {
+  title: string;
+  description: string;
+  date?: Date | null;
+  location?: string | null;
+  region?: string | null;
+  budget: number;
+  isPublic: boolean;
+  category?: string | null;
+};
 
 export type UpdatePlanInput = Partial<CreatePlanInput>;
 

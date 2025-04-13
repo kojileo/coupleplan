@@ -1,16 +1,18 @@
 'use client';
 
+import { format } from 'date-fns';
+import { ja } from 'date-fns/locale';
 import { useRouter } from 'next/navigation';
+import React from 'react';
 import type { MouseEvent, ReactElement } from 'react';
 
 import { useAuth } from '@/contexts/AuthContext';
-import { formatDate } from '@/lib/utils';
-import type { Plan } from '@/types/plan';
+import type { ExtendedPlan } from '@/types/plan';
 
 import { LikeButton } from './LikeButton';
 
 type PlanCardProps = {
-  plan: Plan;
+  plan: ExtendedPlan;
   isPublic?: boolean;
   onPublishToggle?: (planId: string, isPublic: boolean) => Promise<void>;
 };
@@ -27,6 +29,16 @@ export function PlanCard({ plan, isPublic = false, onPublishToggle }: PlanCardPr
     e.stopPropagation();
     if (onPublishToggle) {
       void onPublishToggle(plan.id, !plan.isPublic);
+    }
+  };
+
+  const getLocationDisplay = (): string => {
+    if (!plan.location) return '場所URL未設定';
+    try {
+      const url = new URL(plan.location);
+      return url.hostname;
+    } catch {
+      return '場所URL未設定';
     }
   };
 
@@ -57,7 +69,7 @@ export function PlanCard({ plan, isPublic = false, onPublishToggle }: PlanCardPr
         {plan.date && (
           <p className="text-sm">
             <span className="font-medium">日時：</span>
-            {formatDate(plan.date)}
+            {format(new Date(plan.date), 'yyyy年MM月dd日', { locale: ja })}
           </p>
         )}
         <div className="text-sm text-rose-600">
@@ -68,12 +80,12 @@ export function PlanCard({ plan, isPublic = false, onPublishToggle }: PlanCardPr
                 href={plan.location}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 hover:underline"
-                onClick={(e): void => {
+                className="text-blue-600 hover:text-blue-800"
+                onClick={(e) => {
                   e.stopPropagation();
                 }}
               >
-                {new URL(plan.location).hostname}
+                {getLocationDisplay()}
               </a>
             ) : (
               '場所URL未設定'

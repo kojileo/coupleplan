@@ -31,6 +31,8 @@ model Plan {
   region      String?   @db.VarChar(50)
   budget      Int       @default(0)
   isPublic    Boolean   @default(false) @map("is_public")
+  isRecommended Boolean @default(false) @map("is_recommended")
+  category    String?   @db.VarChar(50)
   userId      String    @map("user_id") @db.Uuid
   createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
@@ -54,19 +56,4 @@ model Like {
   @@index([userId])
   @@index([planId])
   @@map("likes")
-}
-
-model RecommendedPlan {
-  id          String   @id @default(cuid())
-  title       String   @db.VarChar(255)
-  description String
-  location    String?  @db.VarChar(255)
-  region      String?  @db.VarChar(50)
-  budget      Int      @default(0)
-  imageUrl    String?  @map("image_url") @db.VarChar(255)
-  category    String   @db.VarChar(50)
-  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
-
-  @@map("recommended_plans")
 }
