@@ -20,6 +20,7 @@ export async function GET(): Promise<NextResponse> {
           },
         },
         likes: true,
+        locations: true,
         _count: {
           select: {
             likes: true,

@@ -1,6 +1,31 @@
-import type { Plan as PrismaBasePlan, Profile, Like } from '@prisma/client';
+import type { Profile, Like } from '@prisma/client';
 
-export type ExtendedPlan = PrismaBasePlan & {
+export type Location = {
+  id: string;
+  url: string;
+  name: string | null;
+  planId: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type Plan = {
+  id: string;
+  title: string;
+  description: string;
+  date: Date | null;
+  region: string | null;
+  budget: number;
+  isPublic: boolean;
+  isRecommended: boolean;
+  category: string | null;
+  userId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  locations: Location[];
+};
+
+export type ExtendedPlan = Plan & {
   profile?: Profile | null;
   likes?: Like[];
   _count?: {
@@ -8,13 +33,14 @@ export type ExtendedPlan = PrismaBasePlan & {
   };
 };
 
-export type { PrismaBasePlan as Plan };
-
 export type CreatePlanInput = {
   title: string;
   description: string;
   date?: Date | null;
-  location?: string | null;
+  locations?: Array<{
+    url: string;
+    name?: string | null;
+  }>;
   region?: string | null;
   budget: number;
   isPublic: boolean;
@@ -27,7 +53,11 @@ export interface RecommendedPlan {
   id: string;
   title: string;
   description: string;
-  location: string | null;
+  locations: Array<{
+    id: string;
+    url: string;
+    name: string | null;
+  }>;
   region: string | null;
   budget: number;
   imageUrl: string | null;
@@ -38,7 +68,7 @@ export interface RecommendedPlan {
 
 export type CreateRecommendedPlanInput = Pick<
   RecommendedPlan,
-  'title' | 'description' | 'location' | 'region' | 'budget' | 'imageUrl' | 'category'
+  'title' | 'description' | 'locations' | 'region' | 'budget' | 'imageUrl' | 'category'
 >;
 
 export type UpdateRecommendedPlanInput = Partial<CreateRecommendedPlanInput>;

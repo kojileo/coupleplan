@@ -46,7 +46,7 @@ export default function ExplorePlansPage(): ReactElement {
       }
 
       try {
-        const response = await api.plans.listPublic(session.access_token);
+        const response = await api.plans.listPublic();
         if ('error' in response) throw new Error(response.error);
         setPlans(response.data || []);
       } catch (error) {

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-
 import { prisma } from '@/lib/db';
 import { supabase } from '@/lib/supabase-auth';
 import type { PlanRequest } from '@/types/api';
+import type { Prisma } from '@prisma/client';
 
 // プラン一覧の取得（自分のプラン）
 export async function GET(request: NextRequest): Promise<NextResponse> {
@@ -37,6 +37,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
           },
         },
         likes: true,
+        locations: true,
         _count: {
           select: {
             likes: true,
@@ -82,10 +83,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           title: typeof typedBody.title,
           description: typeof typedBody.description,
           date: typeof typedBody.date,
-          location: typeof typedBody.location,
+          locations: typeof typedBody.locations,
           region: typeof typedBody.region,
           budget: typeof typedBody.budget,
           isPublic: typeof typedBody.isPublic,
+          category: typeof typedBody.category,
         }
       }, { status: 400 });
     }
@@ -113,12 +115,18 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         data: {
           title: planData.title,
           description: planData.description,
-          date: planData.date,
-          location: planData.location,
+          date: planData.date ? new Date(planData.date) : null,
           region: planData.region,
           budget: planData.budget,
           isPublic: planData.isPublic,
+          category: planData.category,
           userId: user.id,
+          locations: {
+            create: planData.locations.map(location => ({
+              url: location.url,
+              name: location.name || null
+            }))
+          }
         },
         include: {
           profile: {
@@ -127,6 +135,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
             },
           },
           likes: true,
+          locations: true,
           _count: {
             select: {
               likes: true,
@@ -161,9 +170,17 @@ function isPlanRequest(data: unknown): data is PlanRequest {
     typeof request.title === 'string' &&
     typeof request.description === 'string' &&
     (request.date === null || typeof request.date === 'string') &&
-    (request.location === null || typeof request.location === 'string') &&
-    (request.region === null || typeof request.region === 'string') &&
+    Array.isArray(request.locations) &&
+    request.locations.every(
+      (location) =>
+        typeof location === 'object' &&
+        location !== null &&
+        typeof location.url === 'string' &&
+        (location.name === null || location.name === undefined || typeof location.name === 'string')
+    ) &&
+    (request.region === null || request.region === undefined || typeof request.region === 'string') &&
     typeof request.budget === 'number' &&
-    typeof request.isPublic === 'boolean'
+    typeof request.isPublic === 'boolean' &&
+    (request.category === null || request.category === undefined || typeof request.category === 'string')
   );
 }

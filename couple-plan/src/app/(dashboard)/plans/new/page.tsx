@@ -9,12 +9,17 @@ import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
 import type { Plan } from '@/types/plan';
 
+type Location = {
+  url: string;
+  name: string | null;
+};
+
 type FormData = {
   title: string;
   description: string;
   date: string | null;
   budget: number;
-  location: string | null;
+  locations: Location[];
   region: string | null;
   isPublic: boolean;
 };
@@ -31,7 +36,7 @@ export default function NewPlanPage(): ReactElement {
     description: '',
     date: null,
     budget: 0,
-    location: null,
+    locations: [],
     region: null,
     isPublic: false,
   });
@@ -57,7 +62,10 @@ export default function NewPlanPage(): ReactElement {
               ? new Date(response.data.date).toISOString().split('T')[0]
               : null,
             budget: response.data.budget,
-            location: response.data.location ?? null,
+            locations: response.data.locations?.map(location => ({
+              url: location.url,
+              name: location.name,
+            })) || [],
             region: response.data.region ?? null,
             isPublic: false,
           });
@@ -78,7 +86,7 @@ export default function NewPlanPage(): ReactElement {
     try {
       const response = await api.plans.create(session.access_token, {
         ...formData,
-        date: formData.date ? new Date(formData.date) : null,
+        date: formData.date ? new Date(formData.date).toISOString() : null,
       });
 
       if ('error' in response) throw new Error(response.error);
@@ -89,6 +97,32 @@ export default function NewPlanPage(): ReactElement {
     } finally {
       setSaving(false);
     }
+  };
+
+  const addLocation = (): void => {
+    setFormData({
+      ...formData,
+      locations: [...formData.locations, { url: '', name: null }],
+    });
+  };
+
+  const updateLocation = (index: number, field: keyof Location, value: string): void => {
+    const newLocations = [...formData.locations];
+    newLocations[index] = {
+      ...newLocations[index],
+      [field]: value,
+    };
+    setFormData({
+      ...formData,
+      locations: newLocations,
+    });
+  };
+
+  const removeLocation = (index: number): void => {
+    setFormData({
+      ...formData,
+      locations: formData.locations.filter((_, i) => i !== index),
+    });
   };
 
   return (
@@ -154,16 +188,47 @@ export default function NewPlanPage(): ReactElement {
         </div>
 
         <div>
-          <label htmlFor="location" className="block text-sm font-medium text-rose-700 mb-1">
-            場所URL
-          </label>
-          <input
-            id="location"
-            type="url"
-            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
-            value={formData.location ?? ''}
-            onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-          />
+          <div className="flex justify-between items-center mb-1">
+            <label className="block text-sm font-medium text-rose-700">
+              場所URL
+            </label>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={addLocation}
+              className="text-sm"
+            >
+              URLを追加
+            </Button>
+          </div>
+          <div className="space-y-2">
+            {formData.locations.map((location, index) => (
+              <div key={index} className="flex gap-2">
+                <input
+                  type="url"
+                  placeholder="URL"
+                  className="flex-1 rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                  value={location.url}
+                  onChange={(e) => updateLocation(index, 'url', e.target.value)}
+                />
+                <input
+                  type="text"
+                  placeholder="名前（任意）"
+                  className="flex-1 rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                  value={location.name ?? ''}
+                  onChange={(e) => updateLocation(index, 'name', e.target.value)}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => removeLocation(index)}
+                  className="text-sm"
+                >
+                  削除
+                </Button>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div>

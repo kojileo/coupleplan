@@ -89,11 +89,14 @@ export const api = {
           body: JSON.stringify(data),
         });
 
+        const responseData = await response.json();
+
         if (!response.ok) {
-          return { error: 'プランの作成に失敗しました' };
+          console.error('API Error:', responseData);
+          return { error: responseData.error || 'プランの作成に失敗しました' };
         }
 
-        return (await response.json()) as ApiResponse<Plan>;
+        return responseData as ApiResponse<Plan>;
       } catch (error) {
         console.error('Plan create error:', error);
         return { error: 'プランの作成に失敗しました' };

@@ -33,9 +33,9 @@ export function PlanCard({ plan, isPublic = false, onPublishToggle }: PlanCardPr
   };
 
   const getLocationDisplay = (): string => {
-    if (!plan.location) return '場所URL未設定';
+    if (!plan.locations || plan.locations.length === 0) return '場所URL未設定';
     try {
-      const url = new URL(plan.location);
+      const url = new URL(plan.locations[0].url);
       return url.hostname;
     } catch {
       return '場所URL未設定';
@@ -82,9 +82,9 @@ export function PlanCard({ plan, isPublic = false, onPublishToggle }: PlanCardPr
         <div className="text-sm text-rose-600">
           <span>
             📍{' '}
-            {plan.location ? (
+            {plan.locations && plan.locations.length > 0 ? (
               <a
-                href={plan.location}
+                href={plan.locations[0].url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:text-blue-800"
@@ -93,6 +93,7 @@ export function PlanCard({ plan, isPublic = false, onPublishToggle }: PlanCardPr
                 }}
               >
                 {getLocationDisplay()}
+                {plan.locations.length > 1 && ` 他${plan.locations.length - 1}件`}
               </a>
             ) : (
               '場所URL未設定'

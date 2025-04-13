@@ -77,16 +77,28 @@ export default function PlanDetailPage({ params }: Props): ReactElement {
         title: `${plan.title} (コピー)`,
         description: plan.description,
         date: plan.date ? new Date(plan.date).toISOString() : null,
-        location: plan.location || null,
+        locations: plan.locations?.map(location => ({
+          url: location.url,
+          name: location.name || null
+        })) || [],
         region: plan.region || null,
         budget: plan.budget,
         isPublic: false,
+        category: plan.category || null,
       };
 
+      console.log('Creating new plan with data:', newPlan); // デバッグ用ログ
+
       const response = await api.plans.create(session.access_token, newPlan);
-      if ('error' in response) throw new Error(response.error);
+      console.log('API Response:', response); // デバッグ用ログ
+
+      if ('error' in response) {
+        console.error('API Error:', response.error, response); // デバッグ用ログ
+        throw new Error(response.error);
+      }
       
       if (!response.data?.id) {
+        console.error('No plan ID in response:', response); // デバッグ用ログ
         throw new Error('プランの作成に失敗しました');
       }
       
@@ -175,26 +187,24 @@ export default function PlanDetailPage({ params }: Props): ReactElement {
           </div>
           <div>
             <h2 className="text-sm font-semibold text-rose-800 mb-2">場所URL</h2>
-            <p className="text-rose-900">
-              {plan.location ? (
-                <a
-                  href={plan.location}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline"
-                >
-                  {(() => {
-                    try {
-                      return new URL(plan.location).hostname;
-                    } catch {
-                      return plan.location;
-                    }
-                  })()}
-                </a>
+            <div className="space-y-2">
+              {plan.locations && plan.locations.length > 0 ? (
+                plan.locations.map((location) => (
+                  <div key={location.id} className="flex items-center gap-2">
+                    <a
+                      href={location.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
+                      {location.name || new URL(location.url).hostname}
+                    </a>
+                  </div>
+                ))
               ) : (
                 '未設定'
               )}
-            </p>
+            </div>
           </div>
           <div>
             <h2 className="text-sm font-semibold text-rose-800 mb-2">地域</h2>

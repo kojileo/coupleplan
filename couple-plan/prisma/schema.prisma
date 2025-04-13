@@ -27,7 +27,6 @@ model Plan {
   title       String    @db.VarChar(255)
   description String
   date        DateTime? @db.Timestamptz(6)
-  location    String?   @db.VarChar(255)
   region      String?   @db.VarChar(50)
   budget      Int       @default(0)
   isPublic    Boolean   @default(false) @map("is_public")
@@ -38,9 +37,23 @@ model Plan {
   updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
   likes       Like[]
   profile     Profile   @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  locations   Location[]
 
   @@index([userId])
   @@map("plans")
+}
+
+model Location {
+  id        String   @id @default(cuid())
+  url       String   @db.VarChar(255)
+  name      String?  @db.VarChar(255)
+  planId    String   @map("plan_id")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  plan      Plan     @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@index([planId])
+  @@map("locations")
 }
 
 model Like {

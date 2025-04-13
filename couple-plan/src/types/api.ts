@@ -15,10 +15,14 @@ export type PlanRequest = {
   title: string;
   description: string;
   date?: string | null;
-  location?: string | null;
+  locations: Array<{
+    url: string;
+    name?: string | null;
+  }>;
   region?: string | null;
   budget: number;
   isPublic: boolean;
+  category?: string | null;
 };
 
 export type ApiResponse<T = void> = {

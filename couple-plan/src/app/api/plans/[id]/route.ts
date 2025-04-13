@@ -39,6 +39,7 @@ export async function GET(request: NextRequest, { params }: RouteParams): Promis
           },
         },
         likes: true,
+        locations: true,
         _count: {
           select: {
             likes: true,
@@ -88,8 +89,34 @@ export async function PUT(request: NextRequest, { params }: RouteParams): Promis
         userId: user.id,
       },
       data: {
-        ...body,
+        title: body.title,
+        description: body.description,
+        date: body.date ? new Date(body.date) : null,
         region: body.region,
+        budget: body.budget,
+        isPublic: body.isPublic,
+        category: body.category,
+        locations: {
+          deleteMany: {}, // 既存のlocationsを削除
+          create: body.locations.map(location => ({
+            url: location.url,
+            name: location.name || null
+          }))
+        }
+      },
+      include: {
+        profile: {
+          select: {
+            name: true,
+          },
+        },
+        likes: true,
+        locations: true,
+        _count: {
+          select: {
+            likes: true,
+          },
+        },
       },
     });
 
