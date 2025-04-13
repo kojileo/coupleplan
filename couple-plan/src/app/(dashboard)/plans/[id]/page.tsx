@@ -143,7 +143,13 @@ export default function PlanDetailPage({ params }: Props): ReactElement {
                   rel="noopener noreferrer"
                   className="text-blue-600 hover:underline"
                 >
-                  {new URL(plan.location).hostname}
+                  {(() => {
+                    try {
+                      return new URL(plan.location).hostname;
+                    } catch {
+                      return plan.location;
+                    }
+                  })()}
                 </a>
               ) : (
                 '未設定'
