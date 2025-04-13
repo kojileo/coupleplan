@@ -14,7 +14,7 @@ export interface SignUpRequest {
 export type PlanRequest = {
   title: string;
   description: string;
-  date?: Date | null;
+  date?: string | null;
   location?: string | null;
   region?: string | null;
   budget: number;

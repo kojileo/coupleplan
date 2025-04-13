@@ -71,13 +71,44 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     const body = (await request.json()) as unknown;
+    console.log('リクエストボディ:', body);
+
     if (!isPlanRequest(body)) {
-      return NextResponse.json({ error: '無効なリクエストデータです' }, { status: 400 });
+      console.error('無効なリクエストデータ:', body);
+      const typedBody = body as Record<string, unknown>;
+      return NextResponse.json({ 
+        error: '無効なリクエストデータです',
+        details: {
+          title: typeof typedBody.title,
+          description: typeof typedBody.description,
+          date: typeof typedBody.date,
+          location: typeof typedBody.location,
+          region: typeof typedBody.region,
+          budget: typeof typedBody.budget,
+          isPublic: typeof typedBody.isPublic,
+        }
+      }, { status: 400 });
     }
 
     const planData = body;
 
     try {
+      // プロファイルの存在確認
+      let profile = await prisma.profile.findUnique({
+        where: { userId: user.id },
+      });
+
+      // プロファイルが存在しない場合は作成
+      if (!profile) {
+        profile = await prisma.profile.create({
+          data: {
+            userId: user.id,
+            name: user.user_metadata.name || null,
+            email: user.email || null,
+          },
+        });
+      }
+
       const plan = await prisma.plan.create({
         data: {
           title: planData.title,
@@ -107,12 +138,18 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ data: plan }, { status: 201 });
     } catch (error) {
       console.error('Prismaエラー:', error);
-      return NextResponse.json({ error: 'プランの作成に失敗しました' }, { status: 500 });
+      return NextResponse.json({ 
+        error: 'プランの作成に失敗しました',
+        details: error instanceof Error ? error.message : '不明なエラー'
+      }, { status: 500 });
     }
   } catch (error) {
     const err = error instanceof Error ? error : new Error('Unknown error');
     console.error('プラン作成エラー:', err);
-    return NextResponse.json({ error: 'プランの作成に失敗しました' }, { status: 500 });
+    return NextResponse.json({ 
+      error: 'プランの作成に失敗しました',
+      details: err.message
+    }, { status: 500 });
   }
 }
 
@@ -123,9 +160,9 @@ function isPlanRequest(data: unknown): data is PlanRequest {
   return (
     typeof request.title === 'string' &&
     typeof request.description === 'string' &&
-    typeof request.date === 'string' &&
-    typeof request.location === 'string' &&
-    typeof request.region === 'string' &&
+    (request.date === null || typeof request.date === 'string') &&
+    (request.location === null || typeof request.location === 'string') &&
+    (request.region === null || typeof request.region === 'string') &&
     typeof request.budget === 'number' &&
     typeof request.isPublic === 'boolean'
   );

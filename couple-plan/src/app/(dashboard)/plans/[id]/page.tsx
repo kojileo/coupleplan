@@ -68,6 +68,36 @@ export default function PlanDetailPage({ params }: Props): ReactElement {
     }
   };
 
+  const handleCreateFromPlan = async (): Promise<void> => {
+    if (!session || !plan) return;
+
+    try {
+      // 既存のプランのデータをコピーして新しいプランを作成
+      const newPlan = {
+        title: `${plan.title} (コピー)`,
+        description: plan.description,
+        date: plan.date ? new Date(plan.date).toISOString() : null,
+        location: plan.location || null,
+        region: plan.region || null,
+        budget: plan.budget,
+        isPublic: false,
+      };
+
+      const response = await api.plans.create(session.access_token, newPlan);
+      if ('error' in response) throw new Error(response.error);
+      
+      if (!response.data?.id) {
+        throw new Error('プランの作成に失敗しました');
+      }
+      
+      // 新しく作成したプランの編集ページに遷移
+      void router.push(`/plans/${response.data.id}/edit`);
+    } catch (error) {
+      console.error('プランの作成に失敗しました:', error);
+      alert('プランの作成に失敗しました');
+    }
+  };
+
   // プランの作成者かどうかを判定
   const isOwner = session?.user?.id === plan?.userId;
 
@@ -91,29 +121,39 @@ export default function PlanDetailPage({ params }: Props): ReactElement {
     <div className="max-w-3xl mx-auto">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold text-rose-950">{plan.title}</h1>
-        {isOwner && ( // 作成者の場合のみボタンを表示
-          <div className="flex gap-4">
-            <Button variant="outline" onClick={(): void => setIsPublishDialogOpen(true)}>
-              公開設定
-            </Button>
+        <div className="flex gap-4">
+          {!isOwner && (
             <Button
               variant="outline"
-              onClick={(): void => {
-                void router.push(`/plans/${planId}/edit`);
-              }}
+              onClick={handleCreateFromPlan}
             >
-              編集
+              このプランから作成
             </Button>
-            <Button
-              variant="outline"
-              onClick={(e): void => {
-                void handleDelete(e);
-              }}
-            >
-              削除
-            </Button>
-          </div>
-        )}
+          )}
+          {isOwner && ( // 作成者の場合のみボタンを表示
+            <>
+              <Button variant="outline" onClick={(): void => setIsPublishDialogOpen(true)}>
+                公開設定
+              </Button>
+              <Button
+                variant="outline"
+                onClick={(): void => {
+                  void router.push(`/plans/${planId}/edit`);
+                }}
+              >
+                編集
+              </Button>
+              <Button
+                variant="outline"
+                onClick={(e): void => {
+                  void handleDelete(e);
+                }}
+              >
+                削除
+              </Button>
+            </>
+          )}
+        </div>
       </div>
 
       <div className="bg-white rounded-lg shadow p-6 space-y-6">
