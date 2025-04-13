@@ -71,9 +71,13 @@ export const api = {
             Authorization: `Bearer ${token}`,
           },
         });
-        return (await response.json()) as ApiResponse<Plan[]>;
+        const data = (await response.json()) as ApiResponse<Plan[]>;
+        return data;
       } catch (error) {
         console.error('Plans list error:', error);
+        if (error instanceof Error) {
+          return { error: error.message };
+        }
         return { error: 'プラン一覧の取得に失敗しました' };
       }
     },
@@ -89,14 +93,14 @@ export const api = {
           body: JSON.stringify(data),
         });
 
-        const responseData = await response.json();
+        const responseData = (await response.json()) as ApiResponse<Plan>;
 
         if (!response.ok) {
           console.error('API Error:', responseData);
           return { error: responseData.error || 'プランの作成に失敗しました' };
         }
 
-        return responseData as ApiResponse<Plan>;
+        return responseData;
       } catch (error) {
         console.error('Plan create error:', error);
         return { error: 'プランの作成に失敗しました' };
@@ -152,9 +156,13 @@ export const api = {
     listPublic: async (): Promise<ApiResponse<Plan[]>> => {
       try {
         const response = await fetch(`${API_BASE}/plans/public`);
-        return (await response.json()) as ApiResponse<Plan[]>;
+        const data = (await response.json()) as ApiResponse<Plan[]>;
+        return data;
       } catch (error) {
         console.error('Public plans list error:', error);
+        if (error instanceof Error) {
+          return { error: error.message };
+        }
         return { error: '公開プラン一覧の取得に失敗しました' };
       }
     },

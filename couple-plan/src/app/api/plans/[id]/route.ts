@@ -98,11 +98,11 @@ export async function PUT(request: NextRequest, { params }: RouteParams): Promis
         category: body.category,
         locations: {
           deleteMany: {}, // 既存のlocationsを削除
-          create: body.locations.map(location => ({
+          create: body.locations.map((location) => ({
             url: location.url,
-            name: location.name || null
-          }))
-        }
+            name: location.name || null,
+          })),
+        },
       },
       include: {
         profile: {

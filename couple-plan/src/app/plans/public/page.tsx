@@ -123,9 +123,9 @@ export default function PublicPlansPage(): ReactElement {
                 <h3 className="text-xl font-semibold text-rose-950 mb-4">{plan.title}</h3>
                 <p className="text-gray-600 line-clamp-2 mb-4">{plan.description}</p>
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {plan.location && (
+                  {plan.locations[0]?.name && (
                     <span className="bg-rose-100 text-rose-800 text-xs px-2 py-1 rounded">
-                      {plan.location}
+                      {plan.locations[0].name}
                     </span>
                   )}
                   {plan.region && (
@@ -151,14 +151,11 @@ export default function PublicPlansPage(): ReactElement {
         )}
 
         <div className="mt-8 text-center">
-          <Link
-            href="/"
-            className="text-rose-600 hover:text-rose-900 font-medium"
-          >
+          <Link href="/" className="text-rose-600 hover:text-rose-900 font-medium">
             ← ホームに戻る
           </Link>
         </div>
       </div>
     </div>
   );
-} 
+}

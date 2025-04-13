@@ -6,7 +6,7 @@ function convertToRecommendedPlan(plan: Plan): RecommendedPlan {
     id: plan.id,
     title: plan.title,
     description: plan.description,
-    location: plan.location ?? null,
+    locations: plan.locations,
     region: plan.region ?? null,
     budget: plan.budget,
     imageUrl: null,
@@ -20,6 +20,9 @@ export async function getRecommendedPlans(): Promise<RecommendedPlan[]> {
   const plans = await prisma.plan.findMany({
     where: {
       isRecommended: true,
+    },
+    include: {
+      locations: true,
     },
     orderBy: {
       createdAt: 'desc',
@@ -35,6 +38,9 @@ export async function getRecommendedPlanById(id: string): Promise<RecommendedPla
       id,
       isRecommended: true,
     },
+    include: {
+      locations: true,
+    },
   });
 
   return plan ? convertToRecommendedPlan(plan) : null;
@@ -47,12 +53,17 @@ export async function createRecommendedPlan(
     data: {
       title: data.title,
       description: data.description,
-      location: data.location,
+      locations: {
+        create: data.locations,
+      },
       region: data.region,
       budget: data.budget,
       isRecommended: true,
       category: data.category,
       userId: 'system',
+    },
+    include: {
+      locations: true,
     },
   });
 
@@ -71,10 +82,18 @@ export async function updateRecommendedPlan(
     data: {
       title: data.title,
       description: data.description,
-      location: data.location,
+      locations: data.locations
+        ? {
+            deleteMany: {},
+            create: data.locations,
+          }
+        : undefined,
       region: data.region,
       budget: data.budget,
       category: data.category,
+    },
+    include: {
+      locations: true,
     },
   });
 
@@ -86,6 +105,9 @@ export async function deleteRecommendedPlan(id: string): Promise<RecommendedPlan
     where: {
       id,
       isRecommended: true,
+    },
+    include: {
+      locations: true,
     },
   });
 

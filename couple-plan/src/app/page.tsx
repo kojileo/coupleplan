@@ -2,50 +2,21 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import type { ReactElement } from 'react';
+import { useEffect } from 'react';
 
 import Button from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
-import { api } from '@/lib/api';
-import type { Plan } from '@/types/plan';
 
 export default function Home(): ReactElement {
+  const { session } = useAuth();
   const router = useRouter();
-  const { user, isLoading } = useAuth();
-  const [publicPlans, setPublicPlans] = useState<Plan[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!isLoading && user) {
+    if (session) {
       void router.push('/plans');
     }
-  }, [user, isLoading, router]);
-
-  useEffect(() => {
-    const fetchPublicPlans = async (): Promise<void> => {
-      try {
-        const response = await api.plans.listPublic();
-        if ('error' in response) throw new Error(response.error);
-        setPublicPlans(response.data || []);
-      } catch (error) {
-        console.error('公開プランの取得に失敗しました:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    void fetchPublicPlans();
-  }, []);
-
-  // 認証状態確認中はローディング表示
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
-      </div>
-    );
-  }
+  }, [router, session]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-50 to-white">
@@ -93,10 +64,7 @@ export default function Home(): ReactElement {
           </div>
 
           <div className="mt-8">
-            <Link
-              href="/plans/public"
-              className="text-rose-600 hover:text-rose-900 font-medium"
-            >
+            <Link href="/plans/public" className="text-rose-600 hover:text-rose-900 font-medium">
               公開されているデートプランを見る →
             </Link>
           </div>

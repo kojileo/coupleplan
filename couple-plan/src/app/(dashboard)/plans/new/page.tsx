@@ -41,8 +41,7 @@ export default function NewPlanPage(): ReactElement {
     isPublic: false,
   });
 
-  const handleBack = async (e: MouseEvent<HTMLButtonElement>): Promise<void> => {
-    e.preventDefault();
+  const handleBack = (): void => {
     router.back();
   };
 
@@ -62,10 +61,11 @@ export default function NewPlanPage(): ReactElement {
               ? new Date(response.data.date).toISOString().split('T')[0]
               : null,
             budget: response.data.budget,
-            locations: response.data.locations?.map(location => ({
-              url: location.url,
-              name: location.name,
-            })) || [],
+            locations:
+              response.data.locations?.map((location) => ({
+                url: location.url,
+                name: location.name,
+              })) || [],
             region: response.data.region ?? null,
             isPublic: false,
           });
@@ -78,7 +78,7 @@ export default function NewPlanPage(): ReactElement {
     void fetchTemplatePlan();
   }, [templateId, session]);
 
-  const handleSubmit = async (e: FormEvent): Promise<void> => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     if (!session) return;
 
@@ -97,6 +97,11 @@ export default function NewPlanPage(): ReactElement {
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleSubmitClick = (e: MouseEvent): void => {
+    e.preventDefault();
+    void handleSubmit(e as unknown as FormEvent<HTMLFormElement>);
   };
 
   const addLocation = (): void => {
@@ -131,7 +136,7 @@ export default function NewPlanPage(): ReactElement {
         {templatePlan ? 'おすすめプランから作成' : '新規プラン作成'}
       </h1>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={(e): void => void handleSubmit(e)} className="space-y-6">
         <div>
           <label htmlFor="title" className="block text-sm font-medium text-rose-700 mb-1">
             タイトル
@@ -189,15 +194,8 @@ export default function NewPlanPage(): ReactElement {
 
         <div>
           <div className="flex justify-between items-center mb-1">
-            <label className="block text-sm font-medium text-rose-700">
-              場所URL
-            </label>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={addLocation}
-              className="text-sm"
-            >
+            <label className="block text-sm font-medium text-rose-700">場所URL</label>
+            <Button type="button" variant="outline" onClick={addLocation} className="text-sm">
               URLを追加
             </Button>
           </div>
@@ -271,7 +269,11 @@ export default function NewPlanPage(): ReactElement {
           <Button type="button" variant="outline" onClick={handleBack}>
             キャンセル
           </Button>
-          <Button type="submit" disabled={saving}>
+          <Button
+            type="submit"
+            onClick={(e): void => void handleSubmitClick(e)}
+            className="w-full md:w-auto"
+          >
             {saving ? '作成中...' : '作成'}
           </Button>
         </div>

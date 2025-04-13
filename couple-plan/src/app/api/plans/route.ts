@@ -1,8 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
+
 import { prisma } from '@/lib/db';
 import { supabase } from '@/lib/supabase-auth';
 import type { PlanRequest } from '@/types/api';
-import type { Prisma } from '@prisma/client';
 
 // プラン一覧の取得（自分のプラン）
 export async function GET(request: NextRequest): Promise<NextResponse> {
@@ -71,28 +72,48 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
     }
 
-    const body = (await request.json()) as unknown;
-    console.log('リクエストボディ:', body);
-
-    if (!isPlanRequest(body)) {
-      console.error('無効なリクエストデータ:', body);
-      const typedBody = body as Record<string, unknown>;
-      return NextResponse.json({ 
-        error: '無効なリクエストデータです',
-        details: {
-          title: typeof typedBody.title,
-          description: typeof typedBody.description,
-          date: typeof typedBody.date,
-          locations: typeof typedBody.locations,
-          region: typeof typedBody.region,
-          budget: typeof typedBody.budget,
-          isPublic: typeof typedBody.isPublic,
-          category: typeof typedBody.category,
-        }
-      }, { status: 400 });
+    let requestBody: unknown;
+    try {
+      requestBody = await request.json();
+    } catch {
+      return NextResponse.json({ error: '無効なJSONデータです' }, { status: 400 });
     }
 
-    const planData = body;
+    if (!isPlanRequest(requestBody)) {
+      console.error('無効なリクエストデータ:', requestBody);
+      const typedBody = requestBody as Record<string, unknown>;
+      return NextResponse.json(
+        {
+          error: '無効なリクエストデータです',
+          details: {
+            title: typeof typedBody.title,
+            description: typeof typedBody.description,
+            date: typeof typedBody.date,
+            locations: typeof typedBody.locations,
+            region: typeof typedBody.region,
+            budget: typeof typedBody.budget,
+            isPublic: typeof typedBody.isPublic,
+            category: typeof typedBody.category,
+          },
+        },
+        { status: 400 }
+      );
+    }
+
+    // 型ガードを通過したデータを検証して変換
+    const validatedData: PlanRequest = {
+      title: String(requestBody.title).trim(),
+      description: String(requestBody.description).trim(),
+      date: requestBody.date ? new Date(String(requestBody.date)).toISOString() : null,
+      locations: requestBody.locations.map((loc) => ({
+        url: String(loc.url).trim(),
+        name: loc.name ? String(loc.name).trim() : null,
+      })),
+      region: requestBody.region ? String(requestBody.region).trim() : null,
+      budget: Math.max(0, Number(requestBody.budget)),
+      isPublic: Boolean(requestBody.isPublic),
+      category: requestBody.category ? String(requestBody.category).trim() : null,
+    };
 
     try {
       // プロファイルの存在確認
@@ -113,20 +134,20 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
       const plan = await prisma.plan.create({
         data: {
-          title: planData.title,
-          description: planData.description,
-          date: planData.date ? new Date(planData.date) : null,
-          region: planData.region,
-          budget: planData.budget,
-          isPublic: planData.isPublic,
-          category: planData.category,
+          title: validatedData.title,
+          description: validatedData.description,
+          date: validatedData.date ? new Date(validatedData.date) : null,
+          region: validatedData.region,
+          budget: validatedData.budget,
+          isPublic: validatedData.isPublic,
+          category: validatedData.category,
           userId: user.id,
           locations: {
-            create: planData.locations.map(location => ({
+            create: validatedData.locations.map((location) => ({
               url: location.url,
-              name: location.name || null
-            }))
-          }
+              name: location.name || null,
+            })),
+          },
         },
         include: {
           profile: {
@@ -147,18 +168,24 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ data: plan }, { status: 201 });
     } catch (error) {
       console.error('Prismaエラー:', error);
-      return NextResponse.json({ 
-        error: 'プランの作成に失敗しました',
-        details: error instanceof Error ? error.message : '不明なエラー'
-      }, { status: 500 });
+      return NextResponse.json(
+        {
+          error: 'プランの作成に失敗しました',
+          details: error instanceof Error ? error.message : '不明なエラー',
+        },
+        { status: 500 }
+      );
     }
   } catch (error) {
     const err = error instanceof Error ? error : new Error('Unknown error');
     console.error('プラン作成エラー:', err);
-    return NextResponse.json({ 
-      error: 'プランの作成に失敗しました',
-      details: err.message
-    }, { status: 500 });
+    return NextResponse.json(
+      {
+        error: 'プランの作成に失敗しました',
+        details: err.message,
+      },
+      { status: 500 }
+    );
   }
 }
 
@@ -178,9 +205,13 @@ function isPlanRequest(data: unknown): data is PlanRequest {
         typeof location.url === 'string' &&
         (location.name === null || location.name === undefined || typeof location.name === 'string')
     ) &&
-    (request.region === null || request.region === undefined || typeof request.region === 'string') &&
+    (request.region === null ||
+      request.region === undefined ||
+      typeof request.region === 'string') &&
     typeof request.budget === 'number' &&
     typeof request.isPublic === 'boolean' &&
-    (request.category === null || request.category === undefined || typeof request.category === 'string')
+    (request.category === null ||
+      request.category === undefined ||
+      typeof request.category === 'string')
   );
 }

@@ -60,10 +60,11 @@ export default function EditPlanPage({ params }: Props): ReactElement {
               ? new Date(response.data.date).toISOString().split('T')[0]
               : '',
             budget: response.data.budget,
-            locations: response.data.locations?.map(location => ({
-              url: location.url,
-              name: location.name,
-            })) || [],
+            locations:
+              response.data.locations?.map((location) => ({
+                url: location.url,
+                name: location.name,
+              })) || [],
             region: response.data.region || '',
             isPublic: response.data.isPublic,
           });
@@ -107,7 +108,11 @@ export default function EditPlanPage({ params }: Props): ReactElement {
     });
   };
 
-  const updateLocation = (index: number, field: keyof { url: string; name: string | null }, value: string): void => {
+  const updateLocation = (
+    index: number,
+    field: keyof { url: string; name: string | null },
+    value: string
+  ): void => {
     const newLocations = [...formData.locations];
     newLocations[index] = {
       ...newLocations[index],
@@ -218,15 +223,8 @@ export default function EditPlanPage({ params }: Props): ReactElement {
 
         <div>
           <div className="flex justify-between items-center mb-1">
-            <label className="block text-sm font-medium text-rose-700">
-              場所URL
-            </label>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={addLocation}
-              className="text-sm"
-            >
+            <label className="block text-sm font-medium text-rose-700">場所URL</label>
+            <Button type="button" variant="outline" onClick={addLocation} className="text-sm">
               URLを追加
             </Button>
           </div>
