@@ -87,7 +87,7 @@ describe('PlanCardコンポーネント統合テスト', () => {
 
     // 日時が表示されていることを確認
     expect(screen.getByText(/日時：/)).toBeInTheDocument();
-    expect(screen.getByText(/2024年1月1日/)).toBeInTheDocument();
+    expect(screen.getByText(/2024年01月01日/)).toBeInTheDocument();
 
     // 予算が表示されていることを確認
     expect(screen.getByText(/予算：/)).toBeInTheDocument();

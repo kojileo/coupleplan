@@ -40,6 +40,7 @@ export default function NewPlanPage(): ReactElement {
     region: null,
     isPublic: false,
   });
+  const [error, setError] = useState('');
 
   const handleBack = (): void => {
     router.back();
@@ -78,22 +79,31 @@ export default function NewPlanPage(): ReactElement {
     void fetchTemplatePlan();
   }, [templateId, session]);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     if (!session) return;
 
     setSaving(true);
+    setError('');
+
     try {
-      const response = await api.plans.create(session.access_token, {
+      const response = await api.plans.create(session.user.id, {
         ...formData,
-        date: formData.date ? new Date(formData.date).toISOString() : null,
+        date: formData.date ? new Date(formData.date).toISOString().split('T')[0] : null,
       });
 
-      if ('error' in response) throw new Error(response.error);
-      void router.push('/plans');
+      if ('error' in response) {
+        throw new Error(response.error);
+      }
+
+      if (!response.data) {
+        throw new Error('プランの作成に失敗しました');
+      }
+
+      router.push(`/plans/${response.data.id}`);
     } catch (error) {
       console.error('プランの作成に失敗しました:', error);
-      alert('プランの作成に失敗しました');
+      setError('プランの作成に失敗しました');
     } finally {
       setSaving(false);
     }
@@ -136,7 +146,16 @@ export default function NewPlanPage(): ReactElement {
         {templatePlan ? 'おすすめプランから作成' : '新規プラン作成'}
       </h1>
 
-      <form onSubmit={(e): void => void handleSubmit(e)} className="space-y-6">
+      {error && (
+        <div
+          className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
+          role="alert"
+        >
+          {error}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-6" data-testid="plan-form">
         <div>
           <label htmlFor="title" className="block text-sm font-medium text-rose-700 mb-1">
             タイトル
@@ -194,36 +213,45 @@ export default function NewPlanPage(): ReactElement {
 
         <div>
           <div className="flex justify-between items-center mb-1">
-            <label className="block text-sm font-medium text-rose-700">場所URL</label>
-            <Button type="button" variant="outline" onClick={addLocation} className="text-sm">
+            <label htmlFor="locationUrl" className="block text-sm font-medium text-rose-700">
+              場所URL
+            </label>
+            <button
+              type="button"
+              className="rounded-lg font-medium transition-colors border-2 border-rose-200 text-rose-700 bg-transparent hover:bg-rose-50 px-4 py-2 text-sm"
+              onClick={() => {
+                setFormData({
+                  ...formData,
+                  locations: [...formData.locations, { url: '', name: null }],
+                });
+              }}
+            >
               URLを追加
-            </Button>
+            </button>
           </div>
           <div className="space-y-2">
             {formData.locations.map((location, index) => (
               <div key={index} className="flex gap-2">
                 <input
-                  type="url"
-                  placeholder="URL"
-                  className="flex-1 rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                  id={`locationUrl-${index}`}
+                  type="text"
                   value={location.url}
                   onChange={(e) => updateLocation(index, 'url', e.target.value)}
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                  placeholder="https://example.com"
                 />
-                <input
-                  type="text"
-                  placeholder="名前（任意）"
-                  className="flex-1 rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
-                  value={location.name ?? ''}
-                  onChange={(e) => updateLocation(index, 'name', e.target.value)}
-                />
-                <Button
+                <button
                   type="button"
-                  variant="outline"
-                  onClick={() => removeLocation(index)}
-                  className="text-sm"
+                  className="rounded-lg font-medium transition-colors border-2 border-rose-200 text-rose-700 bg-transparent hover:bg-rose-50 px-4 py-2 text-sm"
+                  onClick={() => {
+                    setFormData({
+                      ...formData,
+                      locations: formData.locations.filter((_, i) => i !== index),
+                    });
+                  }}
                 >
                   削除
-                </Button>
+                </button>
               </div>
             ))}
           </div>
@@ -271,8 +299,8 @@ export default function NewPlanPage(): ReactElement {
           </Button>
           <Button
             type="submit"
-            onClick={(e): void => void handleSubmitClick(e)}
-            className="w-full md:w-auto"
+            disabled={saving}
+            className="rounded-lg font-medium transition-colors bg-rose-600 text-white hover:bg-rose-700 px-4 py-2 w-full md:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {saving ? '作成中...' : '作成'}
           </Button>
