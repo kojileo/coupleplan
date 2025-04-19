@@ -103,7 +103,11 @@ export default function PublicPlansPage(): ReactElement {
 
         {loading ? (
           <div className="flex justify-center items-center min-h-[400px]">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-rose-600" />
+            <div
+              role="status"
+              aria-label="読み込み中"
+              className="animate-spin rounded-full h-8 w-8 border-b-2 border-rose-600"
+            />
           </div>
         ) : filteredPlans.length === 0 ? (
           <div className="bg-white rounded-lg shadow p-6 text-center">
