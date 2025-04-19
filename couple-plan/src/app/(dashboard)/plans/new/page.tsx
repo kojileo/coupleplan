@@ -36,7 +36,7 @@ export default function NewPlanPage(): ReactElement {
     description: '',
     date: null,
     budget: 0,
-    locations: [],
+    locations: [{ url: '', name: null }],
     region: null,
     isPublic: false,
   });
@@ -213,18 +213,13 @@ export default function NewPlanPage(): ReactElement {
 
         <div>
           <div className="flex justify-between items-center mb-1">
-            <label htmlFor="locationUrl" className="block text-sm font-medium text-rose-700">
+            <label htmlFor="location-url-0" className="block text-sm font-medium text-rose-700">
               場所URL
             </label>
             <button
               type="button"
               className="rounded-lg font-medium transition-colors border-2 border-rose-200 text-rose-700 bg-transparent hover:bg-rose-50 px-4 py-2 text-sm"
-              onClick={() => {
-                setFormData({
-                  ...formData,
-                  locations: [...formData.locations, { url: '', name: null }],
-                });
-              }}
+              onClick={addLocation}
             >
               URLを追加
             </button>

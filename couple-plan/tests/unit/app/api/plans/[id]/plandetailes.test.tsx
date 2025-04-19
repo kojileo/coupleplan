@@ -33,13 +33,13 @@ describe('plans/[id] API', () => {
     id: 'plan-1',
     title: 'テストプラン',
     description: 'テスト説明',
-    date: new Date('2024-01-01T00:00:00.000Z'),
+    date: '2024-01-01T00:00:00.000Z',
     budget: 1000,
     region: 'tokyo',
     isPublic: false,
     userId: mockUser.id,
-    createdAt: new Date('2024-02-17T12:14:23.310Z'),
-    updatedAt: new Date('2024-02-17T12:14:23.310Z'),
+    createdAt: '2024-02-17T12:14:23.310Z',
+    updatedAt: '2024-02-17T12:14:23.310Z',
     profile: { name: 'テストユーザー' },
     locations: [
       {
@@ -47,8 +47,8 @@ describe('plans/[id] API', () => {
         url: 'https://example.com',
         name: '東京タワー',
         planId: 'plan-1',
-        createdAt: new Date('2024-01-01'),
-        updatedAt: new Date('2024-01-01'),
+        createdAt: '2024-01-01T00:00:00.000Z',
+        updatedAt: '2024-01-01T00:00:00.000Z',
       },
     ],
     likes: [],
@@ -120,7 +120,7 @@ describe('plans/[id] API', () => {
 
   describe('PUT /api/plans/[id]', () => {
     const updateData = {
-      title: '更新されたプラン',
+      title: '更新されたタイトル',
       description: '更新された説明',
       date: '2024-02-01T00:00:00.000Z',
       budget: 2000,
@@ -128,8 +128,8 @@ describe('plans/[id] API', () => {
       isPublic: true,
       locations: [
         {
-          url: 'https://example.com/updated',
           name: '大阪城',
+          url: 'https://example.com/osaka',
         },
       ],
     };
@@ -145,11 +145,11 @@ describe('plans/[id] API', () => {
         locations: [
           {
             id: 'loc-2',
-            url: 'https://example.com/updated',
+            url: 'https://example.com/osaka',
             name: '大阪城',
             planId: 'plan-1',
-            createdAt: new Date('2024-01-01'),
-            updatedAt: new Date('2024-01-01'),
+            createdAt: new Date('2024-01-01T00:00:00.000Z'),
+            updatedAt: new Date('2024-01-01T00:00:00.000Z'),
           },
         ],
       });
@@ -167,10 +167,7 @@ describe('plans/[id] API', () => {
       expect(response.status).toBe(200);
 
       const data = await response.json();
-      expect(data.data).toMatchObject({
-        ...updateData,
-        date: new Date(updateData.date),
-      });
+      expect(data.data).toMatchObject(updateData);
 
       expect(prisma.plan.update).toHaveBeenCalledWith({
         where: {
@@ -178,8 +175,12 @@ describe('plans/[id] API', () => {
           userId: mockUser.id,
         },
         data: {
-          ...updateData,
-          date: new Date(updateData.date),
+          title: updateData.title,
+          description: updateData.description,
+          date: updateData.date,
+          budget: updateData.budget,
+          region: updateData.region,
+          isPublic: updateData.isPublic,
           locations: {
             deleteMany: {},
             create: updateData.locations.map((location) => ({

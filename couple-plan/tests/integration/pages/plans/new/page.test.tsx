@@ -117,10 +117,11 @@ describe('プラン作成ページ統合テスト', () => {
     render(<NewPlanPage />);
 
     fireEvent.change(screen.getByLabelText('タイトル'), { target: { value: 'テストプラン' } });
-    fireEvent.click(screen.getByText('作成'));
+    const form = screen.getByTestId('plan-form');
+    fireEvent.submit(form);
 
     await waitFor(() => {
-      expect(screen.getByText('プランの作成に失敗しました')).toBeInTheDocument();
+      expect(screen.getByRole('alert')).toHaveTextContent('プランの作成に失敗しました');
     });
   });
 
@@ -146,11 +147,20 @@ describe('プラン作成ページ統合テスト', () => {
   });
 
   it('保存中はボタンが無効化され、テキストが「作成中...」に変わる', async () => {
+    // APIの呼び出しを遅延させる
+    (api.plans.create as jest.Mock).mockImplementation(
+      () => new Promise((resolve) => setTimeout(resolve, 100))
+    );
+
     render(<NewPlanPage />);
 
     fireEvent.change(screen.getByLabelText('タイトル'), { target: { value: 'テストプラン' } });
-    fireEvent.click(screen.getByText('作成'));
+    const form = screen.getByTestId('plan-form');
+    fireEvent.submit(form);
 
-    expect(screen.getByText('作成中...')).toBeDisabled();
+    await waitFor(() => {
+      const submitButton = screen.getByRole('button', { name: '作成中...' });
+      expect(submitButton).toBeDisabled();
+    });
   });
 });

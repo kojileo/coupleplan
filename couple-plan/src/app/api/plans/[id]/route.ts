@@ -91,7 +91,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams): Promis
       data: {
         title: body.title,
         description: body.description,
-        date: body.date ? new Date(body.date) : null,
+        date: body.date,
         region: body.region,
         budget: body.budget,
         isPublic: body.isPublic,
