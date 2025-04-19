@@ -5,45 +5,51 @@ import type { ReactElement } from 'react';
 import { useState } from 'react';
 
 import Button from '@/components/ui/button';
+import { useAuth } from '@/contexts/AuthContext';
+import { api } from '@/lib/api';
 
 export default function NewPlanPage(): ReactElement {
   const router = useRouter();
+  const { session } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
+    if (!session) return;
+
     setLoading(true);
     setError(null);
 
     const formData = new FormData(e.currentTarget);
-    fetch('/api/plans', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        title: formData.get('title'),
-        description: formData.get('description'),
-        date: formData.get('date'),
-        locations: [{ url: formData.get('location') }],
-        region: formData.get('region'),
-        budget: Number(formData.get('budget')),
-        isPublic: formData.get('isPublic') === 'true',
-      }),
-    })
+    const planData = {
+      title: formData.get('title') as string,
+      description: formData.get('description') as string,
+      date: formData.get('date') as string,
+      locations: [{ url: formData.get('location-url-0') as string, name: null }],
+      region: formData.get('region') as string,
+      budget: Number(formData.get('budget')),
+      isPublic: formData.get('isPublic') === 'on',
+    };
+
+    api.plans
+      .create(session.user.id, planData)
       .then((response) => {
-        if (!response.ok) {
-          throw new Error('プランの作成に失敗しました');
+        if ('error' in response) {
+          throw new Error(response.error);
         }
         router.push('/plans');
       })
       .catch((err) => {
-        setError(err instanceof Error ? err.message : 'エラーが発生しました');
+        setError('プランの作成に失敗しました');
       })
       .finally(() => {
         setLoading(false);
       });
+  };
+
+  const handleBack = (): void => {
+    router.back();
   };
 
   return (
@@ -66,6 +72,7 @@ export default function NewPlanPage(): ReactElement {
           </label>
           <input
             id="title"
+            name="title"
             type="text"
             required
             className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
@@ -78,6 +85,7 @@ export default function NewPlanPage(): ReactElement {
           </label>
           <textarea
             id="description"
+            name="description"
             className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
             rows={4}
           />
@@ -89,6 +97,7 @@ export default function NewPlanPage(): ReactElement {
           </label>
           <input
             id="date"
+            name="date"
             type="date"
             className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
           />
@@ -100,6 +109,7 @@ export default function NewPlanPage(): ReactElement {
           </label>
           <input
             id="budget"
+            name="budget"
             type="number"
             required
             min={0}
@@ -123,13 +133,14 @@ export default function NewPlanPage(): ReactElement {
             <div className="space-y-4">
               <div>
                 <label
-                  htmlFor={`location-url-0`}
+                  htmlFor="location-url-0"
                   className="block text-sm font-medium text-rose-700 mb-1"
                 >
                   場所URL
                 </label>
                 <input
-                  id={`location-url-0`}
+                  id="location-url-0"
+                  name="location-url-0"
                   type="url"
                   required
                   className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
@@ -137,13 +148,14 @@ export default function NewPlanPage(): ReactElement {
               </div>
               <div>
                 <label
-                  htmlFor={`location-name-0`}
+                  htmlFor="location-name-0"
                   className="block text-sm font-medium text-rose-700 mb-1"
                 >
                   場所の名前（任意）
                 </label>
                 <input
-                  id={`location-name-0`}
+                  id="location-name-0"
+                  name="location-name-0"
                   type="text"
                   className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
                 />
@@ -161,6 +173,7 @@ export default function NewPlanPage(): ReactElement {
           </label>
           <select
             id="region"
+            name="region"
             className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
           >
             <option value="">選択してください</option>
@@ -179,6 +192,7 @@ export default function NewPlanPage(): ReactElement {
         <div className="flex items-center">
           <input
             id="isPublic"
+            name="isPublic"
             type="checkbox"
             className="h-4 w-4 text-rose-600 focus:ring-rose-500 border-gray-300 rounded"
           />
@@ -188,7 +202,7 @@ export default function NewPlanPage(): ReactElement {
         </div>
 
         <div className="flex gap-4">
-          <Button type="button" variant="outline">
+          <Button type="button" variant="outline" onClick={handleBack}>
             キャンセル
           </Button>
           <Button

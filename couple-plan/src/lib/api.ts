@@ -64,20 +64,22 @@ export const api = {
   },
 
   plans: {
-    list: async (token: string): Promise<ApiResponse<Plan[]>> => {
+    list: async (token: string): Promise<{ data: Plan[] } | { error: string }> => {
       try {
-        const response = await fetch(`${API_BASE}/plans`, {
+        const response = await fetch('/api/plans', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        const data = (await response.json()) as ApiResponse<Plan[]>;
-        return data;
+
+        if (!response.ok) {
+          throw new Error('プラン一覧の取得に失敗しました');
+        }
+
+        const data = await response.json();
+        return { data: data.data };
       } catch (error) {
         console.error('Plans list error:', error);
-        if (error instanceof Error) {
-          return { error: error.message };
-        }
         return { error: 'プラン一覧の取得に失敗しました' };
       }
     },
@@ -153,16 +155,18 @@ export const api = {
       }
     },
 
-    listPublic: async (): Promise<ApiResponse<Plan[]>> => {
+    listPublic: async (): Promise<{ data: Plan[] } | { error: string }> => {
       try {
-        const response = await fetch(`${API_BASE}/plans/public`);
-        const data = (await response.json()) as ApiResponse<Plan[]>;
-        return data;
+        const response = await fetch('/api/plans/public');
+
+        if (!response.ok) {
+          throw new Error('公開プラン一覧の取得に失敗しました');
+        }
+
+        const data = await response.json();
+        return { data: data.data };
       } catch (error) {
         console.error('Public plans list error:', error);
-        if (error instanceof Error) {
-          return { error: error.message };
-        }
         return { error: '公開プラン一覧の取得に失敗しました' };
       }
     },

@@ -7,6 +7,9 @@ import { supabase } from '@/lib/supabase-auth';
 interface Location {
   url: string;
   name: string | null;
+  address: string | null;
+  latitude: number | null;
+  longitude: number | null;
 }
 
 interface PlanRequest {
@@ -111,6 +114,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       locations: requestBody.locations.map((location: Location) => ({
         url: location.url,
         name: location.name ? String(location.name).trim() : null,
+        address: location.address ? String(location.address).trim() : null,
+        latitude: location.latitude ? Number(location.latitude) : null,
+        longitude: location.longitude ? Number(location.longitude) : null,
       })),
       region: requestBody.region ? String(requestBody.region).trim() : null,
       budget: Math.max(0, Number(requestBody.budget)),
@@ -130,7 +136,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           category: validatedData.category,
           userId: user.id,
           locations: {
-            create: validatedData.locations,
+            create: validatedData.locations.map((location) => ({
+              name: location.name,
+              url: location.url,
+              address: location.address,
+              latitude: location.latitude,
+              longitude: location.longitude,
+            })),
           },
         },
         include: {
@@ -150,7 +162,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
       return NextResponse.json({ data: plan }, { status: 201 });
     } catch (error) {
-      console.error('プラン作成エラー:', error instanceof Error ? error.message : 'Unknown error');
+      const err = error instanceof Error ? error : new Error('Unknown error');
+      console.error('プラン作成エラー:', err);
       return NextResponse.json({ error: 'プランの作成に失敗しました' }, { status: 500 });
     }
   } catch (error) {
