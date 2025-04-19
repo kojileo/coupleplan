@@ -231,27 +231,41 @@ export default function NewPlanPage(): ReactElement {
           </div>
           <div className="space-y-2">
             {formData.locations.map((location, index) => (
-              <div key={index} className="flex gap-2">
-                <input
-                  id={`locationUrl-${index}`}
-                  type="text"
-                  value={location.url}
-                  onChange={(e) => updateLocation(index, 'url', e.target.value)}
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
-                  placeholder="https://example.com"
-                />
-                <button
-                  type="button"
-                  className="rounded-lg font-medium transition-colors border-2 border-rose-200 text-rose-700 bg-transparent hover:bg-rose-50 px-4 py-2 text-sm"
-                  onClick={() => {
-                    setFormData({
-                      ...formData,
-                      locations: formData.locations.filter((_, i) => i !== index),
-                    });
-                  }}
-                >
+              <div key={index} className="space-y-4">
+                <div>
+                  <label
+                    htmlFor={`location-url-${index}`}
+                    className="block text-sm font-medium text-rose-700 mb-1"
+                  >
+                    場所URL
+                  </label>
+                  <input
+                    id={`location-url-${index}`}
+                    type="url"
+                    required
+                    className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                    value={location.url}
+                    onChange={(e) => updateLocation(index, 'url', e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor={`location-name-${index}`}
+                    className="block text-sm font-medium text-rose-700 mb-1"
+                  >
+                    場所の名前（任意）
+                  </label>
+                  <input
+                    id={`location-name-${index}`}
+                    type="text"
+                    className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                    value={location.name || ''}
+                    onChange={(e) => updateLocation(index, 'name', e.target.value)}
+                  />
+                </div>
+                <Button type="button" onClick={() => removeLocation(index)} variant="secondary">
                   削除
-                </button>
+                </Button>
               </div>
             ))}
           </div>

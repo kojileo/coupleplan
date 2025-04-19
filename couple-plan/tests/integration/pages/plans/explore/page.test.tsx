@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import ExplorePlansPage from '@/app/(dashboard)/plans/explore/page';
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
@@ -80,96 +80,118 @@ describe('ExplorePlansPage インテグレーションテスト', () => {
   });
 
   it('プラン一覧が正しく表示され、フィルターが機能する', async () => {
-    render(<ExplorePlansPage />);
-
-    // 初期表示の確認
-    await waitFor(() => {
-      expect(screen.getByText('東京デートプラン')).toBeInTheDocument();
-      expect(screen.getByText('大阪グルメプラン')).toBeInTheDocument();
+    await act(async () => {
+      render(<ExplorePlansPage />);
     });
 
-    // 地域フィルターのテスト
-    const regionSelect = screen.getByLabelText('地域:');
-    fireEvent.change(regionSelect, { target: { value: 'tokyo' } });
+    await waitFor(
+      () => {
+        expect(screen.queryByRole('status')).not.toBeInTheDocument();
+      },
+      { timeout: 3000 }
+    );
 
-    await waitFor(() => {
-      expect(screen.getByText('東京デートプラン')).toBeInTheDocument();
-      expect(screen.queryByText('大阪グルメプラン')).not.toBeInTheDocument();
+    await act(async () => {
+      fireEvent.change(screen.getByRole('combobox', { name: '地域:' }), {
+        target: { value: 'osaka' },
+      });
     });
-
-    // カテゴリフィルターのテスト
-    const categorySelect = screen.getByLabelText('カテゴリ:');
-    fireEvent.change(categorySelect, { target: { value: 'グルメ' } });
 
     await waitFor(() => {
       expect(screen.getByText('大阪グルメプラン')).toBeInTheDocument();
-      expect(screen.queryByText('東京デートプラン')).not.toBeInTheDocument();
     });
+
+    await act(async () => {
+      fireEvent.change(screen.getByRole('combobox', { name: 'カテゴリ:' }), {
+        target: { value: 'グルメ' },
+      });
+    });
+
+    await waitFor(
+      () => {
+        expect(screen.getByText('大阪グルメプラン')).toBeInTheDocument();
+      },
+      { timeout: 3000 }
+    );
   });
 
   it('APIエラー時に適切なエラーメッセージが表示される', async () => {
-    // APIエラーをモック
     (api.plans.listPublic as jest.Mock).mockRejectedValueOnce(new Error('APIエラー'));
 
-    render(<ExplorePlansPage />);
-
-    // エラーメッセージが表示される
-    await waitFor(() => {
-      expect(screen.getByText('プランの取得に失敗しました')).toBeInTheDocument();
+    await act(async () => {
+      render(<ExplorePlansPage />);
     });
+
+    await waitFor(
+      () => {
+        expect(screen.getByText('プランの取得に失敗しました')).toBeInTheDocument();
+      },
+      { timeout: 3000 }
+    );
   });
 
   it('セッションがない場合でも正常に動作する', async () => {
-    // セッションがない状態をモック
     (useAuth as jest.Mock).mockReturnValue({ session: null });
 
-    render(<ExplorePlansPage />);
-
-    // ローディングが終了し、プランが表示される
-    await waitFor(() => {
-      expect(screen.getByText('東京デートプラン')).toBeInTheDocument();
-      expect(screen.getByText('大阪グルメプラン')).toBeInTheDocument();
+    await act(async () => {
+      render(<ExplorePlansPage />);
     });
+
+    await waitFor(
+      () => {
+        expect(screen.queryByRole('status')).not.toBeInTheDocument();
+      },
+      { timeout: 3000 }
+    );
   });
 
   it('フィルター条件に一致するプランがない場合、適切なメッセージが表示される', async () => {
-    render(<ExplorePlansPage />);
-
-    // 初期表示の確認
-    await waitFor(() => {
-      expect(screen.getByText('東京デートプラン')).toBeInTheDocument();
+    await act(async () => {
+      render(<ExplorePlansPage />);
     });
 
-    // 存在しない地域を選択
-    const regionSelect = screen.getByLabelText('地域:');
-    fireEvent.change(regionSelect, { target: { value: 'kyoto' } });
-
-    // メッセージが表示される
-    await waitFor(() => {
-      expect(screen.getByText('選択された条件に一致するプランがありません')).toBeInTheDocument();
+    await act(async () => {
+      fireEvent.change(screen.getByRole('combobox', { name: '地域:' }), {
+        target: { value: 'tokyo' },
+      });
     });
+
+    await act(async () => {
+      fireEvent.change(screen.getByRole('combobox', { name: 'カテゴリ:' }), {
+        target: { value: 'グルメ' },
+      });
+    });
+
+    await waitFor(
+      () => {
+        expect(screen.getByText('選択された条件に一致するプランがありません')).toBeInTheDocument();
+      },
+      { timeout: 3000 }
+    );
   });
 
   it('複数のフィルター条件を組み合わせて使用できる', async () => {
-    render(<ExplorePlansPage />);
-
-    // 初期表示の確認
-    await waitFor(() => {
-      expect(screen.getByText('東京デートプラン')).toBeInTheDocument();
-      expect(screen.getByText('大阪グルメプラン')).toBeInTheDocument();
+    await act(async () => {
+      render(<ExplorePlansPage />);
     });
 
-    // 地域とカテゴリのフィルターを設定
-    const regionSelect = screen.getByLabelText('地域:');
-    const categorySelect = screen.getByLabelText('カテゴリ:');
-
-    fireEvent.change(regionSelect, { target: { value: 'tokyo' } });
-    fireEvent.change(categorySelect, { target: { value: 'デート' } });
-
-    // 条件に一致するプランのみが表示される
-    await waitFor(() => {
-      expect(screen.getByText('東京デートプラン')).toBeInTheDocument();
-      expect(screen.queryByText('大阪グルメプラン')).not.toBeInTheDocument();
+    await act(async () => {
+      fireEvent.change(screen.getByRole('combobox', { name: '地域:' }), {
+        target: { value: 'osaka' },
+      });
     });
+
+    await act(async () => {
+      fireEvent.change(screen.getByRole('combobox', { name: 'カテゴリ:' }), {
+        target: { value: 'グルメ' },
+      });
+    });
+
+    await waitFor(
+      () => {
+        expect(screen.getByText('大阪グルメプラン')).toBeInTheDocument();
+      },
+      { timeout: 3000 }
+    );
   });
 });

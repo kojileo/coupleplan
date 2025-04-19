@@ -2,7 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import NewPlanPage from '@/app/(dashboard)/plans/new/page';
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { createMockSession } from '@tests/utils/test-constants';
 
 // モック
@@ -14,12 +14,14 @@ jest.mock('@/lib/api', () => ({
   api: {
     plans: {
       create: jest.fn(),
+      getTemplate: jest.fn(),
     },
   },
 }));
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
+  useSearchParams: jest.fn(),
 }));
 
 describe('プラン作成ページ統合テスト', () => {
@@ -28,11 +30,17 @@ describe('プラン作成ページ統合テスト', () => {
     back: jest.fn(),
   };
 
+  const mockSearchParams = {
+    get: jest.fn(),
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
     (useRouter as jest.Mock).mockReturnValue(mockRouter);
+    (useSearchParams as jest.Mock).mockReturnValue(mockSearchParams);
     (useAuth as jest.Mock).mockReturnValue({ session: createMockSession('test-user') });
     (api.plans.create as jest.Mock).mockResolvedValue({ data: { id: 'new-plan-id' } });
+    mockSearchParams.get.mockReturnValue(null);
   });
 
   it('フォームが正しく表示される', () => {

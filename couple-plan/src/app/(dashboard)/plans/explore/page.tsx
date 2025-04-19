@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { PlanCard } from '@/components/features/plans/PlanCard';
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
-import type { Plan } from '@/types/plan';
+import type { ExtendedPlan } from '@/types/plan';
 
 const REGIONS = [
   { value: '', label: 'すべて' },
@@ -33,31 +33,29 @@ const CATEGORIES = [
 
 export default function ExplorePlansPage(): ReactElement {
   const { session } = useAuth();
-  const [plans, setPlans] = useState<Plan[]>([]);
+  const [plans, setPlans] = useState<ExtendedPlan[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedRegion, setSelectedRegion] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchPlans = async (): Promise<void> => {
-      if (!session) {
-        setLoading(false);
-        return;
-      }
-
       try {
         const response = await api.plans.listPublic();
         if ('error' in response) throw new Error(response.error);
         setPlans(response.data || []);
+        setError(null);
       } catch (error) {
         console.error('プランの取得に失敗しました:', error);
+        setError('プランの取得に失敗しました');
       } finally {
         setLoading(false);
       }
     };
 
     void fetchPlans();
-  }, [session]);
+  }, []);
 
   const filteredPlans = plans.filter((plan) => {
     const regionMatch = !selectedRegion || plan.region === selectedRegion;
@@ -68,7 +66,11 @@ export default function ExplorePlansPage(): ReactElement {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-rose-600" />
+        <div
+          role="status"
+          aria-label="読み込み中"
+          className="animate-spin rounded-full h-8 w-8 border-b-2 border-rose-600"
+        />
       </div>
     );
   }
@@ -115,7 +117,14 @@ export default function ExplorePlansPage(): ReactElement {
         </div>
       </div>
 
-      {filteredPlans.length === 0 ? (
+      {error ? (
+        <div
+          className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
+          role="alert"
+        >
+          {error}
+        </div>
+      ) : filteredPlans.length === 0 ? (
         <div className="bg-white rounded-lg shadow p-6 text-center">
           <p className="text-rose-700">
             {selectedRegion || selectedCategory

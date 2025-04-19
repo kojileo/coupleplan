@@ -67,7 +67,7 @@ describe('NewPlanPage コンポーネント', () => {
     expect(screen.getByLabelText('説明')).toBeInTheDocument();
     expect(screen.getByLabelText('日付')).toBeInTheDocument();
     expect(screen.getByLabelText('予算')).toBeInTheDocument();
-    expect(screen.getByText('場所URL')).toBeInTheDocument();
+    expect(screen.getByLabelText('場所URL')).toBeInTheDocument();
     expect(screen.getByLabelText('地域')).toBeInTheDocument();
     expect(screen.getByLabelText('公開する')).toBeInTheDocument();
   });
@@ -83,7 +83,7 @@ describe('NewPlanPage コンポーネント', () => {
       fireEvent.change(screen.getByLabelText('日付'), { target: { value: '2024-01-01' } });
       fireEvent.change(screen.getByLabelText('予算'), { target: { value: '5000' } });
       fireEvent.click(screen.getByText('URLを追加'));
-      fireEvent.change(screen.getByPlaceholderText('https://example.com'), {
+      fireEvent.change(screen.getByLabelText('場所URL'), {
         target: { value: 'https://example.com' },
       });
       fireEvent.change(screen.getByLabelText('地域'), { target: { value: 'tokyo' } });
@@ -94,7 +94,7 @@ describe('NewPlanPage コンポーネント', () => {
     expect(screen.getByLabelText('説明')).toHaveValue('テスト用の説明文');
     expect(screen.getByLabelText('日付')).toHaveValue('2024-01-01');
     expect(screen.getByLabelText('予算')).toHaveValue(5000);
-    expect(screen.getByPlaceholderText('https://example.com')).toHaveValue('https://example.com');
+    expect(screen.getByLabelText('場所URL')).toHaveValue('https://example.com');
     expect(screen.getByLabelText('地域')).toHaveValue('tokyo');
     expect(screen.getByLabelText('公開する')).toBeChecked();
   });
@@ -110,7 +110,7 @@ describe('NewPlanPage コンポーネント', () => {
       fireEvent.change(screen.getByLabelText('日付'), { target: { value: '2024-01-01' } });
       fireEvent.change(screen.getByLabelText('予算'), { target: { value: '5000' } });
       fireEvent.click(screen.getByText('URLを追加'));
-      fireEvent.change(screen.getByPlaceholderText('https://example.com'), {
+      fireEvent.change(screen.getByLabelText('場所URL'), {
         target: { value: 'https://example.com' },
       });
       fireEvent.change(screen.getByLabelText('地域'), { target: { value: 'tokyo' } });
@@ -213,17 +213,29 @@ describe('NewPlanPage コンポーネント', () => {
   });
 
   it('テンプレートプランが正しく読み込まれる', async () => {
-    await act(async () => {
-      render(<NewPlanPage />);
-    });
+    const mockTemplate = {
+      title: 'テンプレートプラン',
+      description: 'テンプレートの説明',
+      date: '2024-01-01',
+      budget: 5000,
+      locations: [{ url: 'https://example.com', name: 'テスト場所' }],
+      region: 'tokyo',
+      isPublic: false,
+    };
+
+    (api.plans.get as jest.Mock).mockResolvedValue({ data: mockTemplate });
+
+    render(<NewPlanPage />);
 
     await waitFor(() => {
       expect(screen.getByLabelText('タイトル')).toHaveValue('テンプレートプラン');
       expect(screen.getByLabelText('説明')).toHaveValue('テンプレートの説明');
       expect(screen.getByLabelText('日付')).toHaveValue('2024-01-01');
       expect(screen.getByLabelText('予算')).toHaveValue(5000);
-      expect(screen.getByPlaceholderText('https://example.com')).toHaveValue('https://example.com');
+      expect(screen.getByLabelText('場所URL')).toHaveValue('https://example.com');
+      expect(screen.getByLabelText('場所の名前（任意）')).toHaveValue('テスト場所');
       expect(screen.getByLabelText('地域')).toHaveValue('tokyo');
+      expect(screen.getByLabelText('公開する')).not.toBeChecked();
     });
   });
 });
