@@ -83,6 +83,18 @@ export async function PUT(request: NextRequest, { params }: RouteParams): Promis
       return NextResponse.json({ error: '無効なリクエストデータです' }, { status: 400 });
     }
 
+    // プランの存在確認
+    const existingPlan = await prisma.plan.findUnique({
+      where: {
+        id,
+        userId: user.id,
+      },
+    });
+
+    if (!existingPlan) {
+      return NextResponse.json({ error: 'プランが見つかりません' }, { status: 404 });
+    }
+
     const plan = await prisma.plan.update({
       where: {
         id,
@@ -112,11 +124,6 @@ export async function PUT(request: NextRequest, { params }: RouteParams): Promis
         },
         likes: true,
         locations: true,
-        _count: {
-          select: {
-            likes: true,
-          },
-        },
       },
     });
 

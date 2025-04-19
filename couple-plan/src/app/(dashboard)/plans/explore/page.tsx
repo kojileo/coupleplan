@@ -4,7 +4,6 @@ import type { ReactElement } from 'react';
 import { useEffect, useState } from 'react';
 
 import { PlanCard } from '@/components/features/plans/PlanCard';
-import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
 import type { ExtendedPlan } from '@/types/plan';
 
@@ -31,8 +30,7 @@ const CATEGORIES = [
   { value: '記念日', label: '記念日' },
 ];
 
-export default function ExplorePlansPage(): ReactElement {
-  const { session } = useAuth();
+export default function ExplorePage(): ReactElement {
   const [plans, setPlans] = useState<ExtendedPlan[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedRegion, setSelectedRegion] = useState('');
