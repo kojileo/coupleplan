@@ -1,16 +1,4 @@
 -- CreateTable
-CREATE TABLE "profiles" (
-    "id" UUID NOT NULL,
-    "user_id" UUID NOT NULL,
-    "name" VARCHAR(255),
-    "email" VARCHAR(255),
-    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "profiles_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "plans" (
     "id" TEXT NOT NULL,
     "title" VARCHAR(255) NOT NULL,
@@ -52,12 +40,6 @@ CREATE TABLE "plan_templates" (
 
     CONSTRAINT "plan_templates_pkey" PRIMARY KEY ("id")
 );
-
--- CreateIndex
-CREATE UNIQUE INDEX "profiles_user_id_key" ON "profiles"("user_id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "profiles_email_key" ON "profiles"("email");
 
 -- CreateIndex
 CREATE INDEX "plans_user_id_idx" ON "plans"("user_id");
