@@ -1,6 +1,6 @@
 /// <reference types="node" />
 
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Prisma } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
 
 const prisma = new PrismaClient();
@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 async function cleanDatabase() {
   try {
     console.log('データベースのクリーンアップを開始します...');
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       await tx.like.deleteMany();
       await tx.plan.deleteMany();
       await tx.profile.deleteMany();
