@@ -8,19 +8,19 @@ const prisma = new PrismaClient();
 async function cleanDatabase() {
   // 外部キー制約を考慮して、正しい順序で削除
   console.log('データベースのクリーンアップを開始します...');
-  
+
   // 各テーブルのデータを削除
   await prisma.like.deleteMany();
   await prisma.plan.deleteMany();
   await prisma.profile.deleteMany();
-  
+
   console.log('データベースのクリーンアップが完了しました');
 }
 
 async function main() {
   // データベースをクリーンアップ
   await cleanDatabase();
-  
+
   console.log('シードデータの作成を開始します...');
 
   // 管理者ユーザーの作成
@@ -43,10 +43,10 @@ async function main() {
       locations: {
         create: [
           {
-            url: "https://www.tokyotower.co.jp/",
-            name: "東京タワー",
-          }
-        ]
+            url: 'https://www.tokyotower.co.jp/',
+            name: '東京タワー',
+          },
+        ],
       },
       region: 'tokyo',
       budget: 10000,
@@ -61,10 +61,10 @@ async function main() {
       locations: {
         create: [
           {
-            url: "https://www.kamakura-info.jp/",
-            name: "鎌倉駅",
-          }
-        ]
+            url: 'https://www.kamakura-info.jp/',
+            name: '鎌倉駅',
+          },
+        ],
       },
       region: 'yokohama',
       budget: 8000,
@@ -79,10 +79,10 @@ async function main() {
       locations: {
         create: [
           {
-            url: "https://www.chinatown.or.jp/",
-            name: "横浜中華街",
-          }
-        ]
+            url: 'https://www.chinatown.or.jp/',
+            name: '横浜中華街',
+          },
+        ],
       },
       region: 'yokohama',
       budget: 12000,
@@ -97,10 +97,10 @@ async function main() {
       locations: {
         create: [
           {
-            url: "https://www.fujisan-climb.jp/",
-            name: "富士山五合目",
-          }
-        ]
+            url: 'https://www.fujisan-climb.jp/',
+            name: '富士山五合目',
+          },
+        ],
       },
       region: 'other',
       budget: 15000,
@@ -115,10 +115,10 @@ async function main() {
       locations: {
         create: [
           {
-            url: "https://sumidagawa-hanabi.com/",
-            name: "隅田川花火大会",
-          }
-        ]
+            url: 'https://sumidagawa-hanabi.com/',
+            name: '隅田川花火大会',
+          },
+        ],
       },
       region: 'tokyo',
       budget: 5000,
@@ -133,10 +133,10 @@ async function main() {
       locations: {
         create: [
           {
-            url: "https://www.tokyo-skytree.jp/",
-            name: "東京スカイツリー",
-          }
-        ]
+            url: 'https://www.tokyo-skytree.jp/',
+            name: '東京スカイツリー',
+          },
+        ],
       },
       region: 'tokyo',
       budget: 30000,
@@ -163,4 +163,4 @@ main()
   })
   .finally(async () => {
     await prisma.$disconnect();
-  }); 
+  });
