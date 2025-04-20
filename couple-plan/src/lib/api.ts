@@ -76,8 +76,8 @@ export const api = {
           throw new Error('プラン一覧の取得に失敗しました');
         }
 
-        const data = await response.json();
-        return { data: data.data };
+        const responseData = (await response.json()) as { data: Plan[] };
+        return { data: responseData.data };
       } catch (error) {
         console.error('Plans list error:', error);
         return { error: 'プラン一覧の取得に失敗しました' };
@@ -163,8 +163,8 @@ export const api = {
           throw new Error('公開プラン一覧の取得に失敗しました');
         }
 
-        const data = await response.json();
-        return { data: data.data };
+        const responseData = (await response.json()) as { data: Plan[] };
+        return { data: responseData.data };
       } catch (error) {
         console.error('Public plans list error:', error);
         return { error: '公開プラン一覧の取得に失敗しました' };

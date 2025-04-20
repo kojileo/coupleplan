@@ -40,7 +40,7 @@ export default function NewPlanPage(): ReactElement {
         }
         router.push('/plans');
       })
-      .catch((err) => {
+      .catch(() => {
         setError('プランの作成に失敗しました');
       })
       .finally(() => {
