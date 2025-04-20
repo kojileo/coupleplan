@@ -3,7 +3,10 @@
 import { PrismaClient, Prisma } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
 
-const prisma = new PrismaClient();
+// Prismaクライアントの初期化
+const prisma = new PrismaClient({
+  log: ['query', 'info', 'warn', 'error'],
+});
 
 async function cleanDatabase() {
   try {
@@ -38,6 +41,8 @@ async function main() {
         isAdmin: true,
       },
     });
+
+    console.log('管理者ユーザーを作成しました:', adminUser);
 
     // おすすめプランの作成
     const recommendedPlans = [
@@ -154,16 +159,24 @@ async function main() {
     // トランザクション内でプランを作成
     await prisma.$transaction(async (tx) => {
       for (const plan of recommendedPlans) {
-        await tx.plan.create({
-          data: plan,
-        });
+        try {
+          const createdPlan = await tx.plan.create({
+            data: plan,
+          });
+          console.log('プランを作成しました:', createdPlan.title);
+        } catch (error) {
+          console.error('プランの作成中にエラーが発生しました:', plan.title, error);
+          throw error;
+        }
       }
     });
 
     console.log('シードデータの作成が完了しました');
   } catch (error) {
     console.error('シード処理中にエラーが発生しました:', error);
-    throw error;
+    process.exit(1);
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
@@ -173,9 +186,5 @@ main()
     process.exit(1);
   })
   .finally(async () => {
-    try {
-      await prisma.$disconnect();
-    } catch (e) {
-      console.error('データベース接続の切断中にエラーが発生しました:', e);
-    }
+    await prisma.$disconnect();
   });
