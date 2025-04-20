@@ -196,17 +196,9 @@ describe('plans API', () => {
         title: 'テストプラン',
         description: 'テスト説明',
         date: testDateString,
-        locations: [
-          {
-            name: '東京タワー',
-            url: 'https://example.com/tokyo-tower',
-            address: '東京都港区芝公園4-2-8',
-            latitude: 35.6585805,
-            longitude: 139.7454329,
-          },
-        ],
-        region: '関東',
-        budget: 5000,
+        locations: [{ url: 'https://example.com/tokyo-tower', name: '東京タワー' }],
+        region: 'tokyo',
+        budget: 10000,
         isPublic: false,
       };
 
@@ -320,17 +312,9 @@ describe('plans API', () => {
         title: 'テストプラン',
         description: 'テスト説明',
         date: '2024-03-20',
-        locations: [
-          {
-            name: '東京タワー',
-            url: 'https://example.com/tokyo-tower',
-            address: '東京都港区芝公園4-2-8',
-            latitude: 35.6585805,
-            longitude: 139.7454329,
-          },
-        ],
-        region: '関東',
-        budget: 5000,
+        locations: [{ url: 'https://example.com/tokyo-tower', name: '東京タワー' }],
+        region: 'tokyo',
+        budget: 10000,
         isPublic: false,
       };
 

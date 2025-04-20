@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import type { ReactElement } from 'react';
 import { useState } from 'react';
+import { FormEvent } from 'react';
 
 import Button from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
@@ -11,41 +12,62 @@ import { api } from '@/lib/api';
 export default function NewPlanPage(): ReactElement {
   const router = useRouter();
   const { session } = useAuth();
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
-    e.preventDefault();
-    if (!session) return;
-
-    setLoading(true);
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
+    event.preventDefault();
+    setIsLoading(true);
     setError(null);
 
-    const formData = new FormData(e.currentTarget);
-    const planData = {
-      title: formData.get('title') as string,
-      description: formData.get('description') as string,
-      date: formData.get('date') as string,
-      locations: [{ url: formData.get('location-url-0') as string, name: null }],
-      region: formData.get('region') as string,
-      budget: Number(formData.get('budget')),
-      isPublic: formData.get('isPublic') === 'on',
-    };
+    try {
+      if (!session) {
+        setError('認証が必要です');
+        return;
+      }
 
-    api.plans
-      .create(session.access_token, planData)
-      .then((response) => {
-        if ('error' in response) {
-          throw new Error(response.error);
-        }
-        router.push('/plans');
-      })
-      .catch(() => {
+      const formData = new FormData(event.currentTarget);
+      const locationUrl = formData.get('location-url-0') as string;
+      const locationName = formData.get('location-name-0') as string;
+      const date = formData.get('date') as string;
+      const region = formData.get('region') as string;
+
+      const planData = {
+        title: formData.get('title') as string,
+        description: formData.get('description') as string,
+        date: date || null,
+        locations: [
+          {
+            url: locationUrl,
+            name: locationName || null,
+          },
+        ],
+        region: region || null,
+        budget: Number(formData.get('budget')),
+        isPublic: formData.get('isPublic') === 'on',
+      };
+
+      const response = await api.plans.create(session.access_token, planData);
+      if (response.error) {
+        setError(response.error);
+        return;
+      }
+
+      if (!response.data?.id) {
         setError('プランの作成に失敗しました');
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+        return;
+      }
+
+      router.push('/plans');
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('プランの作成に失敗しました');
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleBack = (): void => {
@@ -53,19 +75,23 @@ export default function NewPlanPage(): ReactElement {
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold text-rose-950 mb-8">新規プラン作成</h1>
-
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-2xl font-bold mb-6">新規プラン作成</h1>
       {error && (
         <div
           className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
           role="alert"
         >
-          {error}
+          <p>{error}</p>
         </div>
       )}
-
-      <form onSubmit={handleSubmit} className="space-y-6" data-testid="plan-form">
+      <form
+        onSubmit={(e) => {
+          void handleSubmit(e);
+        }}
+        className="space-y-6"
+        data-testid="plan-form"
+      >
         <div>
           <label htmlFor="title" className="block text-sm font-medium text-rose-700 mb-1">
             タイトル
@@ -201,16 +227,26 @@ export default function NewPlanPage(): ReactElement {
           </label>
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex justify-between mt-6">
           <Button type="button" variant="outline" onClick={handleBack}>
             キャンセル
           </Button>
           <Button
             type="submit"
-            disabled={loading}
-            className="rounded-lg font-medium transition-colors bg-rose-600 text-white hover:bg-rose-700 px-4 py-2 w-full md:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isLoading}
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-blue-300"
           >
-            {loading ? '作成中...' : '作成'}
+            {isLoading ? (
+              <div className="flex items-center">
+                <div
+                  data-testid="loading-spinner"
+                  className="animate-spin h-5 w-5 mr-2 border-t-2 border-b-2 border-white rounded-full"
+                ></div>
+                作成中...
+              </div>
+            ) : (
+              '作成'
+            )}
           </Button>
         </div>
       </form>

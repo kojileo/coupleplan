@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+
 import { prisma } from '@/lib/db';
 
 // 公開プラン一覧の取得

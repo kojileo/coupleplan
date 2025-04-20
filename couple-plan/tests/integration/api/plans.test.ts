@@ -40,9 +40,6 @@ describe('Plans API', () => {
     locations: [
       {
         name: '東京タワー',
-        address: '東京都港区芝公園4-2-8',
-        latitude: 35.6585805,
-        longitude: 139.7454329,
         url: 'https://example.com/tokyo-tower',
       },
     ],
@@ -188,9 +185,6 @@ describe('Plans API', () => {
         locations: [
           {
             name: '東京タワー',
-            address: '東京都港区芝公園4-2-8',
-            latitude: 35.6585805,
-            longitude: 139.7454329,
             url: 'https://example.com/tokyo-tower',
           },
         ],

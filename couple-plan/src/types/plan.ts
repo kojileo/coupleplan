@@ -1,5 +1,3 @@
-import type { Profile, Like } from '@prisma/client';
-
 export type Location = {
   id: string;
   url: string;
@@ -14,7 +12,7 @@ export interface Plan {
   userId: string;
   title: string;
   description: string;
-  date: string;
+  date: string | null;
   region: string;
   budget: number;
   isPublic: boolean;
@@ -25,7 +23,7 @@ export interface Plan {
     url: string;
     name: string | null;
   }[];
-  likes: {
+  likes?: {
     id: string;
     userId: string;
     createdAt: Date;
@@ -55,6 +53,7 @@ export type ExtendedPlan = Plan & {
   _count?: {
     likes: number;
   };
+  isRecommended?: boolean;
 };
 
 export type CreatePlanInput = {
@@ -86,8 +85,8 @@ export interface RecommendedPlan {
   budget: number;
   imageUrl: string | null;
   category: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export type CreateRecommendedPlanInput = Pick<

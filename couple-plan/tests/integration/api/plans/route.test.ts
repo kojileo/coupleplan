@@ -130,33 +130,25 @@ describe('プランAPI統合テスト', () => {
       const planData = {
         title: 'テストプラン',
         description: 'テスト説明',
-        date: testDateString,
-        budget: 5000,
-        locations: [
-          {
-            url: 'https://example.com',
-            name: '東京タワー',
-          },
-        ],
+        date: new Date('2024-01-01').toISOString(),
+        locations: [{ url: 'https://example.com', name: '東京タワー' }],
         region: 'tokyo',
+        budget: 10000,
         isPublic: false,
       };
 
       const mockPlan = {
-        id: 'plan-123',
-        userId: 'user-123',
-        title: 'テストプラン',
-        description: 'テスト説明',
-        date: '2024-01-01T00:00:00.000Z',
-        region: 'tokyo',
-        budget: 1000,
-        isPublic: true,
-        createdAt: '2025-04-20T01:47:14.359Z',
-        updatedAt: '2025-04-20T01:47:14.359Z',
-        locations: [],
-        likes: [],
-        profile: { name: 'テストユーザー' },
-        _count: { likes: 0 },
+        id: 'test-plan-id',
+        title: planData.title,
+        description: planData.description,
+        date: planData.date,
+        locations: [{ url: 'https://example.com', name: '東京タワー' }],
+        region: planData.region,
+        budget: planData.budget,
+        isPublic: planData.isPublic,
+        userId: mockUser.id,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       };
 
       (supabase.auth.getUser as jest.Mock).mockResolvedValue({
@@ -190,9 +182,6 @@ describe('プランAPI統合テスト', () => {
             create: planData.locations.map((location) => ({
               name: location.name,
               url: location.url,
-              address: null,
-              latitude: null,
-              longitude: null,
             })),
           },
           category: null,

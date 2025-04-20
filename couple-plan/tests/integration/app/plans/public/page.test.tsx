@@ -17,9 +17,7 @@ const mockPlans = [
     title: 'テストプラン1',
     description: '素敵なデートプラン',
     date: new Date('2024-03-20'),
-    locations: [
-      { name: '東京タワー', address: '東京都港区', latitude: 35.6586, longitude: 139.7454 },
-    ],
+    locations: [{ url: 'https://example.com', name: '東京タワー' }],
     region: 'tokyo',
     budget: 10000,
     isPublic: true,
@@ -33,9 +31,7 @@ const mockPlans = [
     title: 'テストプラン2',
     description: '観光プラン',
     date: new Date('2024-03-21'),
-    locations: [
-      { name: '大阪城', address: '大阪府大阪市', latitude: 34.6873, longitude: 135.5262 },
-    ],
+    locations: [{ url: 'https://example.com', name: '大阪城' }],
     region: 'osaka',
     budget: 15000,
     isPublic: true,
