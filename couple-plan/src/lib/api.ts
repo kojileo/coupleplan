@@ -64,14 +64,20 @@ export const api = {
   },
 
   plans: {
-    list: async (token: string): Promise<ApiResponse<Plan[]>> => {
+    list: async (token: string): Promise<{ data: Plan[] } | { error: string }> => {
       try {
-        const response = await fetch(`${API_BASE}/plans`, {
+        const response = await fetch('/api/plans', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        return (await response.json()) as ApiResponse<Plan[]>;
+
+        if (!response.ok) {
+          throw new Error('プラン一覧の取得に失敗しました');
+        }
+
+        const responseData = (await response.json()) as { data: Plan[] };
+        return { data: responseData.data };
       } catch (error) {
         console.error('Plans list error:', error);
         return { error: 'プラン一覧の取得に失敗しました' };
@@ -89,11 +95,14 @@ export const api = {
           body: JSON.stringify(data),
         });
 
+        const responseData = (await response.json()) as ApiResponse<Plan>;
+
         if (!response.ok) {
-          return { error: 'プランの作成に失敗しました' };
+          console.error('API Error:', responseData);
+          return { error: responseData.error || 'プランの作成に失敗しました' };
         }
 
-        return (await response.json()) as ApiResponse<Plan>;
+        return responseData;
       } catch (error) {
         console.error('Plan create error:', error);
         return { error: 'プランの作成に失敗しました' };
@@ -146,14 +155,16 @@ export const api = {
       }
     },
 
-    listPublic: async (token: string): Promise<ApiResponse<Plan[]>> => {
+    listPublic: async (): Promise<{ data: Plan[] } | { error: string }> => {
       try {
-        const response = await fetch(`${API_BASE}/plans/public`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        return (await response.json()) as ApiResponse<Plan[]>;
+        const response = await fetch('/api/plans/public');
+
+        if (!response.ok) {
+          throw new Error('公開プラン一覧の取得に失敗しました');
+        }
+
+        const responseData = (await response.json()) as { data: Plan[] };
+        return { data: responseData.data };
       } catch (error) {
         console.error('Public plans list error:', error);
         return { error: '公開プラン一覧の取得に失敗しました' };

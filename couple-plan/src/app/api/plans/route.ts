@@ -1,8 +1,24 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 
 import { prisma } from '@/lib/db';
 import { supabase } from '@/lib/supabase-auth';
-import type { PlanRequest } from '@/types/api';
+
+interface Location {
+  url: string;
+  name: string | null;
+}
+
+interface PlanRequest {
+  title: string;
+  description: string;
+  date: string | null;
+  locations: Location[];
+  region: string | null;
+  budget: number;
+  isPublic: boolean;
+  category: string | null;
+}
 
 // プラン一覧の取得（自分のプラン）
 export async function GET(request: NextRequest): Promise<NextResponse> {
@@ -70,45 +86,71 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
     }
 
-    const body = (await request.json()) as unknown;
-    if (!isPlanRequest(body)) {
-      return NextResponse.json({ error: '無効なリクエストデータです' }, { status: 400 });
-    }
-
-    const planData = body;
-
+    let requestBody: unknown;
     try {
-      const plan = await prisma.plan.create({
-        data: {
-          title: planData.title,
-          description: planData.description,
-          date: planData.date,
-          location: planData.location,
-          region: planData.region,
-          budget: planData.budget,
-          isPublic: planData.isPublic,
-          userId: user.id,
-        },
-        include: {
-          profile: {
-            select: {
-              name: true,
-            },
-          },
-          likes: true,
-          _count: {
-            select: {
-              likes: true,
-            },
-          },
-        },
-      });
-
-      return NextResponse.json({ data: plan }, { status: 201 });
-    } catch (error) {
-      console.error('Prismaエラー:', error);
-      return NextResponse.json({ error: 'プランの作成に失敗しました' }, { status: 500 });
+      requestBody = await request.json();
+    } catch {
+      return NextResponse.json({ error: 'プランの作成に失敗しました' }, { status: 400 });
     }
+
+    if (!isPlanRequest(requestBody)) {
+      console.error('無効なリクエストデータ:', requestBody);
+      return NextResponse.json(
+        {
+          error: 'プランの作成に失敗しました',
+        },
+        { status: 400 }
+      );
+    }
+
+    // 型ガードを通過したデータを検証して変換
+    const validatedData: PlanRequest = {
+      title: String(requestBody.title).trim(),
+      description: String(requestBody.description).trim(),
+      date: requestBody.date ? String(requestBody.date).trim() : null,
+      locations: requestBody.locations.map((location: Location) => ({
+        url: location.url,
+        name: location.name ? String(location.name).trim() : null,
+      })),
+      region: requestBody.region ? String(requestBody.region).trim() : null,
+      budget: Math.max(0, Number(requestBody.budget)),
+      isPublic: Boolean(requestBody.isPublic),
+      category: requestBody.category ? String(requestBody.category).trim() : null,
+    };
+
+    const plan = await prisma.plan.create({
+      data: {
+        title: validatedData.title,
+        description: validatedData.description,
+        date: validatedData.date ? new Date(validatedData.date) : null,
+        region: validatedData.region,
+        budget: validatedData.budget,
+        isPublic: validatedData.isPublic,
+        category: validatedData.category,
+        userId: user.id,
+        locations: {
+          create: validatedData.locations.map((location) => ({
+            name: location.name,
+            url: location.url,
+          })),
+        },
+      },
+      include: {
+        profile: {
+          select: {
+            name: true,
+          },
+        },
+        likes: true,
+        _count: {
+          select: {
+            likes: true,
+          },
+        },
+      },
+    });
+
+    return NextResponse.json({ data: plan }, { status: 201 });
   } catch (error) {
     const err = error instanceof Error ? error : new Error('Unknown error');
     console.error('プラン作成エラー:', err);
@@ -120,13 +162,51 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 function isPlanRequest(data: unknown): data is PlanRequest {
   if (!data || typeof data !== 'object') return false;
   const request = data as Partial<PlanRequest>;
-  return (
-    typeof request.title === 'string' &&
-    typeof request.description === 'string' &&
-    typeof request.date === 'string' &&
-    typeof request.location === 'string' &&
-    typeof request.region === 'string' &&
-    typeof request.budget === 'number' &&
-    typeof request.isPublic === 'boolean'
-  );
+
+  // 必須フィールドのチェック
+  if (
+    typeof request.title !== 'string' ||
+    typeof request.description !== 'string' ||
+    typeof request.isPublic !== 'boolean' ||
+    typeof request.budget !== 'number' ||
+    !Array.isArray(request.locations)
+  ) {
+    return false;
+  }
+
+  // locationsの各要素をチェック
+  if (
+    !request.locations.every(
+      (location) =>
+        typeof location === 'object' &&
+        location !== null &&
+        typeof location.url === 'string' &&
+        (location.name === null || typeof location.name === 'string')
+    )
+  ) {
+    return false;
+  }
+
+  // オプショナルフィールドのチェック
+  if (request.date !== undefined && request.date !== null && typeof request.date !== 'string') {
+    return false;
+  }
+
+  if (
+    request.region !== undefined &&
+    request.region !== null &&
+    typeof request.region !== 'string'
+  ) {
+    return false;
+  }
+
+  if (
+    request.category !== undefined &&
+    request.category !== null &&
+    typeof request.category !== 'string'
+  ) {
+    return false;
+  }
+
+  return true;
 }

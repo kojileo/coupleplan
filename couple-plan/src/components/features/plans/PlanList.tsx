@@ -76,7 +76,7 @@ export default function PlanList(): ReactElement {
             {plan.description && <p className="mb-2">{plan.description}</p>}
             {plan.date && <p>📅 {new Date(plan.date).toLocaleDateString()}</p>}
             {plan.budget > 0 && <p>💰 {plan.budget.toLocaleString()}円</p>}
-            {plan.location && <p>📍 {plan.location}</p>}
+            {plan.locations[0]?.name && <p>📍 {plan.locations[0].name}</p>}
           </div>
         </Link>
       ))}

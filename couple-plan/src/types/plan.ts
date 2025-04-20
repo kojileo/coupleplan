@@ -1,31 +1,74 @@
-export type Plan = {
+export type Location = {
   id: string;
-  title: string;
-  description?: string | null;
-  date?: string | Date | null;
-  budget: number;
-  location?: string | null;
-  region?: string | null;
-  isPublic: boolean;
-  userId: string;
+  url: string;
+  name: string | null;
+  planId: string;
   createdAt: Date;
   updatedAt: Date;
-  profile?: {
-    name: string;
-  } | null;
-  likes: {
+};
+
+export interface Plan {
+  id: string;
+  userId: string;
+  title: string;
+  description: string;
+  date: string | null;
+  region: string;
+  budget: number;
+  isPublic: boolean;
+  category: string;
+  createdAt: string;
+  updatedAt: string;
+  locations: {
+    url: string;
+    name: string | null;
+  }[];
+  likes?: {
     id: string;
     userId: string;
+    createdAt: Date;
+    updatedAt: Date;
+    planId: string;
+  }[];
+  profile?: {
+    id: string;
+    name: string;
+    avatarUrl: string | null;
+  };
+}
+
+export type ExtendedPlan = Plan & {
+  profile?: {
+    id: string;
+    name: string;
+    avatarUrl: string | null;
+  } | null;
+  likes?: {
+    id: string;
+    userId: string;
+    createdAt: Date;
+    updatedAt: Date;
+    planId: string;
   }[];
   _count?: {
     likes: number;
   };
+  isRecommended?: boolean;
 };
 
-export type CreatePlanInput = Pick<
-  Plan,
-  'title' | 'description' | 'date' | 'budget' | 'location' | 'region'
->;
+export type CreatePlanInput = {
+  title: string;
+  description: string;
+  date?: Date | null;
+  locations?: Array<{
+    url: string;
+    name?: string | null;
+  }>;
+  region?: string | null;
+  budget: number;
+  isPublic: boolean;
+  category?: string | null;
+};
 
 export type UpdatePlanInput = Partial<CreatePlanInput>;
 
@@ -33,18 +76,22 @@ export interface RecommendedPlan {
   id: string;
   title: string;
   description: string;
-  location: string | null;
+  locations: Array<{
+    id: string;
+    url: string;
+    name: string | null;
+  }>;
   region: string | null;
   budget: number;
   imageUrl: string | null;
   category: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export type CreateRecommendedPlanInput = Pick<
   RecommendedPlan,
-  'title' | 'description' | 'location' | 'region' | 'budget' | 'imageUrl' | 'category'
+  'title' | 'description' | 'locations' | 'region' | 'budget' | 'imageUrl' | 'category'
 >;
 
 export type UpdateRecommendedPlanInput = Partial<CreateRecommendedPlanInput>;

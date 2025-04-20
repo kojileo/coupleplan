@@ -68,6 +68,54 @@ export default function PlanDetailPage({ params }: Props): ReactElement {
     }
   };
 
+  const handleCreateFromPlan = async (): Promise<void> => {
+    if (!session || !plan) return;
+
+    try {
+      // 既存のプランのデータをコピーして新しいプランを作成
+      const newPlan = {
+        title: `${plan.title} (コピー)`,
+        description: plan.description,
+        date: plan.date ? new Date(plan.date).toISOString() : null,
+        locations:
+          plan.locations?.map((location) => ({
+            url: location.url,
+            name: location.name || null,
+          })) || [],
+        region: plan.region || null,
+        budget: plan.budget,
+        isPublic: false,
+        category: plan.category || null,
+      };
+
+      console.log('Creating new plan with data:', newPlan); // デバッグ用ログ
+
+      const response = await api.plans.create(session.access_token, newPlan);
+      console.log('API Response:', response); // デバッグ用ログ
+
+      if ('error' in response) {
+        console.error('API Error:', response.error, response); // デバッグ用ログ
+        throw new Error(response.error);
+      }
+
+      if (!response.data?.id) {
+        console.error('No plan ID in response:', response); // デバッグ用ログ
+        throw new Error('プランの作成に失敗しました');
+      }
+
+      // 新しく作成したプランの編集ページに遷移
+      void router.push(`/plans/${response.data.id}/edit`);
+    } catch (error) {
+      console.error('プランの作成に失敗しました:', error);
+      alert('プランの作成に失敗しました');
+    }
+  };
+
+  const handleCreateFromPlanClick = (e: MouseEvent): void => {
+    e.preventDefault();
+    void handleCreateFromPlan();
+  };
+
   // プランの作成者かどうかを判定
   const isOwner = session?.user?.id === plan?.userId;
 
@@ -91,29 +139,36 @@ export default function PlanDetailPage({ params }: Props): ReactElement {
     <div className="max-w-3xl mx-auto">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold text-rose-950">{plan.title}</h1>
-        {isOwner && ( // 作成者の場合のみボタンを表示
-          <div className="flex gap-4">
-            <Button variant="outline" onClick={(): void => setIsPublishDialogOpen(true)}>
-              公開設定
+        <div className="flex gap-4">
+          {!isOwner && (
+            <Button variant="outline" onClick={handleCreateFromPlanClick}>
+              このプランから作成
             </Button>
-            <Button
-              variant="outline"
-              onClick={(): void => {
-                void router.push(`/plans/${planId}/edit`);
-              }}
-            >
-              編集
-            </Button>
-            <Button
-              variant="outline"
-              onClick={(e): void => {
-                void handleDelete(e);
-              }}
-            >
-              削除
-            </Button>
-          </div>
-        )}
+          )}
+          {isOwner && ( // 作成者の場合のみボタンを表示
+            <>
+              <Button variant="outline" onClick={(): void => setIsPublishDialogOpen(true)}>
+                公開設定
+              </Button>
+              <Button
+                variant="outline"
+                onClick={(): void => {
+                  void router.push(`/plans/${planId}/edit`);
+                }}
+              >
+                編集
+              </Button>
+              <Button
+                variant="outline"
+                onClick={(e): void => {
+                  void handleDelete(e);
+                }}
+              >
+                削除
+              </Button>
+            </>
+          )}
+        </div>
       </div>
 
       <div className="bg-white rounded-lg shadow p-6 space-y-6">
@@ -135,20 +190,22 @@ export default function PlanDetailPage({ params }: Props): ReactElement {
           </div>
           <div>
             <h2 className="text-sm font-semibold text-rose-800 mb-2">場所URL</h2>
-            <p className="text-rose-900">
-              {plan.location ? (
-                <a
-                  href={plan.location}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline"
-                >
-                  {new URL(plan.location).hostname}
-                </a>
-              ) : (
-                '未設定'
-              )}
-            </p>
+            <div className="space-y-2">
+              {plan.locations && plan.locations.length > 0
+                ? plan.locations.map((location) => (
+                    <div key={location.url} className="flex items-center gap-2">
+                      <a
+                        href={location.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:underline"
+                      >
+                        {location.name || new URL(location.url).hostname}
+                      </a>
+                    </div>
+                  ))
+                : '未設定'}
+            </div>
           </div>
           <div>
             <h2 className="text-sm font-semibold text-rose-800 mb-2">地域</h2>

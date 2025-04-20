@@ -2,27 +2,30 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 import type { ReactElement } from 'react';
+import { useEffect } from 'react';
 
 import Button from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function Home(): ReactElement {
+  const { session, isLoading } = useAuth();
   const router = useRouter();
-  const { user, isLoading } = useAuth();
 
   useEffect(() => {
-    if (!isLoading && user) {
+    if (session) {
       void router.push('/plans');
     }
-  }, [user, isLoading, router]);
+  }, [router, session]);
 
-  // 認証状態確認中はローディング表示
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900" />
+        <div
+          className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-rose-500"
+          role="status"
+          aria-label="読み込み中"
+        />
       </div>
     );
   }
@@ -69,6 +72,12 @@ export default function Home(): ReactElement {
             </Link>
             <Link href="/signup">
               <Button size="lg">新規登録</Button>
+            </Link>
+          </div>
+
+          <div className="mt-8">
+            <Link href="/plans/public" className="text-rose-600 hover:text-rose-900 font-medium">
+              公開されているデートプランを見る →
             </Link>
           </div>
         </div>
