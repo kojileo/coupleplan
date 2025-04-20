@@ -39,6 +39,7 @@ export async function GET(request: NextRequest, { params }: RouteParams): Promis
           },
         },
         likes: true,
+        locations: true,
         _count: {
           select: {
             likes: true,
@@ -82,18 +83,61 @@ export async function PUT(request: NextRequest, { params }: RouteParams): Promis
       return NextResponse.json({ error: '無効なリクエストデータです' }, { status: 400 });
     }
 
-    const plan = await prisma.plan.update({
-      where: {
-        id,
-        userId: user.id,
-      },
-      data: {
-        ...body,
-        region: body.region,
-      },
-    });
+    try {
+      // プランの存在確認
+      const existingPlan = await prisma.plan.findUnique({
+        where: {
+          id,
+          userId: user.id,
+        },
+      });
 
-    return NextResponse.json({ data: plan });
+      if (!existingPlan) {
+        return NextResponse.json({ error: 'プランが見つかりません' }, { status: 404 });
+      }
+
+      const plan = await prisma.plan.update({
+        where: {
+          id,
+          userId: user.id,
+        },
+        data: {
+          title: body.title,
+          description: body.description,
+          date: body.date,
+          region: body.region,
+          budget: body.budget,
+          isPublic: body.isPublic,
+          locations: {
+            deleteMany: {},
+            create:
+              body.locations?.map((location) => ({
+                name: location.name || null,
+                url: location.url || '',
+              })) || [],
+          },
+        },
+        include: {
+          profile: {
+            select: {
+              name: true,
+            },
+          },
+          likes: true,
+          locations: true,
+          _count: {
+            select: {
+              likes: true,
+            },
+          },
+        },
+      });
+
+      return NextResponse.json({ data: plan });
+    } catch (error) {
+      console.error('プラン更新エラー:', error instanceof Error ? error.message : 'Unknown error');
+      return NextResponse.json({ error: 'プランの更新に失敗しました' }, { status: 500 });
+    }
   } catch (error) {
     console.error('プラン更新エラー:', error instanceof Error ? error.message : 'Unknown error');
     return NextResponse.json({ error: 'プランの更新に失敗しました' }, { status: 500 });

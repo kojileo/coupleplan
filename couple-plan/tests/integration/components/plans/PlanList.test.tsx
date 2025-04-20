@@ -2,7 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import PlanList from '@/components/features/plans/PlanList';
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
-import type { Plan } from '@/types/plan';
+import type { ExtendedPlan } from '@/types/plan';
 import { TEST_USER, createMockSession } from '@tests/utils/test-constants';
 
 // モック
@@ -19,20 +19,38 @@ jest.mock('@/lib/api', () => ({
 }));
 
 // テスト用のモックデータ
-const mockPlans: Plan[] = [
+const mockPlans: ExtendedPlan[] = [
   {
     id: 'plan-1',
     title: 'テストプラン1',
     description: 'テスト用のプラン説明1',
     date: new Date('2024-01-01T18:00:00'),
+    region: '東京都',
     budget: 5000,
-    location: 'https://example.com/location1',
     isPublic: true,
+    isRecommended: false,
+    category: 'デート',
     userId: 'user-123',
     createdAt: new Date(),
     updatedAt: new Date(),
+    locations: [
+      {
+        id: '1',
+        name: 'テスト場所1',
+        url: 'https://example.com/location1',
+        planId: 'plan-1',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ],
     profile: {
+      id: '1',
       name: 'テストユーザー',
+      email: 'test@example.com',
+      userId: 'user-123',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      isAdmin: false,
     },
     likes: [],
     _count: {
@@ -44,14 +62,32 @@ const mockPlans: Plan[] = [
     title: 'テストプラン2',
     description: 'テスト用のプラン説明2',
     date: new Date('2024-01-02T18:00:00'),
+    region: '大阪府',
     budget: 10000,
-    location: 'https://example.com/location2',
     isPublic: false,
+    isRecommended: false,
+    category: '旅行',
     userId: 'user-456',
     createdAt: new Date(),
     updatedAt: new Date(),
+    locations: [
+      {
+        id: '2',
+        name: 'テスト場所2',
+        url: 'https://example.com/location2',
+        planId: 'plan-2',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ],
     profile: {
+      id: '2',
       name: '別のユーザー',
+      email: 'other@example.com',
+      userId: 'user-456',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      isAdmin: false,
     },
     likes: [],
     _count: {
@@ -74,11 +110,11 @@ describe('PlanListコンポーネント統合テスト', () => {
   it('ローディング中はスケルトンが表示される', () => {
     // APIレスポンスを遅延させる
     (api.plans.list as jest.Mock).mockImplementation(
-      () => new Promise(resolve => setTimeout(() => resolve({ data: mockPlans }), 100))
+      () => new Promise((resolve) => setTimeout(() => resolve({ data: mockPlans }), 100))
     );
-    
+
     render(<PlanList />);
-    
+
     // ローディングスケルトンが表示されていることを確認
     expect(screen.getByTestId('loading-skeleton')).toBeInTheDocument();
   });
@@ -86,23 +122,23 @@ describe('PlanListコンポーネント統合テスト', () => {
   it('プラン一覧が正しく表示される', async () => {
     // APIモックの設定
     (api.plans.list as jest.Mock).mockResolvedValue({ data: mockPlans });
-    
+
     render(<PlanList />);
-    
+
     // プラン一覧が表示されるまで待機
     await waitFor(() => {
       expect(screen.getByText('テストプラン1')).toBeInTheDocument();
     });
-    
+
     // 各プランの情報が表示されていることを確認
     expect(screen.getByText('テストプラン1')).toBeInTheDocument();
     expect(screen.getByText('テスト用のプラン説明1')).toBeInTheDocument();
     expect(screen.getByText('💰 5,000円')).toBeInTheDocument();
-    
+
     expect(screen.getByText('テストプラン2')).toBeInTheDocument();
     expect(screen.getByText('テスト用のプラン説明2')).toBeInTheDocument();
     expect(screen.getByText('💰 10,000円')).toBeInTheDocument();
-    
+
     // 公開プランのラベルが表示されていることを確認（ユーザーIDが異なるプランのみ）
     expect(screen.getByText('公開プラン')).toBeInTheDocument();
   });
@@ -110,14 +146,14 @@ describe('PlanListコンポーネント統合テスト', () => {
   it('プランが存在しない場合は適切なメッセージが表示される', async () => {
     // APIモックの設定（空の配列を返す）
     (api.plans.list as jest.Mock).mockResolvedValue({ data: [] });
-    
+
     render(<PlanList />);
-    
+
     // メッセージが表示されるまで待機
     await waitFor(() => {
       expect(screen.getByText('まだプランがありません')).toBeInTheDocument();
     });
-    
+
     // 新規作成リンクが表示されていることを確認
     expect(screen.getByText('新しいプランを作成する')).toBeInTheDocument();
   });
@@ -126,20 +162,17 @@ describe('PlanListコンポーネント統合テスト', () => {
     // コンソールエラーのモック
     const originalConsoleError = console.error;
     console.error = jest.fn();
-    
+
     // APIモックの設定（エラーを返す）
     (api.plans.list as jest.Mock).mockResolvedValue({ error: 'APIエラー' });
-    
+
     render(<PlanList />);
-    
+
     // エラーが出力されることを確認
     await waitFor(() => {
-      expect(console.error).toHaveBeenCalledWith(
-        'マイプラン一覧の取得に失敗:',
-        expect.any(Error)
-      );
+      expect(console.error).toHaveBeenCalledWith('マイプラン一覧の取得に失敗:', expect.any(Error));
     });
-    
+
     // モックを元に戻す
     console.error = originalConsoleError;
   });
@@ -147,15 +180,15 @@ describe('PlanListコンポーネント統合テスト', () => {
   it('未ログイン状態では空の状態が表示される', async () => {
     // 未ログイン状態のモック
     (useAuth as jest.Mock).mockReturnValue({ session: null });
-    
+
     render(<PlanList />);
-    
+
     // メッセージが表示されるまで待機
     await waitFor(() => {
       expect(screen.getByText('まだプランがありません')).toBeInTheDocument();
     });
-    
+
     // APIが呼び出されていないことを確認
     expect(api.plans.list).not.toHaveBeenCalled();
   });
-}); 
+});

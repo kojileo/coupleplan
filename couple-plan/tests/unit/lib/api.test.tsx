@@ -1,28 +1,28 @@
-import { api } from '@/lib/api'
-import type { Plan } from '@/types/plan'
-import type { Profile } from '@/types/profile'
-import { TEST_AUTH, TEST_USER } from '@tests/utils/test-constants'
+import { api } from '@/lib/api';
+import type { Plan } from '@/types/plan';
+import type { Profile } from '@/types/profile';
+import { TEST_AUTH, TEST_USER } from '@tests/utils/test-constants';
 
 // グローバルのfetchをモック化
-const mockFetch = jest.fn()
-global.fetch = mockFetch
+const mockFetch = jest.fn();
+global.fetch = mockFetch;
 
 describe('api', () => {
   // 安全なテストトークンを使用
-  const mockToken = TEST_AUTH.ACCESS_TOKEN
-  const mockUserId = TEST_USER.ID
+  const mockToken = TEST_AUTH.ACCESS_TOKEN;
+  const mockUserId = TEST_USER.ID;
   // テスト用のパスワードプレースホルダを定義
   const PASSWORD_PLACEHOLDER = '************';
 
   beforeEach(() => {
-    mockFetch.mockClear()
-    jest.clearAllMocks()
-    jest.spyOn(console, 'error').mockImplementation(() => {})
-  })
+    mockFetch.mockClear();
+    jest.clearAllMocks();
+    jest.spyOn(console, 'error').mockImplementation(() => {});
+  });
 
   afterEach(() => {
-    jest.restoreAllMocks()
-  })
+    jest.restoreAllMocks();
+  });
 
   describe('auth', () => {
     it('ログインリクエストを送信', async () => {
@@ -34,9 +34,9 @@ describe('api', () => {
       (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
       // パスワードをテスト内で直接使用せず、オブジェクトを作成
-      const loginData = { 
-        email: TEST_USER.EMAIL, 
-        password: PASSWORD_PLACEHOLDER 
+      const loginData = {
+        email: TEST_USER.EMAIL,
+        password: PASSWORD_PLACEHOLDER,
       };
 
       const result = await api.auth.login(loginData);
@@ -47,13 +47,13 @@ describe('api', () => {
         headers: { 'Content-Type': 'application/json' },
         body: expect.any(String),
       });
-      
+
       // fetchに渡されたbodyが正しい形式かを検証（パスワードの値自体は検証しない）
       const fetchCall = mockFetch.mock.calls[0];
       const bodyParsed = JSON.parse(fetchCall[1].body);
       expect(bodyParsed).toHaveProperty('email', TEST_USER.EMAIL);
       expect(bodyParsed).toHaveProperty('password');
-      
+
       expect(result).toEqual({ data: { id: mockUserId } });
     });
 
@@ -65,9 +65,9 @@ describe('api', () => {
       (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
       // パスワードをテスト内で直接使用せず、オブジェクトを作成
-      const loginData = { 
-        email: TEST_USER.EMAIL, 
-        password: PASSWORD_PLACEHOLDER 
+      const loginData = {
+        email: TEST_USER.EMAIL,
+        password: PASSWORD_PLACEHOLDER,
       };
 
       const result = await api.auth.login(loginData);
@@ -83,10 +83,10 @@ describe('api', () => {
       (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
       // パスワードをテスト内で直接使用せず、オブジェクトを作成
-      const signupData = { 
-        email: TEST_USER.EMAIL, 
-        password: PASSWORD_PLACEHOLDER, 
-        name: 'Test User' 
+      const signupData = {
+        email: TEST_USER.EMAIL,
+        password: PASSWORD_PLACEHOLDER,
+        name: 'Test User',
       };
 
       const result = await api.auth.signup(signupData);
@@ -97,14 +97,14 @@ describe('api', () => {
         headers: { 'Content-Type': 'application/json' },
         body: expect.any(String),
       });
-      
+
       // fetchに渡されたbodyが正しい形式かを検証（パスワードの値自体は検証しない）
       const fetchCall = mockFetch.mock.calls[0];
       const bodyParsed = JSON.parse(fetchCall[1].body);
       expect(bodyParsed).toHaveProperty('email', TEST_USER.EMAIL);
       expect(bodyParsed).toHaveProperty('password');
       expect(bodyParsed).toHaveProperty('name', 'Test User');
-      
+
       expect(result).toEqual({ data: { id: mockUserId } });
     });
 
@@ -116,10 +116,10 @@ describe('api', () => {
       (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
       // パスワードをテスト内で直接使用せず、オブジェクトを作成
-      const signupData = { 
-        email: TEST_USER.EMAIL, 
-        password: PASSWORD_PLACEHOLDER, 
-        name: 'Test User' 
+      const signupData = {
+        email: TEST_USER.EMAIL,
+        password: PASSWORD_PLACEHOLDER,
+        name: 'Test User',
       };
 
       const result = await api.auth.signup(signupData);
@@ -133,10 +133,10 @@ describe('api', () => {
       (global.fetch as jest.Mock).mockRejectedValue(networkError);
 
       // パスワードをテスト内で直接使用せず、オブジェクトを作成
-      const signupData = { 
-        email: TEST_USER.EMAIL, 
-        password: PASSWORD_PLACEHOLDER, 
-        name: 'Test User' 
+      const signupData = {
+        email: TEST_USER.EMAIL,
+        password: PASSWORD_PLACEHOLDER,
+        name: 'Test User',
       };
 
       const result = await api.auth.signup(signupData);
@@ -144,7 +144,7 @@ describe('api', () => {
       expect(result).toEqual({ error: 'サインアップに失敗しました' });
       expect(console.error).toHaveBeenCalledWith('Signup error:', networkError);
     });
-  })
+  });
 
   describe('profile', () => {
     // ISO文字列による日付の定義で参照の問題を防ぐ
@@ -155,7 +155,7 @@ describe('api', () => {
       email: TEST_USER.EMAIL,
       createdAt: new Date(mockDateStr),
       updatedAt: new Date(mockDateStr),
-    }
+    };
 
     it('プロフィール情報を取得', async () => {
       const mockResponse = {
@@ -201,9 +201,9 @@ describe('api', () => {
         ...mockProfile,
         name: updatedName,
         email: updatedEmail,
-        updatedAt: new Date(mockDateStr)
+        updatedAt: new Date(mockDateStr),
       };
-      
+
       const mockResponse = {
         ok: true,
         json: jest.fn().mockResolvedValue({ data: updatedProfile }),
@@ -244,7 +244,7 @@ describe('api', () => {
       expect(result).toEqual({ error: 'プロフィールの更新に失敗しました' });
       expect(console.error).toHaveBeenCalledWith('Profile update error:', networkError);
     });
-  })
+  });
 
   describe('plans', () => {
     // ISO文字列による日付の定義
@@ -254,14 +254,25 @@ describe('api', () => {
       title: 'Test Plan',
       description: 'Test Description',
       date: new Date(mockDateStr),
-      location: 'Test Location',
+      region: '東京都',
+      locations: [
+        {
+          id: 'location-1',
+          name: 'Test Location',
+          url: 'https://example.com/location',
+          planId: 'plan-1',
+          createdAt: new Date(mockDateStr),
+          updatedAt: new Date(mockDateStr),
+        },
+      ],
       budget: 1000,
       isPublic: false,
+      isRecommended: false,
+      category: 'デート',
       userId: mockUserId,
       createdAt: new Date(mockDateStr),
       updatedAt: new Date(mockDateStr),
-      likes: [],
-    }
+    };
 
     it('プラン一覧を取得', async () => {
       const mockResponse = {
@@ -287,7 +298,7 @@ describe('api', () => {
 
       const result = await api.plans.list('invalid-token');
 
-      expect(result).toEqual({ error: 'Unauthorized' });
+      expect(result).toEqual({ error: 'プラン一覧の取得に失敗しました' });
     });
 
     it('プラン一覧取得時のネットワークエラーを処理', async () => {
@@ -303,21 +314,31 @@ describe('api', () => {
     it('プランを作成', async () => {
       const newPlan = {
         ...mockPlan,
-        id: 'new-plan-id'
+        id: 'new-plan-id',
       };
-      
+
       const mockResponse = {
         ok: true,
         json: jest.fn().mockResolvedValue({ data: newPlan }),
       };
       (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      const planData = { 
-        title: 'New Plan', 
+      const planData = {
+        title: 'New Plan',
         description: '',
-        date: new Date(mockDateStr), 
+        date: mockDateStr,
         budget: 5000,
-        isPublic: false
+        isPublic: false,
+        locations: [
+          {
+            id: 'location-1',
+            name: 'Test Location',
+            url: 'https://example.com/location',
+            planId: 'plan-1',
+            createdAt: new Date(mockDateStr),
+            updatedAt: new Date(mockDateStr),
+          },
+        ],
       };
       const result = await api.plans.create(mockToken, planData);
 
@@ -336,12 +357,22 @@ describe('api', () => {
       const networkError = new Error('Network error');
       (global.fetch as jest.Mock).mockRejectedValue(networkError);
 
-      const planData = { 
-        title: 'New Plan', 
+      const planData = {
+        title: 'New Plan',
         description: '',
-        date: new Date(mockDateStr), 
+        date: mockDateStr,
         budget: 5000,
-        isPublic: false
+        isPublic: false,
+        locations: [
+          {
+            id: 'location-1',
+            name: 'Test Location',
+            url: 'https://example.com/location',
+            planId: 'plan-1',
+            createdAt: new Date(mockDateStr),
+            updatedAt: new Date(mockDateStr),
+          },
+        ],
       };
       const result = await api.plans.create(mockToken, planData);
 
@@ -356,12 +387,22 @@ describe('api', () => {
       };
       (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      const planData = { 
-        title: '', 
+      const planData = {
+        title: '',
         description: '',
-        date: new Date(mockDateStr), 
+        date: mockDateStr,
         budget: 5000,
-        isPublic: false
+        isPublic: false,
+        locations: [
+          {
+            id: 'location-1',
+            name: 'Test Location',
+            url: 'https://example.com/location',
+            planId: 'plan-1',
+            createdAt: new Date(mockDateStr),
+            updatedAt: new Date(mockDateStr),
+          },
+        ],
       };
       const result = await api.plans.create(mockToken, planData);
 
@@ -409,20 +450,30 @@ describe('api', () => {
       const updatedPlan = {
         ...mockPlan,
         title: 'Updated Plan',
-        budget: 6000
+        budget: 6000,
       };
-      
+
       const mockResponse = {
         ok: true,
         json: jest.fn().mockResolvedValue({ data: updatedPlan }),
       };
       (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      const planData = { 
-        title: 'Updated Plan', 
+      const planData = {
+        title: 'Updated Plan',
         description: '',
         budget: 6000,
-        isPublic: false
+        isPublic: false,
+        locations: [
+          {
+            id: 'location-1',
+            name: 'Test Location',
+            url: 'https://example.com/location',
+            planId: 'plan-1',
+            createdAt: new Date(mockDateStr),
+            updatedAt: new Date(mockDateStr),
+          },
+        ],
       };
       const result = await api.plans.update(mockToken, 'plan-1', planData);
 
@@ -444,11 +495,21 @@ describe('api', () => {
       };
       (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      const planData = { 
-        title: '', 
+      const planData = {
+        title: '',
         description: '',
         budget: 5000,
-        isPublic: false
+        isPublic: false,
+        locations: [
+          {
+            id: 'location-1',
+            name: 'Test Location',
+            url: 'https://example.com/location',
+            planId: 'plan-1',
+            createdAt: new Date(mockDateStr),
+            updatedAt: new Date(mockDateStr),
+          },
+        ],
       };
       const result = await api.plans.update(mockToken, 'plan-1', planData);
 
@@ -459,11 +520,21 @@ describe('api', () => {
       const networkError = new Error('Network error');
       (global.fetch as jest.Mock).mockRejectedValue(networkError);
 
-      const planData = { 
-        title: 'Updated Plan', 
+      const planData = {
+        title: 'Updated Plan',
         description: '',
         budget: 5000,
-        isPublic: false
+        isPublic: false,
+        locations: [
+          {
+            id: 'location-1',
+            name: 'Test Location',
+            url: 'https://example.com/location',
+            planId: 'plan-1',
+            createdAt: new Date(mockDateStr),
+            updatedAt: new Date(mockDateStr),
+          },
+        ],
       };
       const result = await api.plans.update(mockToken, 'plan-1', planData);
 
@@ -512,20 +583,18 @@ describe('api', () => {
     it('公開プラン一覧を取得', async () => {
       const publicPlan = {
         ...mockPlan,
-        isPublic: true
+        isPublic: true,
       };
-      
+
       const mockResponse = {
         ok: true,
         json: jest.fn().mockResolvedValue({ data: [publicPlan] }),
       };
       (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      const result = await api.plans.listPublic(mockToken);
+      const result = await api.plans.listPublic();
 
-      expect(fetch).toHaveBeenCalledWith('/api/plans/public', {
-        headers: { Authorization: `Bearer ${mockToken}` },
-      });
+      expect(fetch).toHaveBeenCalledWith('/api/plans/public');
       expect(result).toEqual({ data: [publicPlan] });
     });
 
@@ -536,16 +605,16 @@ describe('api', () => {
       };
       (global.fetch as jest.Mock).mockResolvedValue(mockResponse);
 
-      const result = await api.plans.listPublic('invalid-token');
+      const result = await api.plans.listPublic();
 
-      expect(result).toEqual({ error: 'Unauthorized' });
+      expect(result).toEqual({ error: '公開プラン一覧の取得に失敗しました' });
     });
 
     it('公開プラン一覧取得時のネットワークエラーを処理', async () => {
       const networkError = new Error('Network error');
       (global.fetch as jest.Mock).mockRejectedValue(networkError);
 
-      const result = await api.plans.listPublic(mockToken);
+      const result = await api.plans.listPublic();
 
       expect(result).toEqual({ error: '公開プラン一覧の取得に失敗しました' });
       expect(console.error).toHaveBeenCalledWith('Public plans list error:', networkError);
@@ -554,9 +623,9 @@ describe('api', () => {
     it('プランの公開設定を更新', async () => {
       const publishedPlan = {
         ...mockPlan,
-        isPublic: true
+        isPublic: true,
       };
-      
+
       const mockResponse = {
         ok: true,
         json: jest.fn().mockResolvedValue({ data: publishedPlan }),
@@ -597,7 +666,7 @@ describe('api', () => {
       expect(result).toEqual({ error: 'プランの公開設定の更新に失敗しました' });
       expect(console.error).toHaveBeenCalledWith('Plan publish error:', networkError);
     });
-  })
+  });
 
   describe('likes', () => {
     it('いいねを作成', async () => {
@@ -675,5 +744,5 @@ describe('api', () => {
       expect(result).toEqual({ error: 'いいねの削除に失敗しました' });
       expect(console.error).toHaveBeenCalledWith('Like delete error:', networkError);
     });
-  })
-})
+  });
+});

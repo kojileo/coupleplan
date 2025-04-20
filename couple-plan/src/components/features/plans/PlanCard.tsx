@@ -1,16 +1,18 @@
 'use client';
 
+import { format } from 'date-fns';
+import { ja } from 'date-fns/locale';
 import { useRouter } from 'next/navigation';
+import React from 'react';
 import type { MouseEvent, ReactElement } from 'react';
 
 import { useAuth } from '@/contexts/AuthContext';
-import { formatDate } from '@/lib/utils';
-import type { Plan } from '@/types/plan';
+import type { ExtendedPlan } from '@/types/plan';
 
 import { LikeButton } from './LikeButton';
 
 type PlanCardProps = {
-  plan: Plan;
+  plan: ExtendedPlan;
   isPublic?: boolean;
   onPublishToggle?: (planId: string, isPublic: boolean) => Promise<void>;
 };
@@ -30,6 +32,16 @@ export function PlanCard({ plan, isPublic = false, onPublishToggle }: PlanCardPr
     }
   };
 
+  const getLocationDisplay = (): string => {
+    if (!plan.locations || plan.locations.length === 0) return '場所URL未設定';
+    try {
+      const url = new URL(plan.locations[0].url);
+      return url.hostname;
+    } catch {
+      return '場所URL未設定';
+    }
+  };
+
   return (
     <div
       role="article"
@@ -38,18 +50,25 @@ export function PlanCard({ plan, isPublic = false, onPublishToggle }: PlanCardPr
     >
       <div className="flex justify-between items-start mb-4">
         <h3 className="text-xl font-semibold text-rose-950">{plan.title}</h3>
-        {!isPublic && onPublishToggle && (
-          <button
-            onClick={handlePublishToggle}
-            className={`px-3 py-1 rounded-full text-sm ${
-              plan.isPublic
-                ? 'bg-rose-100 text-rose-700 hover:bg-rose-200'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}
-          >
-            {plan.isPublic ? '公開中' : '非公開'}
-          </button>
-        )}
+        <div className="flex items-center gap-2">
+          {plan.isRecommended && (
+            <span className="px-2 py-1 rounded-full text-xs bg-amber-100 text-amber-800">
+              おすすめ
+            </span>
+          )}
+          {!isPublic && onPublishToggle && (
+            <button
+              onClick={handlePublishToggle}
+              className={`px-3 py-1 rounded-full text-sm ${
+                plan.isPublic
+                  ? 'bg-rose-100 text-rose-700 hover:bg-rose-200'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              {plan.isPublic ? '公開中' : '非公開'}
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="space-y-2 text-gray-600">
@@ -57,23 +76,24 @@ export function PlanCard({ plan, isPublic = false, onPublishToggle }: PlanCardPr
         {plan.date && (
           <p className="text-sm">
             <span className="font-medium">日時：</span>
-            {formatDate(plan.date)}
+            {format(new Date(plan.date), 'yyyy年MM月dd日', { locale: ja })}
           </p>
         )}
         <div className="text-sm text-rose-600">
           <span>
             📍{' '}
-            {plan.location ? (
+            {plan.locations && plan.locations.length > 0 ? (
               <a
-                href={plan.location}
+                href={plan.locations[0].url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 hover:underline"
-                onClick={(e): void => {
+                className="text-blue-600 hover:text-blue-800"
+                onClick={(e) => {
                   e.stopPropagation();
                 }}
               >
-                {new URL(plan.location).hostname}
+                {getLocationDisplay()}
+                {plan.locations.length > 1 && ` 他${plan.locations.length - 1}件`}
               </a>
             ) : (
               '場所URL未設定'

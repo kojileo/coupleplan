@@ -1,7 +1,7 @@
-import { GET } from '@/app/api/plans/public/route'
-import { supabase } from '@/lib/supabase-auth'
-import { prisma } from '@/lib/db'
-import { NextRequest } from 'next/server'
+import { GET } from '@/app/api/plans/public/route';
+import { supabase } from '@/lib/supabase-auth';
+import { prisma } from '@/lib/db';
+import { NextRequest } from 'next/server';
 
 // モックの設定
 jest.mock('@/lib/supabase-auth', () => ({
@@ -10,7 +10,7 @@ jest.mock('@/lib/supabase-auth', () => ({
       getUser: jest.fn(),
     },
   },
-}))
+}));
 
 jest.mock('@/lib/db', () => ({
   prisma: {
@@ -18,118 +18,133 @@ jest.mock('@/lib/db', () => ({
       findMany: jest.fn(),
     },
   },
-}))
+}));
 
 describe('GET /api/plans/public', () => {
-  const mockToken = 'test-token'
+  const mockToken = 'test-token';
   const mockUser = {
     id: 'user-1',
     email: 'test@example.com',
-  }
+  };
 
-  const mockPublicPlan = {
-    id: 'plan-1',
-    title: 'Public Plan',
-    description: 'Public Description',
-    date: '2024-01-01T00:00:00.000Z',
-    location: 'Public Location',
-    budget: 1000,
-    isPublic: true,
-    userId: mockUser.id,
-    createdAt: '2024-02-17T12:14:23.310Z',
-    updatedAt: '2024-02-17T12:14:23.310Z',
-    profile: { name: 'Test User' },
-    likes: [],
-    _count: { likes: 0 },
-  }
+  const mockPublicPlans = [
+    {
+      id: 'plan-1',
+      userId: 'user-1',
+      title: '東京旅行',
+      description: '東京観光プラン',
+      date: '2024-01-01T00:00:00.000Z',
+      region: 'tokyo',
+      budget: 10000,
+      isPublic: true,
+      createdAt: '2025-04-20T01:47:14.359Z',
+      updatedAt: '2025-04-20T01:47:14.359Z',
+      locations: [],
+      likes: [],
+      profile: { name: 'ユーザー1' },
+      _count: { likes: 0 },
+    },
+    {
+      id: 'plan-2',
+      userId: 'user-2',
+      title: '大阪旅行',
+      description: '大阪観光プラン',
+      date: '2024-02-01T00:00:00.000Z',
+      region: 'osaka',
+      budget: 8000,
+      isPublic: true,
+      createdAt: '2025-04-20T01:47:14.359Z',
+      updatedAt: '2025-04-20T01:47:14.359Z',
+      locations: [],
+      likes: [],
+      profile: { name: 'ユーザー2' },
+      _count: { likes: 0 },
+    },
+  ];
 
   beforeEach(() => {
-    jest.clearAllMocks()
-  })
+    jest.clearAllMocks();
+  });
 
   it('公開プラン一覧を正常に取得', async () => {
-    // Supabaseの認証モック
-    ;(supabase.auth.getUser as jest.Mock).mockResolvedValueOnce({
-      data: { user: mockUser },
+    // Supabaseのモック設定
+    (supabase.auth.getUser as jest.Mock).mockResolvedValue({
+      data: { user: { id: 'user-1' } },
       error: null,
-    })
+    });
 
-    // Prismaのモック
-    ;(prisma.plan.findMany as jest.Mock).mockResolvedValueOnce([mockPublicPlan])
+    // Prismaのモック設定
+    (prisma.plan.findMany as jest.Mock).mockResolvedValue(mockPublicPlans);
 
-    const request = new NextRequest('http://localhost/api/plans/public', {
-      headers: {
-        Authorization: `Bearer ${mockToken}`,
-      },
-    })
+    const response = await GET();
+    expect(response.status).toBe(200);
 
-    const response = await GET(request)
-    expect(response.status).toBe(200)
-
-    const data = await response.json()
-    expect(data.data).toEqual([mockPublicPlan])
+    const data = await response.json();
+    expect(data.data).toEqual(mockPublicPlans);
 
     // Prismaのクエリを確認
     expect(prisma.plan.findMany).toHaveBeenCalledWith({
       where: { isPublic: true },
-      orderBy: { updatedAt: 'desc' },
       include: {
-        profile: { select: { name: true } },
+        profile: {
+          select: {
+            name: true,
+          },
+        },
         likes: true,
-        _count: { select: { likes: true } },
+        locations: true,
+        _count: {
+          select: {
+            likes: true,
+          },
+        },
       },
-    })
-  })
+      orderBy: { updatedAt: 'desc' },
+    });
+  });
 
-  it('認証トークンがない場合、401エラーを返す', async () => {
-    const request = new NextRequest('http://localhost/api/plans/public')
+  it('認証トークンがない場合でも公開プランを取得できる', async () => {
+    // Supabaseのモック設定
+    (supabase.auth.getUser as jest.Mock).mockResolvedValue({
+      data: { user: null },
+      error: null,
+    });
 
-    const response = await GET(request)
-    expect(response.status).toBe(401)
+    // Prismaのモック設定
+    (prisma.plan.findMany as jest.Mock).mockResolvedValue(mockPublicPlans);
 
-    const data = await response.json()
-    expect(data.error).toBe('認証が必要です')
-  })
+    const response = await GET();
+    expect(response.status).toBe(200);
 
-  it('ユーザーが見つからない場合、401エラーを返す', async () => {
-    ;(supabase.auth.getUser as jest.Mock).mockResolvedValueOnce({
+    const data = await response.json();
+    expect(data.data).toEqual(mockPublicPlans);
+  });
+
+  it('ユーザーが見つからない場合でも公開プランを取得できる', async () => {
+    // Supabaseのモック設定
+    (supabase.auth.getUser as jest.Mock).mockResolvedValue({
       data: { user: null },
       error: new Error('User not found'),
-    })
+    });
 
-    const request = new NextRequest('http://localhost/api/plans/public', {
-      headers: {
-        Authorization: `Bearer ${mockToken}`,
-      },
-    })
+    // Prismaのモック設定
+    (prisma.plan.findMany as jest.Mock).mockResolvedValue(mockPublicPlans);
 
-    const response = await GET(request)
-    expect(response.status).toBe(401)
+    const response = await GET();
+    expect(response.status).toBe(200);
 
-    const data = await response.json()
-    expect(data.error).toBe('認証が必要です')
-  })
+    const data = await response.json();
+    expect(data.data).toEqual(mockPublicPlans);
+  });
 
   it('予期せぬエラーの場合、500エラーを返す', async () => {
-    ;(supabase.auth.getUser as jest.Mock).mockResolvedValueOnce({
-      data: { user: mockUser },
-      error: null,
-    })
+    // Prismaのモック設定
+    (prisma.plan.findMany as jest.Mock).mockRejectedValue(new Error('Database error'));
 
-    ;(prisma.plan.findMany as jest.Mock).mockRejectedValueOnce(
-      new Error('Database error')
-    )
+    const response = await GET();
+    expect(response.status).toBe(500);
 
-    const request = new NextRequest('http://localhost/api/plans/public', {
-      headers: {
-        Authorization: `Bearer ${mockToken}`,
-      },
-    })
-
-    const response = await GET(request)
-    expect(response.status).toBe(500)
-
-    const data = await response.json()
-    expect(data.error).toBe('公開プランの取得に失敗しました')
-  })
-})
+    const data = await response.json();
+    expect(data.error).toBe('公開プランの取得に失敗しました');
+  });
+});
