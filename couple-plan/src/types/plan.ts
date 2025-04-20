@@ -9,25 +9,49 @@ export type Location = {
   updatedAt: Date;
 };
 
-export type Plan = {
+export interface Plan {
   id: string;
+  userId: string;
   title: string;
   description: string;
-  date: Date | null;
-  region: string | null;
+  date: string;
+  region: string;
   budget: number;
   isPublic: boolean;
-  isRecommended: boolean;
-  category: string | null;
-  userId: string;
-  createdAt: Date;
-  updatedAt: Date;
-  locations: Location[];
-};
+  category: string;
+  createdAt: string;
+  updatedAt: string;
+  locations: {
+    url: string;
+    name: string | null;
+  }[];
+  likes: {
+    id: string;
+    userId: string;
+    createdAt: Date;
+    updatedAt: Date;
+    planId: string;
+  }[];
+  profile?: {
+    id: string;
+    name: string;
+    avatarUrl: string | null;
+  };
+}
 
 export type ExtendedPlan = Plan & {
-  profile?: Profile | null;
-  likes?: Like[];
+  profile?: {
+    id: string;
+    name: string;
+    avatarUrl: string | null;
+  } | null;
+  likes?: {
+    id: string;
+    userId: string;
+    createdAt: Date;
+    updatedAt: Date;
+    planId: string;
+  }[];
   _count?: {
     likes: number;
   };

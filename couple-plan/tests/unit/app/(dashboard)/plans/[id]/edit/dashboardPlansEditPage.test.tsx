@@ -4,17 +4,16 @@ if (!global.fetch) {
 }
 
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { useRouter, useParams } from 'next/navigation';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
-import { TEST_AUTH } from '@tests/utils/test-constants';
-import { useState } from 'react';
+import EditPlanPage from '@/app/(dashboard)/plans/[id]/edit/page';
 
 // モックの設定
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
-  useParams: jest.fn(),
 }));
 
 jest.mock('@/contexts/AuthContext', () => ({
@@ -30,126 +29,88 @@ jest.mock('@/lib/api', () => ({
   },
 }));
 
-// EditPlanPageをモック
-const EditPlanPage = ({ params }: { params: Promise<{ id: string }> }) => {
-  return (
-    <div>
-      <div role="status">ローディング中...</div>
-      <h1>プランの編集</h1>
-      <button>保存</button>
-      <button>キャンセル</button>
-    </div>
-  );
-};
-
 describe('EditPlanPage コンポーネント', () => {
-  const mockSession = { access_token: TEST_AUTH.ACCESS_TOKEN };
-  const pushMock = jest.fn();
+  const mockRouter = {
+    back: jest.fn(),
+    push: jest.fn(),
+  };
+
+  const mockSession = {
+    access_token: 'test-token',
+    user: { id: 'test-user-id' },
+  };
+
   const mockPlan = {
     id: 'test-plan-id',
     title: 'テストプラン',
     description: 'テスト説明',
-    date: '2024-03-20',
-    budget: 10000,
-    locations: [{ url: 'https://example.com', name: 'テスト場所' }],
+    date: new Date('2024-01-01'),
+    locations: [],
     region: 'tokyo',
-    isPublic: false,
+    budget: 10000,
+    isPublic: true,
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
-
-    // useRouterのモック
-    (useRouter as jest.Mock).mockReturnValue({
-      push: pushMock,
-      back: jest.fn(),
-    });
-
-    // useAuthのモック
-    (useAuth as jest.Mock).mockReturnValue({
-      user: { id: 'test-user-id' },
-      session: mockSession,
-      isLoading: false,
-    });
-
-    // api.plans.getのモック
-    (api.plans.get as jest.Mock).mockResolvedValue({
-      data: mockPlan,
-    });
-
-    // api.plans.updateのモック
-    (api.plans.update as jest.Mock).mockResolvedValue({
-      data: { ...mockPlan, title: '更新されたプラン' },
-    });
+    (useRouter as jest.Mock).mockReturnValue(mockRouter);
+    (useAuth as jest.Mock).mockReturnValue({ session: mockSession });
+    (api.plans.get as jest.Mock).mockResolvedValue({ data: mockPlan });
+    (api.plans.update as jest.Mock).mockResolvedValue({ data: mockPlan });
   });
 
   it('コンポーネントが正しくレンダリングされる', async () => {
     render(<EditPlanPage params={Promise.resolve({ id: 'test-plan-id' })} />);
 
-    // ロード中の表示がされる
-    expect(screen.getByRole('status')).toBeInTheDocument();
-
-    // データが読み込まれるのを待つ
     await waitFor(() => {
-      expect(screen.getByDisplayValue('テストプラン')).toBeInTheDocument();
+      expect(screen.getByLabelText('タイトル')).toHaveValue('テストプラン');
+      expect(screen.getByLabelText('説明')).toHaveValue('テスト説明');
+      expect(screen.getByLabelText('日付')).toHaveValue('2024-01-01');
+      expect(screen.getByLabelText('予算')).toHaveValue(10000);
+      expect(screen.getByLabelText('地域')).toHaveValue('tokyo');
     });
-  });
-
-  it('フォームの入力が正しく更新される', async () => {
-    render(<EditPlanPage params={Promise.resolve({ id: 'test-plan-id' })} />);
-
-    await waitFor(() => {
-      expect(screen.getByDisplayValue('テストプラン')).toBeInTheDocument();
-    });
-
-    // タイトルの更新
-    const titleInput = screen.getByLabelText('タイトル');
-    fireEvent.change(titleInput, { target: { value: '新しいタイトル' } });
-    expect(titleInput).toHaveValue('新しいタイトル');
-
-    // 説明の更新
-    const descriptionInput = screen.getByLabelText('説明');
-    fireEvent.change(descriptionInput, { target: { value: '新しい説明' } });
-    expect(descriptionInput).toHaveValue('新しい説明');
   });
 
   it('プランの更新が成功する', async () => {
     render(<EditPlanPage params={Promise.resolve({ id: 'test-plan-id' })} />);
+    const user = userEvent.setup();
 
     await waitFor(() => {
-      expect(screen.getByDisplayValue('テストプラン')).toBeInTheDocument();
+      expect(screen.getByLabelText('タイトル')).toBeInTheDocument();
     });
 
-    // フォームの送信
-    const submitButton = screen.getByText('保存');
-    fireEvent.click(submitButton);
+    await user.type(screen.getByLabelText('タイトル'), 'テストプラン');
+    await user.type(screen.getByLabelText('説明'), 'テスト説明');
+    await user.type(screen.getByLabelText('日付'), '2024-01-01');
+    await user.type(screen.getByLabelText('予算'), '10000');
+    await user.selectOptions(screen.getByLabelText('地域'), 'tokyo');
+
+    await user.click(screen.getByRole('button', { name: '保存' }));
 
     await waitFor(() => {
       expect(api.plans.update).toHaveBeenCalledWith(
-        mockSession.access_token,
+        'test-token',
         'test-plan-id',
         expect.any(Object)
       );
-      expect(pushMock).toHaveBeenCalledWith('/plans/test-plan-id');
+      expect(mockRouter.back).toHaveBeenCalled();
     });
   });
 
   it('エラー発生時に適切に処理される', async () => {
-    // エラーを発生させる
-    (api.plans.update as jest.Mock).mockRejectedValueOnce(new Error('更新に失敗しました'));
-
+    (api.plans.update as jest.Mock).mockRejectedValueOnce(new Error('APIエラー'));
     render(<EditPlanPage params={Promise.resolve({ id: 'test-plan-id' })} />);
+    const user = userEvent.setup();
 
     await waitFor(() => {
-      expect(screen.getByDisplayValue('テストプラン')).toBeInTheDocument();
+      expect(screen.getByLabelText('タイトル')).toBeInTheDocument();
     });
 
-    // フォームの送信
-    const submitButton = screen.getByText('保存');
-    fireEvent.click(submitButton);
+    await user.click(screen.getByRole('button', { name: '保存' }));
 
     await waitFor(() => {
-      expect(screen.getByText('プランの更新に失敗しました')).toBeInTheDocument();
+      expect(screen.getByRole('alert')).toBeInTheDocument();
+      expect(screen.getByRole('alert')).toHaveTextContent('プランの更新に失敗しました');
     });
   });
 });

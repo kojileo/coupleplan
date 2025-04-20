@@ -39,6 +39,7 @@ export async function GET(request: NextRequest, { params }: RouteParams): Promis
           },
         },
         likes: true,
+        locations: true,
         _count: {
           select: {
             likes: true,
@@ -82,19 +83,19 @@ export async function PUT(request: NextRequest, { params }: RouteParams): Promis
       return NextResponse.json({ error: '無効なリクエストデータです' }, { status: 400 });
     }
 
-    // プランの存在確認
-    const existingPlan = await prisma.plan.findUnique({
-      where: {
-        id,
-        userId: user.id,
-      },
-    });
-
-    if (!existingPlan) {
-      return NextResponse.json({ error: 'プランが見つかりません' }, { status: 404 });
-    }
-
     try {
+      // プランの存在確認
+      const existingPlan = await prisma.plan.findUnique({
+        where: {
+          id,
+          userId: user.id,
+        },
+      });
+
+      if (!existingPlan) {
+        return NextResponse.json({ error: 'プランが見つかりません' }, { status: 404 });
+      }
+
       const plan = await prisma.plan.update({
         where: {
           id,
@@ -103,13 +104,12 @@ export async function PUT(request: NextRequest, { params }: RouteParams): Promis
         data: {
           title: body.title,
           description: body.description,
-          date: body.date ? new Date(body.date) : undefined,
+          date: body.date,
           region: body.region,
           budget: body.budget,
           isPublic: body.isPublic,
-          category: body.category,
           locations: {
-            deleteMany: {}, // 既存のlocationsを削除
+            deleteMany: {},
             create:
               body.locations?.map((location) => ({
                 name: location.name || null,
@@ -125,16 +125,18 @@ export async function PUT(request: NextRequest, { params }: RouteParams): Promis
           },
           likes: true,
           locations: true,
+          _count: {
+            select: {
+              likes: true,
+            },
+          },
         },
       });
 
-      return NextResponse.json({ data: plan }, { status: 200 });
-    } catch (updateError) {
-      if (updateError instanceof Error) {
-        console.error('プラン更新エラー:', updateError.message);
-        return NextResponse.json({ error: 'プランの更新に失敗しました' }, { status: 500 });
-      }
-      throw updateError;
+      return NextResponse.json({ data: plan });
+    } catch (error) {
+      console.error('プラン更新エラー:', error instanceof Error ? error.message : 'Unknown error');
+      return NextResponse.json({ error: 'プランの更新に失敗しました' }, { status: 500 });
     }
   } catch (error) {
     console.error('プラン更新エラー:', error instanceof Error ? error.message : 'Unknown error');

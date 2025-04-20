@@ -90,8 +90,8 @@ describe('plans/[id] API', () => {
         },
         include: {
           profile: { select: { name: true } },
-          locations: true,
           likes: true,
+          locations: true,
           _count: { select: { likes: true } },
         },
       });
@@ -139,7 +139,8 @@ describe('plans/[id] API', () => {
         data: { user: mockUser },
         error: null,
       });
-      (prisma.plan.update as jest.Mock).mockResolvedValueOnce({
+      const mockFindUnique = jest.fn().mockResolvedValueOnce(mockPlan);
+      const mockUpdate = jest.fn().mockResolvedValueOnce({
         ...mockPlan,
         ...updateData,
         locations: [
@@ -147,12 +148,11 @@ describe('plans/[id] API', () => {
             id: 'loc-2',
             url: 'https://example.com/osaka',
             name: '大阪城',
-            planId: 'plan-1',
-            createdAt: new Date('2024-01-01T00:00:00.000Z'),
-            updatedAt: new Date('2024-01-01T00:00:00.000Z'),
           },
         ],
       });
+      (prisma.plan.findUnique as jest.Mock) = mockFindUnique;
+      (prisma.plan.update as jest.Mock) = mockUpdate;
 
       const request = new NextRequest(`http://localhost/api/plans/${mockPlan.id}`, {
         method: 'PUT',
@@ -164,10 +164,20 @@ describe('plans/[id] API', () => {
       });
 
       const response = await PUT(request, mockParams);
-      expect(response.status).toBe(500);
+      expect(response.status).toBe(200);
 
       const data = await response.json();
-      expect(data).toEqual({ error: 'プランの更新に失敗しました' });
+      expect(data.data).toEqual({
+        ...mockPlan,
+        ...updateData,
+        locations: [
+          {
+            id: 'loc-2',
+            url: 'https://example.com/osaka',
+            name: '大阪城',
+          },
+        ],
+      });
 
       expect(prisma.plan.update).toHaveBeenCalledWith({
         where: {
@@ -178,21 +188,21 @@ describe('plans/[id] API', () => {
           title: updateData.title,
           description: updateData.description,
           date: updateData.date,
-          budget: updateData.budget,
           region: updateData.region,
+          budget: updateData.budget,
           isPublic: updateData.isPublic,
           locations: {
             deleteMany: {},
             create: updateData.locations.map((location) => ({
-              url: location.url,
-              name: location.name,
+              name: location.name || null,
+              url: location.url || '',
             })),
           },
         },
         include: {
           profile: { select: { name: true } },
-          locations: true,
           likes: true,
+          locations: true,
           _count: { select: { likes: true } },
         },
       });
@@ -256,7 +266,7 @@ describe('plans/[id] API', () => {
       it(`${method}: ユーザーが見つからない場合、401エラーを返す`, async () => {
         (supabase.auth.getUser as jest.Mock).mockResolvedValueOnce({
           data: { user: null },
-          error: new Error('User not found'),
+          error: null,
         });
 
         const request = new NextRequest(`http://localhost/api/plans/${mockPlan.id}`, {

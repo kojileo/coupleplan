@@ -21,6 +21,7 @@ export default function EditPlanPage({ params }: Props): ReactElement {
   const [planId, setPlanId] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [plan, setPlan] = useState<Plan | null>(null);
   const [formData, setFormData] = useState({
     title: '',
@@ -32,12 +33,10 @@ export default function EditPlanPage({ params }: Props): ReactElement {
     isPublic: false,
   });
 
-  // params が解決されたら planId を設定
   useEffect(() => {
     void params.then(({ id }) => setPlanId(id));
   }, [params]);
 
-  // planId 有りの場合にプランデータを取得する
   useEffect(() => {
     if (!planId) return;
 
@@ -85,6 +84,8 @@ export default function EditPlanPage({ params }: Props): ReactElement {
     if (!session) return;
 
     setSaving(true);
+    setError(null);
+
     try {
       const response = await api.plans.update(session.access_token, planId, {
         ...formData,
@@ -92,10 +93,10 @@ export default function EditPlanPage({ params }: Props): ReactElement {
       });
 
       if ('error' in response) throw new Error(response.error);
-      void router.push(`/plans/${planId}`);
+      router.back();
     } catch (error) {
       console.error('プランの更新に失敗しました:', error);
-      alert('プランの更新に失敗しました');
+      setError('プランの更新に失敗しました');
     } finally {
       setSaving(false);
     }
@@ -131,11 +132,13 @@ export default function EditPlanPage({ params }: Props): ReactElement {
     });
   };
 
-  // planId 未解決 or データフェッチ中はローディングを表示
   if (!planId || loading) {
     return (
       <div className="flex justify-center items-center min-h-[400px]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
+        <div
+          data-testid="loading-spinner"
+          className="animate-spin rounded-full h-8 w-8 border-b-2 border-rose-600"
+        />
       </div>
     );
   }
@@ -159,6 +162,24 @@ export default function EditPlanPage({ params }: Props): ReactElement {
   return (
     <div className="max-w-2xl mx-auto">
       <h1 className="text-2xl font-bold text-rose-950">マイプランの編集</h1>
+
+      {error && (
+        <div
+          className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
+          role="alert"
+        >
+          {error}
+        </div>
+      )}
+
+      {saving && (
+        <div className="flex justify-center items-center mb-4">
+          <div
+            data-testid="loading-spinner"
+            className="animate-spin rounded-full h-8 w-8 border-b-2 border-rose-600"
+          />
+        </div>
+      )}
 
       <form
         onSubmit={(e): void => {

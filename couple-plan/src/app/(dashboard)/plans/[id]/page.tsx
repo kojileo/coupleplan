@@ -193,7 +193,7 @@ export default function PlanDetailPage({ params }: Props): ReactElement {
             <div className="space-y-2">
               {plan.locations && plan.locations.length > 0
                 ? plan.locations.map((location) => (
-                    <div key={location.id} className="flex items-center gap-2">
+                    <div key={location.url} className="flex items-center gap-2">
                       <a
                         href={location.url}
                         target="_blank"

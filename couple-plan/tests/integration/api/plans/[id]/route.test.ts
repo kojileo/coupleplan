@@ -8,6 +8,7 @@ jest.mock('@/lib/db', () => ({
   prisma: {
     plan: {
       findFirst: jest.fn(),
+      findUnique: jest.fn(),
       update: jest.fn(),
       delete: jest.fn(),
     },
@@ -19,6 +20,27 @@ jest.mock('@/lib/db', () => ({
 describe('プラン詳細API統合テスト', () => {
   const mockParams = {
     params: Promise.resolve({ id: 'plan-123' }),
+  };
+
+  const mockPlan = {
+    id: 'plan-123',
+    userId: 'user-123',
+    title: 'テストプラン',
+    description: 'テスト説明',
+    date: new Date('2024-01-01'),
+    region: 'tokyo',
+    budget: 1000,
+    isPublic: true,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    locations: [],
+    likes: [],
+    profile: {
+      name: 'テストユーザー',
+    },
+    _count: {
+      likes: 0,
+    },
   };
 
   beforeEach(() => {
@@ -111,6 +133,7 @@ describe('プラン詳細API統合テスト', () => {
         include: {
           profile: { select: { name: true } },
           likes: true,
+          locations: true,
           _count: { select: { likes: true } },
         },
       });
@@ -183,7 +206,7 @@ describe('プラン詳細API統合テスト', () => {
         title: '更新されたプラン',
         description: '更新された説明',
         date: testDateString,
-        location: '大阪',
+        region: '大阪',
         budget: 10000,
         isPublic: true,
       };
@@ -202,6 +225,7 @@ describe('プラン詳細API統合テスト', () => {
       });
 
       // Prismaのモック設定
+      (prisma.plan.findUnique as jest.Mock).mockResolvedValue(mockPlan);
       (prisma.plan.update as jest.Mock).mockResolvedValue(updatedPlan);
 
       // リクエストの作成
@@ -223,12 +247,43 @@ describe('プラン詳細API統合テスト', () => {
       expect(data).toEqual({ data: updatedPlan });
 
       // Prismaが正しいパラメータで呼び出されたか検証
+      expect(prisma.plan.findUnique).toHaveBeenCalledWith({
+        where: {
+          id: 'plan-123',
+          userId: mockUser.id,
+        },
+      });
       expect(prisma.plan.update).toHaveBeenCalledWith({
         where: {
           id: 'plan-123',
           userId: mockUser.id,
         },
-        data: planData,
+        data: {
+          title: '更新されたプラン',
+          description: '更新された説明',
+          date: '2024-03-20T00:00:00.000Z',
+          region: '大阪',
+          budget: 10000,
+          isPublic: true,
+          locations: {
+            deleteMany: {},
+            create: [],
+          },
+        },
+        include: {
+          profile: {
+            select: {
+              name: true,
+            },
+          },
+          likes: true,
+          locations: true,
+          _count: {
+            select: {
+              likes: true,
+            },
+          },
+        },
       });
     });
   });

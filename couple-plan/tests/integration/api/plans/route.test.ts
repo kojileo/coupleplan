@@ -45,24 +45,27 @@ describe('プランAPI統合テスト', () => {
           id: 'plan-1',
           title: 'テストプラン1',
           description: 'テスト説明1',
-          date: new Date('2024-03-20'),
+          date: '2024-03-20T00:00:00.000Z',
           budget: 10000,
           region: 'tokyo',
           isPublic: true,
-          userId: mockUser.id,
-          profile: { name: 'テストユーザー' },
+          likes: [],
           locations: [
             {
               id: 'loc-1',
-              url: 'https://example.com/1',
               name: '東京タワー',
+              url: 'https://example.com/1',
               planId: 'plan-1',
-              createdAt: new Date('2024-01-01'),
-              updatedAt: new Date('2024-01-01'),
+              createdAt: '2024-01-01T00:00:00.000Z',
+              updatedAt: '2024-01-01T00:00:00.000Z',
             },
           ],
-          likes: [],
-          _count: { likes: 0 },
+          profile: {
+            name: 'テストユーザー',
+          },
+          _count: {
+            likes: 0,
+          },
         },
       ];
 
@@ -87,13 +90,20 @@ describe('プランAPI統合テスト', () => {
 
       expect(prisma.plan.findMany).toHaveBeenCalledWith({
         where: { userId: mockUser.id },
-        orderBy: { updatedAt: 'desc' },
         include: {
-          profile: { select: { name: true } },
-          locations: true,
+          profile: {
+            select: {
+              name: true,
+            },
+          },
           likes: true,
-          _count: { select: { likes: true } },
+          _count: {
+            select: {
+              likes: true,
+            },
+          },
         },
+        orderBy: { updatedAt: 'desc' },
       });
     });
   });
@@ -132,22 +142,20 @@ describe('プランAPI統合テスト', () => {
         isPublic: false,
       };
 
-      const createdPlan = {
-        ...planData,
+      const mockPlan = {
         id: 'plan-123',
-        userId: mockUser.id,
-        profile: { name: 'テストユーザー' },
-        locations: [
-          {
-            id: 'loc-1',
-            url: 'https://example.com',
-            name: '東京タワー',
-            planId: 'plan-123',
-            createdAt: new Date('2024-01-01'),
-            updatedAt: new Date('2024-01-01'),
-          },
-        ],
+        userId: 'user-123',
+        title: 'テストプラン',
+        description: 'テスト説明',
+        date: '2024-01-01T00:00:00.000Z',
+        region: 'tokyo',
+        budget: 1000,
+        isPublic: true,
+        createdAt: '2025-04-20T01:47:14.359Z',
+        updatedAt: '2025-04-20T01:47:14.359Z',
+        locations: [],
         likes: [],
+        profile: { name: 'テストユーザー' },
         _count: { likes: 0 },
       };
 
@@ -156,7 +164,7 @@ describe('プランAPI統合テスト', () => {
         error: null,
       });
 
-      (prisma.plan.create as jest.Mock).mockResolvedValue(createdPlan);
+      (prisma.plan.create as jest.Mock).mockResolvedValue(mockPlan);
 
       const req = new NextRequest('http://localhost:3000/api/plans', {
         method: 'POST',
@@ -171,23 +179,26 @@ describe('プランAPI統合テスト', () => {
       const data = await res.json();
 
       expect(res.status).toBe(201);
-      expect(data).toEqual({ data: createdPlan });
+      expect(data).toEqual({ data: mockPlan });
 
       expect(prisma.plan.create).toHaveBeenCalledWith({
         data: {
           ...planData,
           userId: mockUser.id,
-          date: testDate,
+          date: new Date(planData.date),
           locations: {
             create: planData.locations.map((location) => ({
-              url: location.url,
               name: location.name,
+              url: location.url,
+              address: null,
+              latitude: null,
+              longitude: null,
             })),
           },
+          category: null,
         },
         include: {
           profile: { select: { name: true } },
-          locations: true,
           likes: true,
           _count: { select: { likes: true } },
         },

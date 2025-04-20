@@ -33,7 +33,7 @@ export default function NewPlanPage(): ReactElement {
     };
 
     api.plans
-      .create(session.user.id, planData)
+      .create(session.access_token, planData)
       .then((response) => {
         if ('error' in response) {
           throw new Error(response.error);

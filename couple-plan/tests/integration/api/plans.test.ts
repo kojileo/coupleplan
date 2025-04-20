@@ -80,14 +80,48 @@ describe('Plans API', () => {
 
   describe('GET /api/plans', () => {
     it('自分のプラン一覧を取得できる', async () => {
-      (prisma.plan.findMany as jest.Mock).mockResolvedValue([mockPlan]);
+      // Prismaのモック設定
+      const mockPlans = [
+        {
+          id: 'plan-123',
+          title: 'テストプラン1',
+          description: 'テスト説明1',
+          date: '2024-01-01T00:00:00.000Z',
+          region: 'tokyo',
+          budget: 1000,
+          isPublic: true,
+          createdAt: '2025-04-20T01:47:14.359Z',
+          updatedAt: '2025-04-20T01:47:14.359Z',
+          locations: [],
+          likes: [],
+          profile: { name: 'テストユーザー1' },
+          _count: { likes: 0 },
+        },
+        {
+          id: 'plan-124',
+          title: 'テストプラン2',
+          description: 'テスト説明2',
+          date: '2024-01-02T00:00:00.000Z',
+          region: 'osaka',
+          budget: 2000,
+          isPublic: true,
+          createdAt: '2025-04-20T01:47:14.359Z',
+          updatedAt: '2025-04-20T01:47:14.359Z',
+          locations: [],
+          likes: [],
+          profile: { name: 'テストユーザー2' },
+          _count: { likes: 0 },
+        },
+      ];
+
+      (prisma.plan.findMany as jest.Mock).mockResolvedValue(mockPlans);
 
       const request = new NextRequest('http://localhost:3000/api/plans', mockAuthHeader);
       const response = await GET(request);
       const data = await response.json();
 
       expect(response.status).toBe(200);
-      expect(data).toEqual({ data: [mockPlan] });
+      expect(data).toEqual({ data: mockPlans });
       expect(prisma.plan.findMany).toHaveBeenCalledWith({
         where: { userId: 'user1' },
         include: {
@@ -374,6 +408,11 @@ describe('Plans API', () => {
           },
           likes: true,
           locations: true,
+          _count: {
+            select: {
+              likes: true,
+            },
+          },
         },
       });
     });
