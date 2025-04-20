@@ -93,14 +93,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     try {
       requestBody = await request.json();
     } catch {
-      return NextResponse.json({ error: '無効なJSONデータです' }, { status: 400 });
+      return NextResponse.json({ error: 'プランの作成に失敗しました' }, { status: 400 });
     }
 
     if (!isPlanRequest(requestBody)) {
       console.error('無効なリクエストデータ:', requestBody);
       return NextResponse.json(
         {
-          error: '無効なリクエストデータです',
+          error: 'プランの作成に失敗しました',
         },
         { status: 400 }
       );
@@ -124,58 +124,46 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       category: requestBody.category ? String(requestBody.category).trim() : null,
     };
 
-    try {
-      const plan = await prisma.plan.create({
-        data: {
-          title: validatedData.title,
-          description: validatedData.description,
-          date: validatedData.date ? new Date(validatedData.date) : null,
-          region: validatedData.region,
-          budget: validatedData.budget,
-          isPublic: validatedData.isPublic,
-          category: validatedData.category,
-          userId: user.id,
-          locations: {
-            create: validatedData.locations.map((location) => ({
-              name: location.name,
-              url: location.url,
-              address: location.address,
-              latitude: location.latitude,
-              longitude: location.longitude,
-            })),
+    const plan = await prisma.plan.create({
+      data: {
+        title: validatedData.title,
+        description: validatedData.description,
+        date: validatedData.date ? new Date(validatedData.date) : null,
+        region: validatedData.region,
+        budget: validatedData.budget,
+        isPublic: validatedData.isPublic,
+        category: validatedData.category,
+        userId: user.id,
+        locations: {
+          create: validatedData.locations.map((location) => ({
+            name: location.name,
+            url: location.url,
+            address: location.address,
+            latitude: location.latitude,
+            longitude: location.longitude,
+          })),
+        },
+      },
+      include: {
+        profile: {
+          select: {
+            name: true,
           },
         },
-        include: {
-          profile: {
-            select: {
-              name: true,
-            },
-          },
-          likes: true,
-          _count: {
-            select: {
-              likes: true,
-            },
+        likes: true,
+        _count: {
+          select: {
+            likes: true,
           },
         },
-      });
+      },
+    });
 
-      return NextResponse.json({ data: plan }, { status: 201 });
-    } catch (error) {
-      const err = error instanceof Error ? error : new Error('Unknown error');
-      console.error('プラン作成エラー:', err);
-      return NextResponse.json({ error: 'プランの作成に失敗しました' }, { status: 500 });
-    }
+    return NextResponse.json({ data: plan }, { status: 201 });
   } catch (error) {
     const err = error instanceof Error ? error : new Error('Unknown error');
     console.error('プラン作成エラー:', err);
-    return NextResponse.json(
-      {
-        error: 'プランの作成に失敗しました',
-        details: err.message,
-      },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'プランの作成に失敗しました' }, { status: 500 });
   }
 }
 

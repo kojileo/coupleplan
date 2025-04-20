@@ -39,7 +39,6 @@ export async function GET(request: NextRequest, { params }: RouteParams): Promis
           },
         },
         likes: true,
-        locations: true,
         _count: {
           select: {
             likes: true,
@@ -95,39 +94,47 @@ export async function PUT(request: NextRequest, { params }: RouteParams): Promis
       return NextResponse.json({ error: 'プランが見つかりません' }, { status: 404 });
     }
 
-    const plan = await prisma.plan.update({
-      where: {
-        id,
-        userId: user.id,
-      },
-      data: {
-        title: body.title,
-        description: body.description,
-        date: body.date,
-        region: body.region,
-        budget: body.budget,
-        isPublic: body.isPublic,
-        category: body.category,
-        locations: {
-          deleteMany: {}, // 既存のlocationsを削除
-          create: body.locations.map((location) => ({
-            url: location.url,
-            name: location.name || null,
-          })),
+    try {
+      const plan = await prisma.plan.update({
+        where: {
+          id,
+          userId: user.id,
         },
-      },
-      include: {
-        profile: {
-          select: {
-            name: true,
+        data: {
+          title: body.title,
+          description: body.description,
+          date: body.date,
+          region: body.region,
+          budget: body.budget,
+          isPublic: body.isPublic,
+          category: body.category,
+          locations: {
+            deleteMany: {}, // 既存のlocationsを削除
+            create: body.locations.map((location) => ({
+              url: location.url,
+              name: location.name || null,
+            })),
           },
         },
-        likes: true,
-        locations: true,
-      },
-    });
+        include: {
+          profile: {
+            select: {
+              name: true,
+            },
+          },
+          likes: true,
+          locations: true,
+        },
+      });
 
-    return NextResponse.json({ data: plan });
+      return NextResponse.json({ data: plan }, { status: 200 });
+    } catch (updateError) {
+      console.error(
+        'プラン更新エラー:',
+        updateError instanceof Error ? updateError.message : 'Unknown error'
+      );
+      return NextResponse.json({ error: 'プランの更新に失敗しました' }, { status: 500 });
+    }
   } catch (error) {
     console.error('プラン更新エラー:', error instanceof Error ? error.message : 'Unknown error');
     return NextResponse.json({ error: 'プランの更新に失敗しました' }, { status: 500 });

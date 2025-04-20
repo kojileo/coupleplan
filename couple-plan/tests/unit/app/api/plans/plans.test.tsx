@@ -196,7 +196,15 @@ describe('plans API', () => {
         title: 'テストプラン',
         description: 'テスト説明',
         date: testDateString,
-        location: '東京',
+        locations: [
+          {
+            name: '東京タワー',
+            url: 'https://example.com/tokyo-tower',
+            address: '東京都港区芝公園4-2-8',
+            latitude: 35.6585805,
+            longitude: 139.7454329,
+          },
+        ],
         region: '関東',
         budget: 5000,
         isPublic: false,
@@ -242,13 +250,30 @@ describe('plans API', () => {
       // Prismaが正しいパラメータで呼び出されたか検証
       expect(prisma.plan.create).toHaveBeenCalledWith({
         data: {
-          ...planData,
+          title: planData.title,
+          description: planData.description,
+          date: new Date(planData.date),
+          locations: {
+            create: planData.locations,
+          },
+          region: planData.region,
+          budget: planData.budget,
+          isPublic: planData.isPublic,
+          category: null,
           userId: mockUser.id,
         },
         include: {
-          profile: { select: { name: true } },
+          profile: {
+            select: {
+              name: true,
+            },
+          },
           likes: true,
-          _count: { select: { likes: true } },
+          _count: {
+            select: {
+              likes: true,
+            },
+          },
         },
       });
     });
@@ -295,7 +320,15 @@ describe('plans API', () => {
         title: 'テストプラン',
         description: 'テスト説明',
         date: '2024-03-20',
-        location: '東京',
+        locations: [
+          {
+            name: '東京タワー',
+            url: 'https://example.com/tokyo-tower',
+            address: '東京都港区芝公園4-2-8',
+            latitude: 35.6585805,
+            longitude: 139.7454329,
+          },
+        ],
         region: '関東',
         budget: 5000,
         isPublic: false,
