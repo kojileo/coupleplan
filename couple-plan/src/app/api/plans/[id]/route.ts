@@ -103,17 +103,18 @@ export async function PUT(request: NextRequest, { params }: RouteParams): Promis
         data: {
           title: body.title,
           description: body.description,
-          date: body.date,
+          date: body.date ? new Date(body.date) : undefined,
           region: body.region,
           budget: body.budget,
           isPublic: body.isPublic,
           category: body.category,
           locations: {
             deleteMany: {}, // 既存のlocationsを削除
-            create: body.locations.map((location) => ({
-              url: location.url,
-              name: location.name || null,
-            })),
+            create:
+              body.locations?.map((location) => ({
+                name: location.name || null,
+                url: location.url || '',
+              })) || [],
           },
         },
         include: {
@@ -129,11 +130,11 @@ export async function PUT(request: NextRequest, { params }: RouteParams): Promis
 
       return NextResponse.json({ data: plan }, { status: 200 });
     } catch (updateError) {
-      console.error(
-        'プラン更新エラー:',
-        updateError instanceof Error ? updateError.message : 'Unknown error'
-      );
-      return NextResponse.json({ error: 'プランの更新に失敗しました' }, { status: 500 });
+      if (updateError instanceof Error) {
+        console.error('プラン更新エラー:', updateError.message);
+        return NextResponse.json({ error: 'プランの更新に失敗しました' }, { status: 500 });
+      }
+      throw updateError;
     }
   } catch (error) {
     console.error('プラン更新エラー:', error instanceof Error ? error.message : 'Unknown error');

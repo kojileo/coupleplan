@@ -34,10 +34,10 @@ describe('Navbar コンポーネントのインテグレーションテスト', 
     render(<Navbar />);
 
     // デスクトップリンクのテスト
-    const myPlansLink = screen.getByText('マイプラン一覧');
+    const myPlansLinks = screen.getAllByText('マイプラン一覧');
     const explorePlansLink = screen.getByText('プランを探す');
 
-    fireEvent.click(myPlansLink);
+    fireEvent.click(myPlansLinks[0]);
     expect(mockPush).toHaveBeenCalledWith('/plans');
 
     fireEvent.click(explorePlansLink);
@@ -48,10 +48,10 @@ describe('Navbar コンポーネントのインテグレーションテスト', 
     render(<Navbar />);
 
     // モバイルリンクのテスト
-    const mobileMyPlansLink = screen.getByText('マイプラン一覧');
+    const mobileMyPlansLinks = screen.getAllByText('マイプラン一覧');
     const mobileExplorePlansLink = screen.getByText('プランを探す');
 
-    fireEvent.click(mobileMyPlansLink);
+    fireEvent.click(mobileMyPlansLinks[1]);
     expect(mockPush).toHaveBeenCalledWith('/plans');
 
     fireEvent.click(mobileExplorePlansLink);
