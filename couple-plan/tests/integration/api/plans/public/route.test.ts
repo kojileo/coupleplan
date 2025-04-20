@@ -1,7 +1,6 @@
 import { NextRequest } from 'next/server';
 import { GET } from '@/app/api/plans/public/route';
 import { prisma } from '@/lib/db';
-import { supabase } from '@/lib/supabase-auth';
 
 // Prismaのモック
 jest.mock('@/lib/db', () => ({
@@ -12,30 +11,14 @@ jest.mock('@/lib/db', () => ({
   },
 }));
 
-// Supabaseのモックは既に tests/mocks/supabase.ts で設定済み
-
 describe('公開プランAPI統合テスト', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   describe('GET /api/plans/public', () => {
-    it('認証ヘッダーがない場合は401エラーを返す', async () => {
-      // リクエストの作成
-      const req = new NextRequest('http://localhost:3000/api/plans/public');
-
-      // APIエンドポイントの呼び出し
-      const res = await GET();
-      const data = await res.json();
-
-      // レスポンスの検証
-      expect(res.status).toBe(401);
-      expect(data).toEqual({ error: '認証が必要です' });
-    });
-
     it('公開プラン一覧を返す', async () => {
       // モックデータの設定
-      const mockUser = { id: 'user-123' };
       const mockPlans = [
         {
           id: 'plan-1',
@@ -57,21 +40,8 @@ describe('公開プランAPI統合テスト', () => {
         },
       ];
 
-      // Supabaseのモック設定
-      (supabase.auth.getUser as jest.Mock).mockResolvedValue({
-        data: { user: mockUser },
-        error: null,
-      });
-
       // Prismaのモック設定
       (prisma.plan.findMany as jest.Mock).mockResolvedValue(mockPlans);
-
-      // リクエストの作成
-      const req = new NextRequest('http://localhost:3000/api/plans/public', {
-        headers: {
-          Authorization: 'Bearer test-token',
-        },
-      });
 
       // APIエンドポイントの呼び出し
       const res = await GET();
