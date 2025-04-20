@@ -37,13 +37,28 @@ describe('Plans API', () => {
     title: 'テストプラン',
     description: 'テスト用のプラン',
     date: '2024-04-01',
-    location: 'https://example.com',
+    locations: [
+      {
+        name: '東京タワー',
+        address: '東京都港区芝公園4-2-8',
+        latitude: 35.6585805,
+        longitude: 139.7454329,
+        url: 'https://example.com/tokyo-tower',
+      },
+    ],
     region: 'tokyo',
     budget: 10000,
     isPublic: true,
     userId: 'user1',
     createdAt: '2025-03-30T06:41:22.382Z',
     updatedAt: '2025-03-30T06:41:22.382Z',
+    profile: {
+      name: 'テストユーザー',
+    },
+    likes: [],
+    _count: {
+      likes: 0,
+    },
   };
 
   const mockAuthHeader = {
@@ -138,8 +153,11 @@ describe('Plans API', () => {
         date: testDateString,
         locations: [
           {
-            url: '東京',
             name: '東京タワー',
+            address: '東京都港区芝公園4-2-8',
+            latitude: 35.6585805,
+            longitude: 139.7454329,
+            url: 'https://example.com/tokyo-tower',
           },
         ],
         region: '関東',

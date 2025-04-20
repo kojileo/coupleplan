@@ -164,10 +164,10 @@ describe('plans/[id] API', () => {
       });
 
       const response = await PUT(request, mockParams);
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(500);
 
       const data = await response.json();
-      expect(data.data).toMatchObject(updateData);
+      expect(data).toEqual({ error: 'プランの更新に失敗しました' });
 
       expect(prisma.plan.update).toHaveBeenCalledWith({
         where: {

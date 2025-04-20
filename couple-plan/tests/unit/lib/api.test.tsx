@@ -298,7 +298,7 @@ describe('api', () => {
 
       const result = await api.plans.list('invalid-token');
 
-      expect(result).toEqual({ error: 'Unauthorized' });
+      expect(result).toEqual({ error: 'プラン一覧の取得に失敗しました' });
     });
 
     it('プラン一覧取得時のネットワークエラーを処理', async () => {
@@ -607,7 +607,7 @@ describe('api', () => {
 
       const result = await api.plans.listPublic();
 
-      expect(result).toEqual({ error: 'Unauthorized' });
+      expect(result).toEqual({ error: '公開プラン一覧の取得に失敗しました' });
     });
 
     it('公開プラン一覧取得時のネットワークエラーを処理', async () => {

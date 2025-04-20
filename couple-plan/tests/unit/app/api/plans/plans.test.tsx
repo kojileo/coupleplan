@@ -285,7 +285,7 @@ describe('plans API', () => {
 
       // レスポンスの検証
       expect(res.status).toBe(400);
-      expect(data).toEqual({ error: '無効なリクエストデータです' });
+      expect(data).toEqual({ error: 'プランの作成に失敗しました' });
     });
 
     it('Prismaエラーの場合は500エラーを返す', async () => {

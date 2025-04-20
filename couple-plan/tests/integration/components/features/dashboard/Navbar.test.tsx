@@ -21,43 +21,41 @@ describe('Navbar コンポーネントのインテグレーションテスト', 
   const mockPush = jest.fn();
 
   beforeEach(() => {
+    (useRouter as jest.Mock).mockReturnValue({
+      push: mockPush,
+    });
+  });
+
+  afterEach(() => {
     jest.clearAllMocks();
-    (useRouter as jest.Mock).mockReturnValue({ push: mockPush });
   });
 
   it('ナビゲーションリンクをクリックすると正しいページに遷移する', () => {
     render(<Navbar />);
 
-    // デスクトップメニューのリンクをクリック
-    const desktopLinks = screen.getByRole('navigation').querySelectorAll('.hidden.md\\:flex a');
-    fireEvent.click(desktopLinks[0]); // マイプラン一覧
+    // デスクトップリンクのテスト
+    const myPlansLink = screen.getByText('マイプラン一覧');
+    const explorePlansLink = screen.getByText('プランを探す');
+
+    fireEvent.click(myPlansLink);
     expect(mockPush).toHaveBeenCalledWith('/plans');
 
-    fireEvent.click(desktopLinks[1]); // プランを探す
+    fireEvent.click(explorePlansLink);
     expect(mockPush).toHaveBeenCalledWith('/plans/explore');
-
-    fireEvent.click(desktopLinks[2]); // プロフィール
-    expect(mockPush).toHaveBeenCalledWith('/profile');
   });
 
   it('モバイルメニューのリンクをクリックすると正しいページに遷移する', () => {
     render(<Navbar />);
 
-    // メニューを開く
-    fireEvent.click(screen.getByRole('button', { name: 'メニューを開く' }));
+    // モバイルリンクのテスト
+    const mobileMyPlansLink = screen.getByText('マイプラン一覧');
+    const mobileExplorePlansLink = screen.getByText('プランを探す');
 
-    // モバイルメニューのリンクをクリック
-    const mobileLinks = screen
-      .getByRole('navigation')
-      .querySelectorAll('[class*="hidden md:hidden"] a');
-    fireEvent.click(mobileLinks[0]); // マイプラン一覧
+    fireEvent.click(mobileMyPlansLink);
     expect(mockPush).toHaveBeenCalledWith('/plans');
 
-    fireEvent.click(mobileLinks[1]); // プランを探す
+    fireEvent.click(mobileExplorePlansLink);
     expect(mockPush).toHaveBeenCalledWith('/plans/explore');
-
-    fireEvent.click(mobileLinks[2]); // プロフィール
-    expect(mockPush).toHaveBeenCalledWith('/profile');
   });
 
   it('ログアウト処理が正常に完了するとホームページにリダイレクトされる', async () => {

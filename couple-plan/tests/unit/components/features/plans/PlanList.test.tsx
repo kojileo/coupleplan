@@ -218,8 +218,14 @@ describe('PlanList', () => {
       expect(screen.getByText(/20,000円/)).toBeInTheDocument();
 
       // 場所が表示されていることを確認
-      expect(screen.getByText('テスト場所1')).toBeInTheDocument();
-      expect(screen.getByText('テスト場所2')).toBeInTheDocument();
+      const locationElements = screen.getAllByText(/テスト場所1|テスト場所2/);
+      expect(locationElements).toHaveLength(2);
+      expect(locationElements[0]).toHaveTextContent('テスト場所1');
+      expect(locationElements[1]).toHaveTextContent('テスト場所2');
+
+      // 絵文字が表示されていることを確認
+      const emojiElements = screen.getAllByText(/📅|💰|📍/);
+      expect(emojiElements).toHaveLength(6); // 各プランに3つの絵文字
     });
 
     // モックを元に戻す
