@@ -9,6 +9,6 @@
     }
   ],
   "env": {
-    "PRISMA_CLIENT_ENGINE_TYPE": "dataproxy"
+    "PRISMA_CLIENT_ENGINE_TYPE": "library"
   }
 }
