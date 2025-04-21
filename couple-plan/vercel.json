@@ -1,6 +1,6 @@
 {
   "buildCommand": "npm run vercel-build",
-  "installCommand": "npm install && npm run postinstall",
+  "installCommand": "rm -rf node_modules/.prisma && npm install && npm run postinstall",
   "framework": "nextjs",
   "builds": [
     {

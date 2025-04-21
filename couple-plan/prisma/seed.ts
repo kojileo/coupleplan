@@ -145,7 +145,6 @@ async function main() {
               description: planDataWithoutLocation.description,
               region: planDataWithoutLocation.region,
               budget: planDataWithoutLocation.budget,
-              category: planDataWithoutLocation.category,
               isRecommended: planDataWithoutLocation.isRecommended,
               isPublic: planDataWithoutLocation.isPublic,
               userId: planDataWithoutLocation.userId,
