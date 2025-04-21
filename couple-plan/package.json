@@ -17,7 +17,7 @@
     "test:coverage": "jest --coverage",
     "vercel-build": "prisma generate && prisma migrate deploy && next build",
     "vercel-postbuild": "prisma db seed",
-    "postinstall": "prisma generate",
+    "postinstall": "prisma generate && prisma migrate deploy",
     "seed": "tsx prisma/seed.ts"
   },
   "prisma": {
