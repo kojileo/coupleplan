@@ -1,6 +1,6 @@
 /// <reference types="node" />
 
-import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { v4 as uuidv4 } from 'uuid';
 
 // Prismaクライアントの初期化
@@ -11,11 +11,11 @@ const prisma = new PrismaClient({
 async function cleanDatabase() {
   try {
     console.log('データベースのクリーンアップを開始します...');
-    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-      await tx.like.deleteMany();
-      await tx.location.deleteMany();
-      await tx.plan.deleteMany();
-      await tx.profile.deleteMany();
+    await prisma.$transaction(async (prisma) => {
+      await prisma.like.deleteMany();
+      await prisma.location.deleteMany();
+      await prisma.plan.deleteMany();
+      await prisma.profile.deleteMany();
     });
     console.log('データベースのクリーンアップが完了しました');
   } catch (error) {
