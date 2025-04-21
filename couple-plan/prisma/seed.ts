@@ -13,6 +13,7 @@ async function cleanDatabase() {
     console.log('データベースのクリーンアップを開始します...');
     await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       await tx.like.deleteMany();
+      await tx.location.deleteMany();
       await tx.plan.deleteMany();
       await tx.profile.deleteMany();
     });
@@ -49,123 +50,112 @@ async function main() {
       {
         title: '東京タワーデート',
         description: '東京タワーを中心とした1日デートプラン',
-        locations: {
-          create: [
-            {
-              url: 'https://www.tokyotower.co.jp/',
-              name: '東京タワー',
-            },
-          ],
-        },
         region: 'tokyo',
         budget: 10000,
         category: '定番デート',
         isRecommended: true,
         isPublic: true,
         userId: adminUser.userId,
+        location: {
+          url: 'https://www.tokyotower.co.jp/',
+          name: '東京タワー',
+        },
       },
       {
         title: '鎌倉散策',
         description: '鎌倉の観光スポットを巡る1日プラン',
-        locations: {
-          create: [
-            {
-              url: 'https://www.kamakura-info.jp/',
-              name: '鎌倉駅',
-            },
-          ],
-        },
         region: 'yokohama',
         budget: 8000,
         category: '観光',
         isRecommended: true,
         isPublic: true,
         userId: adminUser.userId,
+        location: {
+          url: 'https://www.kamakura-info.jp/',
+          name: '鎌倉駅',
+        },
       },
       {
         title: '横浜中華街グルメツアー',
         description: '横浜中華街の美味しい料理を巡るプラン',
-        locations: {
-          create: [
-            {
-              url: 'https://www.chinatown.or.jp/',
-              name: '横浜中華街',
-            },
-          ],
-        },
         region: 'yokohama',
         budget: 12000,
         category: 'グルメ',
         isRecommended: true,
         isPublic: true,
         userId: adminUser.userId,
+        location: {
+          url: 'https://www.chinatown.or.jp/',
+          name: '横浜中華街',
+        },
       },
       {
         title: '富士山五合目ハイキング',
         description: '富士山五合目からの絶景ハイキングプラン',
-        locations: {
-          create: [
-            {
-              url: 'https://www.fujisan-climb.jp/',
-              name: '富士山五合目',
-            },
-          ],
-        },
         region: 'other',
         budget: 15000,
         category: 'アクティビティ',
         isRecommended: true,
         isPublic: true,
         userId: adminUser.userId,
+        location: {
+          url: 'https://www.fujisan-climb.jp/',
+          name: '富士山五合目',
+        },
       },
       {
         title: '夏の花火大会デート',
         description: '夏の風物詩、花火大会を楽しむプラン',
-        locations: {
-          create: [
-            {
-              url: 'https://sumidagawa-hanabi.com/',
-              name: '隅田川花火大会',
-            },
-          ],
-        },
         region: 'tokyo',
         budget: 5000,
         category: '季節限定',
         isRecommended: true,
         isPublic: true,
         userId: adminUser.userId,
+        location: {
+          url: 'https://sumidagawa-hanabi.com/',
+          name: '隅田川花火大会',
+        },
       },
       {
         title: '記念日ディナー',
         description: '特別な記念日を祝う豪華ディナープラン',
-        locations: {
-          create: [
-            {
-              url: 'https://www.tokyo-skytree.jp/',
-              name: '東京スカイツリー',
-            },
-          ],
-        },
         region: 'tokyo',
         budget: 30000,
         category: '記念日',
         isRecommended: true,
         isPublic: true,
         userId: adminUser.userId,
+        location: {
+          url: 'https://www.tokyo-skytree.jp/',
+          name: '東京スカイツリー',
+        },
       },
     ];
 
-    // トランザクション内でプランを作成
+    // トランザクション内でプランとロケーションを作成
     await prisma.$transaction(async (tx) => {
-      for (const plan of recommendedPlans) {
+      for (const planData of recommendedPlans) {
         try {
+          // ロケーション情報を一時的に保存
+          const { location: locationData, ...planDataWithoutLocation } = planData;
+
+          // プランを作成
           const createdPlan = await tx.plan.create({
-            data: plan,
+            data: planDataWithoutLocation,
           });
+
+          // ロケーションを作成
+          await tx.location.create({
+            data: {
+              ...locationData,
+              planId: createdPlan.id,
+            },
+          });
+
           console.log('プランを作成しました:', createdPlan.title);
         } catch (error) {
-          console.error('プランの作成中にエラーが発生しました:', plan.title, error);
+          console.error('プランの作成中にエラーが発生しました:', planData.title, error);
           throw error;
         }
       }
