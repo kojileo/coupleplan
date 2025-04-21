@@ -140,7 +140,10 @@ async function main() {
 
           // プランを作成
           const createdPlan = await tx.plan.create({
-            data: planDataWithoutLocation,
+            data: {
+              ...planDataWithoutLocation,
+              category: planDataWithoutLocation.category || null,
+            },
           });
 
           // ロケーションを作成
