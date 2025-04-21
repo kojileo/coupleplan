@@ -54,7 +54,6 @@ async function main() {
         },
         region: 'tokyo',
         budget: 10000,
-        category: '定番デート',
         isRecommended: true,
         isPublic: true,
         userId: adminUser.userId,
@@ -72,7 +71,6 @@ async function main() {
         },
         region: 'yokohama',
         budget: 8000,
-        category: '観光',
         isRecommended: true,
         isPublic: true,
         userId: adminUser.userId,
@@ -90,7 +88,6 @@ async function main() {
         },
         region: 'yokohama',
         budget: 12000,
-        category: 'グルメ',
         isRecommended: true,
         isPublic: true,
         userId: adminUser.userId,
@@ -108,7 +105,6 @@ async function main() {
         },
         region: 'other',
         budget: 15000,
-        category: 'アクティビティ',
         isRecommended: true,
         isPublic: true,
         userId: adminUser.userId,
@@ -126,7 +122,6 @@ async function main() {
         },
         region: 'tokyo',
         budget: 5000,
-        category: '季節限定',
         isRecommended: true,
         isPublic: true,
         userId: adminUser.userId,
@@ -144,7 +139,6 @@ async function main() {
         },
         region: 'tokyo',
         budget: 30000,
-        category: '記念日',
         isRecommended: true,
         isPublic: true,
         userId: adminUser.userId,
@@ -161,12 +155,14 @@ async function main() {
 
         // ロケーションを作成
         if (locations?.create) {
-          await tx.location.createMany({
-            data: locations.create.map((location) => ({
-              ...location,
-              planId: plan.id,
-            })),
-          });
+          for (const location of locations.create) {
+            await tx.location.create({
+              data: {
+                ...location,
+                planId: plan.id,
+              },
+            });
+          }
         }
       }
     });
