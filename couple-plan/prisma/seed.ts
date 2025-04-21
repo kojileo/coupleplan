@@ -141,8 +141,14 @@ async function main() {
           // プランを作成
           const createdPlan = await tx.plan.create({
             data: {
-              ...planDataWithoutLocation,
-              category: planDataWithoutLocation.category || null,
+              title: planDataWithoutLocation.title,
+              description: planDataWithoutLocation.description,
+              region: planDataWithoutLocation.region,
+              budget: planDataWithoutLocation.budget,
+              category: planDataWithoutLocation.category,
+              isRecommended: planDataWithoutLocation.isRecommended,
+              isPublic: planDataWithoutLocation.isPublic,
+              userId: planDataWithoutLocation.userId,
             },
           });
 
