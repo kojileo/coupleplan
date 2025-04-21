@@ -11,12 +11,12 @@ const prisma = new PrismaClient({
 async function cleanDatabase() {
   try {
     console.log('データベースのクリーンアップを開始します...');
-    await prisma.$transaction(async (prisma) => {
-      await prisma.like.deleteMany();
-      await prisma.location.deleteMany();
-      await prisma.plan.deleteMany();
-      await prisma.profile.deleteMany();
-    });
+    await prisma.$transaction([
+      prisma.like.deleteMany(),
+      prisma.location.deleteMany(),
+      prisma.plan.deleteMany(),
+      prisma.profile.deleteMany(),
+    ]);
     console.log('データベースのクリーンアップが完了しました');
   } catch (error) {
     console.error('データベースのクリーンアップ中にエラーが発生しました:', error);
