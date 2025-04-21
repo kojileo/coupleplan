@@ -11,5 +11,8 @@
   "env": {
     "PRISMA_CLIENT_ENGINE_TYPE": "library"
   },
-  "postbuild": "npm run vercel-postbuild"
+  "postbuild": "npm run vercel-postbuild",
+  "prisma": {
+    "version": "6.6.0"
+  }
 }

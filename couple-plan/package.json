@@ -15,7 +15,7 @@
     "test:integration": "jest --testPathPattern=tests/integration --coverage",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "vercel-build": "prisma generate && prisma migrate deploy && next build && prisma db seed",
+    "vercel-build": "prisma generate && prisma migrate deploy && next build",
     "vercel-postbuild": "prisma db seed",
     "postinstall": "prisma generate",
     "seed": "tsx prisma/seed.ts"
