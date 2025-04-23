@@ -119,13 +119,14 @@ npm run test:ci
 1. **プルリクエスト作成時**：GitHub Actionsによりテストが実行され、カバレッジレポートが生成されます
 2. **Vercelへのデプロイ時**：ビルドプロセスの一部としてテストが実行されます
 
-テストカバレッジレポートは `coverage/` ディレクトリに生成され、GitHub Actionsの実行結果からも確認できます。 
+テストカバレッジレポートは `coverage/` ディレクトリに生成され、GitHub Actionsの実行結果からも確認できます。
 
 ## テスト環境のセットアップ
 
 テスト実行時は専用のデータベースと環境変数を使用します。
 
 1. `.env.test.local` ファイルを作成してテスト用の秘密情報を設定：
+
 ```
 # テスト環境用の非公開環境変数（GitHubにコミットしない）
 
@@ -147,6 +148,7 @@ TEST_REFRESH_TOKEN="test-secure-refresh-token-for-testing-only"
 ```
 
 2. テスト用データベースを作成：
+
 ```bash
 # PostgreSQLに接続
 psql -U postgres
@@ -159,12 +161,14 @@ CREATE DATABASE couple_plan_test;
 ```
 
 3. テスト用データベースにスキーマを適用：
+
 ```bash
 # テスト環境用のスキーマを適用
 npx prisma db push --schema=./prisma/schema.prisma
 ```
 
 4. 環境変数が正しく設定されていることを確認するテストを実行：
+
 ```bash
 # 環境変数設定テストのみ実行
 npx jest tests/unit/env.test.ts
@@ -198,30 +202,3 @@ test('プロフィールの作成', async () => {
   expect(profile).toBeDefined();
 });
 ```
-
-### 安全なトークン管理
-
-テスト内でハードコードされたアクセストークン（例: `access_token: 'test-token'`）を使用すると、セキュリティ脆弱性としてフラグが立つ可能性があります。このプロジェクトでは、以下の方法でテスト用トークンを安全に管理しています：
-
-1. 環境変数経由でのトークン提供
-   - `.env.test.local` ファイルに `TEST_ACCESS_TOKEN` を設定
-   - 実際の本番環境では使用されないテスト専用のトークン
-
-2. 動的なトークン生成
-   - `test-constants.ts` ファイルで `randomUUID()` を使用して毎回異なるトークンを生成
-   - トークンの予測可能性を低減
-
-3. セッション生成ヘルパー
-   - `createMockSession()` 関数を使用して一貫したセッションオブジェクトを生成
-   - テスト間で一貫性を保ちながらもセキュリティを確保
-
-テストを書く際は、固定文字列のトークンを直接コードに書かず、常に定数ファイルから提供される値を使用してください：
-
-```typescript
-// 悪い例 ❌
-const mockSession = { access_token: 'test-token', user: mockUser };
-
-// 良い例 ✅
-import { createMockSession } from '@tests/utils/test-constants';
-const mockSession = createMockSession(mockUser.id);
-``` 
