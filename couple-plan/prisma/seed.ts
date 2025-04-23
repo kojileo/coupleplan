@@ -153,10 +153,23 @@ async function main() {
 
     // トランザクション内でプランを作成
     await prisma.$transaction(async (tx) => {
-      for (const plan of recommendedPlans) {
-        await tx.plan.create({
-          data: plan,
+      for (const planData of recommendedPlans) {
+        const { locations, ...planWithoutLocations } = planData;
+        const plan = await tx.plan.create({
+          data: planWithoutLocations,
         });
+
+        // ロケーションを作成
+        if (locations?.create) {
+          for (const location of locations.create) {
+            await tx.location.create({
+              data: {
+                ...location,
+                planId: plan.id,
+              },
+            });
+          }
+        }
       }
     });
 
