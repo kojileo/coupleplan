@@ -61,9 +61,11 @@ export default function PublicPlansPage(): ReactElement {
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-50 to-white">
       <div className="container mx-auto px-4 py-12">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-2xl font-bold text-rose-950">公開されているデートプラン</h1>
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+          <h1 className="text-xl sm:text-2xl font-bold text-rose-950 text-center sm:text-left">
+            公開されているデートプラン
+          </h1>
+          <div className="flex flex-col sm:flex-row items-center gap-4">
             <div className="flex items-center gap-2">
               <label htmlFor="region" className="text-sm font-medium text-rose-950">
                 地域:
@@ -72,7 +74,7 @@ export default function PublicPlansPage(): ReactElement {
                 id="region"
                 value={selectedRegion}
                 onChange={(e) => setSelectedRegion(e.target.value)}
-                className="rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 text-rose-950"
+                className="rounded-md border text-rose-950 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
               >
                 {REGIONS.map((region) => (
                   <option key={region.value} value={region.value}>
@@ -89,7 +91,7 @@ export default function PublicPlansPage(): ReactElement {
                 id="category"
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 text-rose-950"
+                className="rounded-md border text-rose-950 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
               >
                 {CATEGORIES.map((category) => (
                   <option key={category.value} value={category.value}>

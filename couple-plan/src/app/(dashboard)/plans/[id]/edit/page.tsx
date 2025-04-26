@@ -195,7 +195,7 @@ export default function EditPlanPage({ params }: Props): ReactElement {
             id="title"
             type="text"
             required
-            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full rounded-md border text-rose-950 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={formData.title}
             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
           />
@@ -207,7 +207,7 @@ export default function EditPlanPage({ params }: Props): ReactElement {
           </label>
           <textarea
             id="description"
-            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full rounded-md border text-rose-950 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             rows={4}
             value={formData.description}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -221,7 +221,7 @@ export default function EditPlanPage({ params }: Props): ReactElement {
           <input
             id="date"
             type="date"
-            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full rounded-md border text-rose-950 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={formData.date}
             onChange={(e) => setFormData({ ...formData, date: e.target.value })}
           />
@@ -236,7 +236,7 @@ export default function EditPlanPage({ params }: Props): ReactElement {
             type="number"
             required
             min={0}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full rounded-md border text-rose-950 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={formData.budget}
             onChange={(e) => setFormData({ ...formData, budget: Number(e.target.value) })}
           />
@@ -255,14 +255,14 @@ export default function EditPlanPage({ params }: Props): ReactElement {
                 <input
                   type="url"
                   placeholder="URL"
-                  className="flex-1 rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                  className="flex-1 rounded-md border text-rose-950 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
                   value={location.url}
                   onChange={(e) => updateLocation(index, 'url', e.target.value)}
                 />
                 <input
                   type="text"
                   placeholder="名前（任意）"
-                  className="flex-1 rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                  className="flex-1 rounded-md border text-rose-950 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
                   value={location.name ?? ''}
                   onChange={(e) => updateLocation(index, 'name', e.target.value)}
                 />
@@ -285,7 +285,7 @@ export default function EditPlanPage({ params }: Props): ReactElement {
           </label>
           <select
             id="region"
-            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full rounded-md border text-rose-950 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             value={formData.region}
             onChange={(e) => setFormData({ ...formData, region: e.target.value })}
           >

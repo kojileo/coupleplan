@@ -76,7 +76,7 @@ export default function NewPlanPage(): ReactElement {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">新規プラン作成</h1>
+      <h1 className="text-2xl font-bold text-rose-950 mb-6">新規プラン作成</h1>
       {error && (
         <div
           className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
@@ -101,7 +101,7 @@ export default function NewPlanPage(): ReactElement {
             name="title"
             type="text"
             required
-            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
+            className="w-full rounded-md border text-rose-950 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
           />
         </div>
 
@@ -112,7 +112,7 @@ export default function NewPlanPage(): ReactElement {
           <textarea
             id="description"
             name="description"
-            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
+            className="w-full rounded-md border text-rose-950 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
             rows={4}
           />
         </div>
@@ -125,7 +125,7 @@ export default function NewPlanPage(): ReactElement {
             id="date"
             name="date"
             type="date"
-            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
+            className="w-full rounded-md border text-rose-950 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
           />
         </div>
 
@@ -139,7 +139,7 @@ export default function NewPlanPage(): ReactElement {
             type="number"
             required
             min={0}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
+            className="w-full rounded-md border text-rose-950 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
           />
         </div>
 
@@ -169,7 +169,7 @@ export default function NewPlanPage(): ReactElement {
                   name="location-url-0"
                   type="url"
                   required
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                  className="w-full rounded-md border text-rose-950 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
                 />
               </div>
               <div>
@@ -183,7 +183,7 @@ export default function NewPlanPage(): ReactElement {
                   id="location-name-0"
                   name="location-name-0"
                   type="text"
-                  className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                  className="w-full rounded-md border text-rose-950 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
                 />
               </div>
               <Button type="button" variant="secondary">
@@ -200,7 +200,7 @@ export default function NewPlanPage(): ReactElement {
           <select
             id="region"
             name="region"
-            className="w-full rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
+            className="w-full rounded-md border text-rose-950 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500"
           >
             <option value="">選択してください</option>
             <option value="tokyo">東京</option>
@@ -220,7 +220,7 @@ export default function NewPlanPage(): ReactElement {
             id="isPublic"
             name="isPublic"
             type="checkbox"
-            className="h-4 w-4 text-rose-600 focus:ring-rose-500 border-gray-300 rounded"
+            className="h-4 w-4 text-rose-600 focus:ring-rose-500 text-rose-950 rounded"
           />
           <label htmlFor="isPublic" className="ml-2 block text-sm text-gray-900">
             公開する
