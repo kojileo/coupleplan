@@ -109,7 +109,7 @@ export default function ProfilePage(): ReactElement {
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500"
+              className="w-full px-3 py-2 border text-rose-950 rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500"
             />
           </div>
 
@@ -122,7 +122,7 @@ export default function ProfilePage(): ReactElement {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500"
+              className="w-full px-3 py-2 border text-rose-950 rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500"
             />
           </div>
 

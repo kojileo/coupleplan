@@ -72,7 +72,7 @@ export default function PublicPlansPage(): ReactElement {
                 id="region"
                 value={selectedRegion}
                 onChange={(e) => setSelectedRegion(e.target.value)}
-                className="rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 text-rose-950"
+                className="rounded-md border text-rose-950 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 text-rose-950"
               >
                 {REGIONS.map((region) => (
                   <option key={region.value} value={region.value}>
@@ -89,7 +89,7 @@ export default function PublicPlansPage(): ReactElement {
                 id="category"
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 text-rose-950"
+                className="rounded-md border text-rose-950 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 text-rose-950"
               >
                 {CATEGORIES.map((category) => (
                   <option key={category.value} value={category.value}>
