@@ -55,7 +55,7 @@ def create_graph(state: GraphState, tools, model_chain):
 
 
 
-async def main(graph_config = {"configurable": {"thread_id": "12345"}}):
+async def main(graph_config = {"configurable": {"thread_id": "12345"}}, input_list=None):
     # モデルの定義。APIキーは環境変数から取得
     model = ChatGoogleGenerativeAI(
         model="gemini-2.0-flash",
@@ -94,9 +94,20 @@ async def main(graph_config = {"configurable": {"thread_id": "12345"}}):
             model_with_tools
         )
 
+        # 入力リストのイテレータを作成
+        input_iter = iter(input_list) if input_list else None
 
         while True:
-            query = input("入力してください: ") 
+            # 入力リストがある場合はそれを使用、ない場合は標準入力から取得
+            if input_iter:
+                try:
+                    query = next(input_iter)
+                    print(f"入力: {query}")
+                except StopIteration:
+                    print("入力リストが終了しました。")
+                    break
+            else:
+                query = input("入力してください: ")
 
             if query.lower() in ["exit", "quit"]:
                 print("終了します。")
@@ -124,5 +135,12 @@ async def main(graph_config = {"configurable": {"thread_id": "12345"}}):
 
 if __name__ == "__main__":
     import asyncio
-    asyncio.run(main())
+    
+    # test_inputs.jsonから入力リストを読み込む
+    input_list = None
+    if os.path.exists("test_inputs.json"):
+        with open("test_inputs.json", "r", encoding="utf-8") as f:
+            input_list = json.load(f)
+    
+    asyncio.run(main(input_list=input_list))
 
