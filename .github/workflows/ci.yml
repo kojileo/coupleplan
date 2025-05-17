@@ -27,14 +27,12 @@ jobs:
       with:
         node-version: '20'
         cache: 'npm'
-        cache-dependency-path: 'couple-plan/package-lock.json'
+        cache-dependency-path: 'package-lock.json'
     
     - name: Install dependencies
-      working-directory: ./couple-plan
       run: npm install
     
     - name: Run linting
-      working-directory: ./couple-plan
       run: npm run lint
 
   unit-tests:
@@ -56,14 +54,12 @@ jobs:
       with:
         node-version: '20'
         cache: 'npm'
-        cache-dependency-path: 'couple-plan/package-lock.json'
+        cache-dependency-path: 'package-lock.json'
     
     - name: Install dependencies
-      working-directory: ./couple-plan
       run: npm install
     
     - name: Run unit tests with HTML report
-      working-directory: ./couple-plan
       run: npm run test:unit:html
       timeout-minutes: 3
       
@@ -71,7 +67,7 @@ jobs:
       uses: EnricoMi/publish-unit-test-result-action@v2
       if: always()
       with:
-        files: ./couple-plan/junit.xml
+        files: ./junit.xml
         github_token: ${{ github.token }}
         
     - name: Upload unit test results (XML)
@@ -79,7 +75,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: unit-test-results-xml
-        path: ./couple-plan/junit.xml
+        path: ./junit.xml
         retention-days: 7
         
     - name: Upload unit test results (HTML)
@@ -87,7 +83,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: unit-test-results-html
-        path: ./couple-plan/test-report.html
+        path: ./test-report.html
         retention-days: 7
 
   integration-tests:
@@ -109,14 +105,12 @@ jobs:
       with:
         node-version: '20'
         cache: 'npm'
-        cache-dependency-path: 'couple-plan/package-lock.json'
+        cache-dependency-path: 'package-lock.json'
     
     - name: Install dependencies
-      working-directory: ./couple-plan
       run: npm install
     
     - name: Run integration tests
-      working-directory: ./couple-plan
       run: npm run test:integration
       timeout-minutes: 8
       
@@ -125,5 +119,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: integration-test-coverage
-        path: couple-plan/coverage/
+        path: coverage/
         retention-days: 14
