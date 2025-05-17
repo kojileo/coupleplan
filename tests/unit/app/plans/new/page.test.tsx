@@ -28,7 +28,7 @@ describe('NewPlanPage', () => {
   };
 
   const mockSession = {
-    access_token: 'test-token',
+    access_token: process.env.TEST_ACCESS_TOKEN,
   };
 
   beforeEach(() => {

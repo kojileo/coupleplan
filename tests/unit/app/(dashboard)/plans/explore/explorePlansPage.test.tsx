@@ -11,7 +11,7 @@ jest.mock('@supabase/auth-helpers-nextjs', () => ({
         data: { subscription: { unsubscribe: jest.fn() } },
       }),
       getSession: jest.fn().mockResolvedValue({
-        data: { session: { access_token: 'test-token' } },
+        data: { session: { access_token: process.env.TEST_ACCESS_TOKEN } },
       }),
     },
   }),

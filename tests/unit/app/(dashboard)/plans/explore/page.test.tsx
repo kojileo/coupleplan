@@ -72,7 +72,7 @@ describe('ExplorePlansPage コンポーネント', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (useAuth as jest.Mock).mockReturnValue({
-      session: { access_token: 'test-token' },
+      session: { access_token: process.env.TEST_ACCESS_TOKEN },
     });
     (api.plans.listPublic as jest.Mock).mockResolvedValue({
       data: mockPlans,

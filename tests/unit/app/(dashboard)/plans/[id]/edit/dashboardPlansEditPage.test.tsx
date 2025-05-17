@@ -36,7 +36,7 @@ describe('EditPlanPage コンポーネント', () => {
   };
 
   const mockSession = {
-    access_token: 'test-token',
+    access_token: process.env.TEST_ACCESS_TOKEN,
     user: { id: 'test-user-id' },
   };
 
