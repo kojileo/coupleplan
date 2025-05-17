@@ -1,0 +1,12 @@
+name = "coupleplan"
+compatibility_date = "2024-03-20"
+
+[build]
+command = "npx next-on-pages build"
+cwd = "."
+
+[site]
+bucket = ".vercel/output/static"
+
+[env.production]
+workers_dev = false 

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npx next-on-pages build",
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write \"src/**/*.{ts,tsx}\"",
@@ -17,7 +17,9 @@
     "test:coverage": "jest --coverage",
     "vercel-build": "prisma generate && (prisma db push --accept-data-loss || (echo 'Database push failed, attempting to continue build...' && true)) && (prisma db seed || echo 'Seed failed, continuing build...') && next build",
     "postinstall": "prisma generate",
-    "seed": "tsx prisma/seed.ts"
+    "seed": "tsx prisma/seed.ts",
+    "deploy": "npx wrangler pages deploy .vercel/output/static --project-name=coupleplan",
+    "deploy:prod": "wrangler deploy --env production"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -40,6 +42,8 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@cloudflare/next-on-pages": "^1.13.12",
+    "@cloudflare/workers-types": "^4.20250517.0",
     "@eslint/eslintrc": "^3",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
@@ -72,7 +76,8 @@
     "ts-node": "^10.9.2",
     "tsx": "^4.19.3",
     "typescript": "^5",
-    "vitest": "^3.1.1"
+    "vitest": "^3.1.1",
+    "wrangler": "^4.15.2"
   },
   "jest-junit": {
     "outputDirectory": "./",
