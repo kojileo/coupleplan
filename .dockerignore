@@ -1,0 +1,15 @@
+.git
+.next
+node_modules
+npm-debug.log
+README.md
+coverage
+.vscode
+.github
+tests
+jest.config.js
+jest.setup.js
+.eslintrc.json
+.prettierrc
+.editorconfig
+*.log 
