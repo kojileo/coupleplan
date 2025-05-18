@@ -37,9 +37,7 @@ RUN apt-get update -y && apt-get install -y openssl
 # 必要なファイルのみをコピー
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/public ./public
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/.env .env
 
 # ポートを公開
 EXPOSE 3000
