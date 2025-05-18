@@ -17,9 +17,7 @@
     "test:coverage": "jest --coverage",
     "vercel-build": "prisma generate && (prisma db push --accept-data-loss || (echo 'Database push failed, attempting to continue build...' && true)) && (prisma db seed || echo 'Seed failed, continuing build...') && next build",
     "postinstall": "prisma generate",
-    "seed": "tsx prisma/seed.ts",
-    "deploy": "npx wrangler pages deploy .vercel/output/static --project-name=coupleplan",
-    "deploy:prod": "wrangler deploy --env production"
+    "seed": "tsx prisma/seed.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
