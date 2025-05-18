@@ -79,9 +79,11 @@ describe('EditPlanPage コンポーネント', () => {
       expect(screen.getByLabelText('タイトル')).toBeInTheDocument();
     });
 
+    await user.clear(screen.getByLabelText('タイトル'));
     await user.type(screen.getByLabelText('タイトル'), 'テストプラン');
+    await user.clear(screen.getByLabelText('説明'));
     await user.type(screen.getByLabelText('説明'), 'テスト説明');
-    await user.type(screen.getByLabelText('日付'), '2024-01-01');
+    await user.clear(screen.getByLabelText('予算'));
     await user.type(screen.getByLabelText('予算'), '10000');
     await user.selectOptions(screen.getByLabelText('地域'), 'tokyo');
 
@@ -89,7 +91,7 @@ describe('EditPlanPage コンポーネント', () => {
 
     await waitFor(() => {
       expect(api.plans.update).toHaveBeenCalledWith(
-        'test-token',
+        process.env.TEST_ACCESS_TOKEN,
         'test-plan-id',
         expect.any(Object)
       );
