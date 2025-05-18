@@ -1,161 +1,449 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="352" failures="0" errors="0" time="5.134">
-  <testsuite name="tests\unit\app\(auth)\forgot-password\forgot-passwordpage.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:12" time="1.382" tests="8">
-    <testcase classname="ForgotPasswordPage コンポーネント" name="パスワードリセットフォームが正しくレンダリングされること" time="0.081">
+<testsuites name="jest tests" tests="366" failures="1" errors="0" time="6.337">
+  <testsuite name="tests\unit\components\features\plans\PublishDialog.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:00" time="1.521" tests="7">
+    <testcase classname="PublishDialog" name="isOpen=falseの場合、何も表示しない" time="0.028">
     </testcase>
-    <testcase classname="ForgotPasswordPage コンポーネント" name="メールアドレスを入力できること" time="0.011">
+    <testcase classname="PublishDialog" name="非公開プランの場合、公開確認メッセージを表示する" time="0.065">
+    </testcase>
+    <testcase classname="PublishDialog" name="公開プランの場合、非公開確認メッセージを表示する" time="0.016">
+    </testcase>
+    <testcase classname="PublishDialog" name="公開設定を更新できる" time="0.094">
+    </testcase>
+    <testcase classname="PublishDialog" name="キャンセルボタンでダイアログを閉じる" time="0.009">
+    </testcase>
+    <testcase classname="PublishDialog" name="更新中はボタンを無効化する" time="0.079">
+    </testcase>
+    <testcase classname="PublishDialog" name="APIエラー時にエラーメッセージを表示する" time="0.061">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\app\(dashboard)\plans\new\dashboardPlansNewPage.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:00" time="1.541" tests="8">
+    <testcase classname="NewPlanPage コンポーネント" name="フォームの入力と送信で新規プランを作成し、/plans へリダイレクトする" time="0.169">
+    </testcase>
+    <testcase classname="NewPlanPage コンポーネント" name="フォームの各フィールドを変更できる" time="0.032">
+    </testcase>
+    <testcase classname="NewPlanPage コンポーネント" name="キャンセルボタンをクリックすると、前のページに戻る" time="0.019">
+    </testcase>
+    <testcase classname="NewPlanPage コンポーネント" name="セッションがない場合、フォーム送信時に何も起こらない" time="0.022">
+    </testcase>
+    <testcase classname="NewPlanPage コンポーネント" name="作成失敗時にエラーメッセージが表示される" time="0.048">
+    </testcase>
+    <testcase classname="NewPlanPage コンポーネント" name="ネットワークエラーなどの例外が発生した場合、エラーメッセージが表示される" time="0.046">
+    </testcase>
+    <testcase classname="NewPlanPage コンポーネント" name="保存中はボタンが無効化され、テキストが「作成中...」に変わる" time="0.023">
+    </testcase>
+    <testcase classname="NewPlanPage コンポーネント" name="日付がnullの場合、正しく送信される" time="0.025">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\components\features\dashboard\Navbar.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:00" time="1.585" tests="9">
+    <testcase classname="Navbar" name="デスクトップ表示で全てのナビゲーションリンクとログアウトボタンが表示される" time="0.091">
+    </testcase>
+    <testcase classname="Navbar" name="モバイル表示でハンバーガーメニューをクリックするとメニューが開閉する" time="0.084">
+    </testcase>
+    <testcase classname="Navbar" name="ログアウトボタンをクリックするとログアウト処理が実行される" time="0.012">
+    </testcase>
+    <testcase classname="Navbar" name="モバイルメニューのリンクをクリックするとメニューが閉じる" time="0.023">
+    </testcase>
+    <testcase classname="Navbar" name="モバイルメニューの「公開プラン一覧」リンクをクリックするとメニューが閉じる" time="0.027">
+    </testcase>
+    <testcase classname="Navbar" name="モバイルメニューの「プロフィール」リンクをクリックするとメニューが閉じる" time="0.018">
+    </testcase>
+    <testcase classname="Navbar" name="モバイルメニューのログアウトボタンをクリックするとログアウト処理が実行される" time="0.078">
+    </testcase>
+    <testcase classname="Navbar" name="ログアウト処理でエラーが発生した場合も、ホームページにリダイレクトされる" time="0.008">
+    </testcase>
+    <testcase classname="Navbar" name="ログアウト処理で例外が投げられた場合も、ホームページにリダイレクトされる" time="0.017">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\app\(auth)\forgot-password\forgot-passwordpage.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:00" time="1.604" tests="8">
+    <testcase classname="ForgotPasswordPage コンポーネント" name="パスワードリセットフォームが正しくレンダリングされること" time="0.106">
+    </testcase>
+    <testcase classname="ForgotPasswordPage コンポーネント" name="メールアドレスを入力できること" time="0.013">
     </testcase>
     <testcase classname="ForgotPasswordPage コンポーネント" name="パスワードリセット成功時に成功メッセージが表示されること" time="0.065">
     </testcase>
-    <testcase classname="ForgotPasswordPage コンポーネント" name="レスポンスにメッセージがない場合、デフォルトメッセージが表示されること" time="0.046">
+    <testcase classname="ForgotPasswordPage コンポーネント" name="レスポンスにメッセージがない場合、デフォルトメッセージが表示されること" time="0.047">
     </testcase>
-    <testcase classname="ForgotPasswordPage コンポーネント" name="パスワードリセット失敗時にエラーメッセージが表示されること" time="0.032">
+    <testcase classname="ForgotPasswordPage コンポーネント" name="パスワードリセット失敗時にエラーメッセージが表示されること" time="0.046">
     </testcase>
-    <testcase classname="ForgotPasswordPage コンポーネント" name="エラーレスポンスにエラーメッセージがない場合、デフォルトエラーメッセージが表示されること" time="0.045">
+    <testcase classname="ForgotPasswordPage コンポーネント" name="エラーレスポンスにエラーメッセージがない場合、デフォルトエラーメッセージが表示されること" time="0.047">
     </testcase>
-    <testcase classname="ForgotPasswordPage コンポーネント" name="ネットワークエラー時にエラーメッセージが表示されること" time="0.048">
+    <testcase classname="ForgotPasswordPage コンポーネント" name="ネットワークエラー時にエラーメッセージが表示されること" time="0.046">
     </testcase>
-    <testcase classname="ForgotPasswordPage コンポーネント" name="Errorインスタンスでないエラーの場合、デフォルトエラーメッセージが表示されること" time="0.031">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\app\(auth)\reset-password\reset-passwordpage.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:12" time="1.534" tests="12">
-    <testcase classname="ResetPasswordPage コンポーネント" name="有効なセッションの場合、パスワードリセットフォームが表示されること" time="0.115">
-    </testcase>
-    <testcase classname="ResetPasswordPage コンポーネント" name="セッションはないがハッシュに type=recovery が含まれる場合、パスワードリセットフォームが表示されること" time="0.024">
-    </testcase>
-    <testcase classname="ResetPasswordPage コンポーネント" name="セッション取得時にエラーが発生した場合、エラーメッセージが表示されること" time="0.03">
-    </testcase>
-    <testcase classname="ResetPasswordPage コンポーネント" name="無効なセッションの場合、エラーメッセージが表示されること" time="0.015">
-    </testcase>
-    <testcase classname="ResetPasswordPage コンポーネント" name="無効なパスワードリセットリンクエラーの場合、パスワードリセットページへのリンクが表示されること" time="0.032">
-    </testcase>
-    <testcase classname="ResetPasswordPage コンポーネント" name="セッション確認でエラーが発生した場合、エラーメッセージが表示されること" time="0.029">
-    </testcase>
-    <testcase classname="ResetPasswordPage コンポーネント" name="パスワードが一致しない場合、エラーメッセージが表示されること" time="0.054">
-    </testcase>
-    <testcase classname="ResetPasswordPage コンポーネント" name="パスワードが短すぎる場合、エラーメッセージが表示されること" time="0.037">
-    </testcase>
-    <testcase classname="ResetPasswordPage コンポーネント" name="パスワード更新成功時に成功メッセージが表示され、ログインページにリダイレクトされること" time="0.026">
-    </testcase>
-    <testcase classname="ResetPasswordPage コンポーネント" name="パスワード更新失敗時にエラーメッセージが表示されること" time="0.053">
-    </testcase>
-    <testcase classname="ResetPasswordPage コンポーネント" name="Errorインスタンスでないエラーの場合、デフォルトエラーメッセージが表示されること" time="0.045">
-    </testcase>
-    <testcase classname="ResetPasswordPage コンポーネント" name="ローディング中はボタンが無効化され、テキストが「更新中...」に変わる" time="0.048">
+    <testcase classname="ForgotPasswordPage コンポーネント" name="Errorインスタンスでないエラーの場合、デフォルトエラーメッセージが表示されること" time="0.018">
     </testcase>
   </testsuite>
-  <testsuite name="tests\unit\app\(dashboard)\profile\dashboardprofilepage.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:12" time="1.551" tests="19">
+  <testsuite name="tests\unit\app\(auth)\reset-password\reset-passwordpage.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:00" time="1.654" tests="12">
+    <testcase classname="ResetPasswordPage コンポーネント" name="有効なセッションの場合、パスワードリセットフォームが表示されること" time="0.121">
+    </testcase>
+    <testcase classname="ResetPasswordPage コンポーネント" name="セッションはないがハッシュに type=recovery が含まれる場合、パスワードリセットフォームが表示されること" time="0.032">
+    </testcase>
+    <testcase classname="ResetPasswordPage コンポーネント" name="セッション取得時にエラーが発生した場合、エラーメッセージが表示されること" time="0.017">
+    </testcase>
+    <testcase classname="ResetPasswordPage コンポーネント" name="無効なセッションの場合、エラーメッセージが表示されること" time="0.014">
+    </testcase>
+    <testcase classname="ResetPasswordPage コンポーネント" name="無効なパスワードリセットリンクエラーの場合、パスワードリセットページへのリンクが表示されること" time="0.016">
+    </testcase>
+    <testcase classname="ResetPasswordPage コンポーネント" name="セッション確認でエラーが発生した場合、エラーメッセージが表示されること" time="0.013">
+    </testcase>
+    <testcase classname="ResetPasswordPage コンポーネント" name="パスワードが一致しない場合、エラーメッセージが表示されること" time="0.042">
+    </testcase>
+    <testcase classname="ResetPasswordPage コンポーネント" name="パスワードが短すぎる場合、エラーメッセージが表示されること" time="0.029">
+    </testcase>
+    <testcase classname="ResetPasswordPage コンポーネント" name="パスワード更新成功時に成功メッセージが表示され、ログインページにリダイレクトされること" time="0.021">
+    </testcase>
+    <testcase classname="ResetPasswordPage コンポーネント" name="パスワード更新失敗時にエラーメッセージが表示されること" time="0.045">
+    </testcase>
+    <testcase classname="ResetPasswordPage コンポーネント" name="Errorインスタンスでないエラーの場合、デフォルトエラーメッセージが表示されること" time="0.048">
+    </testcase>
+    <testcase classname="ResetPasswordPage コンポーネント" name="ローディング中はボタンが無効化され、テキストが「更新中...」に変わる" time="0.055">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\app\(dashboard)\profile\dashboardprofilepage.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:00" time="1.705" tests="19">
     <testcase classname="ProfilePage コンポーネント" name="ローディング中は「読み込み中...」を表示する" time="0.035">
     </testcase>
     <testcase classname="ProfilePage コンポーネント" name="エラーが発生した場合はエラーメッセージを表示する" time="0.003">
     </testcase>
-    <testcase classname="ProfilePage コンポーネント" name="セッションがない場合は「ログインが必要です」を表示する" time="0.005">
+    <testcase classname="ProfilePage コンポーネント" name="セッションがない場合は「ログインが必要です」を表示する" time="0.004">
     </testcase>
-    <testcase classname="ProfilePage コンポーネント" name="プロフィール情報が正しく表示される" time="0.014">
+    <testcase classname="ProfilePage コンポーネント" name="プロフィール情報が正しく表示される" time="0.016">
     </testcase>
-    <testcase classname="ProfilePage コンポーネント" name="プロフィール更新が正しく動作する" time="0.071">
+    <testcase classname="ProfilePage コンポーネント" name="プロフィール更新が正しく動作する" time="0.07">
     </testcase>
-    <testcase classname="ProfilePage コンポーネント" name="プロフィール更新が成功した場合、成功メッセージが表示される" time="0.059">
+    <testcase classname="ProfilePage コンポーネント" name="プロフィール更新が成功した場合、成功メッセージが表示される" time="0.038">
     </testcase>
-    <testcase classname="ProfilePage コンポーネント" name="プロフィール更新でエラーが発生した場合、エラーメッセージが表示される" time="0.045">
+    <testcase classname="ProfilePage コンポーネント" name="プロフィール更新でエラーが発生した場合、エラーメッセージが表示される" time="0.046">
     </testcase>
-    <testcase classname="ProfilePage コンポーネント" name="アカウント削除ボタンをクリックすると確認ダイアログが表示される" time="0.027">
+    <testcase classname="ProfilePage コンポーネント" name="アカウント削除ボタンをクリックすると確認ダイアログが表示される" time="0.032">
     </testcase>
-    <testcase classname="ProfilePage コンポーネント" name="退会処理が正しく動作する" time="0.081">
+    <testcase classname="ProfilePage コンポーネント" name="退会処理が正しく動作する" time="0.077">
     </testcase>
-    <testcase classname="ProfilePage コンポーネント" name="退会処理が失敗した場合（成功フラグがfalse）、エラーメッセージが表示される" time="0.045">
+    <testcase classname="ProfilePage コンポーネント" name="退会処理が失敗した場合（成功フラグがfalse）、エラーメッセージが表示される" time="0.046">
     </testcase>
-    <testcase classname="ProfilePage コンポーネント" name="退会処理でエラーが発生した場合、エラーメッセージが表示される" time="0.046">
+    <testcase classname="ProfilePage コンポーネント" name="退会処理でエラーが発生した場合、エラーメッセージが表示される" time="0.03">
     </testcase>
-    <testcase classname="ProfilePage コンポーネント" name="退会処理でエラーオブジェクトがErrorインスタンスでない場合、デフォルトメッセージが表示される" time="0.061">
+    <testcase classname="ProfilePage コンポーネント" name="退会処理でエラーオブジェクトがErrorインスタンスでない場合、デフォルトメッセージが表示される" time="0.048">
     </testcase>
-    <testcase classname="ProfilePage コンポーネント" name="退会処理がキャンセルできる" time="0.02">
+    <testcase classname="ProfilePage コンポーネント" name="退会処理がキャンセルできる" time="0.04">
     </testcase>
-    <testcase classname="ProfilePage コンポーネント" name="削除中は削除ボタンが無効化され、テキストが「削除中...」に変わる" time="0.025">
+    <testcase classname="ProfilePage コンポーネント" name="削除中は削除ボタンが無効化され、テキストが「削除中...」に変わる" time="0.038">
     </testcase>
     <testcase classname="ProfilePage コンポーネント" name="正常にレンダリングされる" time="0.004">
     </testcase>
-    <testcase classname="ProfilePage コンポーネント" name="プロフィールの読み込み中にローディング表示がされる" time="0.001">
+    <testcase classname="ProfilePage コンポーネント" name="プロフィールの読み込み中にローディング表示がされる" time="0.002">
     </testcase>
     <testcase classname="ProfilePage コンポーネント" name="エラーが発生した場合にエラーメッセージが表示される" time="0.001">
     </testcase>
-    <testcase classname="ProfilePage コンポーネント" name="ログイン中でプロフィールがnullの場合はローディング表示がされる" time="0.004">
+    <testcase classname="ProfilePage コンポーネント" name="ログイン中でプロフィールがnullの場合はローディング表示がされる" time="0.005">
     </testcase>
-    <testcase classname="ProfilePage コンポーネント" name="useAuthのローディング中の場合はローディング表示がされる" time="0.001">
+    <testcase classname="ProfilePage コンポーネント" name="useAuthのローディング中の場合はローディング表示がされる" time="0.002">
     </testcase>
   </testsuite>
-  <testsuite name="tests\unit\hooks\useProfile.test.ts" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:13" time="0.313" tests="14">
-    <testcase classname="useProfile" name="初期状態ではローディング中で、プロフィールはnull" time="0.053">
+  <testsuite name="tests\unit\app\(dashboard)\plans\dashboardPlansPage.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:02" time="0.441" tests="8">
+    <testcase classname="MyPlansPage コンポーネント" name="ロード中はスピナーが表示される" time="0.013">
+    </testcase>
+    <testcase classname="MyPlansPage コンポーネント" name="セッションがない場合、APIが呼ばれずにローディング状態が解除される" time="0.01">
+    </testcase>
+    <testcase classname="MyPlansPage コンポーネント" name="APIエラーが発生した場合、エラーがログに出力され、ローディング状態が解除される" time="0.03">
+    </testcase>
+    <testcase classname="MyPlansPage コンポーネント" name="APIレスポンスにエラーが含まれる場合、エラーがログに出力される" time="0.031">
+    </testcase>
+    <testcase classname="MyPlansPage コンポーネント" name="APIレスポンスにdataフィールドがない場合、空の配列が使用される" time="0.02">
+    </testcase>
+    <testcase classname="MyPlansPage コンポーネント" name="プランが存在しない場合、適切なメッセージと新規作成ボタンが表示され、ボタン押下で /plans/new に遷移する" time="0.027">
+    </testcase>
+    <testcase classname="MyPlansPage コンポーネント" name="プランが存在する場合、PlanCard がレンダリングされる" time="0.029">
+    </testcase>
+    <testcase classname="MyPlansPage コンポーネント" name="ヘッダーの新規プラン作成ボタンをクリックすると、/plans/new に遷移する" time="0.033">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\components\features\plans\PlanCard.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:02" time="0.393" tests="16">
+    <testcase classname="PlanCard" name="プランの基本情報が正しく表示される" time="0.033">
+    </testcase>
+    <testcase classname="PlanCard" name="日付が正しくフォーマットされて表示される" time="0.004">
+    </testcase>
+    <testcase classname="PlanCard" name="日付がnullの場合、日時の項目が表示されない" time="0.002">
+    </testcase>
+    <testcase classname="PlanCard" name="場所URLが正しく表示され、クリック可能である" time="0.026">
+    </testcase>
+    <testcase classname="PlanCard" name="場所URLがnullの場合、代替テキストが表示される" time="0.003">
+    </testcase>
+    <testcase classname="PlanCard" name="カードをクリックすると詳細ページに遷移する" time="0.005">
+    </testcase>
+    <testcase classname="PlanCard" name="公開/非公開の切り替えボタンが正しく動作する" time="0.013">
+    </testcase>
+    <testcase classname="PlanCard" name="公開/非公開の切り替えボタンをクリックしてもカード全体のクリックイベントが発火しない" time="0.009">
+    </testcase>
+    <testcase classname="PlanCard" name="場所URLをクリックしてもカード全体のクリックイベントが発火しない" time="0.007">
+    </testcase>
+    <testcase classname="PlanCard" name="公開ページでは公開/非公開の切り替えボタンが表示されない" time="0.006">
+    </testcase>
+    <testcase classname="PlanCard" name="公開中のプランでは「公開中」ボタンが表示される" time="0.011">
+    </testcase>
+    <testcase classname="PlanCard" name="プロフィール名がnullの場合、「不明」と表示される" time="0.004">
+    </testcase>
+    <testcase classname="PlanCard" name="プロフィールがnullの場合、「不明」と表示される" time="0.003">
+    </testcase>
+    <testcase classname="PlanCard" name="いいねの初期状態が正しく設定される（いいね済み）" time="0.006">
+    </testcase>
+    <testcase classname="PlanCard" name="いいねの数が_countにない場合、0として表示される" time="0.007">
+    </testcase>
+    <testcase classname="PlanCard" name="onPublishToggleがnullの場合、公開/非公開ボタンが表示されない" time="0.005">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\app\(dashboard)\plans\public\dashboardPlansPublicPage.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:02" time="0.439" tests="7">
+    <testcase classname="PublicPlansPage コンポーネント" name="ロード中はスピナーが表示される" time="0.011">
+    </testcase>
+    <testcase classname="PublicPlansPage コンポーネント" name="セッションがない場合、APIが呼ばれずにローディング状態が解除される" time="0.024">
+    </testcase>
+    <testcase classname="PublicPlansPage コンポーネント" name="APIエラーが発生した場合、エラーがログに出力され、ローディング状態が解除される" time="0.03">
+    </testcase>
+    <testcase classname="PublicPlansPage コンポーネント" name="APIレスポンスにエラーが含まれる場合、エラーがログに出力される" time="0.031">
+    </testcase>
+    <testcase classname="PublicPlansPage コンポーネント" name="APIレスポンスにdataフィールドがない場合、空の配列が使用される" time="0.031">
+    </testcase>
+    <testcase classname="PublicPlansPage コンポーネント" name="公開プランが存在しない場合、メッセージが表示される" time="0.03">
+    </testcase>
+    <testcase classname="PublicPlansPage コンポーネント" name="公開プランが存在する場合、PlanCard がレンダリングされる" time="0.031">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\components\features\plans\PlanList.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:02" time="0.464" tests="9">
+    <testcase classname="PlanList" name="ローディング中はスケルトンを表示する" time="0.007">
+    </testcase>
+    <testcase classname="PlanList" name="プランが0件の場合、メッセージと作成リンクを表示する" time="0.026">
+    </testcase>
+    <testcase classname="PlanList" name="プラン一覧を表示する" time="0.032">
+    </testcase>
+    <testcase classname="PlanList" name="他のユーザーのプランには公開プランバッジを表示する" time="0.031">
+    </testcase>
+    <testcase classname="PlanList" name="APIエラー時にコンソールエラーを出力する" time="0.015">
+    </testcase>
+    <testcase classname="PlanList" name="セッションがない場合、何も表示しない" time="0.016">
+    </testcase>
+    <testcase classname="PlanList" name="プランの詳細情報（日付、場所）を正しく表示する" time="0.014">
+    </testcase>
+    <testcase classname="PlanList" name="APIからエラーレスポンスが返された場合を処理する" time="0.015">
+    </testcase>
+    <testcase classname="PlanList" name="説明がないプランを正しく表示する" time="0.016">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\app\(auth)\login\login.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:02" time="0.343" tests="3">
+    <testcase classname="LoginPage コンポーネント" name="ログインフォームが正しくレンダリングされること" time="0.048">
+    </testcase>
+    <testcase classname="LoginPage コンポーネント" name="ログイン成功時に /plans へリダイレクトされること" time="0.02">
+    </testcase>
+    <testcase classname="LoginPage コンポーネント" name="ログイン失敗時にエラーメッセージが表示されること" time="0.032">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\app\(auth)\signup\signup.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:02" time="0.396" tests="3">
+    <testcase classname="SignUpPage コンポーネント" name="サインアップフォームが正しくレンダリングされること" time="0.034">
+    </testcase>
+    <testcase classname="SignUpPage コンポーネント" name="サインアップ成功時に、メール確認待ちページへリダイレクトされること" time="0.025">
+    </testcase>
+    <testcase classname="SignUpPage コンポーネント" name="サインアップ失敗時にエラーメッセージが表示されること" time="0.085">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\app\(dashboard)\plans\[id]\dashboardPlanDetailPage.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:00" time="2.269" tests="18">
+    <testcase classname="PlanDetailPage コンポーネント" name="ロード中にスピナーが表示される" time="0.03">
+    </testcase>
+    <testcase classname="PlanDetailPage コンポーネント" name="プラン作成者の場合、編集系のボタンが表示される" time="0.14">
+    </testcase>
+    <testcase classname="PlanDetailPage コンポーネント" name="プラン作成者以外の場合、編集系のボタンが表示されない" time="0.043">
+    </testcase>
+    <testcase classname="PlanDetailPage コンポーネント" name="プラン作成者の場合、削除処理が実行できる" time="0.138">
+    </testcase>
+    <testcase classname="PlanDetailPage コンポーネント" name="削除確認ダイアログでキャンセルした場合、削除処理が実行されない" time="0.056">
+    </testcase>
+    <testcase classname="PlanDetailPage コンポーネント" name="プラン削除に失敗した場合、エラーメッセージが表示される" time="0.115">
+    </testcase>
+    <testcase classname="PlanDetailPage コンポーネント" name="プラン作成者の場合、公開設定ダイアログを開ける" time="0.076">
+    </testcase>
+    <testcase classname="PlanDetailPage コンポーネント" name="プランの詳細情報が正しく表示される" time="0.042">
+    </testcase>
+    <testcase classname="PlanDetailPage コンポーネント" name="プラン作成者以外でも詳細情報を閲覧できる" time="0.055">
+    </testcase>
+    <testcase classname="PlanDetailPage コンポーネント" name="セッションがない場合、プランデータを取得しない" time="0.045">
+    </testcase>
+    <testcase classname="PlanDetailPage コンポーネント" name="プランデータの取得に失敗した場合、プラン一覧ページにリダイレクトされる" time="0.046">
+    </testcase>
+    <testcase classname="PlanDetailPage コンポーネント" name="プランが見つからない場合、何も表示されない" time="0.046">
+    </testcase>
+    <testcase classname="PlanDetailPage コンポーネント" name="paramsの解決に失敗した場合、ローディング表示が継続される" time="0.001">
+    </testcase>
+    <testcase classname="PlanDetailPage コンポーネント" name="編集ボタンをクリックすると、編集ページに遷移する" time="0.053">
+    </testcase>
+    <testcase classname="PlanDetailPage コンポーネント" name="PublishDialogのonCloseコールバックが呼ばれると、ダイアログが閉じる" time="0.058">
+    </testcase>
+    <testcase classname="PlanDetailPage コンポーネント" name="場所URLのリンクがクリック可能であることを確認" time="0.045">
+    </testcase>
+    <testcase classname="PlanDetailPage コンポーネント" name="場所URLが設定されていない場合、「未設定」と表示される" time="0.048">
+    </testcase>
+    <testcase classname="PlanDetailPage コンポーネント" name="日付が設定されていない場合、「未設定」と表示される" time="0.045">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\app\api\account\account.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:02" time="0.261" tests="6">
+    <testcase classname="DELETE /api/account" name="アカウントを正常に削除" time="0.018">
+    </testcase>
+    <testcase classname="DELETE /api/account" name="認証トークンがない場合、401エラーを返す" time="0.005">
+    </testcase>
+    <testcase classname="DELETE /api/account" name="ユーザーが見つからない場合、401エラーを返す" time="0.011">
+    </testcase>
+    <testcase classname="DELETE /api/account" name="Supabase削除エラーの場合、400エラーを返す" time="0.008">
+    </testcase>
+    <testcase classname="DELETE /api/account" name="データベース操作でエラーが発生した場合、400エラーを返す" time="0.006">
+    </testcase>
+    <testcase classname="DELETE /api/account" name="予期せぬエラーの場合、500エラーを返す" time="0.004">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\hooks\useProfile.test.ts" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:02" time="0.352" tests="14">
+    <testcase classname="useProfile" name="初期状態ではローディング中で、プロフィールはnull" time="0.058">
     </testcase>
     <testcase classname="useProfile" name="プロフィール取得に成功した場合、プロフィールが設定される" time="0.003">
     </testcase>
-    <testcase classname="useProfile" name="プロフィール取得に失敗した場合、エラーが設定される" time="0.012">
+    <testcase classname="useProfile" name="プロフィール取得に失敗した場合、エラーが設定される" time="0.017">
     </testcase>
     <testcase classname="useProfile" name="セッションがない場合、プロフィールは取得されない" time="0.001">
     </testcase>
-    <testcase classname="useProfile" name="プロフィール更新が成功した場合、新しいプロフィールが設定される" time="0.002">
+    <testcase classname="useProfile" name="プロフィール更新が成功した場合、新しいプロフィールが設定される" time="0.003">
     </testcase>
-    <testcase classname="useProfile" name="プロフィール更新が失敗した場合、エラーが返される" time="0.006">
+    <testcase classname="useProfile" name="プロフィール更新が失敗した場合、エラーが返される" time="0.013">
     </testcase>
     <testcase classname="useProfile" name="認証情報がない場合、プロフィール更新を実行できない" time="0.001">
     </testcase>
-    <testcase classname="useProfile" name="アカウント削除が成功した場合、trueを返す" time="0.003">
+    <testcase classname="useProfile" name="アカウント削除が成功した場合、trueを返す" time="0.002">
     </testcase>
     <testcase classname="useProfile" name="アカウント削除が失敗した場合、falseを返す" time="0.003">
     </testcase>
-    <testcase classname="useProfile" name="認証情報がない場合、アカウント削除を実行できない" time="0.003">
+    <testcase classname="useProfile" name="認証情報がない場合、アカウント削除を実行できない" time="0.001">
     </testcase>
-    <testcase classname="useProfile" name="非Errorオブジェクトがスローされた場合も適切に処理される（fetchProfile）" time="0.003">
+    <testcase classname="useProfile" name="非Errorオブジェクトがスローされた場合も適切に処理される（fetchProfile）" time="0.002">
     </testcase>
-    <testcase classname="useProfile" name="非Errorオブジェクトがスローされた場合も適切に処理される（updateProfile）" time="0.004">
+    <testcase classname="useProfile" name="非Errorオブジェクトがスローされた場合も適切に処理される（updateProfile）" time="0.002">
     </testcase>
-    <testcase classname="useProfile" name="非Errorオブジェクトがスローされた場合も適切に処理される（deleteAccount）" time="0.007">
+    <testcase classname="useProfile" name="非Errorオブジェクトがスローされた場合も適切に処理される（deleteAccount）" time="0.002">
     </testcase>
     <testcase classname="useProfile" name="fetchProfileを手動で呼び出すことができる" time="0.002">
     </testcase>
   </testsuite>
-  <testsuite name="tests\unit\components\features\plans\PlanCard.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:12" time="1.726" tests="16">
-    <testcase classname="PlanCard" name="プランの基本情報が正しく表示される" time="0.052">
+  <testsuite name="tests\unit\components\features\plans\LikeButton.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:02" time="0.374" tests="7">
+    <testcase classname="LikeButton" name="初期状態が正しく表示される（いいねなし）" time="0.033">
     </testcase>
-    <testcase classname="PlanCard" name="日付が正しくフォーマットされて表示される" time="0.006">
+    <testcase classname="LikeButton" name="初期状態が正しく表示される（いいねあり）" time="0.007">
     </testcase>
-    <testcase classname="PlanCard" name="日付がnullの場合、日時の項目が表示されない" time="0.004">
+    <testcase classname="LikeButton" name="未ログイン状態ではボタンが無効化される" time="0.005">
     </testcase>
-    <testcase classname="PlanCard" name="場所URLが正しく表示され、クリック可能である" time="0.037">
+    <testcase classname="LikeButton" name="いいねを追加できる" time="0.069">
     </testcase>
-    <testcase classname="PlanCard" name="場所が空の場合、代替テキストが表示される" time="0.004">
+    <testcase classname="LikeButton" name="いいねを削除できる" time="0.018">
     </testcase>
-    <testcase classname="PlanCard" name="カードをクリックすると詳細ページに遷移する" time="0.008">
+    <testcase classname="LikeButton" name="ローディング中はボタンが無効化される" time="0.005">
     </testcase>
-    <testcase classname="PlanCard" name="公開/非公開の切り替えボタンが正しく動作する" time="0.017">
-    </testcase>
-    <testcase classname="PlanCard" name="公開/非公開の切り替えボタンをクリックしてもカード全体のクリックイベントが発火しない" time="0.014">
-    </testcase>
-    <testcase classname="PlanCard" name="場所URLをクリックしてもカード全体のクリックイベントが発火しない" time="0.009">
-    </testcase>
-    <testcase classname="PlanCard" name="公開ページでは公開/非公開の切り替えボタンが表示されない" time="0.005">
-    </testcase>
-    <testcase classname="PlanCard" name="公開中のプランでは「公開中」ボタンが表示される" time="0.013">
-    </testcase>
-    <testcase classname="PlanCard" name="プロフィール名がnullの場合、「不明」と表示される" time="0.006">
-    </testcase>
-    <testcase classname="PlanCard" name="プロフィールがnullの場合、「不明」と表示される" time="0.005">
-    </testcase>
-    <testcase classname="PlanCard" name="いいねの初期状態が正しく設定される（いいね済み）" time="0.006">
-    </testcase>
-    <testcase classname="PlanCard" name="いいねの数が_countにない場合、0として表示される" time="0.009">
-    </testcase>
-    <testcase classname="PlanCard" name="onPublishToggleがnullの場合、公開/非公開ボタンが表示されない" time="0.004">
+    <testcase classname="LikeButton" name="APIエラー時にコンソールエラーが出力される" time="0.003">
     </testcase>
   </testsuite>
-  <testsuite name="tests\unit\app\api\profile\profileapi.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:13" time="0.221" tests="9">
-    <testcase classname="PUT /api/profile" name="認証されていない場合、401エラーを返す" time="0.006">
+  <testsuite name="tests\unit\app\homepage.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:02" time="0.314" tests="3">
+    <testcase classname="Home コンポーネント" name="isLoadingがtrueの場合、ローディング表示がされること" time="0.004">
     </testcase>
-    <testcase classname="PUT /api/profile" name="ユーザー認証に失敗した場合、401エラーを返す" time="0.002">
+    <testcase classname="Home コンポーネント" name="認証されていない場合、ホームコンテンツが表示されること" time="0.051">
     </testcase>
-    <testcase classname="PUT /api/profile" name="プロフィール更新に成功した場合、更新されたプロフィールを返す" time="0.002">
+    <testcase classname="Home コンポーネント" name="認証されている場合、/plansにリダイレクトされること" time="0.009">
     </testcase>
-    <testcase classname="PUT /api/profile" name="プロフィール更新に失敗した場合、500エラーを返す" time="0.011">
+  </testsuite>
+  <testsuite name="tests\unit\app\(auth)\verify-email\verify-email.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:02" time="0.264" tests="2">
+    <testcase classname="VerifyEmailPage コンポーネント" name="メールアドレスが渡された場合、そのメールアドレスを表示すること" time="0.009">
+    </testcase>
+    <testcase classname="VerifyEmailPage コンポーネント" name="メールアドレスが渡されない場合、確認メール送信時のテキストが表示されること" time="0.005">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\components\ui\button.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:02" time="0.301" tests="6">
+    <testcase classname="Button" name="デフォルトのvariantとsizeでレンダリングされる" time="0.016">
+    </testcase>
+    <testcase classname="Button" name="secondary variantが適用される" time="0.008">
+    </testcase>
+    <testcase classname="Button" name="outline variantが適用される" time="0.007">
+    </testcase>
+    <testcase classname="Button" name="サイズバリエーションが適用される" time="0.015">
+    </testcase>
+    <testcase classname="Button" name="カスタムクラス名が適用される" time="0.003">
+    </testcase>
+    <testcase classname="Button" name="その他のボタンpropsが適用される" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\contexts\AuthContext.test.tsx" errors="0" failures="1" skipped="0" timestamp="2025-03-30T07:31:00" time="2.425" tests="11">
+    <testcase classname="AuthContext" name="初期状態ではローディング中" time="0.087">
+    </testcase>
+    <testcase classname="AuthContext" name="セッションがある場合、ユーザー情報を表示" time="0.02">
+    </testcase>
+    <testcase classname="AuthContext" name="認証状態の変更を監視" time="0.022">
+    </testcase>
+    <testcase classname="AuthContext" name="コンポーネントのアンマウント時にサブスクリプションを解除" time="0.003">
+    </testcase>
+    <testcase classname="AuthContext" name="セッション取得に失敗した場合もローディングを完了" time="0.03">
+    </testcase>
+    <testcase classname="AuthContext" name="signOut関数が正しく動作する" time="0.008">
+    </testcase>
+    <testcase classname="AuthContext" name="signOutでエラーが発生した場合、コンソールにエラーを出力" time="0.005">
+    </testcase>
+    <testcase classname="AuthContext" name="AuthProviderがisLoadingの状態を正しく管理する" time="0.017">
+    </testcase>
+    <testcase classname="AuthContext" name="マウント解除後にセッション更新が行われない" time="0.003">
+    </testcase>
+    <testcase classname="AuthContext" name="AuthProviderの外でuseAuthを使用するとエラーを投げる" time="0.017">
+    </testcase>
+    <testcase classname="AuthContext" name="認証状態の変更イベントを正しく処理する" time="1.027">
+      <failure>Error: expect(element).toHaveTextContent()
+
+Expected element to have text content:
+  test@example.com
+Received:
+  no user
+
+Ignored nodes: comments, script, style
+&lt;html&gt;
+  &lt;head /&gt;
+  &lt;body&gt;
+    &lt;div&gt;
+      &lt;div&gt;
+        &lt;div
+          data-testid=&quot;loading&quot;
+        &gt;
+          loaded
+        &lt;/div&gt;
+        &lt;div
+          data-testid=&quot;user&quot;
+        &gt;
+          no user
+        &lt;/div&gt;
+        &lt;div
+          data-testid=&quot;session&quot;
+        &gt;
+          no session
+        &lt;/div&gt;
+        &lt;button
+          data-testid=&quot;signout&quot;
+        &gt;
+          Sign Out
+        &lt;/button&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+    at toHaveTextContent (C:\Users\kojil\Documents\Dev\github\coupleplan\couple-plan\tests\unit\contexts\AuthContext.test.tsx:315:42)
+    at runWithExpensiveErrorDiagnosticsDisabled (C:\Users\kojil\Documents\Dev\github\coupleplan\couple-plan\node_modules\@testing-library\dom\dist\config.js:47:12)
+    at checkCallback (C:\Users\kojil\Documents\Dev\github\coupleplan\couple-plan\node_modules\@testing-library\dom\dist\wait-for.js:124:77)
+    at checkRealTimersCallback (C:\Users\kojil\Documents\Dev\github\coupleplan\couple-plan\node_modules\@testing-library\dom\dist\wait-for.js:118:16)
+    at Timeout.task [as _onTimeout] (C:\Users\kojil\Documents\Dev\github\coupleplan\couple-plan\node_modules\jsdom\lib\jsdom\browser\Window.js:520:19)
+    at listOnTimeout (node:internal/timers:581:17)
+    at processTimers (node:internal/timers:519:7)</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\app\api\profile\profileapi.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:03" time="0.24" tests="9">
+    <testcase classname="PUT /api/profile" name="認証されていない場合、401エラーを返す" time="0.004">
+    </testcase>
+    <testcase classname="PUT /api/profile" name="ユーザー認証に失敗した場合、401エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="PUT /api/profile" name="プロフィール更新に成功した場合、更新されたプロフィールを返す" time="0.001">
+    </testcase>
+    <testcase classname="PUT /api/profile" name="プロフィール更新に失敗した場合、500エラーを返す" time="0.036">
     </testcase>
     <testcase classname="GET /api/profile" name="認証ヘッダーがない場合、401エラーを返す" time="0.001">
     </testcase>
@@ -163,13 +451,211 @@
     </testcase>
     <testcase classname="GET /api/profile" name="プロフィールが見つからない場合、404エラーを返す" time="0.001">
     </testcase>
-    <testcase classname="GET /api/profile" name="プロフィール取得に成功した場合、プロフィール情報を返す" time="0.001">
+    <testcase classname="GET /api/profile" name="プロフィール取得に成功した場合、プロフィール情報を返す" time="0">
     </testcase>
-    <testcase classname="GET /api/profile" name="データベースエラーが発生した場合、500エラーを返す" time="0.002">
+    <testcase classname="GET /api/profile" name="データベースエラーが発生した場合、500エラーを返す" time="0.003">
     </testcase>
   </testsuite>
-  <testsuite name="tests\unit\app\api\plans\plans.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:13" time="0.2" tests="9">
-    <testcase classname="plans API › GET /api/plans" name="プラン一覧を正常に取得" time="0.006">
+  <testsuite name="tests\unit\lib\api.test.ts" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:03" time="0.258" tests="27">
+    <testcase classname="api › auth › login" name="正常にログインできる" time="0.002">
+    </testcase>
+    <testcase classname="api › auth › login" name="エラー時にエラーレスポンスを返す" time="0">
+    </testcase>
+    <testcase classname="api › auth › signup" name="正常にサインアップできる" time="0.001">
+    </testcase>
+    <testcase classname="api › auth › signup" name="エラー時にエラーレスポンスを返す" time="0.028">
+    </testcase>
+    <testcase classname="api › profile › get" name="正常にプロフィールを取得できる" time="0.001">
+    </testcase>
+    <testcase classname="api › profile › get" name="エラー時にエラーレスポンスを返す" time="0.004">
+    </testcase>
+    <testcase classname="api › profile › update" name="正常にプロフィールを更新できる" time="0.001">
+    </testcase>
+    <testcase classname="api › profile › update" name="エラー時にエラーレスポンスを返す" time="0.003">
+    </testcase>
+    <testcase classname="api › plans › list" name="正常にプラン一覧を取得できる" time="0.001">
+    </testcase>
+    <testcase classname="api › plans › list" name="エラー時にエラーレスポンスを返す" time="0.003">
+    </testcase>
+    <testcase classname="api › plans › create" name="正常にプランを作成できる" time="0.001">
+    </testcase>
+    <testcase classname="api › plans › create" name="レスポンスがokでない場合エラーレスポンスを返す" time="0">
+    </testcase>
+    <testcase classname="api › plans › create" name="エラー時にエラーレスポンスを返す" time="0.003">
+    </testcase>
+    <testcase classname="api › plans › get" name="正常にプランを取得できる" time="0.001">
+    </testcase>
+    <testcase classname="api › plans › get" name="エラー時にエラーレスポンスを返す" time="0.002">
+    </testcase>
+    <testcase classname="api › plans › update" name="正常にプランを更新できる" time="0.001">
+    </testcase>
+    <testcase classname="api › plans › update" name="エラー時にエラーレスポンスを返す" time="0.002">
+    </testcase>
+    <testcase classname="api › plans › delete" name="正常にプランを削除できる" time="0">
+    </testcase>
+    <testcase classname="api › plans › delete" name="エラー時にエラーレスポンスを返す" time="0.002">
+    </testcase>
+    <testcase classname="api › plans › listPublic" name="正常に公開プラン一覧を取得できる" time="0">
+    </testcase>
+    <testcase classname="api › plans › listPublic" name="エラー時にエラーレスポンスを返す" time="0.003">
+    </testcase>
+    <testcase classname="api › plans › publish" name="正常にプランの公開設定を更新できる" time="0.001">
+    </testcase>
+    <testcase classname="api › plans › publish" name="エラー時にエラーレスポンスを返す" time="0.006">
+    </testcase>
+    <testcase classname="api › likes › create" name="正常にいいねを追加できる" time="0.001">
+    </testcase>
+    <testcase classname="api › likes › create" name="エラー時にエラーレスポンスを返す" time="0.003">
+    </testcase>
+    <testcase classname="api › likes › delete" name="正常にいいねを削除できる" time="0">
+    </testcase>
+    <testcase classname="api › likes › delete" name="エラー時にエラーレスポンスを返す" time="0.003">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\app\api\plans\[id]\plandetailes.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:03" time="0.218" tests="10">
+    <testcase classname="plans/[id] API › GET /api/plans/[id]" name="プランを正常に取得" time="0.003">
+    </testcase>
+    <testcase classname="plans/[id] API › GET /api/plans/[id]" name="プランが見つからない場合、404エラーを返す" time="0.002">
+    </testcase>
+    <testcase classname="plans/[id] API › PUT /api/plans/[id]" name="プランを正常に更新" time="0.003">
+    </testcase>
+    <testcase classname="plans/[id] API › DELETE /api/plans/[id]" name="プランを正常に削除" time="0.002">
+    </testcase>
+    <testcase classname="plans/[id] API › 共通のエラー処理" name="GET: 認証トークンがない場合、401エラーを返す" time="0.002">
+    </testcase>
+    <testcase classname="plans/[id] API › 共通のエラー処理" name="GET: ユーザーが見つからない場合、401エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="plans/[id] API › 共通のエラー処理" name="PUT: 認証トークンがない場合、401エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="plans/[id] API › 共通のエラー処理" name="PUT: ユーザーが見つからない場合、401エラーを返す" time="0.002">
+    </testcase>
+    <testcase classname="plans/[id] API › 共通のエラー処理" name="DELETE: 認証トークンがない場合、401エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="plans/[id] API › 共通のエラー処理" name="DELETE: ユーザーが見つからない場合、401エラーを返す" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\lib\util.test.ts" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:03" time="0.244" tests="15">
+    <testcase classname="utils › cn" name="単一のクラス名を処理" time="0.005">
+    </testcase>
+    <testcase classname="utils › cn" name="複数のクラス名を結合" time="0">
+    </testcase>
+    <testcase classname="utils › cn" name="条件付きクラスを処理" time="0.001">
+    </testcase>
+    <testcase classname="utils › cn" name="オブジェクト形式のクラスを処理" time="0">
+    </testcase>
+    <testcase classname="utils › cn" name="Tailwindのクラスを適切にマージ" time="0.001">
+    </testcase>
+    <testcase classname="utils › cn" name="異なる型の引数を組み合わせて処理" time="0">
+    </testcase>
+    <testcase classname="utils › formatDate" name="日付文字列を日本語形式でフォーマット" time="0.001">
+    </testcase>
+    <testcase classname="utils › formatDate" name="Dateオブジェクトを日本語形式でフォーマット" time="0.001">
+    </testcase>
+    <testcase classname="utils › formatDate" name="nullやundefinedの場合は空文字を返す" time="0">
+    </testcase>
+    <testcase classname="utils › formatDate" name="無効な日付の場合は空文字を返す" time="0.004">
+    </testcase>
+    <testcase classname="utils › formatDate" name="正しい日付文字列を返す" time="0">
+    </testcase>
+    <testcase classname="utils › formatDate" name="無効な入力の場合は空文字を返す" time="0.001">
+    </testcase>
+    <testcase classname="utils › auth" name="有効なトークンの場合、トークンを返す" time="0.005">
+    </testcase>
+    <testcase classname="utils › auth" name="認証ヘッダーがない場合、nullを返す" time="0.002">
+    </testcase>
+    <testcase classname="utils › auth" name="無効なトークンの場合、nullを返す" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\lib\utils.test.ts" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:03" time="0.255" tests="8">
+    <testcase classname="utils › cn" name="クラス名を正しく結合する" time="0.003">
+    </testcase>
+    <testcase classname="utils › formatDate" name="日付を正しくフォーマットする" time="0">
+    </testcase>
+    <testcase classname="utils › formatDate" name="文字列の日付を正しくフォーマットする" time="0.001">
+    </testcase>
+    <testcase classname="utils › formatDate" name="無効な日付の場合は空文字を返す" time="0">
+    </testcase>
+    <testcase classname="utils › auth" name="有効なトークンで認証に成功する" time="0.004">
+    </testcase>
+    <testcase classname="utils › auth" name="認証ヘッダーがない場合はnullを返す" time="0.002">
+    </testcase>
+    <testcase classname="utils › auth" name="無効なトークンの場合はnullを返す" time="0.001">
+    </testcase>
+    <testcase classname="utils › auth" name="エラーが発生した場合はnullを返す" time="0.009">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\app\api\plans\public\publicplans.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:03" time="0.248" tests="4">
+    <testcase classname="GET /api/plans/public" name="公開プラン一覧を正常に取得" time="0.007">
+    </testcase>
+    <testcase classname="GET /api/plans/public" name="認証トークンがない場合、401エラーを返す" time="0.002">
+    </testcase>
+    <testcase classname="GET /api/plans/public" name="ユーザーが見つからない場合、401エラーを返す" time="0.002">
+    </testcase>
+    <testcase classname="GET /api/plans/public" name="予期せぬエラーの場合、500エラーを返す" time="0.011">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\app\(auth)\authLayout.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:03" time="0.262" tests="2">
+    <testcase classname="AuthLayout コンポーネント" name="子コンポーネントが正常にレンダリングされる" time="0.003">
+    </testcase>
+    <testcase classname="AuthLayout コンポーネント" name="metadata が正しくエクスポートされている" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\hooks\useRequireAuth.test.ts" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:03" time="0.266" tests="5">
+    <testcase classname="useRequireAuth" name="ローディング中は何もしない" time="0.002">
+    </testcase>
+    <testcase classname="useRequireAuth" name="認証済みユーザーの場合、リダイレクトしない" time="0.001">
+    </testcase>
+    <testcase classname="useRequireAuth" name="未認証の場合、ホームページにリダイレクト" time="0.001">
+    </testcase>
+    <testcase classname="useRequireAuth" name="認証状態が変更された場合、適切に処理" time="0.001">
+    </testcase>
+    <testcase classname="useRequireAuth" name="ユーザー情報とローディング状態を返す" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\app\(dashboard)\plans\[id]\edit\dashboardPlansEditPage.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:03" time="0.292" tests="1">
+    <testcase classname="EditPlanPage コンポーネント" name="コンポーネントが正しくレンダリングされる" time="0.031">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\app\api\profile\[userId]\profileuserId.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:04" time="0.134" tests="8">
+    <testcase classname="GET /api/profile/[userId]" name="認証されていない場合、401エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="GET /api/profile/[userId]" name="ユーザー認証に失敗した場合、401エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="GET /api/profile/[userId]" name="ユーザーがnullの場合、401エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="GET /api/profile/[userId]" name="プロフィール取得に成功した場合、プロフィールデータを返す" time="0">
+    </testcase>
+    <testcase classname="GET /api/profile/[userId]" name="プロフィールが見つからない場合、404エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="GET /api/profile/[userId]" name="Prismaでエラーが発生した場合、500エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="GET /api/profile/[userId]" name="非Errorオブジェクトのエラーの場合も適切に処理される" time="0.001">
+    </testcase>
+    <testcase classname="GET /api/profile/[userId]" name="paramsの取得中にエラーが発生した場合、500エラーを返す" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\app\api\auth\reset-password\reset-password.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:04" time="0.165" tests="5">
+    <testcase classname="POST /api/auth/reset-password" name="パスワードリセットメールを正常に送信" time="0.005">
+    </testcase>
+    <testcase classname="POST /api/auth/reset-password" name="Supabaseからエラーが返された場合、400エラーを返す" time="0.006">
+    </testcase>
+    <testcase classname="POST /api/auth/reset-password" name="予期せぬエラーが発生した場合、500エラーを返す" time="0.002">
+    </testcase>
+    <testcase classname="POST /api/auth/reset-password" name="メールアドレスが提供されていない場合、400エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="POST /api/auth/reset-password" name="NEXT_PUBLIC_APP_URLが設定されていない場合、500エラーを返す" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\app\api\auth\login\login.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:04" time="0.192" tests="3">
+    <testcase classname="ログインAPI統合テスト" name="有効な認証情報でログインできる" time="0.004">
+    </testcase>
+    <testcase classname="ログインAPI統合テスト" name="無効な認証情報で401エラーを返す" time="0.002">
+    </testcase>
+    <testcase classname="ログインAPI統合テスト" name="無効なリクエストで500エラーを返す" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\app\api\plans\plans.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:04" time="0.201" tests="9">
+    <testcase classname="plans API › GET /api/plans" name="プラン一覧を正常に取得" time="0.003">
     </testcase>
     <testcase classname="plans API › GET /api/plans" name="認証トークンがない場合、401エラーを返す" time="0.001">
     </testcase>
@@ -179,37 +665,149 @@
     </testcase>
     <testcase classname="plans API › GET /api/plans" name="Prismaエラーの場合、500エラーを返す" time="0.001">
     </testcase>
-    <testcase classname="plans API › GET /api/plans" name="非Errorオブジェクトのエラーの場合も適切に処理される" time="0.006">
+    <testcase classname="plans API › GET /api/plans" name="非Errorオブジェクトのエラーの場合も適切に処理される" time="0.002">
     </testcase>
-    <testcase classname="plans API › POST /api/plans" name="プランを正常に作成" time="0.002">
+    <testcase classname="plans API › POST /api/plans" name="プランを正常に作成" time="0.003">
     </testcase>
     <testcase classname="plans API › POST /api/plans" name="無効なリクエストデータの場合は400エラーを返す" time="0.001">
     </testcase>
     <testcase classname="plans API › POST /api/plans" name="Prismaエラーの場合は500エラーを返す" time="0.001">
     </testcase>
   </testsuite>
-  <testsuite name="tests\unit\lib\api.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:13" time="0.153" tests="38">
-    <testcase classname="api › auth" name="ログインリクエストを送信" time="0.002">
+  <testsuite name="tests\unit\app\api\plans\[id]\publish\publishplan.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:04" time="0.201" tests="5">
+    <testcase classname="plans/[id]/publish API" name="プランの公開設定を正常に更新" time="0.004">
     </testcase>
-    <testcase classname="api › auth" name="ログイン失敗時のエラーレスポンスを処理" time="0">
+    <testcase classname="plans/[id]/publish API" name="不正な公開設定値の場合、400エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="plans/[id]/publish API" name="認証トークンがない場合、401エラーを返す" time="0.002">
+    </testcase>
+    <testcase classname="plans/[id]/publish API" name="ユーザーが見つからない場合、401エラーを返す" time="0.002">
+    </testcase>
+    <testcase classname="plans/[id]/publish API" name="プランの更新に失敗した場合、500エラーを返す" time="0.004">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\app\api\plans\[id]\likes\likesplan.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:04" time="0.219" tests="9">
+    <testcase classname="plans/[id]/likes API › POST /api/plans/[id]/likes" name="いいねを正常に作成" time="0.004">
+    </testcase>
+    <testcase classname="plans/[id]/likes API › POST /api/plans/[id]/likes" name="プランが存在しない場合、404エラーを返す" time="0.002">
+    </testcase>
+    <testcase classname="plans/[id]/likes API › POST /api/plans/[id]/likes" name="既にいいね済みの場合、400エラーを返す" time="0.006">
+    </testcase>
+    <testcase classname="plans/[id]/likes API › DELETE /api/plans/[id]/likes" name="いいねを正常に削除" time="0.004">
+    </testcase>
+    <testcase classname="plans/[id]/likes API › DELETE /api/plans/[id]/likes" name="いいねが存在しない場合、404エラーを返す" time="0.005">
+    </testcase>
+    <testcase classname="plans/[id]/likes API › 共通のエラー処理" name="POST: 認証トークンがない場合、401エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="plans/[id]/likes API › 共通のエラー処理" name="POST: ユーザーが見つからない場合、401エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="plans/[id]/likes API › 共通のエラー処理" name="DELETE: 認証トークンがない場合、401エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="plans/[id]/likes API › 共通のエラー処理" name="DELETE: ユーザーが見つからない場合、401エラーを返す" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\app\api\auth\signup\signup.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:04" time="0.254" tests="6">
+    <testcase classname="POST /api/auth/signup" name="正常にユーザー登録を完了" time="0.006">
+    </testcase>
+    <testcase classname="POST /api/auth/signup" name="パスワードが6文字未満の場合、400エラーを返す" time="0.002">
+    </testcase>
+    <testcase classname="POST /api/auth/signup" name="無効なメールアドレスの場合、400エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="POST /api/auth/signup" name="Supabase認証エラーの場合、400エラーを返す" time="0.002">
+    </testcase>
+    <testcase classname="POST /api/auth/signup" name="メールアドレスが既に登録されている場合、400エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="POST /api/auth/signup" name="予期せぬエラーの場合、500エラーを返す" time="0.009">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\components\features\auth\AuthGuard.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:04" time="0.268" tests="2">
+    <testcase classname="AuthGuard" name="ローディング中はスピナーを表示する" time="0.018">
+    </testcase>
+    <testcase classname="AuthGuard" name="ローディング完了後に子コンポーネントを表示する" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\app\(dashboard)\dashboardlayout.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:04" time="0.266" tests="1">
+    <testcase classname="DashboardLayout コンポーネント" name="子要素と Navbar を正しくレンダリングする" time="0.008">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\app\layout.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:04" time="0.261" tests="2">
+    <testcase classname="RootLayout コンポーネント" name="子コンポーネントを正しくレンダリングする" time="0.007">
+    </testcase>
+    <testcase classname="RootLayout コンポーネント" name="メタデータが正しく設定されている" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\lib\api\profile.test.ts" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:05" time="0.139" tests="12">
+    <testcase classname="profileApi › fetchUserProfile" name="プロフィール取得に成功した場合、プロフィールデータを返す" time="0.001">
+    </testcase>
+    <testcase classname="profileApi › fetchUserProfile" name="プロフィール取得に失敗した場合、エラーを返す" time="0.004">
+    </testcase>
+    <testcase classname="profileApi › fetchUserProfile" name="ネットワークエラーの場合、エラーを返す" time="0">
+    </testcase>
+    <testcase classname="profileApi › updateProfile" name="プロフィール更新に成功した場合、更新されたプロフィールを返す" time="0.001">
+    </testcase>
+    <testcase classname="profileApi › updateProfile" name="プロフィール更新に失敗した場合、エラーを返す" time="0">
+    </testcase>
+    <testcase classname="profileApi › updateProfile" name="ネットワークエラーの場合、エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="profileApi › fetchProfile" name="プロフィール取得に成功した場合、プロフィールデータを返す" time="0">
+    </testcase>
+    <testcase classname="profileApi › fetchProfile" name="プロフィール取得に失敗した場合、エラーを返す" time="0.004">
+    </testcase>
+    <testcase classname="profileApi › fetchProfile" name="ネットワークエラーの場合、エラーを返す" time="0">
+    </testcase>
+    <testcase classname="profileApi › deleteAccount" name="アカウント削除に成功した場合、成功メッセージを返す" time="0">
+    </testcase>
+    <testcase classname="profileApi › deleteAccount" name="アカウント削除に失敗した場合、エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="profileApi › deleteAccount" name="ネットワークエラーの場合、エラーを返す" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\app\api\account\route.test.ts" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:05" time="0.15" tests="6">
+    <testcase classname="DELETE /api/account" name="正常にアカウントを削除できる" time="0.008">
+    </testcase>
+    <testcase classname="DELETE /api/account" name="認証ヘッダーがない場合は401エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="DELETE /api/account" name="認証エラーの場合は401エラーを返す" time="0">
+    </testcase>
+    <testcase classname="DELETE /api/account" name="ユーザーが見つからない場合は404エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="DELETE /api/account" name="データベースエラーの場合は400エラーを返す" time="0.002">
+    </testcase>
+    <testcase classname="DELETE /api/account" name="予期せぬエラーの場合は500エラーを返す" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\lib\db.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:05" time="0.124" tests="1">
+    <testcase classname="db" name="Prismaクライアントをシングルトンとして管理" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\lib\supabase-auth.test.ts" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:05" time="0.132" tests="2">
+    <testcase classname="supabase-auth" name="環境変数が設定されている場合、Supabaseクライアントを作成" time="0.003">
+    </testcase>
+    <testcase classname="supabase-auth" name="環境変数が設定されていない場合、エラーを投げる" time="0.008">
+    </testcase>
+  </testsuite>
+  <testsuite name="tests\unit\lib\api.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-03-30T07:31:05" time="0.142" tests="38">
+    <testcase classname="api › auth" name="ログインリクエストを送信" time="0.003">
+    </testcase>
+    <testcase classname="api › auth" name="ログイン失敗時のエラーレスポンスを処理" time="0.001">
     </testcase>
     <testcase classname="api › auth" name="サインアップリクエストを送信" time="0.001">
     </testcase>
-    <testcase classname="api › auth" name="サインアップ失敗時のエラーレスポンスを処理" time="0">
+    <testcase classname="api › auth" name="サインアップ失敗時のエラーレスポンスを処理" time="0.001">
     </testcase>
-    <testcase classname="api › auth" name="サインアップ時のネットワークエラーを処理" time="0.001">
+    <testcase classname="api › auth" name="サインアップ時のネットワークエラーを処理" time="0">
     </testcase>
-    <testcase classname="api › profile" name="プロフィール情報を取得" time="0">
+    <testcase classname="api › profile" name="プロフィール情報を取得" time="0.001">
     </testcase>
-    <testcase classname="api › profile" name="プロフィール取得失敗時のエラーレスポンスを処理" time="0">
+    <testcase classname="api › profile" name="プロフィール取得失敗時のエラーレスポンスを処理" time="0.001">
     </testcase>
-    <testcase classname="api › profile" name="プロフィール取得時のネットワークエラーを処理" time="0.001">
+    <testcase classname="api › profile" name="プロフィール取得時のネットワークエラーを処理" time="0">
     </testcase>
     <testcase classname="api › profile" name="プロフィール情報を更新" time="0">
     </testcase>
     <testcase classname="api › profile" name="プロフィール更新失敗時のエラーレスポンスを処理" time="0.001">
     </testcase>
-    <testcase classname="api › profile" name="プロフィール更新時のネットワークエラーを処理" time="0">
+    <testcase classname="api › profile" name="プロフィール更新時のネットワークエラーを処理" time="0.001">
     </testcase>
     <testcase classname="api › plans" name="プラン一覧を取得" time="0">
     </testcase>
@@ -219,581 +817,51 @@
     </testcase>
     <testcase classname="api › plans" name="プランを作成" time="0.001">
     </testcase>
-    <testcase classname="api › plans" name="プラン作成時のエラーハンドリング" time="0">
+    <testcase classname="api › plans" name="プラン作成時のエラーハンドリング" time="0.004">
     </testcase>
-    <testcase classname="api › plans" name="プラン作成時のレスポンスエラーを処理" time="0">
+    <testcase classname="api › plans" name="プラン作成時のレスポンスエラーを処理" time="0.001">
     </testcase>
     <testcase classname="api › plans" name="特定のプランを取得" time="0.001">
     </testcase>
     <testcase classname="api › plans" name="プラン取得失敗時のエラーレスポンスを処理" time="0">
     </testcase>
-    <testcase classname="api › plans" name="プラン取得時のネットワークエラーを処理" time="0">
+    <testcase classname="api › plans" name="プラン取得時のネットワークエラーを処理" time="0.001">
     </testcase>
-    <testcase classname="api › plans" name="プランを更新" time="0">
+    <testcase classname="api › plans" name="プランを更新" time="0.001">
     </testcase>
     <testcase classname="api › plans" name="プラン更新失敗時のエラーレスポンスを処理" time="0">
     </testcase>
-    <testcase classname="api › plans" name="プラン更新時のネットワークエラーを処理" time="0.004">
+    <testcase classname="api › plans" name="プラン更新時のネットワークエラーを処理" time="0.001">
     </testcase>
     <testcase classname="api › plans" name="プランを削除" time="0">
     </testcase>
-    <testcase classname="api › plans" name="プラン削除失敗時のエラーレスポンスを処理" time="0.001">
+    <testcase classname="api › plans" name="プラン削除失敗時のエラーレスポンスを処理" time="0">
     </testcase>
-    <testcase classname="api › plans" name="プラン削除時のネットワークエラーを処理" time="0">
+    <testcase classname="api › plans" name="プラン削除時のネットワークエラーを処理" time="0.001">
     </testcase>
     <testcase classname="api › plans" name="公開プラン一覧を取得" time="0">
     </testcase>
-    <testcase classname="api › plans" name="公開プラン一覧取得失敗時のエラーレスポンスを処理" time="0.001">
+    <testcase classname="api › plans" name="公開プラン一覧取得失敗時のエラーレスポンスを処理" time="0">
     </testcase>
-    <testcase classname="api › plans" name="公開プラン一覧取得時のネットワークエラーを処理" time="0">
+    <testcase classname="api › plans" name="公開プラン一覧取得時のネットワークエラーを処理" time="0.001">
     </testcase>
     <testcase classname="api › plans" name="プランの公開設定を更新" time="0">
     </testcase>
     <testcase classname="api › plans" name="プラン公開設定更新失敗時のエラーレスポンスを処理" time="0">
     </testcase>
-    <testcase classname="api › plans" name="プラン公開設定更新時のネットワークエラーを処理" time="0">
+    <testcase classname="api › plans" name="プラン公開設定更新時のネットワークエラーを処理" time="0.001">
     </testcase>
-    <testcase classname="api › likes" name="いいねを作成" time="0.001">
+    <testcase classname="api › likes" name="いいねを作成" time="0">
     </testcase>
     <testcase classname="api › likes" name="いいね作成失敗時のエラーレスポンスを処理" time="0">
     </testcase>
-    <testcase classname="api › likes" name="いいね作成時のネットワークエラーを処理" time="0">
+    <testcase classname="api › likes" name="いいね作成時のネットワークエラーを処理" time="0.001">
     </testcase>
-    <testcase classname="api › likes" name="いいねを削除" time="0.001">
+    <testcase classname="api › likes" name="いいねを削除" time="0">
     </testcase>
     <testcase classname="api › likes" name="いいね削除失敗時のエラーレスポンスを処理" time="0">
     </testcase>
-    <testcase classname="api › likes" name="いいね削除時のネットワークエラーを処理" time="0">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\app\(dashboard)\plans\[id]\edit\dashboardPlansEditPage.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:12" time="2.13" tests="3">
-    <testcase classname="EditPlanPage コンポーネント" name="コンポーネントが正しくレンダリングされる" time="0.094">
-    </testcase>
-    <testcase classname="EditPlanPage コンポーネント" name="プランの更新が成功する" time="0.778">
-    </testcase>
-    <testcase classname="EditPlanPage コンポーネント" name="エラー発生時に適切に処理される" time="0.174">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\app\(dashboard)\plans\[id]\dashboardPlanDetailPage.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:12" time="2.257" tests="18">
-    <testcase classname="PlanDetailPage コンポーネント" name="ロード中にスピナーが表示される" time="0.032">
-    </testcase>
-    <testcase classname="PlanDetailPage コンポーネント" name="プラン作成者の場合、編集系のボタンが表示される" time="0.155">
-    </testcase>
-    <testcase classname="PlanDetailPage コンポーネント" name="プラン作成者以外の場合、編集系のボタンが表示されない" time="0.071">
-    </testcase>
-    <testcase classname="PlanDetailPage コンポーネント" name="プラン作成者の場合、削除処理が実行できる" time="0.133">
-    </testcase>
-    <testcase classname="PlanDetailPage コンポーネント" name="削除確認ダイアログでキャンセルした場合、削除処理が実行されない" time="0.066">
-    </testcase>
-    <testcase classname="PlanDetailPage コンポーネント" name="プラン削除に失敗した場合、エラーメッセージが表示される" time="0.131">
-    </testcase>
-    <testcase classname="PlanDetailPage コンポーネント" name="プラン作成者の場合、公開設定ダイアログを開ける" time="0.077">
-    </testcase>
-    <testcase classname="PlanDetailPage コンポーネント" name="プランの詳細情報が正しく表示される" time="0.067">
-    </testcase>
-    <testcase classname="PlanDetailPage コンポーネント" name="プラン作成者以外でも詳細情報を閲覧できる" time="0.063">
-    </testcase>
-    <testcase classname="PlanDetailPage コンポーネント" name="セッションがない場合、プランデータを取得しない" time="0.056">
-    </testcase>
-    <testcase classname="PlanDetailPage コンポーネント" name="プランデータの取得に失敗した場合、プラン一覧ページにリダイレクトされる" time="0.06">
-    </testcase>
-    <testcase classname="PlanDetailPage コンポーネント" name="プランが見つからない場合、何も表示されない" time="0.046">
-    </testcase>
-    <testcase classname="PlanDetailPage コンポーネント" name="paramsの解決に失敗した場合、ローディング表示が継続される" time="0.002">
-    </testcase>
-    <testcase classname="PlanDetailPage コンポーネント" name="編集ボタンをクリックすると、編集ページに遷移する" time="0.069">
-    </testcase>
-    <testcase classname="PlanDetailPage コンポーネント" name="PublishDialogのonCloseコールバックが呼ばれると、ダイアログが閉じる" time="0.07">
-    </testcase>
-    <testcase classname="PlanDetailPage コンポーネント" name="場所URLのリンクがクリック可能であることを確認" time="0.059">
-    </testcase>
-    <testcase classname="PlanDetailPage コンポーネント" name="場所URLが設定されていない場合、「未設定」と表示される" time="0.063">
-    </testcase>
-    <testcase classname="PlanDetailPage コンポーネント" name="日付が設定されていない場合、「未設定」と表示される" time="0.046">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\components\features\plans\PlanList.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:14" time="0.435" tests="9">
-    <testcase classname="PlanList" name="ローディング中はスケルトンを表示する" time="0.006">
-    </testcase>
-    <testcase classname="PlanList" name="プランが0件の場合、メッセージと作成リンクを表示する" time="0.028">
-    </testcase>
-    <testcase classname="PlanList" name="プラン一覧を表示する" time="0.031">
-    </testcase>
-    <testcase classname="PlanList" name="他のユーザーのプランには公開プランバッジを表示する" time="0.032">
-    </testcase>
-    <testcase classname="PlanList" name="APIエラー時にコンソールエラーを出力する" time="0.03">
-    </testcase>
-    <testcase classname="PlanList" name="セッションがない場合、何も表示しない" time="0.017">
-    </testcase>
-    <testcase classname="PlanList" name="プランの詳細情報（日付、場所）を正しく表示する" time="0.014">
-    </testcase>
-    <testcase classname="PlanList" name="APIからエラーレスポンスが返された場合を処理する" time="0.032">
-    </testcase>
-    <testcase classname="PlanList" name="説明がないプランを正しく表示する" time="0.03">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\contexts\AuthContext.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:14" time="0.283" tests="9">
-    <testcase classname="AuthContext" name="初期状態ではローディング中" time="0.014">
-    </testcase>
-    <testcase classname="AuthContext" name="セッションがある場合、ユーザー情報を表示" time="0.009">
-    </testcase>
-    <testcase classname="AuthContext" name="認証状態の変更を監視" time="0.016">
-    </testcase>
-    <testcase classname="AuthContext" name="コンポーネントのアンマウント時にサブスクリプションを解除" time="0.003">
-    </testcase>
-    <testcase classname="AuthContext" name="セッション取得に失敗した場合もローディングを完了" time="0.01">
-    </testcase>
-    <testcase classname="AuthContext" name="signOut関数が正しく動作する" time="0.003">
-    </testcase>
-    <testcase classname="AuthContext" name="signOutでエラーが発生した場合、コンソールにエラーを出力" time="0.002">
-    </testcase>
-    <testcase classname="AuthContext" name="AuthProviderがisLoadingの状態を正しく管理する" time="0.012">
-    </testcase>
-    <testcase classname="AuthContext" name="マウント解除後にセッション更新が行われない" time="0.003">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\components\features\dashboard\Navbar.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:14" time="0.448" tests="7">
-    <testcase classname="Navbar" name="デスクトップ表示で全てのナビゲーションリンクとログアウトボタンが表示される" time="0.042">
-    </testcase>
-    <testcase classname="Navbar" name="モバイル表示でハンバーガーメニューをクリックするとメニューが開閉する" time="0.061">
-    </testcase>
-    <testcase classname="Navbar" name="ログアウトボタンをクリックするとログアウト処理が実行される" time="0.026">
-    </testcase>
-    <testcase classname="Navbar" name="モバイルメニューのリンクをクリックするとメニューが閉じる" time="0.025">
-    </testcase>
-    <testcase classname="Navbar" name="モバイルメニューのログアウトボタンをクリックするとログアウト処理が実行される" time="0.029">
-    </testcase>
-    <testcase classname="Navbar" name="ログアウト処理でエラーが発生した場合も、ホームページにリダイレクトされる" time="0.022">
-    </testcase>
-    <testcase classname="Navbar" name="ログアウト処理で例外が投げられた場合も、ホームページにリダイレクトされる" time="0.016">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\app\(dashboard)\plans\explore\page.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:13" time="1.101" tests="7">
-    <testcase classname="ExplorePlansPage コンポーネント" name="ローディング中はスピナーが表示される" time="0.065">
-    </testcase>
-    <testcase classname="ExplorePlansPage コンポーネント" name="プランが正しく表示される" time="0.048">
-    </testcase>
-    <testcase classname="ExplorePlansPage コンポーネント" name="地域フィルターが機能する" time="0.043">
-    </testcase>
-    <testcase classname="ExplorePlansPage コンポーネント" name="カテゴリフィルターが機能する" time="0.039">
-    </testcase>
-    <testcase classname="ExplorePlansPage コンポーネント" name="フィルター条件に一致するプランがない場合、メッセージが表示される" time="0.033">
-    </testcase>
-    <testcase classname="ExplorePlansPage コンポーネント" name="APIエラー時にエラーメッセージが表示される" time="0.041">
-    </testcase>
-    <testcase classname="ExplorePlansPage コンポーネント" name="セッションがない場合、ローディングが終了する" time="0.031">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\app\(dashboard)\plans\explore\explorePlansPage.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:13" time="0.913" tests="4">
-    <testcase classname="ExplorePlansPage" name="プランが正しく表示される" time="0.047">
-    </testcase>
-    <testcase classname="ExplorePlansPage" name="地域フィルターが機能する" time="0.031">
-    </testcase>
-    <testcase classname="ExplorePlansPage" name="カテゴリフィルターが機能する" time="0.032">
-    </testcase>
-    <testcase classname="ExplorePlansPage" name="APIエラー時にエラーメッセージが表示される" time="0.034">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\app\(dashboard)\plans\dashboardPlansPage.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:14" time="0.4" tests="8">
-    <testcase classname="MyPlansPage コンポーネント" name="ロード中はスピナーが表示される" time="0.012">
-    </testcase>
-    <testcase classname="MyPlansPage コンポーネント" name="セッションがない場合、APIが呼ばれずにローディング状態が解除される" time="0.011">
-    </testcase>
-    <testcase classname="MyPlansPage コンポーネント" name="APIエラーが発生した場合、エラーがログに出力され、ローディング状態が解除される" time="0.03">
-    </testcase>
-    <testcase classname="MyPlansPage コンポーネント" name="APIレスポンスにエラーが含まれる場合、エラーがログに出力される" time="0.032">
-    </testcase>
-    <testcase classname="MyPlansPage コンポーネント" name="APIレスポンスにdataフィールドがない場合、空の配列が使用される" time="0.031">
-    </testcase>
-    <testcase classname="MyPlansPage コンポーネント" name="プランが存在しない場合、適切なメッセージと新規作成ボタンが表示され、ボタン押下で /plans/new に遷移する" time="0.033">
-    </testcase>
-    <testcase classname="MyPlansPage コンポーネント" name="プランが存在する場合、PlanCard がレンダリングされる" time="0.028">
-    </testcase>
-    <testcase classname="MyPlansPage コンポーネント" name="ヘッダーの新規プラン作成ボタンをクリックすると、/plans/new に遷移する" time="0.016">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\app\(auth)\signup\signup.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:14" time="0.321" tests="3">
-    <testcase classname="SignUpPage コンポーネント" name="サインアップフォームが正しくレンダリングされること" time="0.028">
-    </testcase>
-    <testcase classname="SignUpPage コンポーネント" name="サインアップ成功時に、メール確認待ちページへリダイレクトされること" time="0.039">
-    </testcase>
-    <testcase classname="SignUpPage コンポーネント" name="サインアップ失敗時にエラーメッセージが表示されること" time="0.048">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\app\plans\public\page.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:14" time="0.387" tests="6">
-    <testcase classname="PublicPlansPage コンポーネント" name="ローディング中はスピナーが表示されること" time="0.03">
-    </testcase>
-    <testcase classname="PublicPlansPage コンポーネント" name="プラン一覧が正しく表示されること" time="0.05">
-    </testcase>
-    <testcase classname="PublicPlansPage コンポーネント" name="地域フィルターが機能すること" time="0.011">
-    </testcase>
-    <testcase classname="PublicPlansPage コンポーネント" name="カテゴリフィルターが機能すること" time="0.014">
-    </testcase>
-    <testcase classname="PublicPlansPage コンポーネント" name="プランが存在しない場合のメッセージが表示されること" time="0.024">
-    </testcase>
-    <testcase classname="PublicPlansPage コンポーネント" name="APIエラー時にエラーメッセージが表示されること" time="0.031">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\app\api\auth\signup\signup.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:14" time="0.233" tests="6">
-    <testcase classname="POST /api/auth/signup" name="正常にユーザー登録を完了" time="0.007">
-    </testcase>
-    <testcase classname="POST /api/auth/signup" name="パスワードが6文字未満の場合、400エラーを返す" time="0.001">
-    </testcase>
-    <testcase classname="POST /api/auth/signup" name="無効なメールアドレスの場合、400エラーを返す" time="0.002">
-    </testcase>
-    <testcase classname="POST /api/auth/signup" name="Supabase認証エラーの場合、400エラーを返す" time="0.001">
-    </testcase>
-    <testcase classname="POST /api/auth/signup" name="メールアドレスが既に登録されている場合、400エラーを返す" time="0.002">
-    </testcase>
-    <testcase classname="POST /api/auth/signup" name="予期せぬエラーの場合、500エラーを返す" time="0.007">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\components\features\plans\PublishDialog.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:14" time="0.52" tests="7">
-    <testcase classname="PublishDialog" name="isOpen=falseの場合、何も表示しない" time="0.004">
-    </testcase>
-    <testcase classname="PublishDialog" name="非公開プランの場合、公開確認メッセージを表示する" time="0.044">
-    </testcase>
-    <testcase classname="PublishDialog" name="公開プランの場合、非公開確認メッセージを表示する" time="0.014">
-    </testcase>
-    <testcase classname="PublishDialog" name="公開設定を更新できる" time="0.096">
-    </testcase>
-    <testcase classname="PublishDialog" name="キャンセルボタンでダイアログを閉じる" time="0.016">
-    </testcase>
-    <testcase classname="PublishDialog" name="更新中はボタンを無効化する" time="0.085">
-    </testcase>
-    <testcase classname="PublishDialog" name="APIエラー時にエラーメッセージを表示する" time="0.051">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\components\features\plans\LikeButton.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:14" time="0.302" tests="7">
-    <testcase classname="LikeButton" name="初期状態が正しく表示される（いいねなし）" time="0.021">
-    </testcase>
-    <testcase classname="LikeButton" name="初期状態が正しく表示される（いいねあり）" time="0.005">
-    </testcase>
-    <testcase classname="LikeButton" name="未ログイン状態ではボタンが無効化される" time="0.005">
-    </testcase>
-    <testcase classname="LikeButton" name="いいねを追加できる" time="0.02">
-    </testcase>
-    <testcase classname="LikeButton" name="いいねを削除できる" time="0.018">
-    </testcase>
-    <testcase classname="LikeButton" name="ローディング中はボタンが無効化される" time="0.007">
-    </testcase>
-    <testcase classname="LikeButton" name="APIエラー時にコンソールエラーが出力される" time="0.005">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\app\api\account\route.test.ts" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:14" time="0.273" tests="6">
-    <testcase classname="DELETE /api/account" name="正常にアカウントを削除できる" time="0.05">
-    </testcase>
-    <testcase classname="DELETE /api/account" name="認証ヘッダーがない場合は401エラーを返す" time="0.002">
-    </testcase>
-    <testcase classname="DELETE /api/account" name="認証エラーの場合は401エラーを返す" time="0.002">
-    </testcase>
-    <testcase classname="DELETE /api/account" name="ユーザーが見つからない場合は404エラーを返す" time="0.001">
-    </testcase>
-    <testcase classname="DELETE /api/account" name="データベースエラーの場合は400エラーを返す" time="0.003">
-    </testcase>
-    <testcase classname="DELETE /api/account" name="予期せぬエラーの場合は500エラーを返す" time="0.001">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\app\api\plans\[id]\plandetailes.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:15" time="0.166" tests="10">
-    <testcase classname="plans/[id] API › GET /api/plans/[id]" name="プランを正常に取得" time="0.002">
-    </testcase>
-    <testcase classname="plans/[id] API › GET /api/plans/[id]" name="プランが見つからない場合、404エラーを返す" time="0.001">
-    </testcase>
-    <testcase classname="plans/[id] API › PUT /api/plans/[id]" name="プランを正常に更新" time="0.001">
-    </testcase>
-    <testcase classname="plans/[id] API › DELETE /api/plans/[id]" name="プランを正常に削除" time="0.001">
-    </testcase>
-    <testcase classname="plans/[id] API › 共通のエラー処理" name="GET: 認証トークンがない場合、401エラーを返す" time="0.001">
-    </testcase>
-    <testcase classname="plans/[id] API › 共通のエラー処理" name="GET: ユーザーが見つからない場合、401エラーを返す" time="0.002">
-    </testcase>
-    <testcase classname="plans/[id] API › 共通のエラー処理" name="PUT: 認証トークンがない場合、401エラーを返す" time="0">
-    </testcase>
-    <testcase classname="plans/[id] API › 共通のエラー処理" name="PUT: ユーザーが見つからない場合、401エラーを返す" time="0">
-    </testcase>
-    <testcase classname="plans/[id] API › 共通のエラー処理" name="DELETE: 認証トークンがない場合、401エラーを返す" time="0.006">
-    </testcase>
-    <testcase classname="plans/[id] API › 共通のエラー処理" name="DELETE: ユーザーが見つからない場合、401エラーを返す" time="0.001">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\app\api\plans\public\publicplans.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:15" time="0.163" tests="4">
-    <testcase classname="GET /api/plans/public" name="公開プラン一覧を正常に取得" time="0.001">
-    </testcase>
-    <testcase classname="GET /api/plans/public" name="認証トークンがない場合でも公開プランを取得できる" time="0.001">
-    </testcase>
-    <testcase classname="GET /api/plans/public" name="ユーザーが見つからない場合でも公開プランを取得できる" time="0">
-    </testcase>
-    <testcase classname="GET /api/plans/public" name="予期せぬエラーの場合、500エラーを返す" time="0.011">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\app\(auth)\login\login.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:14" time="0.323" tests="3">
-    <testcase classname="LoginPage コンポーネント" name="ログインフォームが正しくレンダリングされること" time="0.022">
-    </testcase>
-    <testcase classname="LoginPage コンポーネント" name="ログイン成功時に /plans へリダイレクトされること" time="0.05">
-    </testcase>
-    <testcase classname="LoginPage コンポーネント" name="ログイン失敗時にエラーメッセージが表示されること" time="0.031">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\app\api\plans\[id]\publish\publishplan.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:15" time="0.17" tests="5">
-    <testcase classname="plans/[id]/publish API" name="プランの公開設定を正常に更新" time="0.002">
-    </testcase>
-    <testcase classname="plans/[id]/publish API" name="不正な公開設定値の場合、400エラーを返す" time="0.001">
-    </testcase>
-    <testcase classname="plans/[id]/publish API" name="認証トークンがない場合、401エラーを返す" time="0.001">
-    </testcase>
-    <testcase classname="plans/[id]/publish API" name="ユーザーが見つからない場合、401エラーを返す" time="0.002">
-    </testcase>
-    <testcase classname="plans/[id]/publish API" name="プランの更新に失敗した場合、500エラーを返す" time="0.008">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\app\homepage.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:14" time="0.293" tests="4">
-    <testcase classname="Home コンポーネント" name="isLoadingがtrueの場合、ローディング表示がされること" time="0.007">
-    </testcase>
-    <testcase classname="Home コンポーネント" name="認証されていない場合、ホームコンテンツが表示されること" time="0.043">
-    </testcase>
-    <testcase classname="Home コンポーネント" name="認証されている場合、/plansにリダイレクトされること" time="0.008">
-    </testcase>
-    <testcase classname="Home コンポーネント" name="認証状態が変更された場合、適切にリダイレクトされること" time="0.012">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\components\ui\button.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:15" time="0.265" tests="6">
-    <testcase classname="Button" name="デフォルトのvariantとsizeでレンダリングされる" time="0.016">
-    </testcase>
-    <testcase classname="Button" name="secondary variantが適用される" time="0.006">
-    </testcase>
-    <testcase classname="Button" name="outline variantが適用される" time="0.009">
-    </testcase>
-    <testcase classname="Button" name="サイズバリエーションが適用される" time="0.017">
-    </testcase>
-    <testcase classname="Button" name="カスタムクラス名が適用される" time="0.007">
-    </testcase>
-    <testcase classname="Button" name="その他のボタンpropsが適用される" time="0.002">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\lib\util.test.ts" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:15" time="0.167" tests="15">
-    <testcase classname="utils › cn" name="単一のクラス名を処理" time="0.004">
-    </testcase>
-    <testcase classname="utils › cn" name="複数のクラス名を結合" time="0">
-    </testcase>
-    <testcase classname="utils › cn" name="条件付きクラスを処理" time="0">
-    </testcase>
-    <testcase classname="utils › cn" name="オブジェクト形式のクラスを処理" time="0.001">
-    </testcase>
-    <testcase classname="utils › cn" name="Tailwindのクラスを適切にマージ" time="0">
-    </testcase>
-    <testcase classname="utils › cn" name="異なる型の引数を組み合わせて処理" time="0">
-    </testcase>
-    <testcase classname="utils › formatDate" name="日付文字列を日本語形式でフォーマット" time="0.001">
-    </testcase>
-    <testcase classname="utils › formatDate" name="Dateオブジェクトを日本語形式でフォーマット" time="0">
-    </testcase>
-    <testcase classname="utils › formatDate" name="nullやundefinedの場合は空文字を返す" time="0">
-    </testcase>
-    <testcase classname="utils › formatDate" name="無効な日付の場合は空文字を返す" time="0.001">
-    </testcase>
-    <testcase classname="utils › formatDate" name="正しい日付文字列を返す" time="0.001">
-    </testcase>
-    <testcase classname="utils › formatDate" name="無効な入力の場合は空文字を返す" time="0">
-    </testcase>
-    <testcase classname="utils › auth" name="有効なトークンの場合、トークンを返す" time="0.002">
-    </testcase>
-    <testcase classname="utils › auth" name="認証ヘッダーがない場合、nullを返す" time="0.001">
-    </testcase>
-    <testcase classname="utils › auth" name="無効なトークンの場合、nullを返す" time="0.001">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\components\features\auth\AuthGuard.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:15" time="0.23" tests="2">
-    <testcase classname="AuthGuard" name="ローディング中はスピナーを表示する" time="0.014">
-    </testcase>
-    <testcase classname="AuthGuard" name="ローディング完了後に子コンポーネントを表示する" time="0.004">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\app\api\account\account.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:15" time="0.214" tests="6">
-    <testcase classname="DELETE /api/account" name="アカウントを正常に削除" time="0.018">
-    </testcase>
-    <testcase classname="DELETE /api/account" name="認証トークンがない場合、401エラーを返す" time="0.005">
-    </testcase>
-    <testcase classname="DELETE /api/account" name="ユーザーが見つからない場合、401エラーを返す" time="0.008">
-    </testcase>
-    <testcase classname="DELETE /api/account" name="Supabase削除エラーの場合、400エラーを返す" time="0.007">
-    </testcase>
-    <testcase classname="DELETE /api/account" name="データベース操作でエラーが発生した場合、400エラーを返す" time="0.004">
-    </testcase>
-    <testcase classname="DELETE /api/account" name="予期せぬエラーの場合、500エラーを返す" time="0.004">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\app\api\plans\[id]\likes\likesplan.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:15" time="0.219" tests="9">
-    <testcase classname="plans/[id]/likes API › POST /api/plans/[id]/likes" name="いいねを正常に作成" time="0.005">
-    </testcase>
-    <testcase classname="plans/[id]/likes API › POST /api/plans/[id]/likes" name="プランが存在しない場合、404エラーを返す" time="0.001">
-    </testcase>
-    <testcase classname="plans/[id]/likes API › POST /api/plans/[id]/likes" name="既にいいね済みの場合、400エラーを返す" time="0.011">
-    </testcase>
-    <testcase classname="plans/[id]/likes API › DELETE /api/plans/[id]/likes" name="いいねを正常に削除" time="0.001">
-    </testcase>
-    <testcase classname="plans/[id]/likes API › DELETE /api/plans/[id]/likes" name="いいねが存在しない場合、404エラーを返す" time="0.002">
-    </testcase>
-    <testcase classname="plans/[id]/likes API › 共通のエラー処理" name="POST: 認証トークンがない場合、401エラーを返す" time="0.001">
-    </testcase>
-    <testcase classname="plans/[id]/likes API › 共通のエラー処理" name="POST: ユーザーが見つからない場合、401エラーを返す" time="0.001">
-    </testcase>
-    <testcase classname="plans/[id]/likes API › 共通のエラー処理" name="DELETE: 認証トークンがない場合、401エラーを返す" time="0.001">
-    </testcase>
-    <testcase classname="plans/[id]/likes API › 共通のエラー処理" name="DELETE: ユーザーが見つからない場合、401エラーを返す" time="0">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\app\(auth)\verify-email\verify-email.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:15" time="0.259" tests="2">
-    <testcase classname="VerifyEmailPage コンポーネント" name="メールアドレスが渡された場合、そのメールアドレスを表示すること" time="0.009">
-    </testcase>
-    <testcase classname="VerifyEmailPage コンポーネント" name="メールアドレスが渡されない場合、確認メール送信時のテキストが表示されること" time="0.004">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\app\api\profile\[userId]\profileuserId.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:15" time="0.212" tests="8">
-    <testcase classname="GET /api/profile/[userId]" name="認証されていない場合、401エラーを返す" time="0.004">
-    </testcase>
-    <testcase classname="GET /api/profile/[userId]" name="ユーザー認証に失敗した場合、401エラーを返す" time="0.002">
-    </testcase>
-    <testcase classname="GET /api/profile/[userId]" name="ユーザーがnullの場合、401エラーを返す" time="0.001">
-    </testcase>
-    <testcase classname="GET /api/profile/[userId]" name="プロフィール取得に成功した場合、プロフィールデータを返す" time="0.001">
-    </testcase>
-    <testcase classname="GET /api/profile/[userId]" name="プロフィールが見つからない場合、404エラーを返す" time="0.002">
-    </testcase>
-    <testcase classname="GET /api/profile/[userId]" name="Prismaでエラーが発生した場合、500エラーを返す" time="0.001">
-    </testcase>
-    <testcase classname="GET /api/profile/[userId]" name="非Errorオブジェクトのエラーの場合も適切に処理される" time="0.002">
-    </testcase>
-    <testcase classname="GET /api/profile/[userId]" name="paramsの取得中にエラーが発生した場合、500エラーを返す" time="0.001">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\hooks\useRequireAuth.test.ts" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:15" time="0.209" tests="5">
-    <testcase classname="useRequireAuth" name="ローディング中は何もしない" time="0.003">
-    </testcase>
-    <testcase classname="useRequireAuth" name="認証済みユーザーの場合、リダイレクトしない" time="0.001">
-    </testcase>
-    <testcase classname="useRequireAuth" name="未認証の場合、ホームページにリダイレクト" time="0.001">
-    </testcase>
-    <testcase classname="useRequireAuth" name="認証状態が変更された場合、適切に処理" time="0.001">
-    </testcase>
-    <testcase classname="useRequireAuth" name="ユーザー情報とローディング状態を返す" time="0">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\app\layout.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:15" time="0.208" tests="2">
-    <testcase classname="RootLayout コンポーネント" name="子コンポーネントを正しくレンダリングする" time="0.006">
-    </testcase>
-    <testcase classname="RootLayout コンポーネント" name="メタデータが正しく設定されている" time="0.001">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\lib\api\profile.test.ts" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:15" time="0.162" tests="12">
-    <testcase classname="profileApi › fetchUserProfile" name="プロフィール取得に成功した場合、プロフィールデータを返す" time="0.002">
-    </testcase>
-    <testcase classname="profileApi › fetchUserProfile" name="プロフィール取得に失敗した場合、エラーを返す" time="0.007">
-    </testcase>
-    <testcase classname="profileApi › fetchUserProfile" name="ネットワークエラーの場合、エラーを返す" time="0.001">
-    </testcase>
-    <testcase classname="profileApi › updateProfile" name="プロフィール更新に成功した場合、更新されたプロフィールを返す" time="0">
-    </testcase>
-    <testcase classname="profileApi › updateProfile" name="プロフィール更新に失敗した場合、エラーを返す" time="0">
-    </testcase>
-    <testcase classname="profileApi › updateProfile" name="ネットワークエラーの場合、エラーを返す" time="0.001">
-    </testcase>
-    <testcase classname="profileApi › fetchProfile" name="プロフィール取得に成功した場合、プロフィールデータを返す" time="0">
-    </testcase>
-    <testcase classname="profileApi › fetchProfile" name="プロフィール取得に失敗した場合、エラーを返す" time="0.001">
-    </testcase>
-    <testcase classname="profileApi › fetchProfile" name="ネットワークエラーの場合、エラーを返す" time="0">
-    </testcase>
-    <testcase classname="profileApi › deleteAccount" name="アカウント削除に成功した場合、成功メッセージを返す" time="0.004">
-    </testcase>
-    <testcase classname="profileApi › deleteAccount" name="アカウント削除に失敗した場合、エラーを返す" time="0.001">
-    </testcase>
-    <testcase classname="profileApi › deleteAccount" name="ネットワークエラーの場合、エラーを返す" time="0">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\app\(dashboard)\dashboardlayout.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:15" time="0.212" tests="1">
-    <testcase classname="DashboardLayout コンポーネント" name="子要素と Navbar を正しくレンダリングする" time="0.005">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\app\api\auth\reset-password\reset-password.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:15" time="0.156" tests="5">
-    <testcase classname="POST /api/auth/reset-password" name="パスワードリセットメールを正常に送信" time="0.006">
-    </testcase>
-    <testcase classname="POST /api/auth/reset-password" name="Supabaseからエラーが返された場合、400エラーを返す" time="0.008">
-    </testcase>
-    <testcase classname="POST /api/auth/reset-password" name="予期せぬエラーが発生した場合、500エラーを返す" time="0.003">
-    </testcase>
-    <testcase classname="POST /api/auth/reset-password" name="メールアドレスが提供されていない場合、400エラーを返す" time="0.001">
-    </testcase>
-    <testcase classname="POST /api/auth/reset-password" name="NEXT_PUBLIC_APP_URLが設定されていない場合、500エラーを返す" time="0.002">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\app\(auth)\authLayout.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:15" time="0.211" tests="2">
-    <testcase classname="AuthLayout コンポーネント" name="子コンポーネントが正常にレンダリングされる" time="0.003">
-    </testcase>
-    <testcase classname="AuthLayout コンポーネント" name="metadata が正しくエクスポートされている" time="0.001">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\app\api\auth\login\login.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:15" time="0.143" tests="3">
-    <testcase classname="ログインAPI統合テスト" name="有効な認証情報でログインできる" time="0.003">
-    </testcase>
-    <testcase classname="ログインAPI統合テスト" name="無効な認証情報で401エラーを返す" time="0.001">
-    </testcase>
-    <testcase classname="ログインAPI統合テスト" name="無効なリクエストで500エラーを返す" time="0.001">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\lib\supabase-auth.test.ts" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:15" time="0.133" tests="2">
-    <testcase classname="supabase-auth" name="環境変数が設定されている場合、Supabaseクライアントを作成" time="0.001">
-    </testcase>
-    <testcase classname="supabase-auth" name="環境変数が設定されていない場合、エラーを投げる" time="0.004">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\lib\utils.test.ts" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:15" time="0.155" tests="8">
-    <testcase classname="utils › cn" name="クラス名を正しく結合する" time="0.004">
-    </testcase>
-    <testcase classname="utils › formatDate" name="日付を正しくフォーマットする" time="0">
-    </testcase>
-    <testcase classname="utils › formatDate" name="文字列の日付を正しくフォーマットする" time="0">
-    </testcase>
-    <testcase classname="utils › formatDate" name="無効な日付の場合は空文字を返す" time="0">
-    </testcase>
-    <testcase classname="utils › auth" name="有効なトークンで認証に成功する" time="0.001">
-    </testcase>
-    <testcase classname="utils › auth" name="認証ヘッダーがない場合はnullを返す" time="0.001">
-    </testcase>
-    <testcase classname="utils › auth" name="無効なトークンの場合はnullを返す" time="0.001">
-    </testcase>
-    <testcase classname="utils › auth" name="エラーが発生した場合はnullを返す" time="0.006">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\lib\db.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:15" time="0.124" tests="1">
-    <testcase classname="db" name="Prismaクライアントをシングルトンとして管理" time="0.003">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\app\(dashboard)\plans\new\page.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:12" time="4.046" tests="6">
-    <testcase classname="NewPlanPage" name="フォームの初期表示が正しい" time="0.072">
-    </testcase>
-    <testcase classname="NewPlanPage" name="ローディング中はスピナーが表示される" time="0.739">
-    </testcase>
-    <testcase classname="NewPlanPage" name="エラーが発生した場合はエラーメッセージが表示される" time="0.682">
-    </testcase>
-    <testcase classname="NewPlanPage" name="APIからエラーレスポンスが返された場合はエラーメッセージが表示される" time="0.724">
-    </testcase>
-    <testcase classname="NewPlanPage" name="プラン作成が成功した場合はプラン一覧ページに遷移する" time="0.709">
-    </testcase>
-    <testcase classname="NewPlanPage" name="キャンセルボタンをクリックすると前のページに戻る" time="0.064">
-    </testcase>
-  </testsuite>
-  <testsuite name="tests\unit\app\plans\new\page.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-05-17T08:01:12" time="4.085" tests="6">
-    <testcase classname="NewPlanPage" name="フォームの初期表示が正しい" time="0.084">
-    </testcase>
-    <testcase classname="NewPlanPage" name="ローディング中はスピナーが表示される" time="0.747">
-    </testcase>
-    <testcase classname="NewPlanPage" name="エラーが発生した場合はエラーメッセージが表示される" time="0.732">
-    </testcase>
-    <testcase classname="NewPlanPage" name="APIからエラーレスポンスが返された場合はエラーメッセージが表示される" time="0.703">
-    </testcase>
-    <testcase classname="NewPlanPage" name="プラン作成が成功した場合はプラン一覧ページに遷移する" time="0.696">
-    </testcase>
-    <testcase classname="NewPlanPage" name="キャンセルボタンをクリックすると前のページに戻る" time="0.063">
+    <testcase classname="api › likes" name="いいね削除時のネットワークエラーを処理" time="0.001">
     </testcase>
   </testsuite>
 </testsuites>
