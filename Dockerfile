@@ -39,6 +39,9 @@ ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY
 ENV SUPABASE_SERVICE_ROLE_KEY=$SUPABASE_SERVICE_ROLE_KEY
 ENV DATABASE_URL=$DATABASE_URL
 
+# Create necessary directories
+RUN mkdir -p /app/public /app/prisma /app/.next
+
 RUN npm run build
 
 # Production image, copy all the files and run next
