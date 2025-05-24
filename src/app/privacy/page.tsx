@@ -20,125 +20,91 @@ export default function PrivacyPolicy(): ReactElement {
             </p>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">1. はじめに</h2>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+                個人情報の取り扱いについて
+              </h2>
               <p className="text-gray-700 leading-relaxed">
                 Couple
                 Plan（以下「本サービス」）は、ユーザーのプライバシーを尊重し、個人情報の保護に努めています。
-                本プライバシーポリシーでは、本サービスにおける個人情報の取り扱いについて説明します。
+                本サービスでは、サービスの提供・運営、ユーザーサポート、サービスの改善のために必要最小限の個人情報を収集・利用いたします。
+                収集した個人情報は、法令に基づく場合や緊急時を除き、第三者に提供することはありません。
               </p>
-            </section>
-
-            <section className="mb-8">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">2. 収集する情報</h2>
-              <div className="space-y-4">
-                <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
-                    2.1 ユーザーから提供される情報
-                  </h3>
-                  <ul className="list-disc list-inside text-gray-700 space-y-1">
-                    <li>アカウント登録時の情報（メールアドレス、ユーザー名など）</li>
-                    <li>プロフィール情報</li>
-                    <li>デートプランの内容</li>
-                    <li>お問い合わせ内容</li>
-                  </ul>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
-                    2.2 自動的に収集される情報
-                  </h3>
-                  <ul className="list-disc list-inside text-gray-700 space-y-1">
-                    <li>IPアドレス</li>
-                    <li>ブラウザの種類とバージョン</li>
-                    <li>アクセス日時</li>
-                    <li>利用状況データ</li>
-                    <li>Cookieによる情報</li>
-                  </ul>
-                </div>
-              </div>
-            </section>
-
-            <section className="mb-8">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">3. 情報の利用目的</h2>
-              <ul className="list-disc list-inside text-gray-700 space-y-1">
-                <li>サービスの提供・運営</li>
-                <li>ユーザーサポート</li>
-                <li>サービスの改善・新機能の開発</li>
-                <li>重要なお知らせの配信</li>
-                <li>利用規約違反の対応</li>
-                <li>統計データの作成（個人を特定できない形で）</li>
-              </ul>
-            </section>
-
-            <section className="mb-8">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">4. 第三者への情報提供</h2>
-              <p className="text-gray-700 leading-relaxed mb-4">
-                本サービスは、以下の場合を除き、ユーザーの個人情報を第三者に提供することはありません：
-              </p>
-              <ul className="list-disc list-inside text-gray-700 space-y-1">
-                <li>ユーザーの同意がある場合</li>
-                <li>法令に基づく場合</li>
-                <li>生命、身体または財産の保護のために必要がある場合</li>
-                <li>サービス提供に必要な業務委託先への提供</li>
-              </ul>
-            </section>
-
-            <section className="mb-8">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">5. 広告について</h2>
-              <div className="space-y-4">
-                <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">5.1 Google AdSense</h3>
-                  <p className="text-gray-700 leading-relaxed">
-                    本サービスでは、Google AdSenseを使用して広告を配信しています。 Google
-                    AdSenseは、Cookieを使用してユーザーの興味に基づいた広告を表示することがあります。
-                  </p>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">5.2 Cookie</h3>
-                  <p className="text-gray-700 leading-relaxed">
-                    Cookieの使用を望まない場合は、ブラウザの設定で無効にすることができます。
-                    ただし、一部の機能が制限される場合があります。
-                  </p>
-                </div>
-              </div>
             </section>
 
             <section className="mb-8">
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                6. データの保管・セキュリティ
+                当サイトに掲載されている広告について
               </h2>
-              <p className="text-gray-700 leading-relaxed">
-                本サービスは、適切な技術的・組織的措置を講じて、個人情報の安全性を確保しています。
-                ただし、インターネット上の情報伝達において完全なセキュリティを保証することはできません。
-              </p>
-            </section>
-
-            <section className="mb-8">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">7. ユーザーの権利</h2>
               <p className="text-gray-700 leading-relaxed mb-4">
-                ユーザーは、自身の個人情報について以下の権利を有します：
+                当サイトでは、第三者配信の広告サービス（Googleアドセンス）を利用しています。
+                このような広告配信事業者は、ユーザーの興味に応じた商品やサービスの広告を表示するため、
+                当サイトや他サイトへのアクセスに関する情報『Cookie』（氏名、住所、メールアドレス、電話番号は含まれません）を使用することがあります。
               </p>
-              <ul className="list-disc list-inside text-gray-700 space-y-1">
-                <li>個人情報の開示請求</li>
-                <li>個人情報の訂正・削除請求</li>
-                <li>個人情報の利用停止請求</li>
-                <li>アカウントの削除</li>
-              </ul>
+              <p className="text-gray-700 leading-relaxed">
+                またGoogleアドセンスに関して、このプロセスの詳細やこのような情報が広告配信事業者に使用されないようにする方法については、
+                <a
+                  href="https://policies.google.com/technologies/ads?gl=jp"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-rose-600 hover:text-rose-900 underline"
+                >
+                  こちらをご確認ください
+                </a>
+                。
+              </p>
             </section>
 
             <section className="mb-8">
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                8. プライバシーポリシーの変更
+                当サイトが使用しているアクセス解析ツールについて
               </h2>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                当サイトでは、Googleによるアクセス解析ツール「Googleアナリティクス」を利用しています。
+                このGoogleアナリティクスはトラフィックデータの収集のためにCookieを使用しています。
+                このトラフィックデータは匿名で収集されており、個人を特定するものではありません。
+              </p>
               <p className="text-gray-700 leading-relaxed">
-                本プライバシーポリシーは、法令の変更やサービスの改善に伴い変更することがあります。
-                重要な変更がある場合は、サービス内で通知いたします。
+                この機能はCookieを無効にすることで収集を拒否することが出来ますので、お使いのブラウザの設定をご確認ください。
+                この規約に関して、詳しくは
+                <a
+                  href="https://marketingplatform.google.com/about/analytics/terms/jp/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-rose-600 hover:text-rose-900 underline"
+                >
+                  こちらをご確認ください
+                </a>
+                。
               </p>
             </section>
 
             <section className="mb-8">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">9. お問い合わせ</h2>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+                当サイトへのお問い合わせについて
+              </h2>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                当サイトでは、スパム・荒らしへの対応として、お問い合わせの際に使用されたIPアドレスを記録しています。
+                これはサイトの標準機能としてサポートされている機能で、スパム・荒らしへの対応以外にこのIPアドレスを使用することはありません。
+                また、メールアドレスの入力に関しては、任意となっております。
+              </p>
+              <p className="text-gray-700 leading-relaxed mb-4">
+                全てのお問い合わせは当サイト管理人が事前にその内容を確認し、対応させていただきますことをあらかじめご了承ください。
+                加えて、以下の内容を含むお問い合わせは管理人の裁量によって対応せず、削除する事があります：
+              </p>
+              <ul className="list-disc list-inside text-gray-700 space-y-1">
+                <li>特定の自然人または法人を誹謗し、中傷するもの</li>
+                <li>極度にわいせつな内容を含むもの</li>
+                <li>
+                  禁制品の取引に関するものや、他者を害する行為の依頼など、法律によって禁止されている物品、行為の依頼や斡旋などに関するもの
+                </li>
+                <li>
+                  その他、公序良俗に反し、または管理人によって対応すべきでないと認められるもの
+                </li>
+              </ul>
+            </section>
+
+            <section className="mb-8">
+              <h2 className="text-2xl font-semibold text-gray-900 mb-4">お問い合わせ</h2>
               <p className="text-gray-700 leading-relaxed">
                 本プライバシーポリシーに関するご質問やご意見は、
                 <Link href="/contact" className="text-rose-600 hover:text-rose-900 underline">
