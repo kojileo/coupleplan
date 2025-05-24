@@ -4,15 +4,24 @@
 
 ### 1. 環境変数の設定
 
-`.env`ファイルを作成し、必要な環境変数を設定します：
+`.env.local`ファイルを作成し、必要な環境変数を設定します：
 
 ```bash
-# .envファイルを作成
-cat > .env << EOL
+# .env.localファイルを作成
+cat > .env.local << EOL
+# AdSense設定
+NEXT_PUBLIC_ADSENSE_CLIENT_ID=pub-your-adsense-client-id
+
+# Supabase設定
 NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
-DATABASE_URL=your-database-url
+
+# データベース設定
+# ローカル開発用
+DATABASE_URL=postgresql://postgres:your-password@localhost:5432/your-database-name
+# Docker環境用
+# DATABASE_URL=postgresql://postgres:your-password@host.docker.internal:5432/your-database-name
 EOL
 ```
 
@@ -32,12 +41,14 @@ docker ps -q | ForEach-Object { docker stop $_ }
 
 ```powershell
 # PowerShellで実行
-$env:NEXT_PUBLIC_SUPABASE_URL = (Get-Content .env | Select-String "NEXT_PUBLIC_SUPABASE_URL").ToString().Split("=")[1]
-$env:NEXT_PUBLIC_SUPABASE_ANON_KEY = (Get-Content .env | Select-String "NEXT_PUBLIC_SUPABASE_ANON_KEY").ToString().Split("=")[1]
-$env:SUPABASE_SERVICE_ROLE_KEY = (Get-Content .env | Select-String "SUPABASE_SERVICE_ROLE_KEY").ToString().Split("=")[1]
-$env:DATABASE_URL = (Get-Content .env | Select-String "DATABASE_URL").ToString().Split("=")[1]
+$env:NEXT_PUBLIC_ADSENSE_CLIENT_ID = (Get-Content .env.local | Select-String "NEXT_PUBLIC_ADSENSE_CLIENT_ID").ToString().Split("=")[1]
+$env:NEXT_PUBLIC_SUPABASE_URL = (Get-Content .env.local | Select-String "NEXT_PUBLIC_SUPABASE_URL").ToString().Split("=")[1]
+$env:NEXT_PUBLIC_SUPABASE_ANON_KEY = (Get-Content .env.local | Select-String "NEXT_PUBLIC_SUPABASE_ANON_KEY").ToString().Split("=")[1]
+$env:SUPABASE_SERVICE_ROLE_KEY = (Get-Content .env.local | Select-String "SUPABASE_SERVICE_ROLE_KEY").ToString().Split("=")[1]
+$env:DATABASE_URL = (Get-Content .env.local | Select-String "DATABASE_URL").ToString().Split("=")[1]
 
 docker build -t coupleplan . `
+  --build-arg NEXT_PUBLIC_ADSENSE_CLIENT_ID="$env:NEXT_PUBLIC_ADSENSE_CLIENT_ID" `
   --build-arg NEXT_PUBLIC_SUPABASE_URL="$env:NEXT_PUBLIC_SUPABASE_URL" `
   --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY="$env:NEXT_PUBLIC_SUPABASE_ANON_KEY" `
   --build-arg SUPABASE_SERVICE_ROLE_KEY="$env:SUPABASE_SERVICE_ROLE_KEY" `
@@ -50,6 +61,7 @@ docker build -t coupleplan . `
 
 ```powershell
 docker run -p 3000:3000 `
+  -e NEXT_PUBLIC_ADSENSE_CLIENT_ID="$env:NEXT_PUBLIC_ADSENSE_CLIENT_ID" `
   -e NEXT_PUBLIC_SUPABASE_URL="$env:NEXT_PUBLIC_SUPABASE_URL" `
   -e NEXT_PUBLIC_SUPABASE_ANON_KEY="$env:NEXT_PUBLIC_SUPABASE_ANON_KEY" `
   -e SUPABASE_SERVICE_ROLE_KEY="$env:SUPABASE_SERVICE_ROLE_KEY" `
@@ -99,6 +111,7 @@ gcloud projects add-iam-policy-binding <PROJECT_ID> \
 ```powershell
 # イメージのビルド
 docker build -t asia-northeast1-docker.pkg.dev/<PROJECT_ID>/coupleplan-repo/coupleplan . `
+  --build-arg NEXT_PUBLIC_ADSENSE_CLIENT_ID="$env:NEXT_PUBLIC_ADSENSE_CLIENT_ID" `
   --build-arg NEXT_PUBLIC_SUPABASE_URL="$env:NEXT_PUBLIC_SUPABASE_URL" `
   --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY="$env:NEXT_PUBLIC_SUPABASE_ANON_KEY" `
   --build-arg SUPABASE_SERVICE_ROLE_KEY="$env:SUPABASE_SERVICE_ROLE_KEY" `
@@ -113,10 +126,11 @@ docker push asia-northeast1-docker.pkg.dev/<PROJECT_ID>/coupleplan-repo/couplepl
 ```bash
 # イメージのビルド
 docker build -t asia-northeast1-docker.pkg.dev/<PROJECT_ID>/coupleplan-repo/coupleplan . \
-  --build-arg NEXT_PUBLIC_SUPABASE_URL="$(grep NEXT_PUBLIC_SUPABASE_URL .env | cut -d '=' -f2)" \
-  --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY="$(grep NEXT_PUBLIC_SUPABASE_ANON_KEY .env | cut -d '=' -f2)" \
-  --build-arg SUPABASE_SERVICE_ROLE_KEY="$(grep SUPABASE_SERVICE_ROLE_KEY .env | cut -d '=' -f2)" \
-  --build-arg DATABASE_URL="$(grep DATABASE_URL .env | cut -d '=' -f2)"
+  --build-arg NEXT_PUBLIC_ADSENSE_CLIENT_ID="$(grep NEXT_PUBLIC_ADSENSE_CLIENT_ID .env.local | cut -d '=' -f2)" \
+  --build-arg NEXT_PUBLIC_SUPABASE_URL="$(grep NEXT_PUBLIC_SUPABASE_URL .env.local | cut -d '=' -f2)" \
+  --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY="$(grep NEXT_PUBLIC_SUPABASE_ANON_KEY .env.local | cut -d '=' -f2)" \
+  --build-arg SUPABASE_SERVICE_ROLE_KEY="$(grep SUPABASE_SERVICE_ROLE_KEY .env.local | cut -d '=' -f2)" \
+  --build-arg DATABASE_URL="$(grep DATABASE_URL .env.local | cut -d '=' -f2)"
 
 # イメージのプッシュ
 docker push asia-northeast1-docker.pkg.dev/<PROJECT_ID>/coupleplan-repo/coupleplan
@@ -133,6 +147,7 @@ gcloud run deploy coupleplan `
   --platform managed `
   --region asia-northeast1 `
   --allow-unauthenticated `
+  --set-env-vars="NEXT_PUBLIC_ADSENSE_CLIENT_ID=$env:NEXT_PUBLIC_ADSENSE_CLIENT_ID" `
   --set-env-vars="NEXT_PUBLIC_SUPABASE_URL=$env:NEXT_PUBLIC_SUPABASE_URL" `
   --set-env-vars="NEXT_PUBLIC_SUPABASE_ANON_KEY=$env:NEXT_PUBLIC_SUPABASE_ANON_KEY" `
   --set-env-vars="SUPABASE_SERVICE_ROLE_KEY=$env:SUPABASE_SERVICE_ROLE_KEY" `
@@ -148,8 +163,33 @@ gcloud run deploy coupleplan \
   --platform managed \
   --region asia-northeast1 \
   --allow-unauthenticated \
-  --set-env-vars="NEXT_PUBLIC_SUPABASE_URL=$(grep NEXT_PUBLIC_SUPABASE_URL .env | cut -d '=' -f2)" \
-  --set-env-vars="NEXT_PUBLIC_SUPABASE_ANON_KEY=$(grep NEXT_PUBLIC_SUPABASE_ANON_KEY .env | cut -d '=' -f2)" \
-  --set-env-vars="SUPABASE_SERVICE_ROLE_KEY=$(grep SUPABASE_SERVICE_ROLE_KEY .env | cut -d '=' -f2)" \
-  --set-env-vars="DATABASE_URL=$(grep DATABASE_URL .env | cut -d '=' -f2)"
+  --set-env-vars="NEXT_PUBLIC_ADSENSE_CLIENT_ID=$(grep NEXT_PUBLIC_ADSENSE_CLIENT_ID .env.local | cut -d '=' -f2)" \
+  --set-env-vars="NEXT_PUBLIC_SUPABASE_URL=$(grep NEXT_PUBLIC_SUPABASE_URL .env.local | cut -d '=' -f2)" \
+  --set-env-vars="NEXT_PUBLIC_SUPABASE_ANON_KEY=$(grep NEXT_PUBLIC_SUPABASE_ANON_KEY .env.local | cut -d '=' -f2)" \
+  --set-env-vars="SUPABASE_SERVICE_ROLE_KEY=$(grep SUPABASE_SERVICE_ROLE_KEY .env.local | cut -d '=' -f2)" \
+  --set-env-vars="DATABASE_URL=$(grep DATABASE_URL .env.local | cut -d '=' -f2)"
 ```
+
+## トラブルシューティング
+
+### データベース接続エラー
+
+以下のエラーが発生した場合：
+
+```
+User `postgres` was denied access on the database `coupleplan.public`
+```
+
+**解決方法**:
+
+1. `.env.local`ファイルの`DATABASE_URL`が正しく設定されているか確認
+2. Supabaseプロジェクトのパスワードが正しいか確認
+3. データベースが実行されているか確認
+
+### AdSense広告が表示されない場合
+
+**確認事項**:
+
+1. `NEXT_PUBLIC_ADSENSE_CLIENT_ID`が正しく設定されているか
+2. AdSenseアカウントの審査が完了しているか
+3. 本番環境でのみ広告が表示される場合があります（開発環境では表示されないことがあります）

@@ -82,6 +82,32 @@ export default function Home(): ReactElement {
           </div>
         </div>
       </main>
+
+      {/* フッター */}
+      <footer className="bg-white border-t border-gray-200 mt-16">
+        <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+            <div className="text-sm text-gray-600">© 2024 Couple Plan. All rights reserved.</div>
+            <div className="flex space-x-6">
+              <Link
+                href="/privacy"
+                className="text-sm text-gray-600 hover:text-rose-600 transition-colors"
+              >
+                プライバシーポリシー
+              </Link>
+              <Link
+                href="/contact"
+                className="text-sm text-gray-600 hover:text-rose-600 transition-colors"
+              >
+                お問い合わせ
+              </Link>
+            </div>
+          </div>
+          <div className="mt-4 text-center text-xs text-gray-500">
+            本サービスでは、サービス向上のためにGoogle AdSenseによる広告を配信しています
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
