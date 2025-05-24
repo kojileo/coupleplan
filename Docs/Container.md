@@ -1,155 +1,120 @@
-# Dockerローカル実行手順
+# Dockerローカル実行手順（Docker Compose使用）
 
-## 実行手順
+## 事前準備
 
 ### 1. 環境変数の設定
 
 `.env`ファイルを作成し、必要な環境変数を設定します：
 
-```bash
-# .envファイルを作成
-cat > .env << EOL
+```powershell
+# .env.localファイルを作成
+@"
+# AdSense設定
+NEXT_PUBLIC_ADSENSE_CLIENT_ID=pub-your-adsense-client-id
+
+# Supabase設定
 NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
-DATABASE_URL=your-database-url
-EOL
+
+# データベース設定
+DATABASE_URL=postgresql://postgres:your-password@host.docker.internal:5432/your-database-name
+"@ | Out-File -FilePath .env.local -Encoding UTF8
 ```
 
-### 2. 既存のコンテナの確認と停止
+## Docker Compose実行手順
 
-```bash
-# 実行中のコンテナを確認
-docker ps
-
-# 実行中のコンテナを停止（必要な場合）
-docker ps -q | ForEach-Object { docker stop $_ }
-```
-
-### 3. Dockerイメージのビルド
-
-#### Windowsの場合
+### 1. 既存のコンテナの停止（必要な場合）
 
 ```powershell
-# PowerShellで実行
-$env:NEXT_PUBLIC_SUPABASE_URL = (Get-Content .env | Select-String "NEXT_PUBLIC_SUPABASE_URL").ToString().Split("=")[1]
-$env:NEXT_PUBLIC_SUPABASE_ANON_KEY = (Get-Content .env | Select-String "NEXT_PUBLIC_SUPABASE_ANON_KEY").ToString().Split("=")[1]
-$env:SUPABASE_SERVICE_ROLE_KEY = (Get-Content .env | Select-String "SUPABASE_SERVICE_ROLE_KEY").ToString().Split("=")[1]
-$env:DATABASE_URL = (Get-Content .env | Select-String "DATABASE_URL").ToString().Split("=")[1]
-
-docker build -t coupleplan . `
-  --build-arg NEXT_PUBLIC_SUPABASE_URL="$env:NEXT_PUBLIC_SUPABASE_URL" `
-  --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY="$env:NEXT_PUBLIC_SUPABASE_ANON_KEY" `
-  --build-arg SUPABASE_SERVICE_ROLE_KEY="$env:SUPABASE_SERVICE_ROLE_KEY" `
-  --build-arg DATABASE_URL="$env:DATABASE_URL"
+# 実行中のCoupleplanコンテナを確認・停止
+docker-compose down
 ```
 
-### 4. コンテナの実行
-
-#### Windowsの場合
+### 2. アプリケーションの起動
 
 ```powershell
-docker run -p 3000:3000 `
-  -e NEXT_PUBLIC_SUPABASE_URL="$env:NEXT_PUBLIC_SUPABASE_URL" `
-  -e NEXT_PUBLIC_SUPABASE_ANON_KEY="$env:NEXT_PUBLIC_SUPABASE_ANON_KEY" `
-  -e SUPABASE_SERVICE_ROLE_KEY="$env:SUPABASE_SERVICE_ROLE_KEY" `
-  -e DATABASE_URL="$env:DATABASE_URL" `
-  coupleplan
+# アプリケーションをビルドして起動
+docker-compose up --build
+
+# バックグラウンドで起動したい場合
+docker-compose up --build -d
 ```
 
-### 5. アプリケーションへのアクセス
+### 3. アプリケーションへのアクセス
 
 - ローカル: http://localhost:3000
 - ネットワーク: http://0.0.0.0:3000
 
-## Cloud Runへのデプロイ
-
-### 1. Google Cloud SDKのセットアップ
-
-```bash
-# Google Cloud SDKのインストール（未インストールの場合）
-# https://cloud.google.com/sdk/docs/install からインストール
-
-# Google Cloudにログイン
-gcloud auth login
-
-# プロジェクトの設定
-gcloud config set project <PROJECT_ID>
-```
-
-### 2. Artifact Registryのセットアップ
-
-```bash
-# Artifact Registryのリポジトリを作成
-gcloud artifacts repositories create coupleplan-repo \
-    --repository-format=docker \
-    --location=asia-northeast1 \
-    --description="CouplePlan Docker repository"
-
-# サービスアカウントに必要な権限を付与
-gcloud projects add-iam-policy-binding <PROJECT_ID> \
-  --member="serviceAccount:github-actions@<PROJECT_ID>.iam.gserviceaccount.com" \
-  --role="roles/artifactregistry.writer"
-```
-
-### 3. Dockerイメージのビルドとプッシュ
-
-#### Windowsの場合
+### 4. アプリケーションの停止
 
 ```powershell
-# イメージのビルド
-docker build -t asia-northeast1-docker.pkg.dev/<PROJECT_ID>/coupleplan-repo/coupleplan . `
-  --build-arg NEXT_PUBLIC_SUPABASE_URL="$env:NEXT_PUBLIC_SUPABASE_URL" `
-  --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY="$env:NEXT_PUBLIC_SUPABASE_ANON_KEY" `
-  --build-arg SUPABASE_SERVICE_ROLE_KEY="$env:SUPABASE_SERVICE_ROLE_KEY" `
-  --build-arg DATABASE_URL="$env:DATABASE_URL"
+# アプリケーションを停止
+docker-compose down
 
-# イメージのプッシュ
-docker push asia-northeast1-docker.pkg.dev/<PROJECT_ID>/coupleplan-repo/coupleplan
+# コンテナとボリュームを削除して停止
+docker-compose down -v
 ```
 
-#### Linux/Macの場合
-
-```bash
-# イメージのビルド
-docker build -t asia-northeast1-docker.pkg.dev/<PROJECT_ID>/coupleplan-repo/coupleplan . \
-  --build-arg NEXT_PUBLIC_SUPABASE_URL="$(grep NEXT_PUBLIC_SUPABASE_URL .env | cut -d '=' -f2)" \
-  --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY="$(grep NEXT_PUBLIC_SUPABASE_ANON_KEY .env | cut -d '=' -f2)" \
-  --build-arg SUPABASE_SERVICE_ROLE_KEY="$(grep SUPABASE_SERVICE_ROLE_KEY .env | cut -d '=' -f2)" \
-  --build-arg DATABASE_URL="$(grep DATABASE_URL .env | cut -d '=' -f2)"
-
-# イメージのプッシュ
-docker push asia-northeast1-docker.pkg.dev/<PROJECT_ID>/coupleplan-repo/coupleplan
-```
-
-### 4. Cloud Runへのデプロイ
-
-#### Windowsの場合
+### 5. ログの確認
 
 ```powershell
-# Cloud Runにデプロイ
-gcloud run deploy coupleplan `
-  --image asia-northeast1-docker.pkg.dev/<PROJECT_ID>/coupleplan-repo/coupleplan `
-  --platform managed `
-  --region asia-northeast1 `
-  --allow-unauthenticated `
-  --set-env-vars="NEXT_PUBLIC_SUPABASE_URL=$env:NEXT_PUBLIC_SUPABASE_URL" `
-  --set-env-vars="NEXT_PUBLIC_SUPABASE_ANON_KEY=$env:NEXT_PUBLIC_SUPABASE_ANON_KEY" `
-  --set-env-vars="SUPABASE_SERVICE_ROLE_KEY=$env:SUPABASE_SERVICE_ROLE_KEY" `
-  --set-env-vars="DATABASE_URL=$env:DATABASE_URL"
+# リアルタイムでログを確認
+docker-compose logs -f
+
+# 特定のサービスのログを確認
+docker-compose logs -f app
 ```
 
-#### Linux/Macの場合
+## Docker Composeの主な利点
 
-```bash
-# Cloud Runにデプロイ
-gcloud run deploy coupleplan \
-  --image asia-northeast1-docker.pkg.dev/<PROJECT_ID>/coupleplan-repo/coupleplan \
-  --platform managed \
-  --region asia-northeast1 \
-  --allow-unauthenticated \
-  --set-env-vars="NEXT_PUBLIC_SUPABASE_URL=$(grep NEXT_PUBLIC_SUPABASE_URL .env | cut -d '=' -f2)" \
-  --set-env-vars="NEXT_PUBLIC_SUPABASE_ANON_KEY=$(grep NEXT_PUBLIC_SUPABASE_ANON_KEY .env | cut -d '=' -f2)" \
-  --set-env-vars="SUPABASE_SERVICE_ROLE_KEY=$(grep SUPABASE_SERVICE_ROLE_KEY .env | cut -d '=' -f2)" \
-  --set-env-vars="DATABASE_URL=$(grep DATABASE_URL .env | cut -d '=' -f2)"
+- ✅ `.env`ファイルが自動的に読み込まれる
+- ✅ 複雑な環境変数の設定が不要
+- ✅ 一度設定すれば簡単にアプリケーションを起動・停止できる
+- ✅ コマンドが簡潔で覚えやすい
+- ✅ 開発環境の再現性が高い
+
+## よく使用するコマンド一覧
+
+```powershell
+# 初回起動（ビルドも含む）
+docker-compose up --build
+
+# 通常の起動
+docker-compose up
+
+# バックグラウンド起動
+docker-compose up -d
+
+# 停止
+docker-compose down
+
+# 完全停止（ボリュームも削除）
+docker-compose down -v
+
+# ログ確認
+docker-compose logs -f
+
+# コンテナの状態確認
+docker-compose ps
+
+# 再ビルド
+docker-compose build
+
+# サービス再起動
+docker-compose restart app
+```
+
+### Docker Composeエラーの一般的な解決方法
+
+```powershell
+# キャッシュをクリアして再ビルド
+docker-compose build --no-cache
+
+# 全てのコンテナを停止して再起動
+docker-compose down
+docker-compose up --build
+
+# Dockerシステム全体のクリーンアップ（注意：他のプロジェクトにも影響）
+docker system prune -a
 ```
