@@ -11,6 +11,9 @@ services:
         - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
         - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
         - DATABASE_URL=${DATABASE_URL}
+        - RESEND_API_KEY=${RESEND_API_KEY}
+        - ADMIN_EMAIL=${ADMIN_EMAIL}
+        - FROM_EMAIL=${FROM_EMAIL}
     ports:
       - '3000:3000'
     environment:
@@ -19,6 +22,9 @@ services:
       - NEXT_PUBLIC_SUPABASE_ANON_KEY=${NEXT_PUBLIC_SUPABASE_ANON_KEY}
       - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
       - DATABASE_URL=${DATABASE_URL}
+      - RESEND_API_KEY=${RESEND_API_KEY}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - FROM_EMAIL=${FROM_EMAIL}
     env_file:
       - .env
     container_name: coupleplan-app
