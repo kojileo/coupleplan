@@ -35,13 +35,11 @@ describe('Home コンポーネント', () => {
 
     // メインタイトルの確認
     expect(screen.getByText('Couple Plan')).toBeInTheDocument();
-    expect(
-      screen.getByText('カップルのためのデートプラン作成・共有・公開アプリ')
-    ).toBeInTheDocument();
+    expect(screen.getByText('カップルのためのデートプラン作成・共有アプリ')).toBeInTheDocument();
 
     // 説明文の確認
     expect(
-      screen.getByText(/行きたい場所を保存して、カップルで予定を共有・公開しよう！！/)
+      screen.getByText(/行きたい場所を保存して、カップルで予定を共有しよう！/)
     ).toBeInTheDocument();
 
     // 機能説明カードの確認
