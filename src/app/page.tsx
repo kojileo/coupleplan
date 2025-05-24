@@ -37,13 +37,13 @@ export default function Home(): ReactElement {
           <h1 className="text-4xl font-bold text-rose-950 sm:text-5xl">
             Couple Plan
             <span className="block text-xl font-normal text-rose-700 mt-2">
-              カップルのためのデートプラン作成・共有・公開アプリ
+              カップルのためのデートプラン作成・共有アプリ
             </span>
           </h1>
 
           <p className="max-w-2xl text-rose-800">
-            行きたい場所を保存して、カップルで予定を共有・公開しよう！！
-            公開されているデートプランにいいねをしよう！
+            行きたい場所を保存して、カップルで予定を共有しよう！
+            共有されているデートプランにいいねをして、参考にしよう！
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mt-8">
@@ -82,6 +82,32 @@ export default function Home(): ReactElement {
           </div>
         </div>
       </main>
+
+      {/* フッター */}
+      <footer className="bg-white border-t border-gray-200 mt-16">
+        <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+            <div className="text-sm text-gray-600">© 2025 Couple Plan. All rights reserved.</div>
+            <div className="flex space-x-6">
+              <Link
+                href="/privacy"
+                className="text-sm text-gray-600 hover:text-rose-600 transition-colors"
+              >
+                プライバシーポリシー
+              </Link>
+              <Link
+                href="/contact"
+                className="text-sm text-gray-600 hover:text-rose-600 transition-colors"
+              >
+                お問い合わせ
+              </Link>
+            </div>
+          </div>
+          <div className="mt-4 text-center text-xs text-gray-500">
+            本サービスでは、サービス向上のためにGoogle AdSenseによる広告を配信しています
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
