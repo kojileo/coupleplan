@@ -4,11 +4,26 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 import { supabase } from '@/lib/supabase-auth';
 
-// サーバー側専用の管理者用Supabaseクライアントを作成（service role key を利用）
-// ※ クライアント側に公開しないように注意してください。
+/**
+ * サーバー側専用の管理者用Supabaseクライアント
+ *
+ * 🚨 SECURITY WARNING:
+ * - SERVICE_ROLE_KEYはRLS（Row Level Security）をバイパスする
+ * - 全てのデータベース操作に無制限アクセス可能
+ * - 絶対にクライアントサイド（フロントエンド）で使用しないこと
+ * - NEXT_PUBLIC_プレフィックスを付けないこと
+ * - ユーザー削除などの管理者操作でのみ使用
+ */
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL as string,
-  process.env.SUPABASE_SERVICE_ROLE_KEY as string
+  process.env.SUPABASE_SERVICE_ROLE_KEY as string,
+  {
+    auth: {
+      // Admin権限でのオートリフレッシュを無効化
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  }
 );
 
 export async function DELETE(request: NextRequest): Promise<NextResponse> {
