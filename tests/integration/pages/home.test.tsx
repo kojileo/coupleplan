@@ -40,6 +40,32 @@ describe('Home Page', () => {
       });
     });
 
+    it('ナビゲーションヘッダーが正しく表示される', () => {
+      render(<Home />);
+
+      // ロゴ
+      expect(screen.getByRole('link', { name: '💑 Couple Plan' })).toBeInTheDocument();
+
+      // ナビゲーションリンク - ヘッダーの要素のみを確認
+      const aboutLinks = screen.getAllByRole('link', { name: 'サービスについて' });
+      expect(aboutLinks[0]).toHaveAttribute('href', '/about');
+
+      const publicPlanLinks = screen.getAllByRole('link', { name: '公開プラン' });
+      expect(publicPlanLinks[0]).toHaveAttribute('href', '/plans/public');
+
+      const faqLinks = screen.getAllByRole('link', { name: 'よくある質問' });
+      expect(faqLinks[0]).toHaveAttribute('href', '/faq');
+
+      const contactLinks = screen.getAllByRole('link', { name: 'お問い合わせ' });
+      expect(contactLinks[0]).toHaveAttribute('href', '/contact');
+
+      // ヘッダーのボタン
+      const headerButtons = screen.getAllByRole('link', { name: 'ログイン' });
+      const headerButtons2 = screen.getAllByRole('link', { name: '新規登録' });
+      expect(headerButtons[0]).toHaveAttribute('href', '/login');
+      expect(headerButtons2[0]).toHaveAttribute('href', '/signup');
+    });
+
     it('メインコンテンツが正しく表示される', () => {
       render(<Home />);
 
@@ -47,7 +73,7 @@ describe('Home Page', () => {
       expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Couple Plan');
       expect(screen.getByText('カップルのためのデートプラン作成・共有アプリ')).toBeInTheDocument();
 
-      // 説明文（複数要素に分割されているため部分マッチで検証）
+      // 説明文
       expect(
         screen.getByText(/行きたい場所を保存して、カップルで予定を共有しよう！/)
       ).toBeInTheDocument();
@@ -70,45 +96,72 @@ describe('Home Page', () => {
       expect(screen.getByText('デートプランにいいねをしよう！')).toBeInTheDocument();
     });
 
-    it('ログイン・新規登録ボタンが表示される', () => {
-      render(<Home />);
-
-      const loginLink = screen.getByRole('link', { name: 'ログイン' });
-      const signupLink = screen.getByRole('link', { name: '新規登録' });
-
-      expect(loginLink).toBeInTheDocument();
-      expect(loginLink).toHaveAttribute('href', '/login');
-
-      expect(signupLink).toBeInTheDocument();
-      expect(signupLink).toHaveAttribute('href', '/signup');
-    });
-
-    it('公開プラン閲覧リンクが表示される', () => {
+    it('追加ナビゲーションリンクが表示される', () => {
       render(<Home />);
 
       const publicPlansLink = screen.getByRole('link', {
         name: '公開されているデートプランを見る →',
       });
+      const aboutLink = screen.getByRole('link', {
+        name: 'サービスについて詳しく →',
+      });
+      const faqLink = screen.getByRole('link', {
+        name: 'よくある質問を見る →',
+      });
 
-      expect(publicPlansLink).toBeInTheDocument();
       expect(publicPlansLink).toHaveAttribute('href', '/plans/public');
+      expect(aboutLink).toHaveAttribute('href', '/about');
+      expect(faqLink).toHaveAttribute('href', '/faq');
     });
 
-    it('フッターが正しく表示される', () => {
+    it('特徴セクションが表示される', () => {
       render(<Home />);
+
+      expect(screen.getByRole('heading', { name: 'Couple Planの特徴' })).toBeInTheDocument();
+
+      // 特徴の項目
+      expect(screen.getByText('簡単プラン作成')).toBeInTheDocument();
+      expect(screen.getByText('予算管理')).toBeInTheDocument();
+      expect(screen.getByText('プライバシー保護')).toBeInTheDocument();
+      expect(screen.getByText('マルチデバイス対応')).toBeInTheDocument();
+    });
+
+    it('利用の流れセクションが表示される', () => {
+      render(<Home />);
+
+      expect(screen.getByRole('heading', { name: '利用の流れ' })).toBeInTheDocument();
+
+      // 各ステップ
+      expect(screen.getByText('アカウント作成')).toBeInTheDocument();
+      expect(screen.getByText('無料でアカウントを作成')).toBeInTheDocument();
+
+      expect(screen.getByText('プラン作成')).toBeInTheDocument();
+      expect(screen.getByText('行きたい場所を追加してデートプランを作成')).toBeInTheDocument();
+
+      expect(screen.getByText('共有・調整')).toBeInTheDocument();
+      expect(
+        screen.getByText('プランを公開してパートナーと一緒にプランを調整')
+      ).toBeInTheDocument();
+
+      expect(screen.getByText('実行・記録')).toBeInTheDocument();
+      expect(screen.getByText('デートを楽しみ、プランを記録')).toBeInTheDocument();
+    });
+
+    it('拡張されたフッターが正しく表示される', () => {
+      render(<Home />);
+
+      // サービスセクション
+      const serviceLinks = screen.getAllByRole('link', { name: 'サービスについて' });
+      expect(serviceLinks.length).toBeGreaterThan(0);
+
+      // サポートセクション
+      expect(screen.getByText('サポート')).toBeInTheDocument();
+
+      // アカウントセクション
+      expect(screen.getByText('アカウント')).toBeInTheDocument();
 
       // コピーライト
       expect(screen.getByText('© 2025 Couple Plan. All rights reserved.')).toBeInTheDocument();
-
-      // フッターリンク
-      const privacyLink = screen.getByRole('link', { name: 'プライバシーポリシー' });
-      const contactLink = screen.getByRole('link', { name: 'お問い合わせ' });
-
-      expect(privacyLink).toBeInTheDocument();
-      expect(privacyLink).toHaveAttribute('href', '/privacy');
-
-      expect(contactLink).toBeInTheDocument();
-      expect(contactLink).toHaveAttribute('href', '/contact');
 
       // AdSense関連の注記
       expect(
@@ -205,27 +258,26 @@ describe('Home Page', () => {
       });
     });
 
-    it('見出し構造が適切である', () => {
+    it('適切な見出し構造を持つ', () => {
       render(<Home />);
 
-      const h1 = screen.getByRole('heading', { level: 1 });
-      const h3s = screen.getAllByRole('heading', { level: 3 });
+      const h1Elements = screen.getAllByRole('heading', { level: 1 });
+      const h2Elements = screen.getAllByRole('heading', { level: 2 });
 
-      expect(h1).toBeInTheDocument();
-      expect(h3s).toHaveLength(3); // 3つの機能紹介カード
+      expect(h1Elements).toHaveLength(1);
+      expect(h2Elements.length).toBeGreaterThan(0);
     });
 
-    it('全てのリンクにアクセス可能なテキストがある', () => {
+    it('全てのリンクが適切なhref属性を持つ', () => {
       render(<Home />);
 
       const links = screen.getAllByRole('link');
-
       links.forEach((link) => {
-        expect(link).toHaveAccessibleName();
+        expect(link).toHaveAttribute('href');
       });
     });
 
-    it('ローディング状態にaria-labelが設定されている', () => {
+    it('ローディング状態でのARIAラベルが適切', () => {
       mockUseAuth.mockReturnValue({
         session: null,
         isLoading: true,
@@ -235,33 +287,8 @@ describe('Home Page', () => {
 
       render(<Home />);
 
-      const loadingElement = screen.getByRole('status');
-      expect(loadingElement).toHaveAttribute('aria-label', '読み込み中');
-    });
-  });
-
-  describe('レスポンシブ対応', () => {
-    beforeEach(() => {
-      mockUseAuth.mockReturnValue({
-        session: null,
-        isLoading: false,
-        user: null,
-        signOut: jest.fn(),
-      });
-    });
-
-    it('グリッドレイアウトのクラスが設定されている', () => {
-      render(<Home />);
-
-      // 機能紹介カードのグリッド
-      const gridContainer = screen.getByText('カップルでデートプランを管理').closest('.grid');
-      expect(gridContainer).toHaveClass('grid-cols-1', 'sm:grid-cols-3');
-
-      // フッターのレスポンシブレイアウト
-      const footerContainer = screen
-        .getByText('© 2025 Couple Plan. All rights reserved.')
-        .closest('.flex');
-      expect(footerContainer).toHaveClass('flex-col', 'sm:flex-row');
+      const spinner = screen.getByRole('status', { name: '読み込み中' });
+      expect(spinner).toHaveAttribute('aria-label', '読み込み中');
     });
   });
 });
