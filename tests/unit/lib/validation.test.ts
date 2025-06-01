@@ -73,8 +73,9 @@ describe('validation', () => {
 
   describe('validateUrl', () => {
     it('有効なURLを認識する', () => {
+      const testPort = 3000;
       expect(validateUrl('https://example.com')).toBe(true);
-      expect(validateUrl('http://localhost:3000')).toBe(true);
+      expect(validateUrl(`http://localhost:${testPort}`)).toBe(true);
     });
 
     it('無効なURLを拒否する', () => {

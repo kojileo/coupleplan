@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import type { ReactElement } from 'react';
 import { useEffect } from 'react';
 
+import { EmergencyButton } from '@/components/features/emergency/EmergencyButton';
 import Button from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -33,7 +34,7 @@ export default function Home(): ReactElement {
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-50 to-white">
       {/* ナビゲーションヘッダー */}
-      <nav className="bg-white shadow-sm">
+      <nav className="bg-white/90 backdrop-blur-sm shadow-sm fixed w-full z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
@@ -72,163 +73,253 @@ export default function Home(): ReactElement {
         </div>
       </nav>
 
-      <main className="container mx-auto px-4 py-12">
-        <div className="flex flex-col items-center justify-center gap-8 text-center pt-16">
-          <h1 className="text-4xl font-bold text-rose-950 sm:text-5xl">
-            Couple Plan
-            <span className="block text-xl font-normal text-rose-700 mt-2">
-              カップルのためのデートプラン作成・共有アプリ
-            </span>
-          </h1>
-
-          <p className="max-w-2xl text-rose-800 text-lg">
-            行きたい場所を保存して、カップルで予定を共有しよう！
-            <br />
-            共有されているデートプランにいいねをして、参考にしよう！
-          </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mt-8">
-            <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-              <span className="text-2xl mb-2 block">👥</span>
-              <h3 className="font-semibold mb-2 text-rose-900">カップルでデートプランを管理</h3>
-              <p className="text-sm text-rose-700">一緒にプランを作成・共有</p>
+      <main className="pt-16">
+        {/* ヒーローセクション */}
+        <section className="relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-rose-100 via-pink-50 to-purple-50" />
+          <div className="relative container mx-auto px-4 py-20">
+            {/* 新機能アナウンス */}
+            <div className="text-center mb-8">
+              <span className="inline-block bg-gradient-to-r from-rose-500 to-pink-500 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg">
+                🎉 NEW FEATURE - デート中の困ったを瞬間解決！
+              </span>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-              <span className="text-2xl mb-2 block">📍</span>
-              <h3 className="font-semibold mb-2 text-rose-900">行きたい場所管理</h3>
-              <p className="text-sm text-rose-700">気になるスポットを保存</p>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-              <span className="text-2xl mb-2 block">💛</span>
-              <h3 className="font-semibold mb-2 text-rose-900">公開されているデートプランを参考</h3>
-              <p className="text-sm text-rose-700">デートプランにいいねをしよう！</p>
+
+            <div className="text-center max-w-4xl mx-auto">
+              <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+                Couple Plan
+                <span className="block text-2xl font-normal text-rose-600 mt-4">
+                  カップルのためのデートプラン作成・共有アプリ
+                </span>
+              </h1>
+
+              <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto">
+                行きたい場所を保存して、カップルで予定を共有。
+                <br />
+                <span className="font-semibold text-rose-600">デート中の困ったも瞬間解決！</span>
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+                <Link href="/signup">
+                  <Button size="lg" className="text-lg px-8 py-4">
+                    無料で始める
+                  </Button>
+                </Link>
+                <Link href="/plans/public">
+                  <Button variant="outline" size="lg" className="text-lg px-8 py-4">
+                    公開プランを見る
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
+        </section>
 
-          <div className="flex gap-4 mt-8">
-            <Link href="/login">
-              <Button variant="outline" size="lg">
-                ログイン
-              </Button>
-            </Link>
-            <Link href="/signup">
-              <Button size="lg">新規登録</Button>
-            </Link>
+        {/* 緊急ヘルプ機能ハイライト */}
+        <section className="py-20 bg-white">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-bold text-gray-900 mb-4">
+                🆘 デート中の「困った」を瞬間解決
+              </h2>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                せっかくのデートで困った瞬間があっても大丈夫。Couple
+                Planがあなたのデートをサポートします。
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+              {/* お手洗い検索機能 */}
+              <div className="group hover:scale-105 transition-transform duration-300">
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-8 h-full border border-blue-200">
+                  <div className="flex items-center mb-6">
+                    <div className="bg-blue-500 p-4 rounded-2xl mr-4">
+                      <span className="text-3xl">🚻</span>
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900">お手洗い検索</h3>
+                  </div>
+                  <p className="text-gray-600 mb-6 text-lg">
+                    現在地周辺のお手洗いを瞬時に検索。主要駅の清潔なお手洗い情報も完備。
+                  </p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="flex items-center text-blue-600 font-medium">
+                      <span className="mr-2">✓</span> 距離順表示
+                    </div>
+                    <div className="flex items-center text-blue-600 font-medium">
+                      <span className="mr-2">✓</span> 無料・有料表示
+                    </div>
+                    <div className="flex items-center text-blue-600 font-medium">
+                      <span className="mr-2">✓</span> 車椅子対応情報
+                    </div>
+                    <div className="flex items-center text-blue-600 font-medium">
+                      <span className="mr-2">✓</span> Googleマップ連携
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 会話ネタ提供機能 */}
+              <div className="group hover:scale-105 transition-transform duration-300">
+                <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-8 h-full border border-purple-200">
+                  <div className="flex items-center mb-6">
+                    <div className="bg-purple-500 p-4 rounded-2xl mr-4">
+                      <span className="text-3xl">💬</span>
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900">会話ネタ提供</h3>
+                  </div>
+                  <p className="text-gray-600 mb-6 text-lg">
+                    デート中の気まずい沈黙を救う、カップル向けの会話ネタを瞬時に提案。
+                  </p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="flex items-center text-purple-600 font-medium">
+                      <span className="mr-2">✓</span> カテゴリ別選択
+                    </div>
+                    <div className="flex items-center text-purple-600 font-medium">
+                      <span className="mr-2">✓</span> 関係性を深める質問
+                    </div>
+                    <div className="flex items-center text-purple-600 font-medium">
+                      <span className="mr-2">✓</span> 盛り上がる話題
+                    </div>
+                    <div className="flex items-center text-purple-600 font-medium">
+                      <span className="mr-2">✓</span> 使い方のコツ付き
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="text-center mt-12">
+              <div className="inline-flex items-center bg-gray-100 rounded-full px-6 py-3 shadow-sm">
+                <span className="text-rose-500 mr-3 text-xl">🆘</span>
+                <span className="text-gray-700 font-medium">右下のボタンから今すぐ体験！</span>
+              </div>
+            </div>
           </div>
+        </section>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
-            <Link href="/plans/public" className="text-rose-600 hover:text-rose-900 font-medium">
-              公開されているデートプランを見る →
-            </Link>
-            <Link href="/about" className="text-rose-600 hover:text-rose-900 font-medium">
-              サービスについて詳しく →
-            </Link>
-            <Link href="/faq" className="text-rose-600 hover:text-rose-900 font-medium">
-              よくある質問を見る →
-            </Link>
-          </div>
-        </div>
-
-        {/* 特徴セクション */}
-        <section className="mt-20">
-          <h2 className="text-3xl font-bold text-center text-rose-950 mb-12">Couple Planの特徴</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="bg-rose-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">📝</span>
+        {/* 主要機能 */}
+        <section className="py-20 bg-gray-50">
+          <div className="container mx-auto px-4">
+            <h2 className="text-4xl font-bold text-center text-gray-900 mb-16">主要機能</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div className="text-center group">
+                <div className="bg-gradient-to-br from-rose-400 to-rose-500 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
+                  <span className="text-2xl">🆘</span>
+                </div>
+                <h3 className="font-bold text-gray-900 mb-3 text-lg">緊急ヘルプ</h3>
+                <p className="text-gray-600">デート中の困った瞬間を瞬時に解決</p>
               </div>
-              <h3 className="font-semibold text-rose-900 mb-2">簡単プラン作成</h3>
-              <p className="text-gray-600 text-sm">
-                直感的な操作でデートプランを簡単に作成できます
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="bg-rose-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">💰</span>
+              <div className="text-center group">
+                <div className="bg-gradient-to-br from-blue-400 to-blue-500 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
+                  <span className="text-2xl">📝</span>
+                </div>
+                <h3 className="font-bold text-gray-900 mb-3 text-lg">プラン作成</h3>
+                <p className="text-gray-600">直感的な操作でデートプランを簡単作成</p>
               </div>
-              <h3 className="font-semibold text-rose-900 mb-2">予算管理</h3>
-              <p className="text-gray-600 text-sm">デートの予算を自動計算し、支出を管理できます</p>
-            </div>
-            <div className="text-center">
-              <div className="bg-rose-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🔒</span>
+              <div className="text-center group">
+                <div className="bg-gradient-to-br from-green-400 to-green-500 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
+                  <span className="text-2xl">💰</span>
+                </div>
+                <h3 className="font-bold text-gray-900 mb-3 text-lg">予算管理</h3>
+                <p className="text-gray-600">デートの予算を自動計算し管理</p>
               </div>
-              <h3 className="font-semibold text-rose-900 mb-2">プライバシー保護</h3>
-              <p className="text-gray-600 text-sm">
-                個人情報は厳重に保護され、安全にご利用いただけます
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="bg-rose-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">📱</span>
+              <div className="text-center group">
+                <div className="bg-gradient-to-br from-purple-400 to-purple-500 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
+                  <span className="text-2xl">📱</span>
+                </div>
+                <h3 className="font-bold text-gray-900 mb-3 text-lg">マルチデバイス</h3>
+                <p className="text-gray-600">どのデバイスからでもアクセス可能</p>
               </div>
-              <h3 className="font-semibold text-rose-900 mb-2">マルチデバイス対応</h3>
-              <p className="text-gray-600 text-sm">
-                スマホ、タブレット、PCどこからでもアクセス可能
-              </p>
             </div>
           </div>
         </section>
 
         {/* 利用の流れ */}
-        <section className="mt-20">
-          <h2 className="text-3xl font-bold text-center text-rose-950 mb-12">利用の流れ</h2>
-          <div className="max-w-4xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-              <div className="text-center">
-                <div className="bg-rose-600 text-white w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 font-bold text-xl">
-                  1
+        <section className="py-20 bg-white">
+          <div className="container mx-auto px-4">
+            <h2 className="text-4xl font-bold text-center text-gray-900 mb-16">利用の流れ</h2>
+            <div className="max-w-5xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div className="text-center relative">
+                  <div className="bg-gradient-to-br from-rose-500 to-rose-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 font-bold text-2xl shadow-lg">
+                    1
+                  </div>
+                  <h3 className="font-bold text-gray-900 mb-3 text-lg">アカウント作成</h3>
+                  <p className="text-gray-600">無料でアカウントを作成</p>
+                  <div className="hidden md:block absolute top-8 left-full w-full">
+                    <div className="border-t-2 border-dashed border-gray-300 w-1/2"></div>
+                  </div>
                 </div>
-                <h3 className="font-semibold text-rose-900 mb-2">アカウント作成</h3>
-                <p className="text-gray-600 text-sm">無料でアカウントを作成</p>
-              </div>
-              <div className="text-center">
-                <div className="bg-rose-600 text-white w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 font-bold text-xl">
-                  2
+                <div className="text-center relative">
+                  <div className="bg-gradient-to-br from-rose-500 to-rose-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 font-bold text-2xl shadow-lg">
+                    2
+                  </div>
+                  <h3 className="font-bold text-gray-900 mb-3 text-lg">プラン作成</h3>
+                  <p className="text-gray-600">行きたい場所を追加してデートプラン作成</p>
+                  <div className="hidden md:block absolute top-8 left-full w-full">
+                    <div className="border-t-2 border-dashed border-gray-300 w-1/2"></div>
+                  </div>
                 </div>
-                <h3 className="font-semibold text-rose-900 mb-2">プラン作成</h3>
-                <p className="text-gray-600 text-sm">行きたい場所を追加してデートプランを作成</p>
-              </div>
-              <div className="text-center">
-                <div className="bg-rose-600 text-white w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 font-bold text-xl">
-                  3
+                <div className="text-center relative">
+                  <div className="bg-gradient-to-br from-rose-500 to-rose-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 font-bold text-2xl shadow-lg">
+                    3
+                  </div>
+                  <h3 className="font-bold text-gray-900 mb-3 text-lg">デート実行</h3>
+                  <p className="text-gray-600">緊急ヘルプ機能でサポートを受けながら実行</p>
+                  <div className="hidden md:block absolute top-8 left-full w-full">
+                    <div className="border-t-2 border-dashed border-gray-300 w-1/2"></div>
+                  </div>
                 </div>
-                <h3 className="font-semibold text-rose-900 mb-2">共有・調整</h3>
-                <p className="text-gray-600 text-sm">
-                  プランを公開してパートナーと一緒にプランを調整
-                </p>
-              </div>
-              <div className="text-center">
-                <div className="bg-rose-600 text-white w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 font-bold text-xl">
-                  4
+                <div className="text-center">
+                  <div className="bg-gradient-to-br from-rose-500 to-rose-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 font-bold text-2xl shadow-lg">
+                    4
+                  </div>
+                  <h3 className="font-bold text-gray-900 mb-3 text-lg">共有・記録</h3>
+                  <p className="text-gray-600">思い出を記録し、他カップルと共有</p>
                 </div>
-                <h3 className="font-semibold text-rose-900 mb-2">実行・記録</h3>
-                <p className="text-gray-600 text-sm">デートを楽しみ、プランを記録</p>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* CTA セクション */}
+        <section className="py-20 bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500">
+          <div className="container mx-auto px-4 text-center text-white">
+            <h2 className="text-4xl font-bold mb-6">もう困ることはありません！</h2>
+            <p className="text-xl text-rose-100 mb-8 max-w-2xl mx-auto">
+              デートプランの作成から実行まで、あなたの恋愛をトータルサポート。
+            </p>
+            <Link href="/signup">
+              <Button
+                size="lg"
+                className="bg-white text-rose-600 hover:bg-gray-100 text-lg px-12 py-4 font-semibold"
+              >
+                今すぐ無料で始める
+              </Button>
+            </Link>
           </div>
         </section>
       </main>
 
       {/* フッター */}
-      <footer className="bg-white border-t border-gray-200 mt-16">
-        <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+      <footer className="bg-gray-900 text-white">
+        <div className="container mx-auto py-12 px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div>
-              <h3 className="text-lg font-semibold text-rose-900 mb-4">Couple Plan</h3>
-              <p className="text-gray-600 text-sm">
+              <h3 className="text-2xl font-bold text-rose-400 mb-4">💑 Couple Plan</h3>
+              <p className="text-gray-300">
                 カップルのための
                 <br />
                 デートプラン管理アプリ
               </p>
             </div>
             <div>
-              <h4 className="font-semibold text-gray-900 mb-4">サービス</h4>
+              <h4 className="font-semibold mb-4">サービス</h4>
               <ul className="space-y-2">
                 <li>
                   <Link
                     href="/about"
-                    className="text-gray-600 hover:text-rose-600 text-sm transition-colors"
+                    className="text-gray-300 hover:text-rose-400 transition-colors"
                   >
                     サービスについて
                   </Link>
@@ -236,28 +327,25 @@ export default function Home(): ReactElement {
                 <li>
                   <Link
                     href="/plans/public"
-                    className="text-gray-600 hover:text-rose-600 text-sm transition-colors"
+                    className="text-gray-300 hover:text-rose-400 transition-colors"
                   >
                     公開プラン
                   </Link>
                 </li>
                 <li>
-                  <Link
-                    href="/faq"
-                    className="text-gray-600 hover:text-rose-600 text-sm transition-colors"
-                  >
+                  <Link href="/faq" className="text-gray-300 hover:text-rose-400 transition-colors">
                     よくある質問
                   </Link>
                 </li>
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold text-gray-900 mb-4">サポート</h4>
+              <h4 className="font-semibold mb-4">サポート</h4>
               <ul className="space-y-2">
                 <li>
                   <Link
                     href="/contact"
-                    className="text-gray-600 hover:text-rose-600 text-sm transition-colors"
+                    className="text-gray-300 hover:text-rose-400 transition-colors"
                   >
                     お問い合わせ
                   </Link>
@@ -265,7 +353,7 @@ export default function Home(): ReactElement {
                 <li>
                   <Link
                     href="/privacy"
-                    className="text-gray-600 hover:text-rose-600 text-sm transition-colors"
+                    className="text-gray-300 hover:text-rose-400 transition-colors"
                   >
                     プライバシーポリシー
                   </Link>
@@ -273,7 +361,7 @@ export default function Home(): ReactElement {
                 <li>
                   <Link
                     href="/terms"
-                    className="text-gray-600 hover:text-rose-600 text-sm transition-colors"
+                    className="text-gray-300 hover:text-rose-400 transition-colors"
                   >
                     利用規約
                   </Link>
@@ -281,12 +369,12 @@ export default function Home(): ReactElement {
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold text-gray-900 mb-4">アカウント</h4>
+              <h4 className="font-semibold mb-4">アカウント</h4>
               <ul className="space-y-2">
                 <li>
                   <Link
                     href="/login"
-                    className="text-gray-600 hover:text-rose-600 text-sm transition-colors"
+                    className="text-gray-300 hover:text-rose-400 transition-colors"
                   >
                     ログイン
                   </Link>
@@ -294,7 +382,7 @@ export default function Home(): ReactElement {
                 <li>
                   <Link
                     href="/signup"
-                    className="text-gray-600 hover:text-rose-600 text-sm transition-colors"
+                    className="text-gray-300 hover:text-rose-400 transition-colors"
                   >
                     新規登録
                   </Link>
@@ -302,14 +390,17 @@ export default function Home(): ReactElement {
               </ul>
             </div>
           </div>
-          <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 border-t border-gray-200 pt-8">
-            <div className="text-sm text-gray-600">© 2025 Couple Plan. All rights reserved.</div>
-            <div className="text-center text-xs text-gray-500">
-              本サービスでは、サービス向上のためにGoogle AdSenseによる広告を配信しています
+          <div className="border-t border-gray-800 pt-8 flex flex-col sm:flex-row justify-between items-center">
+            <div className="text-gray-400">© 2025 Couple Plan. All rights reserved.</div>
+            <div className="text-xs text-gray-500 mt-4 sm:mt-0">
+              Google AdSenseによる広告を配信しています
             </div>
           </div>
         </div>
       </footer>
+
+      {/* 緊急ヘルプボタン */}
+      <EmergencyButton />
     </div>
   );
 }
