@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import type { ReactElement } from 'react';
 import { useEffect, useState } from 'react';
 
+import { EmergencyButton } from '@/components/features/emergency/EmergencyButton';
 import { PlanCard } from '@/components/features/plans/PlanCard';
 import Button from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
@@ -78,6 +79,9 @@ export default function MyPlansPage(): ReactElement {
           ))}
         </div>
       )}
+
+      {/* 緊急ヘルプボタン */}
+      <EmergencyButton />
     </div>
   );
 }
