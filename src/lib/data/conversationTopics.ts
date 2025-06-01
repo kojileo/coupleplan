@@ -152,9 +152,13 @@ export function getRandomTopic(): ConversationTopic {
 }
 
 // カテゴリをランダムに選んでから話題を取得
-export function getRandomTopicByCategory(category?: string): ConversationTopic {
-  if (category) {
-    const categoryTopics = getTopicsByCategory(category);
+export function getRandomTopicByCategory(category?: string): ConversationTopic | undefined {
+  const trimmedCategory = category?.trim();
+  if (trimmedCategory) {
+    const categoryTopics = getTopicsByCategory(trimmedCategory);
+    if (categoryTopics.length === 0) {
+      return undefined;
+    }
     const randomIndex = Math.floor(Math.random() * categoryTopics.length);
     return categoryTopics[randomIndex];
   }
