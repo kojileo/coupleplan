@@ -44,7 +44,9 @@ jobs:
             --build-arg DATABASE_URL="${{ secrets.DATABASE_URL }}" \
             --build-arg RESEND_API_KEY="${{ secrets.RESEND_API_KEY }}" \
             --build-arg ADMIN_EMAIL="${{ secrets.ADMIN_EMAIL }}" \
-            --build-arg FROM_EMAIL="${{ secrets.FROM_EMAIL }}"
+            --build-arg FROM_EMAIL="${{ secrets.FROM_EMAIL }}" \
+            --build-arg NEXT_PUBLIC_ADSENSE_CLIENT_ID="${{ secrets.NEXT_PUBLIC_ADSENSE_CLIENT_ID }}" \
+            --build-arg GOOGLE_SITE_VERIFICATION="${{ secrets.GOOGLE_SITE_VERIFICATION }}"
           docker push asia-northeast1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
 
       - name: Deploy to Cloud Run
@@ -62,3 +64,5 @@ jobs:
             RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}
             ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}
             FROM_EMAIL=${{ secrets.FROM_EMAIL }}
+            NEXT_PUBLIC_ADSENSE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_ADSENSE_CLIENT_ID }}
+            GOOGLE_SITE_VERIFICATION=${{ secrets.GOOGLE_SITE_VERIFICATION }}
