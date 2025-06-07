@@ -20,11 +20,11 @@ describe('RootLayout コンポーネント', () => {
 
   it('メタデータが正しく設定されている', () => {
     expect(metadata.title).toEqual({
-      default: 'Couple Plan - カップルのためのデートプラン管理アプリ',
+      default: 'Couple Plan - カップルのためのデートプラン管理・お手洗い検索・会話ネタ提供アプリ',
       template: '%s | Couple Plan',
     });
     expect(metadata.description).toBe(
-      'カップルで一緒にデートプランを作成・共有・管理できるWebアプリケーション。行きたい場所の保存、予算管理、公開プランの参考など、デートをより楽しくする機能を提供しています。'
+      'カップルで一緒にデートプランを作成・共有・管理できるWebアプリケーション。現在地周辺のお手洗い検索、デート中の会話ネタ提供、行きたい場所の保存、予算管理、公開プランの参考など、デートをより楽しくする緊急ヘルプ機能付きアプリです。'
     );
     expect(metadata.metadataBase).toEqual(new URL('https://coupleplan.com'));
   });

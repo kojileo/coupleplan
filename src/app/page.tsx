@@ -123,9 +123,17 @@ export default function Home(): ReactElement {
                 🆘 デート中の「困った」を瞬間解決
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                せっかくのデートで困った瞬間があっても大丈夫。Couple
-                Planがあなたのデートをサポートします。
+                お手洗い探しや会話の沈黙に困ったら即座に解決！デート中の緊急事態をサポートする機能で、せっかくのデート時間をより楽しく過ごせます。
               </p>
+              <div className="mt-6">
+                <Link
+                  href="/features"
+                  className="inline-flex items-center bg-rose-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-rose-600 transition-colors"
+                >
+                  詳しい機能を見る
+                  <span className="ml-2">→</span>
+                </Link>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
@@ -139,7 +147,9 @@ export default function Home(): ReactElement {
                     <h3 className="text-2xl font-bold text-gray-900">お手洗い検索</h3>
                   </div>
                   <p className="text-gray-600 mb-6 text-lg">
-                    現在地周辺のお手洗いを瞬時に検索。主要駅の清潔なお手洗い情報も完備。
+                    <strong>デート中の急なお手洗い探しに！</strong>
+                    <br />
+                    現在地から最も近いお手洗いを距離順で表示。無料・有料、車椅子対応も一目で分かります。
                   </p>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="flex items-center text-blue-600 font-medium">
@@ -168,7 +178,9 @@ export default function Home(): ReactElement {
                     <h3 className="text-2xl font-bold text-gray-900">会話ネタ提供</h3>
                   </div>
                   <p className="text-gray-600 mb-6 text-lg">
-                    デート中の気まずい沈黙を救う、カップル向けの会話ネタを瞬時に提案。
+                    <strong>会話が途切れた時の救世主！</strong>
+                    <br />
+                    6つのカテゴリから選べる豊富な会話ネタで、二人の距離をぐっと縮める質問を瞬時に提案。
                   </p>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="flex items-center text-purple-600 font-medium">
