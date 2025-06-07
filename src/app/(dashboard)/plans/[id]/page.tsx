@@ -181,7 +181,7 @@ export default function PlanDetailPage({ params }: Props): ReactElement {
           <div>
             <h2 className="text-sm font-semibold text-rose-800 mb-2">日付</h2>
             <p className="text-rose-900">
-              {plan.date ? new Date(plan.date).toLocaleDateString() : '未設定'}
+              {plan.date ? new Date(plan.date).toLocaleDateString('ja-JP') : '未設定'}
             </p>
           </div>
           <div>
