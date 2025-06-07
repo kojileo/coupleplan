@@ -59,8 +59,8 @@ const mockPlan = {
   isPublic: false,
   category: null,
   userId: 'user-123',
-  createdAt: '2024-01-01T00:00:00.000Z',
-  updatedAt: '2024-01-01T00:00:00.000Z',
+  createdAt: '2024-01-01T09:00:00.000Z',
+  updatedAt: '2024-01-01T09:00:00.000Z',
   profile: { id: 'profile-123', name: 'テストユーザー', avatarUrl: null },
   likes: [],
   _count: { likes: 0 },
@@ -184,8 +184,12 @@ describe('PlanDetailPage', () => {
       render(<PlanDetailPage params={Promise.resolve({ id: 'plan-123' })} />);
 
       await waitFor(() => {
-        expect(screen.getByText(/作成日: 2024年1月1日/)).toBeInTheDocument();
-        expect(screen.getByText(/更新日: 2024年1月1日/)).toBeInTheDocument();
+        // 作成日と更新日の表示を確認
+        expect(screen.getByText(/作成日:/)).toBeInTheDocument();
+        expect(screen.getByText(/更新日:/)).toBeInTheDocument();
+        // 時間の表示を確認（複数の要素があるのでgetAllByTextを使用）
+        const timeElements = screen.getAllByText(/2024年1月1日 18:00/);
+        expect(timeElements).toHaveLength(2); // 作成日と更新日の2つ
       });
     });
   });
