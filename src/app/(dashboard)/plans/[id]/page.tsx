@@ -181,7 +181,7 @@ export default function PlanDetailPage({ params }: Props): ReactElement {
           <div>
             <h2 className="text-sm font-semibold text-rose-800 mb-2">日付</h2>
             <p className="text-rose-900">
-              {plan.date ? new Date(plan.date).toLocaleDateString() : '未設定'}
+              {plan.date ? new Date(plan.date).toLocaleDateString('ja-JP') : '未設定'}
             </p>
           </div>
           <div>
@@ -231,8 +231,26 @@ export default function PlanDetailPage({ params }: Props): ReactElement {
 
         <div className="pt-4 border-t border-rose-100">
           <div className="flex justify-between text-sm text-rose-600">
-            <span>作成日: {new Date(plan.createdAt).toLocaleDateString()}</span>
-            <span>更新日: {new Date(plan.updatedAt).toLocaleDateString()}</span>
+            <span>
+              作成日:{' '}
+              {new Date(plan.createdAt).toLocaleString('ja-JP', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+            </span>
+            <span>
+              更新日:{' '}
+              {new Date(plan.updatedAt).toLocaleString('ja-JP', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+            </span>
           </div>
         </div>
       </div>

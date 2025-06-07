@@ -13,6 +13,11 @@ jest.mock('@/contexts/AuthContext', () => ({
   useAuth: jest.fn(),
 }));
 
+// 緊急ヘルプコンポーネントをモック
+jest.mock('@/components/features/emergency/EmergencyButton', () => ({
+  EmergencyButton: () => <div data-testid="emergency-button">Emergency Help Button</div>,
+}));
+
 const mockPush = jest.fn();
 const mockUseRouter = useRouter as jest.MockedFunction<typeof useRouter>;
 const mockUseAuth = useAuth as jest.MockedFunction<typeof useAuth>;
@@ -66,6 +71,12 @@ describe('Home Page', () => {
       expect(headerButtons2[0]).toHaveAttribute('href', '/signup');
     });
 
+    it('新機能アナウンスが表示される', () => {
+      render(<Home />);
+
+      expect(screen.getByText('🎉 NEW FEATURE - デート中の困ったを瞬間解決！')).toBeInTheDocument();
+    });
+
     it('メインコンテンツが正しく表示される', () => {
       render(<Home />);
 
@@ -75,58 +86,70 @@ describe('Home Page', () => {
 
       // 説明文
       expect(
-        screen.getByText(/行きたい場所を保存して、カップルで予定を共有しよう！/)
+        screen.getByText(/行きたい場所を保存して、カップルで予定を共有。/)
       ).toBeInTheDocument();
+      expect(screen.getByText(/デート中の困ったも瞬間解決！/)).toBeInTheDocument();
+    });
+
+    it('緊急ヘルプ機能ハイライトセクションが表示される', () => {
+      render(<Home />);
+
+      // セクションヘッダー
+      expect(screen.getByText('🆘 デート中の「困った」を瞬間解決')).toBeInTheDocument();
       expect(
-        screen.getByText(/共有されているデートプランにいいねをして、参考にしよう！/)
+        screen.getByText(
+          /せっかくのデートで困った瞬間があっても大丈夫。Couple Planがあなたのデートをサポートします。/
+        )
       ).toBeInTheDocument();
+
+      // お手洗い検索機能
+      expect(screen.getByText('お手洗い検索')).toBeInTheDocument();
+      expect(
+        screen.getByText('現在地周辺のお手洗いを瞬時に検索。主要駅の清潔なお手洗い情報も完備。')
+      ).toBeInTheDocument();
+      expect(screen.getByText('距離順表示')).toBeInTheDocument();
+      expect(screen.getByText('無料・有料表示')).toBeInTheDocument();
+      expect(screen.getByText('車椅子対応情報')).toBeInTheDocument();
+      expect(screen.getByText('Googleマップ連携')).toBeInTheDocument();
+
+      // 会話ネタ提供機能
+      expect(screen.getByText('会話ネタ提供')).toBeInTheDocument();
+      expect(
+        screen.getByText('デート中の気まずい沈黙を救う、カップル向けの会話ネタを瞬時に提案。')
+      ).toBeInTheDocument();
+      expect(screen.getByText('カテゴリ別選択')).toBeInTheDocument();
+      expect(screen.getByText('関係性を深める質問')).toBeInTheDocument();
+      expect(screen.getByText('盛り上がる話題')).toBeInTheDocument();
+      expect(screen.getByText('使い方のコツ付き')).toBeInTheDocument();
+
+      // 体験案内
+      const emergencyEmojis = screen.getAllByText('🆘');
+      expect(emergencyEmojis.length).toBeGreaterThan(0);
+      expect(screen.getByText('右下のボタンから今すぐ体験！')).toBeInTheDocument();
     });
 
-    it('3つの機能紹介カードが表示される', () => {
+    it('主要機能セクションが更新されている', () => {
       render(<Home />);
 
-      // 機能カード
-      expect(screen.getByText('カップルでデートプランを管理')).toBeInTheDocument();
-      expect(screen.getByText('一緒にプランを作成・共有')).toBeInTheDocument();
+      expect(screen.getByRole('heading', { name: '主要機能' })).toBeInTheDocument();
 
-      expect(screen.getByText('行きたい場所管理')).toBeInTheDocument();
-      expect(screen.getByText('気になるスポットを保存')).toBeInTheDocument();
+      // 緊急ヘルプ機能が追加されている
+      expect(screen.getByText('緊急ヘルプ')).toBeInTheDocument();
+      expect(screen.getByText('デート中の困った瞬間を瞬時に解決')).toBeInTheDocument();
 
-      expect(screen.getByText('公開されているデートプランを参考')).toBeInTheDocument();
-      expect(screen.getByText('デートプランにいいねをしよう！')).toBeInTheDocument();
-    });
+      // 既存機能（複数の「プラン作成」要素から最初の一つを取得）
+      const planCreationElements = screen.getAllByText('プラン作成');
+      expect(planCreationElements.length).toBeGreaterThan(0);
+      expect(screen.getByText('直感的な操作でデートプランを簡単作成')).toBeInTheDocument();
 
-    it('追加ナビゲーションリンクが表示される', () => {
-      render(<Home />);
-
-      const publicPlansLink = screen.getByRole('link', {
-        name: '公開されているデートプランを見る →',
-      });
-      const aboutLink = screen.getByRole('link', {
-        name: 'サービスについて詳しく →',
-      });
-      const faqLink = screen.getByRole('link', {
-        name: 'よくある質問を見る →',
-      });
-
-      expect(publicPlansLink).toHaveAttribute('href', '/plans/public');
-      expect(aboutLink).toHaveAttribute('href', '/about');
-      expect(faqLink).toHaveAttribute('href', '/faq');
-    });
-
-    it('特徴セクションが表示される', () => {
-      render(<Home />);
-
-      expect(screen.getByRole('heading', { name: 'Couple Planの特徴' })).toBeInTheDocument();
-
-      // 特徴の項目
-      expect(screen.getByText('簡単プラン作成')).toBeInTheDocument();
       expect(screen.getByText('予算管理')).toBeInTheDocument();
-      expect(screen.getByText('プライバシー保護')).toBeInTheDocument();
-      expect(screen.getByText('マルチデバイス対応')).toBeInTheDocument();
+      expect(screen.getByText('デートの予算を自動計算し管理')).toBeInTheDocument();
+
+      expect(screen.getByText('マルチデバイス')).toBeInTheDocument();
+      expect(screen.getByText('どのデバイスからでもアクセス可能')).toBeInTheDocument();
     });
 
-    it('利用の流れセクションが表示される', () => {
+    it('利用の流れが更新されている', () => {
       render(<Home />);
 
       expect(screen.getByRole('heading', { name: '利用の流れ' })).toBeInTheDocument();
@@ -135,16 +158,32 @@ describe('Home Page', () => {
       expect(screen.getByText('アカウント作成')).toBeInTheDocument();
       expect(screen.getByText('無料でアカウントを作成')).toBeInTheDocument();
 
-      expect(screen.getByText('プラン作成')).toBeInTheDocument();
-      expect(screen.getByText('行きたい場所を追加してデートプランを作成')).toBeInTheDocument();
+      // 複数の「プラン作成」要素から2番目の要素を確認
+      const planCreationElements = screen.getAllByText('プラン作成');
+      expect(planCreationElements.length).toBeGreaterThan(1);
+      expect(screen.getByText('行きたい場所を追加してデートプラン作成')).toBeInTheDocument();
 
-      expect(screen.getByText('共有・調整')).toBeInTheDocument();
+      expect(screen.getByText('デート実行')).toBeInTheDocument();
+      expect(screen.getByText('緊急ヘルプ機能でサポートを受けながら実行')).toBeInTheDocument();
+
+      expect(screen.getByText('共有・記録')).toBeInTheDocument();
+      expect(screen.getByText('思い出を記録し、他カップルと共有')).toBeInTheDocument();
+    });
+
+    it('緊急ヘルプボタンが表示される', () => {
+      render(<Home />);
+
+      // 緊急ヘルプボタンコンポーネントが表示される
+      expect(screen.getByTestId('emergency-button')).toBeInTheDocument();
+    });
+
+    it('CTAセクションが更新されている', () => {
+      render(<Home />);
+
+      expect(screen.getByText('もう困ることはありません！')).toBeInTheDocument();
       expect(
-        screen.getByText('プランを公開してパートナーと一緒にプランを調整')
+        screen.getByText('デートプランの作成から実行まで、あなたの恋愛をトータルサポート。')
       ).toBeInTheDocument();
-
-      expect(screen.getByText('実行・記録')).toBeInTheDocument();
-      expect(screen.getByText('デートを楽しみ、プランを記録')).toBeInTheDocument();
     });
 
     it('拡張されたフッターが正しく表示される', () => {
@@ -164,11 +203,7 @@ describe('Home Page', () => {
       expect(screen.getByText('© 2025 Couple Plan. All rights reserved.')).toBeInTheDocument();
 
       // AdSense関連の注記
-      expect(
-        screen.getByText(
-          '本サービスでは、サービス向上のためにGoogle AdSenseによる広告を配信しています'
-        )
-      ).toBeInTheDocument();
+      expect(screen.getByText('Google AdSenseによる広告を配信しています')).toBeInTheDocument();
     });
 
     it('ページが読み込み完了状態で表示される', () => {
@@ -198,19 +233,20 @@ describe('Home Page', () => {
 
       mockUseAuth.mockReturnValue({
         session: {
-          user: mockUser,
-          access_token: process.env.TEST_ACCESS_TOKEN || TEST_TOKEN,
-          refresh_token: process.env.TEST_REFRESH_TOKEN || TEST_REFRESH_TOKEN,
+          access_token: TEST_TOKEN,
+          refresh_token: TEST_REFRESH_TOKEN,
           expires_in: 3600,
+          expires_at: Math.floor(Date.now() / 1000) + 3600,
           token_type: 'bearer',
-        } as any,
+          user: mockUser,
+        },
         isLoading: false,
         user: mockUser,
         signOut: jest.fn(),
       });
     });
 
-    it('プランページにリダイレクトする', () => {
+    it('ログイン済みユーザーは自動的にプランページにリダイレクトされる', () => {
       render(<Home />);
 
       expect(mockPush).toHaveBeenCalledWith('/plans');
@@ -230,21 +266,11 @@ describe('Home Page', () => {
     it('ローディングスピナーが表示される', () => {
       render(<Home />);
 
+      // ローディングスピナーが表示される
       expect(screen.getByRole('status', { name: '読み込み中' })).toBeInTheDocument();
+
+      // メインコンテンツが表示されていないことを確認
       expect(screen.queryByRole('main')).not.toBeInTheDocument();
-    });
-
-    it('ローディングスピナーのアニメーション要素が存在する', () => {
-      render(<Home />);
-
-      const spinner = screen.getByRole('status', { name: '読み込み中' });
-      expect(spinner).toHaveClass(
-        'animate-spin',
-        'rounded-full',
-        'border-t-2',
-        'border-b-2',
-        'border-rose-500'
-      );
     });
   });
 
