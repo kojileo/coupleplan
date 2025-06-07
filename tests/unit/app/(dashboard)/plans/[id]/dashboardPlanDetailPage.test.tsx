@@ -51,8 +51,8 @@ describe('PlanDetailPage コンポーネント', () => {
         updatedAt: new Date(),
       },
     ],
-    createdAt: '2023-10-01',
-    updatedAt: '2023-10-05',
+    createdAt: '2023-10-01T09:00:00.000Z',
+    updatedAt: '2023-10-05T09:00:00.000Z',
     userId: mockUserId,
   };
 
@@ -212,14 +212,14 @@ describe('PlanDetailPage コンポーネント', () => {
     expect(screen.getByText('テスト場所')).toBeInTheDocument();
 
     // 日付の表示を確認
-    const date = new Date(mockPlan.date).toLocaleDateString();
+    const date = new Date(mockPlan.date).toLocaleDateString('ja-JP');
     expect(screen.getByText(date)).toBeInTheDocument();
 
     // 作成日・更新日の表示を確認
-    const createdDate = new Date(mockPlan.createdAt).toLocaleDateString();
-    const updatedDate = new Date(mockPlan.updatedAt).toLocaleDateString();
-    expect(screen.getByText(`作成日: ${createdDate}`)).toBeInTheDocument();
-    expect(screen.getByText(`更新日: ${updatedDate}`)).toBeInTheDocument();
+    expect(screen.getByText(/作成日:/)).toBeInTheDocument();
+    expect(screen.getByText(/2023年10月1日 18:00/)).toBeInTheDocument();
+    expect(screen.getByText(/更新日:/)).toBeInTheDocument();
+    expect(screen.getByText(/2023年10月5日 18:00/)).toBeInTheDocument();
   });
 
   it('プラン作成者以外でも詳細情報を閲覧できる', async () => {

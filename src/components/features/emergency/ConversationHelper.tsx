@@ -26,7 +26,7 @@ export function ConversationHelper({
       const topic = selectedCategory
         ? getRandomTopicByCategory(selectedCategory)
         : getRandomTopicByCategory();
-      setCurrentTopic(topic);
+      setCurrentTopic(topic || null);
       setIsGenerating(false);
     }, 500);
   };
