@@ -98,15 +98,13 @@ describe('Home Page', () => {
       expect(screen.getByText('🆘 デート中の「困った」を瞬間解決')).toBeInTheDocument();
       expect(
         screen.getByText(
-          /せっかくのデートで困った瞬間があっても大丈夫。Couple Planがあなたのデートをサポートします。/
+          /お手洗い探しや会話の沈黙に困ったら即座に解決！デート中の緊急事態をサポートする機能で、せっかくのデート時間をより楽しく過ごせます。/
         )
       ).toBeInTheDocument();
 
       // お手洗い検索機能
       expect(screen.getByText('お手洗い検索')).toBeInTheDocument();
-      expect(
-        screen.getByText('現在地周辺のお手洗いを瞬時に検索。主要駅の清潔なお手洗い情報も完備。')
-      ).toBeInTheDocument();
+      expect(screen.getByText(/デート中の急なお手洗い探しに！/)).toBeInTheDocument();
       expect(screen.getByText('距離順表示')).toBeInTheDocument();
       expect(screen.getByText('無料・有料表示')).toBeInTheDocument();
       expect(screen.getByText('車椅子対応情報')).toBeInTheDocument();
@@ -114,9 +112,7 @@ describe('Home Page', () => {
 
       // 会話ネタ提供機能
       expect(screen.getByText('会話ネタ提供')).toBeInTheDocument();
-      expect(
-        screen.getByText('デート中の気まずい沈黙を救う、カップル向けの会話ネタを瞬時に提案。')
-      ).toBeInTheDocument();
+      expect(screen.getByText(/会話が途切れた時の救世主！/)).toBeInTheDocument();
       expect(screen.getByText('カテゴリ別選択')).toBeInTheDocument();
       expect(screen.getByText('関係性を深める質問')).toBeInTheDocument();
       expect(screen.getByText('盛り上がる話題')).toBeInTheDocument();
