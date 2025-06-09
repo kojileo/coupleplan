@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 
 import { EmergencyButton } from '@/components/features/emergency/EmergencyButton';
 import Button from '@/components/ui/button';
+import { WeatherOutfitCard } from '@/components/WeatherOutfitCard';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function Home(): ReactElement {
@@ -209,11 +210,105 @@ export default function Home(): ReactElement {
           </div>
         </section>
 
+        {/* 天気・服装提案機能ハイライト */}
+        <section className="py-20 bg-gradient-to-br from-orange-50 to-yellow-50">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-bold text-gray-900 mb-4">
+                🌤️ 今日の天気に合わせた服装提案
+              </h2>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                デート当日の天気を確認して、二人にぴったりの服装を提案。雨の日も暑い日も、天気に左右されずに素敵なデートを楽しめます。
+              </p>
+            </div>
+
+            <div className="max-w-4xl mx-auto">
+              <div className="bg-white rounded-2xl shadow-xl p-8 border border-orange-200">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  {/* 天気情報表示 */}
+                  <div className="space-y-6">
+                    <h3 className="text-2xl font-bold text-gray-900 flex items-center">
+                      <span className="bg-orange-500 p-3 rounded-xl mr-4 text-white">🌡️</span>
+                      リアルタイム天気情報
+                    </h3>
+                    <div className="space-y-4">
+                      <div className="flex items-center text-orange-600 font-medium">
+                        <span className="mr-3">✓</span> 現在地の詳細な天気情報
+                      </div>
+                      <div className="flex items-center text-orange-600 font-medium">
+                        <span className="mr-3">✓</span> 気温・体感温度・湿度・風速
+                      </div>
+                      <div className="flex items-center text-orange-600 font-medium">
+                        <span className="mr-3">✓</span> 天気アイコンで一目で分かる
+                      </div>
+                      <div className="flex items-center text-orange-600 font-medium">
+                        <span className="mr-3">✓</span> 自動更新で最新情報をお届け
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 服装提案 */}
+                  <div className="space-y-6">
+                    <h3 className="text-2xl font-bold text-gray-900 flex items-center">
+                      <span className="bg-orange-500 p-3 rounded-xl mr-4 text-white">👕</span>
+                      スマート服装提案
+                    </h3>
+                    <div className="space-y-4">
+                      <div className="flex items-center text-orange-600 font-medium">
+                        <span className="mr-3">✓</span> 気温に応じた基本コーディネート
+                      </div>
+                      <div className="flex items-center text-orange-600 font-medium">
+                        <span className="mr-3">✓</span> 雨・雪・風など天候別アドバイス
+                      </div>
+                      <div className="flex items-center text-orange-600 font-medium">
+                        <span className="mr-3">✓</span> 湿度を考慮した素材選び
+                      </div>
+                      <div className="flex items-center text-orange-600 font-medium">
+                        <span className="mr-3">✓</span> 具体的なアイテム提案
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-8 p-6 bg-gradient-to-r from-orange-100 to-yellow-100 rounded-xl border border-orange-200">
+                  <div className="text-center">
+                    <h4 className="text-lg font-bold text-gray-900 mb-2">
+                      🎯 例：今日が雨の日なら...
+                    </h4>
+                    <p className="text-gray-600 mb-4">
+                      「レインコート・撥水ジャケット」「防水ブーツ・レインシューズ」「傘・レインハット」など、雨に濡れずにおしゃれを楽しむアイテムを具体的に提案！
+                    </p>
+                    <div className="inline-flex items-center bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-medium">
+                      <span className="mr-2">🌧️</span>
+                      雨の日も安心してデートを楽しめます
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 実際の天気機能体験セクション */}
+              <div className="mt-16">
+                <div className="text-center mb-8">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                    🎯 今すぐ体験してみよう！
+                  </h3>
+                  <p className="text-gray-600">
+                    ログイン不要で天気情報と服装提案をお試しいただけます
+                  </p>
+                </div>
+                <div className="max-w-4xl mx-auto">
+                  <WeatherOutfitCard />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* 主要機能 */}
         <section className="py-20 bg-gray-50">
           <div className="container mx-auto px-4">
             <h2 className="text-4xl font-bold text-center text-gray-900 mb-16">主要機能</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
               <div className="text-center group">
                 <div className="bg-gradient-to-br from-rose-400 to-rose-500 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
                   <span className="text-2xl">🆘</span>
@@ -227,6 +322,13 @@ export default function Home(): ReactElement {
                 </div>
                 <h3 className="font-bold text-gray-900 mb-3 text-lg">プラン作成</h3>
                 <p className="text-gray-600">直感的な操作でデートプランを簡単作成</p>
+              </div>
+              <div className="text-center group">
+                <div className="bg-gradient-to-br from-orange-400 to-orange-500 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
+                  <span className="text-2xl">🌤️</span>
+                </div>
+                <h3 className="font-bold text-gray-900 mb-3 text-lg">天気・服装提案</h3>
+                <p className="text-gray-600">今日の天気に合わせた服装を提案</p>
               </div>
               <div className="text-center group">
                 <div className="bg-gradient-to-br from-green-400 to-green-500 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">

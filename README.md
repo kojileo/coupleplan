@@ -94,6 +94,42 @@ coupleplan/
 └── tsconfig.json            # TypeScript設定
 ```
 
+## 環境設定
+
+このアプリケーションを動作させるには、以下の環境変数の設定が必要です。
+
+### 必須設定
+
+プロジェクトルートに `.env.local` ファイルを作成し、以下の変数を設定してください：
+
+```bash
+# OpenWeatherMap API設定（天気情報取得用）
+NEXT_PUBLIC_OPENWEATHER_API_KEY=your_openweather_api_key_here
+
+# Supabase設定
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url_here
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key_here
+
+# データベース設定
+DATABASE_URL=your_database_url_here
+```
+
+### OpenWeatherMap APIキーの取得
+
+1. [OpenWeatherMap](https://openweathermap.org/api) にアクセス
+2. 無料アカウントを作成
+3. API Keysページで新しいキーを生成
+4. 生成されたキーを `.env.local` の `NEXT_PUBLIC_OPENWEATHER_API_KEY` に設定
+
+### 開発サーバーの起動
+
+環境変数を設定後、開発サーバーを再起動してください：
+
+```bash
+npm run dev
+```
+
 ## テストとカバレッジ
 
 プロジェクトには自動テストが組み込まれており、以下のコマンドで実行できます：
@@ -119,13 +155,14 @@ npm run test:ci
 1. **プルリクエスト作成時**：GitHub Actionsによりテストが実行され、カバレッジレポートが生成されます
 2. **Vercelへのデプロイ時**：ビルドプロセスの一部としてテストが実行されます
 
-テストカバレッジレポートは `coverage/` ディレクトリに生成され、GitHub Actionsの実行結果からも確認できます。 
+テストカバレッジレポートは `coverage/` ディレクトリに生成され、GitHub Actionsの実行結果からも確認できます。
 
 ## テスト環境のセットアップ
 
 テスト実行時は専用のデータベースと環境変数を使用します。
 
 1. `.env.test.local` ファイルを作成してテスト用の秘密情報を設定：
+
 ```
 # テスト環境用の非公開環境変数（GitHubにコミットしない）
 
@@ -147,6 +184,7 @@ TEST_REFRESH_TOKEN="test-secure-refresh-token-for-testing-only"
 ```
 
 2. テスト用データベースを作成：
+
 ```bash
 # PostgreSQLに接続
 psql -U postgres
@@ -159,12 +197,14 @@ CREATE DATABASE couple_plan_test;
 ```
 
 3. テスト用データベースにスキーマを適用：
+
 ```bash
 # テスト環境用のスキーマを適用
 npx prisma db push --schema=./prisma/schema.prisma
 ```
 
 4. 環境変数が正しく設定されていることを確認するテストを実行：
+
 ```bash
 # 環境変数設定テストのみ実行
 npx jest tests/unit/env.test.ts
@@ -204,10 +244,12 @@ test('プロフィールの作成', async () => {
 テスト内でハードコードされたアクセストークン（例: `access_token: 'test-token'`）を使用すると、セキュリティ脆弱性としてフラグが立つ可能性があります。このプロジェクトでは、以下の方法でテスト用トークンを安全に管理しています：
 
 1. 環境変数経由でのトークン提供
+
    - `.env.test.local` ファイルに `TEST_ACCESS_TOKEN` を設定
    - 実際の本番環境では使用されないテスト専用のトークン
 
 2. 動的なトークン生成
+
    - `test-constants.ts` ファイルで `randomUUID()` を使用して毎回異なるトークンを生成
    - トークンの予測可能性を低減
 
@@ -224,4 +266,4 @@ const mockSession = { access_token: 'test-token', user: mockUser };
 // 良い例 ✅
 import { createMockSession } from '@tests/utils/test-constants';
 const mockSession = createMockSession(mockUser.id);
-``` 
+```
