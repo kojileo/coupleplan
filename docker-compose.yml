@@ -14,6 +14,7 @@ services:
         - RESEND_API_KEY=${RESEND_API_KEY}
         - ADMIN_EMAIL=${ADMIN_EMAIL}
         - FROM_EMAIL=${FROM_EMAIL}
+        - NEXT_PUBLIC_OPENWEATHER_API_KEY=${NEXT_PUBLIC_OPENWEATHER_API_KEY}
     ports:
       - '3000:3000'
     environment:
@@ -25,6 +26,7 @@ services:
       - RESEND_API_KEY=${RESEND_API_KEY}
       - ADMIN_EMAIL=${ADMIN_EMAIL}
       - FROM_EMAIL=${FROM_EMAIL}
+      - NEXT_PUBLIC_OPENWEATHER_API_KEY=${NEXT_PUBLIC_OPENWEATHER_API_KEY}
     env_file:
       - .env
     container_name: coupleplan-app
