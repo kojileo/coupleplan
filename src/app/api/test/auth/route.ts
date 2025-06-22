@@ -14,7 +14,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       password: string;
       name: string;
       bypass_email_verification: boolean;
-    } = await request.json();
+    } = (await request.json()) as {
+      email: string;
+      password: string;
+      name: string;
+      bypass_email_verification: boolean;
+    };
 
     const { email, password, name, bypass_email_verification } = body;
 
@@ -72,7 +77,7 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
   }
 
   try {
-    const body: { email: string } = await request.json();
+    const body: { email: string } = (await request.json()) as { email: string };
     const { email } = body;
 
     const supabaseAdmin = createClient(

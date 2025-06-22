@@ -166,7 +166,7 @@ export default function FAQPage(): ReactElement {
       {/* FAQコンテンツ */}
       <section className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          {categories.map((category, categoryIndex) => (
+          {categories.map((category) => (
             <div key={category} className="mb-16">
               <div className="text-center mb-12">
                 <div className="inline-flex items-center bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-full px-6 py-3 mb-6">

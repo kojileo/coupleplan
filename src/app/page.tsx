@@ -7,7 +7,6 @@ import { useEffect } from 'react';
 
 import { EmergencyButton } from '@/components/features/emergency/EmergencyButton';
 import Button from '@/components/ui/button';
-import { WeatherOutfitCard } from '@/components/WeatherOutfitCard';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function Home(): ReactElement {
