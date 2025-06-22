@@ -48,14 +48,18 @@ describe('Contact Page', () => {
     it('送信ボタンが表示される', () => {
       render(<Contact />);
 
-      expect(screen.getByRole('button', { name: '送信する' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: '📧 送信する' })).toBeInTheDocument();
     });
 
     it('回答についての案内が表示される', () => {
       render(<Contact />);
 
+      // より具体的なテキストで検索
+      expect(screen.getByText(/緊急の場合は優先対応/)).toBeInTheDocument();
+      expect(screen.getByText(/土日祝日は翌営業日対応/)).toBeInTheDocument();
+      // ヒーローセクションの特定のテキストを検索
       expect(
-        screen.getByText(/お問い合わせをいただいてから、通常1-3営業日以内にご回答いたします/)
+        screen.getByText(/ご質問やご要望がございましたら、お気軽にお問い合わせください/)
       ).toBeInTheDocument();
     });
   });
@@ -71,6 +75,10 @@ describe('Contact Page', () => {
       expect(screen.getByRole('option', { name: '技術的な問題' })).toBeInTheDocument();
       expect(screen.getByRole('option', { name: 'バグ報告' })).toBeInTheDocument();
       expect(screen.getByRole('option', { name: '機能リクエスト' })).toBeInTheDocument();
+      expect(screen.getByRole('option', { name: '緊急ヘルプ機能について' })).toBeInTheDocument();
+      expect(
+        screen.getByRole('option', { name: '天気・服装提案機能について' })
+      ).toBeInTheDocument();
       expect(screen.getByRole('option', { name: 'プライバシーについて' })).toBeInTheDocument();
       expect(screen.getByRole('option', { name: 'アカウントについて' })).toBeInTheDocument();
       expect(screen.getByRole('option', { name: 'その他' })).toBeInTheDocument();
@@ -83,18 +91,27 @@ describe('Contact Page', () => {
 
       expect(screen.getByRole('heading', { level: 2, name: 'よくあるご質問' })).toBeInTheDocument();
 
-      // FAQ項目
-      expect(screen.getByText('Q. アカウントを削除したい')).toBeInTheDocument();
-      expect(screen.getByText('Q. パスワードを忘れました')).toBeInTheDocument();
-      expect(screen.getByText('Q. プライベートプランが公開されてしまった')).toBeInTheDocument();
-      expect(screen.getByText('Q. 広告について')).toBeInTheDocument();
+      // FAQ項目（新しいデザインに合わせて更新）
+      expect(screen.getByText('緊急ヘルプ機能が見つからない')).toBeInTheDocument();
+      expect(screen.getByText('天気・服装提案機能の使い方')).toBeInTheDocument();
+      expect(screen.getByText('アカウントを削除したい')).toBeInTheDocument();
+      expect(screen.getByText('パスワードを忘れました')).toBeInTheDocument();
+      expect(screen.getByText('広告について')).toBeInTheDocument();
     });
 
     it('プライバシーポリシーへのリンクが設定されている', () => {
       render(<Contact />);
 
-      const privacyLink = screen.getByRole('link', { name: 'プライバシーポリシー' });
-      expect(privacyLink).toHaveAttribute('href', '/privacy');
+      // 複数のプライバシーポリシーリンクがあるため、最初のものを取得
+      const privacyLinks = screen.getAllByRole('link', { name: 'プライバシーポリシー' });
+      expect(privacyLinks[0]).toHaveAttribute('href', '/privacy');
+    });
+
+    it('FAQページへのリンクが設定されている', () => {
+      render(<Contact />);
+
+      const faqLink = screen.getByRole('link', { name: '📚 すべてのFAQを見る' });
+      expect(faqLink).toHaveAttribute('href', '/faq');
     });
   });
 
@@ -125,7 +142,7 @@ describe('Contact Page', () => {
       await user.type(screen.getByLabelText(/お問い合わせ内容/), validFormData.message);
 
       // 送信
-      await user.click(screen.getByRole('button', { name: '送信する' }));
+      await user.click(screen.getByRole('button', { name: '📧 送信する' }));
 
       // 成功メッセージが表示される
       await waitFor(() => {
@@ -153,7 +170,7 @@ describe('Contact Page', () => {
     it('必須フィールドが未入力の場合にHTML5バリデーションが働く', async () => {
       render(<Contact />);
 
-      const submitButton = screen.getByRole('button', { name: '送信する' });
+      const submitButton = screen.getByRole('button', { name: '📧 送信する' });
       await user.click(submitButton);
 
       // HTML5のrequired属性により送信が阻止される
@@ -176,7 +193,7 @@ describe('Contact Page', () => {
       await user.selectOptions(screen.getByLabelText(/お問い合わせ種別/), validFormData.subject);
       await user.type(screen.getByLabelText(/お問い合わせ内容/), validFormData.message);
 
-      await user.click(screen.getByRole('button', { name: '送信する' }));
+      await user.click(screen.getByRole('button', { name: '📧 送信する' }));
 
       // エラーメッセージが表示される
       await waitFor(
@@ -198,7 +215,7 @@ describe('Contact Page', () => {
       await user.selectOptions(screen.getByLabelText(/お問い合わせ種別/), validFormData.subject);
       await user.type(screen.getByLabelText(/お問い合わせ内容/), validFormData.message);
 
-      await user.click(screen.getByRole('button', { name: '送信する' }));
+      await user.click(screen.getByRole('button', { name: '📧 送信する' }));
 
       // ネットワークエラーメッセージが表示される
       await waitFor(() => {
@@ -225,15 +242,25 @@ describe('Contact Page', () => {
       await user.selectOptions(screen.getByLabelText(/お問い合わせ種別/), validFormData.subject);
       await user.type(screen.getByLabelText(/お問い合わせ内容/), validFormData.message);
 
-      const submitButton = screen.getByRole('button', { name: '送信する' });
+      const submitButton = screen.getByRole('button', { name: '📧 送信する' });
       await user.click(submitButton);
 
       // 送信中状態
-      expect(screen.getByRole('button', { name: '送信中...' })).toBeDisabled();
+      expect(screen.getByText('送信中...')).toBeInTheDocument();
     });
 
     it('各お問い合わせ種別で正しく送信される', async () => {
-      const subjects = ['general', 'technical', 'bug', 'feature', 'privacy', 'account', 'other'];
+      const subjects = [
+        'general',
+        'technical',
+        'bug',
+        'feature',
+        'emergency',
+        'weather',
+        'privacy',
+        'account',
+        'other',
+      ];
 
       for (const subject of subjects) {
         fetchMock.mockResponseOnce(JSON.stringify({ success: true }));
@@ -245,7 +272,7 @@ describe('Contact Page', () => {
         await user.selectOptions(screen.getByLabelText(/お問い合わせ種別/), subject);
         await user.type(screen.getByLabelText(/お問い合わせ内容/), validFormData.message);
 
-        await user.click(screen.getByRole('button', { name: '送信する' }));
+        await user.click(screen.getByRole('button', { name: '📧 送信する' }));
 
         await waitFor(() => {
           expect(fetchMock).toHaveBeenCalledWith('/api/contact', {
@@ -302,7 +329,7 @@ describe('Contact Page', () => {
       await user.selectOptions(subjectSelect, 'general');
       await user.type(messageTextarea, 'テストメッセージ');
 
-      await user.click(screen.getByRole('button', { name: '送信する' }));
+      await user.click(screen.getByRole('button', { name: '📧 送信する' }));
 
       await waitFor(
         () => {

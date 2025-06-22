@@ -5,16 +5,19 @@ import type { ReactElement } from 'react';
 
 import { ConversationHelper } from './ConversationHelper';
 import { ToiletFinder } from './ToiletFinder';
+import { WeatherOutfitModal } from './WeatherOutfitModal';
 
 export function EmergencyButton(): ReactElement {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeModal, setActiveModal] = useState<'toilet' | 'conversation' | null>(null);
+  const [activeModal, setActiveModal] = useState<'toilet' | 'conversation' | 'weather' | null>(
+    null
+  );
 
   const toggleMenu = (): void => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const handleOpenModal = (modal: 'toilet' | 'conversation'): void => {
+  const handleOpenModal = (modal: 'toilet' | 'conversation' | 'weather'): void => {
     setActiveModal(modal);
     setIsMenuOpen(false);
   };
@@ -30,6 +33,13 @@ export function EmergencyButton(): ReactElement {
         {/* メニューオプション */}
         {isMenuOpen && (
           <div className="absolute bottom-16 right-0 space-y-2">
+            <button
+              onClick={() => handleOpenModal('weather')}
+              className="flex items-center bg-orange-500 text-white px-4 py-2 rounded-full shadow-lg hover:bg-orange-600 transition-all duration-200 whitespace-nowrap"
+            >
+              <span className="mr-2">🌤️</span>
+              天気・服装
+            </button>
             <button
               onClick={() => handleOpenModal('toilet')}
               className="flex items-center bg-blue-500 text-white px-4 py-2 rounded-full shadow-lg hover:bg-blue-600 transition-all duration-200 whitespace-nowrap"
@@ -60,6 +70,7 @@ export function EmergencyButton(): ReactElement {
       </div>
 
       {/* モーダル */}
+      <WeatherOutfitModal isOpen={activeModal === 'weather'} onClose={handleCloseModal} />
       <ToiletFinder isOpen={activeModal === 'toilet'} onClose={handleCloseModal} />
       <ConversationHelper isOpen={activeModal === 'conversation'} onClose={handleCloseModal} />
     </>
