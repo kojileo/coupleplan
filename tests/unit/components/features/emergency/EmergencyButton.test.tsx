@@ -21,6 +21,14 @@ jest.mock('@/components/features/emergency/ConversationHelper', () => ({
   ),
 }));
 
+jest.mock('@/components/features/emergency/WeatherOutfitModal', () => ({
+  WeatherOutfitModal: ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => (
+    <div data-testid="weather-outfit-modal" style={{ display: isOpen ? 'block' : 'none' }}>
+      <button onClick={onClose}>Close Weather Outfit Modal</button>
+    </div>
+  ),
+}));
+
 describe('EmergencyButton', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -40,6 +48,7 @@ describe('EmergencyButton', () => {
     const emergencyButton = screen.getByLabelText('緊急ヘルプメニュー');
 
     // 初期状態ではメニューが非表示
+    expect(screen.queryByText('天気・服装')).not.toBeInTheDocument();
     expect(screen.queryByText('お手洗い検索')).not.toBeInTheDocument();
     expect(screen.queryByText('会話ネタ')).not.toBeInTheDocument();
 
@@ -48,9 +57,31 @@ describe('EmergencyButton', () => {
 
     // メニューが表示される
     await waitFor(() => {
+      expect(screen.getByText('天気・服装')).toBeInTheDocument();
       expect(screen.getByText('お手洗い検索')).toBeInTheDocument();
       expect(screen.getByText('会話ネタ')).toBeInTheDocument();
     });
+  });
+
+  it('天気・服装ボタンをクリックするとWeatherOutfitModalが開く', async () => {
+    render(<EmergencyButton />);
+
+    const emergencyButton = screen.getByLabelText('緊急ヘルプメニュー');
+    fireEvent.click(emergencyButton);
+
+    await waitFor(() => {
+      const weatherButton = screen.getByText('天気・服装');
+      fireEvent.click(weatherButton);
+    });
+
+    // WeatherOutfitModalが表示される
+    await waitFor(() => {
+      const weatherModal = screen.getByTestId('weather-outfit-modal');
+      expect(weatherModal).toBeVisible();
+    });
+
+    // メニューが閉じる
+    expect(screen.queryByText('天気・服装')).not.toBeInTheDocument();
   });
 
   it('お手洗い検索ボタンをクリックするとToiletFinderモーダルが開く', async () => {
@@ -121,6 +152,35 @@ describe('EmergencyButton', () => {
     await waitFor(() => {
       const toiletFinder = screen.getByTestId('toilet-finder');
       expect(toiletFinder).not.toBeVisible();
+    });
+  });
+
+  it('天気・服装モーダルが開いている状態で閉じるボタンをクリックすると正しく閉じる', async () => {
+    render(<EmergencyButton />);
+
+    const emergencyButton = screen.getByLabelText('緊急ヘルプメニュー');
+    fireEvent.click(emergencyButton);
+
+    // 天気・服装モーダルを開く
+    await waitFor(() => {
+      const weatherButton = screen.getByText('天気・服装');
+      fireEvent.click(weatherButton);
+    });
+
+    // モーダルが表示されることを確認
+    await waitFor(() => {
+      const weatherModal = screen.getByTestId('weather-outfit-modal');
+      expect(weatherModal).toBeVisible();
+    });
+
+    // 閉じるボタンをクリック
+    const closeButton = screen.getByText('Close Weather Outfit Modal');
+    fireEvent.click(closeButton);
+
+    // モーダルが閉じることを確認
+    await waitFor(() => {
+      const weatherModal = screen.getByTestId('weather-outfit-modal');
+      expect(weatherModal).not.toBeVisible();
     });
   });
 

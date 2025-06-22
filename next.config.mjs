@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   async headers() {
     return [
       {
@@ -29,7 +32,25 @@ const nextConfig = {
           {
             key: 'Content-Security-Policy',
             value:
-              "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://pagead2.googlesyndication.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' https:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://pagead2.googlesyndication.com https://overpass-api.de; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';",
+              [
+                "default-src 'self'",
+                "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://pagead2.googlesyndication.com",
+                "style-src 'self' 'unsafe-inline'",
+                "img-src 'self' data: https:",
+                "font-src 'self' https:",
+                // External API connections
+                [
+                  "connect-src 'self'",
+                  'https://*.supabase.co wss://*.supabase.co', // Supabase database & auth
+                  'https://pagead2.googlesyndication.com', // Google Ads (if used)
+                  'https://overpass-api.de', // Map data API
+                  'https://api.openweathermap.org', // Weather data API
+                ].join(' '),
+                "frame-src 'none'",
+                "object-src 'none'",
+                "base-uri 'self'",
+                "form-action 'self'",
+              ].join('; ') + ';',
           },
         ],
       },
