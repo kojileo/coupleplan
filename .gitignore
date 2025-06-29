@@ -17,6 +17,11 @@
 /blob-report/
 /playwright/.cache/
 
+# CDC testing
+/tests/cdc/reports/
+/tests/cdc/pact/pacts/
+*.pact.json
+
 # next.js
 /.next/
 /out/
