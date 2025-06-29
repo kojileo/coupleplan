@@ -26,39 +26,52 @@ export default function NewPlanPage(): ReactElement {
         return;
       }
 
-      const formData = new FormData(event.currentTarget);
-      const locationUrl = formData.get('location-url-0') as string;
-      const locationName = formData.get('location-name-0') as string;
-      const date = formData.get('date') as string;
-      const region = formData.get('region') as string;
+      const form = event.currentTarget;
+      if (!form) {
+        throw new Error('フォーム要素が見つかりません');
+      }
+
+      // フォーム要素を直接取得（JSDOM環境対応）
+      const titleElement = form.querySelector('#title') as HTMLInputElement;
+      const descriptionElement = form.querySelector('#description') as HTMLTextAreaElement;
+      const dateElement = form.querySelector('#date') as HTMLInputElement;
+      const budgetElement = form.querySelector('#budget') as HTMLInputElement;
+      const locationUrlElement = form.querySelector('#location-url-0') as HTMLInputElement;
+      const locationNameElement = form.querySelector('#location-name-0') as HTMLInputElement;
+      const regionElement = form.querySelector('#region') as HTMLSelectElement;
+      const isPublicElement = form.querySelector('#isPublic') as HTMLInputElement;
 
       const planData = {
-        title: formData.get('title') as string,
-        description: formData.get('description') as string,
-        date: date || null,
+        title: titleElement?.value || '',
+        description: descriptionElement?.value || '',
+        date: dateElement?.value || null,
         locations: [
           {
-            url: locationUrl,
-            name: locationName || null,
+            url: locationUrlElement?.value || '',
+            name: locationNameElement?.value || null,
           },
         ],
-        region: region || null,
-        budget: Number(formData.get('budget')),
-        isPublic: formData.get('isPublic') === 'on',
+        region: regionElement?.value || null,
+        budget: Number(budgetElement?.value || 0),
+        isPublic: isPublicElement?.checked || false,
       };
 
       const response = await api.plans.create(session.access_token, planData);
+
+      // エラーレスポンスの処理
       if (response.error) {
         setError(response.error);
         return;
       }
 
-      if (!response.data?.id) {
-        setError('プランの作成に失敗しました');
+      // 成功レスポンスの処理
+      if (response.data?.id) {
+        router.push('/plans');
         return;
       }
 
-      router.push('/plans');
+      // データが返されなかった場合
+      setError('プランの作成に失敗しました');
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);

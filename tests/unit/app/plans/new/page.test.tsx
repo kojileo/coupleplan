@@ -28,7 +28,7 @@ describe('NewPlanPage', () => {
   };
 
   const mockSession = {
-    access_token: process.env.TEST_ACCESS_TOKEN,
+    access_token: 'mock-access-token-123',
   };
 
   beforeEach(() => {
@@ -50,9 +50,12 @@ describe('NewPlanPage', () => {
   });
 
   it('ローディング中はスピナーが表示される', async () => {
+    let resolveApi: (value: any) => void;
     (api.plans.create as jest.Mock).mockImplementation(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 100));
-      return { data: { id: '1' } };
+      return new Promise((resolve) => {
+        resolveApi = resolve;
+        setTimeout(() => resolve({ data: { id: '1' } }), 200);
+      });
     });
 
     render(<NewPlanPage />);
@@ -61,13 +64,22 @@ describe('NewPlanPage', () => {
     const budgetInput = screen.getByLabelText('予算');
     const locationInput = screen.getByLabelText('場所URL');
 
+    // フォームに有効なデータを入力
     await userEvent.type(titleInput, 'テストプラン');
     await userEvent.type(budgetInput, '1000');
     await userEvent.type(locationInput, 'https://example.com');
+
+    // フォーム送信
     await userEvent.click(submitButton);
 
+    // ローディング状態の確認
     expect(await screen.findByTestId('loading-spinner')).toBeInTheDocument();
     expect(screen.getByText('作成中...')).toBeInTheDocument();
+
+    // API処理完了を待つ
+    await waitFor(() => {
+      expect(mockRouter.push).toHaveBeenCalledWith('/plans');
+    });
   });
 
   it('エラーが発生した場合はエラーメッセージが表示される', async () => {
@@ -80,11 +92,15 @@ describe('NewPlanPage', () => {
     const budgetInput = screen.getByLabelText('予算');
     const locationInput = screen.getByLabelText('場所URL');
 
+    // フォームに有効なデータを入力
     await userEvent.type(titleInput, 'テストプラン');
     await userEvent.type(budgetInput, '1000');
     await userEvent.type(locationInput, 'https://example.com');
+
+    // フォーム送信
     await userEvent.click(submitButton);
 
+    // エラーメッセージの確認
     expect(await screen.findByRole('alert')).toHaveTextContent(errorMessage);
     expect(screen.queryByTestId('loading-spinner')).not.toBeInTheDocument();
   });
@@ -99,17 +115,23 @@ describe('NewPlanPage', () => {
     const budgetInput = screen.getByLabelText('予算');
     const locationInput = screen.getByLabelText('場所URL');
 
+    // フォームに有効なデータを入力
     await userEvent.type(titleInput, 'テストプラン');
     await userEvent.type(budgetInput, '1000');
     await userEvent.type(locationInput, 'https://example.com');
+
+    // フォーム送信
     await userEvent.click(submitButton);
 
+    // APIエラーメッセージの確認
     expect(await screen.findByRole('alert')).toHaveTextContent(errorMessage);
     expect(screen.queryByTestId('loading-spinner')).not.toBeInTheDocument();
   });
 
   it('プラン作成が成功した場合はプラン一覧ページに遷移する', async () => {
-    (api.plans.create as jest.Mock).mockResolvedValue({ data: { id: '1' } });
+    (api.plans.create as jest.Mock).mockResolvedValue({
+      data: { id: '1', title: 'テストプラン' },
+    });
 
     render(<NewPlanPage />);
     const submitButton = screen.getByRole('button', { name: '作成' });
@@ -117,14 +139,21 @@ describe('NewPlanPage', () => {
     const budgetInput = screen.getByLabelText('予算');
     const locationInput = screen.getByLabelText('場所URL');
 
+    // フォームに有効なデータを入力
     await userEvent.type(titleInput, 'テストプラン');
     await userEvent.type(budgetInput, '1000');
     await userEvent.type(locationInput, 'https://example.com');
+
+    // フォーム送信
     await userEvent.click(submitButton);
 
-    await waitFor(() => {
-      expect(mockRouter.push).toHaveBeenCalledWith('/plans');
-    });
+    // ナビゲーションの確認
+    await waitFor(
+      () => {
+        expect(mockRouter.push).toHaveBeenCalledWith('/plans');
+      },
+      { timeout: 3000 }
+    );
   });
 
   it('キャンセルボタンをクリックすると前のページに戻る', async () => {
