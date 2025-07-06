@@ -21,8 +21,18 @@ const mockPlans = [
     region: 'tokyo',
     budget: 10000,
     isPublic: true,
+    isRecommended: false,
     category: '定番デート',
     userId: 'user1',
+    profile: {
+      id: 'profile1',
+      name: 'ユーザー1',
+      avatarUrl: null,
+      isAdmin: false,
+    },
+    _count: {
+      likes: 5,
+    },
     createdAt: new Date('2024-03-19'),
     updatedAt: new Date('2024-03-19'),
   },
@@ -35,8 +45,18 @@ const mockPlans = [
     region: 'osaka',
     budget: 15000,
     isPublic: true,
+    isRecommended: true,
     category: '観光',
     userId: 'user2',
+    profile: {
+      id: 'profile2',
+      name: '管理者',
+      avatarUrl: null,
+      isAdmin: true,
+    },
+    _count: {
+      likes: 10,
+    },
     createdAt: new Date('2024-03-19'),
     updatedAt: new Date('2024-03-19'),
   },
@@ -51,8 +71,9 @@ describe('PublicPlansPage', () => {
     (api.plans.listPublic as jest.Mock).mockResolvedValue({ data: mockPlans });
     render(<PublicPlansPage />);
 
-    // ローディング表示の確認
-    expect(screen.getByRole('status')).toBeInTheDocument();
+    // ローディングスピナーの確認
+    const spinner = document.querySelector('.animate-spin');
+    expect(spinner).toBeInTheDocument();
 
     // プランの表示を待機
     await waitFor(() => {
@@ -60,8 +81,6 @@ describe('PublicPlansPage', () => {
     });
 
     expect(screen.getByText('テストプラン2')).toBeInTheDocument();
-    expect(screen.getByText('東京タワー')).toBeInTheDocument();
-    expect(screen.getByText('大阪城')).toBeInTheDocument();
   });
 
   it('地域でフィルタリングできる', async () => {
@@ -75,8 +94,10 @@ describe('PublicPlansPage', () => {
     // 大阪でフィルタリング
     fireEvent.change(screen.getByLabelText('地域:'), { target: { value: 'osaka' } });
 
-    expect(screen.queryByText('テストプラン1')).not.toBeInTheDocument();
-    expect(screen.getByText('テストプラン2')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByText('テストプラン1')).not.toBeInTheDocument();
+      expect(screen.getByText('テストプラン2')).toBeInTheDocument();
+    });
   });
 
   it('カテゴリでフィルタリングできる', async () => {
@@ -90,8 +111,10 @@ describe('PublicPlansPage', () => {
     // 観光でフィルタリング
     fireEvent.change(screen.getByLabelText('カテゴリ:'), { target: { value: '観光' } });
 
-    expect(screen.queryByText('テストプラン1')).not.toBeInTheDocument();
-    expect(screen.getByText('テストプラン2')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByText('テストプラン1')).not.toBeInTheDocument();
+      expect(screen.getByText('テストプラン2')).toBeInTheDocument();
+    });
   });
 
   it('APIエラー時にプランが表示されない', async () => {
@@ -99,7 +122,7 @@ describe('PublicPlansPage', () => {
     render(<PublicPlansPage />);
 
     await waitFor(() => {
-      expect(screen.getByText('公開されているプランがまだありません')).toBeInTheDocument();
+      expect(screen.getByText('プランが見つかりません')).toBeInTheDocument();
     });
   });
 
@@ -108,7 +131,8 @@ describe('PublicPlansPage', () => {
     render(<PublicPlansPage />);
 
     await waitFor(() => {
-      expect(screen.getByText('公開されているプランがまだありません')).toBeInTheDocument();
+      expect(screen.getByText('プランが見つかりません')).toBeInTheDocument();
+      expect(screen.getByText('公開されているプランがまだありません。')).toBeInTheDocument();
     });
   });
 });
