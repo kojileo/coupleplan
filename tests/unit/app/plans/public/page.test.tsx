@@ -22,6 +22,17 @@ describe('PublicPlansPage コンポーネント', () => {
       region: 'tokyo',
       category: '定番デート',
       isPublic: true,
+      isRecommended: false,
+      userId: 'user1',
+      profile: {
+        id: 'profile1',
+        name: 'ユーザー1',
+        avatarUrl: null,
+        isAdmin: false,
+      },
+      _count: {
+        likes: 5,
+      },
       locations: [
         {
           id: '1',
@@ -29,6 +40,8 @@ describe('PublicPlansPage コンポーネント', () => {
           name: '東京タワー',
         },
       ],
+      createdAt: '2024-03-19',
+      updatedAt: '2024-03-19',
     },
     {
       id: '2',
@@ -39,6 +52,17 @@ describe('PublicPlansPage コンポーネント', () => {
       region: 'osaka',
       category: 'グルメ',
       isPublic: true,
+      isRecommended: true,
+      userId: 'admin',
+      profile: {
+        id: 'profile2',
+        name: '管理者',
+        avatarUrl: null,
+        isAdmin: true,
+      },
+      _count: {
+        likes: 10,
+      },
       locations: [
         {
           id: '2',
@@ -46,6 +70,8 @@ describe('PublicPlansPage コンポーネント', () => {
           name: '道頓堀',
         },
       ],
+      createdAt: '2024-03-19',
+      updatedAt: '2024-03-19',
     },
   ];
 
@@ -56,7 +82,18 @@ describe('PublicPlansPage コンポーネント', () => {
   it('ローディング中はスピナーが表示されること', () => {
     (api.plans.listPublic as jest.Mock).mockImplementation(() => new Promise(() => {}));
     render(<PublicPlansPage />);
-    expect(screen.getByRole('status', { name: '読み込み中' })).toBeInTheDocument();
+
+    // ローディングスピナーのクラスを確認
+    const spinner = document.querySelector('.animate-spin');
+    expect(spinner).toBeInTheDocument();
+    expect(spinner).toHaveClass(
+      'rounded-full',
+      'h-12',
+      'w-12',
+      'border-4',
+      'border-rose-200',
+      'border-t-rose-600'
+    );
   });
 
   it('プラン一覧が正しく表示されること', async () => {
@@ -94,7 +131,8 @@ describe('PublicPlansPage コンポーネント', () => {
     render(<PublicPlansPage />);
 
     await waitFor(() => {
-      expect(screen.getByText('公開されているプランがまだありません')).toBeInTheDocument();
+      expect(screen.getByText('プランが見つかりません')).toBeInTheDocument();
+      expect(screen.getByText('公開されているプランがまだありません。')).toBeInTheDocument();
     });
   });
 
@@ -103,7 +141,8 @@ describe('PublicPlansPage コンポーネント', () => {
     render(<PublicPlansPage />);
 
     await waitFor(() => {
-      expect(screen.getByText('公開されているプランがまだありません')).toBeInTheDocument();
+      expect(screen.getByText('プランが見つかりません')).toBeInTheDocument();
+      expect(screen.getByText('公開されているプランがまだありません。')).toBeInTheDocument();
     });
   });
 });

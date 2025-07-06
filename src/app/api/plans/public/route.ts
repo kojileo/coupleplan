@@ -10,13 +10,19 @@ export async function GET(): Promise<NextResponse> {
       where: {
         isPublic: true,
       },
-      orderBy: {
-        updatedAt: 'desc',
-      },
+      orderBy: [
+        {
+          isRecommended: 'desc', // おすすめプランを優先
+        },
+        {
+          updatedAt: 'desc',
+        },
+      ],
       include: {
         profile: {
           select: {
             name: true,
+            isAdmin: true, // 管理者フラグを含める
           },
         },
         likes: true,

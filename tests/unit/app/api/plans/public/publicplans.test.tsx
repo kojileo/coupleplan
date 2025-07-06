@@ -89,6 +89,7 @@ describe('GET /api/plans/public', () => {
         profile: {
           select: {
             name: true,
+            isAdmin: true,
           },
         },
         likes: true,
@@ -99,7 +100,7 @@ describe('GET /api/plans/public', () => {
           },
         },
       },
-      orderBy: { updatedAt: 'desc' },
+      orderBy: [{ isRecommended: 'desc' }, { updatedAt: 'desc' }],
     });
   });
 

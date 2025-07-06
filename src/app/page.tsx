@@ -67,10 +67,17 @@ export default function Home(): ReactElement {
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-rose-500 group-hover:w-full transition-all duration-300"></span>
               </Link>
               <Link
-                href="/faq"
+                href="/dating-guide"
                 className="text-gray-600 hover:text-rose-600 font-medium transition-colors duration-200 relative group"
               >
-                よくある質問
+                デートガイド
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-rose-500 group-hover:w-full transition-all duration-300"></span>
+              </Link>
+              <Link
+                href="/love-psychology"
+                className="text-gray-600 hover:text-rose-600 font-medium transition-colors duration-200 relative group"
+              >
+                恋愛心理学
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-rose-500 group-hover:w-full transition-all duration-300"></span>
               </Link>
               <Link
