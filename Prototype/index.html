@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CouplePlan - カップル向けデートプランニングアプリ</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- ナビゲーションバー -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-heart"></i>
+                <span>CouplePlan</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="screens/auth/AUTH-001.html" class="nav-link">ログイン</a>
+                <a href="screens/uc003/UC003-001.html" class="nav-link">ポータル</a>
+                <a href="screens/common/COMMON-001.html" class="nav-link">ダッシュボード</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+        <div class="container">
+            <div class="hero-section">
+                <h1 class="hero-title">CouplePlan</h1>
+                <p class="hero-subtitle">AIが提案する、あなただけのデートプラン</p>
+                <div class="hero-buttons">
+                    <a href="screens/auth/AUTH-001.html" class="btn btn-primary">始める</a>
+                    <a href="screens/uc003/UC003-001.html" class="btn btn-secondary">ポータルを見る</a>
+                </div>
+            </div>
+
+            <!-- 機能紹介セクション -->
+            <section class="features-section">
+                <h2 class="section-title">主な機能</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3>AIデートプラン提案</h3>
+                        <p>あなたの好みに合わせて、AIが最適なデートプランを提案します。</p>
+                        <a href="screens/uc001/UC001-001.html" class="feature-link">詳細を見る</a>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3>カップル共同編集</h3>
+                        <p>パートナーと一緒にデートプランを編集・調整できます。</p>
+                        <a href="screens/uc002/UC002-001.html" class="feature-link">詳細を見る</a>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h3>デート情報ポータル</h3>
+                        <p>豊富なデートスポット情報とアイデアを提供します。</p>
+                        <a href="screens/uc003/UC003-001.html" class="feature-link">詳細を見る</a>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h3>関係修復サポート</h3>
+                        <p>AIが喧嘩や対立の仲裁をサポートします。</p>
+                        <a href="screens/uc004/UC004-001.html" class="feature-link">詳細を見る</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 画面一覧セクション -->
+            <section class="screens-section">
+                <h2 class="section-title">画面一覧</h2>
+                <div class="screens-grid">
+                    <!-- 認証系 -->
+                    <div class="screen-category">
+                        <h3>認証・初期設定系</h3>
+                        <div class="screen-links">
+                            <a href="screens/auth/AUTH-001.html" class="screen-link">AUTH-001: ログイン・アカウント作成</a>
+                            <a href="screens/auth/AUTH-002.html" class="screen-link">AUTH-002: プロフィール設定</a>
+                            <a href="screens/auth/AUTH-003.html" class="screen-link">AUTH-003: プライバシー設定</a>
+                            <a href="screens/auth/AUTH-004.html" class="screen-link">AUTH-004: パートナー連携設定</a>
+                        </div>
+                    </div>
+
+                    <!-- UC-001 -->
+                    <div class="screen-category">
+                        <h3>UC-001: AIデートプラン提案・生成</h3>
+                        <div class="screen-links">
+                            <a href="screens/uc001/UC001-001.html" class="screen-link">UC001-001: デートプラン作成</a>
+                            <a href="screens/uc001/UC001-002.html" class="screen-link">UC001-002: AI生成中</a>
+                            <a href="screens/uc001/UC001-003.html" class="screen-link">UC001-003: プラン提案</a>
+                            <a href="screens/uc001/UC001-004.html" class="screen-link">UC001-004: プラン詳細</a>
+                        </div>
+                    </div>
+
+                    <!-- UC-002 -->
+                    <div class="screen-category">
+                        <h3>UC-002: カップル共同デートプラン編集</h3>
+                        <div class="screen-links">
+                            <a href="screens/uc002/UC002-001.html" class="screen-link">UC002-001: 共同編集</a>
+                            <a href="screens/uc002/UC002-002.html" class="screen-link">UC002-002: 編集競合解決</a>
+                        </div>
+                    </div>
+
+                    <!-- UC-003 -->
+                    <div class="screen-category">
+                        <h3>UC-003: ポータル起点統合プラットフォーム</h3>
+                        <div class="screen-links">
+                            <a href="screens/uc003/UC003-001.html" class="screen-link">UC003-001: ポータルトップ</a>
+                            <a href="screens/uc003/UC003-002.html" class="screen-link">UC003-002: デート情報検索</a>
+                            <a href="screens/uc003/UC003-003.html" class="screen-link">UC003-003: 記事詳細</a>
+                        </div>
+                    </div>
+
+                    <!-- UC-004 -->
+                    <div class="screen-category">
+                        <h3>UC-004: AI喧嘩仲裁・関係修復システム</h3>
+                        <div class="screen-links">
+                            <a href="screens/uc004/UC004-001.html" class="screen-link">UC004-001: 仲裁依頼</a>
+                            <a href="screens/uc004/UC004-002.html" class="screen-link">UC004-002: 状況分析</a>
+                            <a href="screens/uc004/UC004-003.html" class="screen-link">UC004-003: 仲裁提案</a>
+                        </div>
+                    </div>
+
+                    <!-- UC-005 -->
+                    <div class="screen-category">
+                        <h3>UC-005: Date Canvas共同編集ボード</h3>
+                        <div class="screen-links">
+                            <a href="screens/uc005/UC005-001.html" class="screen-link">UC005-001: Date Canvas</a>
+                        </div>
+                    </div>
+
+                    <!-- UC-007 -->
+                    <div class="screen-category">
+                        <h3>UC-007: 段階的マネタイズ制御</h3>
+                        <div class="screen-links">
+                            <a href="screens/uc007/UC007-001.html" class="screen-link">UC007-001: 課金管理</a>
+                            <a href="screens/uc007/UC007-002.html" class="screen-link">UC007-002: 機能解放</a>
+                        </div>
+                    </div>
+
+                    <!-- 共通系 -->
+                    <div class="screen-category">
+                        <h3>共通・システム系</h3>
+                        <div class="screen-links">
+                            <a href="screens/common/COMMON-001.html" class="screen-link">COMMON-001: ダッシュボード</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- フッター -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>CouplePlan</h4>
+                    <p>AIが提案する、あなただけのデートプラン</p>
+                </div>
+                <div class="footer-section">
+                    <h4>機能</h4>
+                    <ul>
+                        <li><a href="screens/uc001/UC001-001.html">AIデートプラン</a></li>
+                        <li><a href="screens/uc002/UC002-001.html">共同編集</a></li>
+                        <li><a href="screens/uc003/UC003-001.html">ポータル</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>サポート</h4>
+                    <ul>
+                        <li><a href="screens/common/COMMON-003.html">ヘルプ</a></li>
+                        <li><a href="screens/common/COMMON-002.html">設定</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 CouplePlan. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/common.js"></script>
+    <script src="js/navigation.js"></script>
+</body>
+</html>

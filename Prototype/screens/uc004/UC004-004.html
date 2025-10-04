@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二人での解決セッション - CouplePlan</title>
+    <link rel="stylesheet" href="../../css/common.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- ナビゲーションバー -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-heart"></i>
+                <span>CouplePlan</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="../auth/AUTH-001.html" class="nav-link">ログイン</a>
+                <a href="../uc003/UC003-001.html" class="nav-link">ポータル</a>
+                <a href="../common/COMMON-001.html" class="nav-link">ダッシュボード</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+        <div class="container">
+            <!-- ヘッダー -->
+            <div class="page-header">
+                <div class="header-content">
+                    <h1 class="page-title">二人での解決セッション</h1>
+                    <p class="page-subtitle">パートナーと一緒に問題を解決しましょう</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="goBack()">
+                        <i class="fas fa-arrow-left"></i>
+                        戻る
+                    </button>
+                </div>
+            </div>
+
+            <!-- カップル向け解決セッション -->
+            <div class="couple-session-container">
+                <!-- セッション開始 -->
+                <div class="session-intro">
+                    <div class="intro-content">
+                        <div class="intro-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h2>🤝 二人での解決セッション</h2>
+                        <p>AIの分析結果を参考に、お互いの気持ちを理解し合いながら問題を解決していきましょう。</p>
+                    </div>
+                </div>
+
+                <!-- 気持ちの比較 -->
+                <div class="feelings-comparison">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-balance-scale"></i>
+                        </div>
+                        <h2>【お互いの気持ちを理解する】</h2>
+                    </div>
+                    
+                    <div class="feelings-grid">
+                        <div class="feeling-card your-feelings">
+                            <div class="card-header">
+                                <div class="user-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <h3>あなたの気持ち</h3>
+                            </div>
+                            <div class="card-content">
+                                <div class="feeling-text">
+                                    「スマホを見ながら話すことが多くて、少し寂しい気持ちになるの」
+                                </div>
+                                <div class="feeling-details">
+                                    <div class="detail-item">
+                                        <i class="fas fa-heart-broken"></i>
+                                        <span>寂しさと不満を感じている</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-comments"></i>
+                                        <span>会話を大切にしたい</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-user-friends"></i>
+                                        <span>相手に大切にされたい</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="feeling-card partner-feelings">
+                            <div class="card-header">
+                                <div class="user-avatar">
+                                    <i class="fas fa-user-friends"></i>
+                                </div>
+                                <h3>パートナーの気持ち</h3>
+                            </div>
+                            <div class="card-content">
+                                <div class="feeling-text">
+                                    「スマホが習慣化していて、悪気はないが無意識に行動している」
+                                </div>
+                                <div class="feeling-details">
+                                    <div class="detail-item">
+                                        <i class="fas fa-mobile-alt"></i>
+                                        <span>スマホが習慣化している</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        <span>あなたを傷つけていることに気づいていない</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <i class="fas fa-heart"></i>
+                                        <span>愛情は変わっていない</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 一緒にできること -->
+                <div class="joint-solutions">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-hands-helping"></i>
+                        </div>
+                        <h2>【一緒にできること】</h2>
+                    </div>
+                    
+                    <div class="solutions-list">
+                        <div class="solution-item">
+                            <div class="solution-number">1</div>
+                            <div class="solution-content">
+                                <h3>スマホフリーの時間を決める</h3>
+                                <p>毎日30分、スマホを置いてお互いの話を聞く時間を作りましょう</p>
+                                <div class="solution-steps">
+                                    <span class="step">食事中はスマホを置く</span>
+                                    <span class="step">会話中はスマホを見ない</span>
+                                    <span class="step">就寝前1時間はスマホ禁止</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="solution-item">
+                            <div class="solution-number">2</div>
+                            <div class="solution-content">
+                                <h3>質の高いコミュニケーション</h3>
+                                <p>お互いの話を聞く時間を確保し、関係性を深めましょう</p>
+                                <div class="solution-steps">
+                                    <span class="step">毎日15分の対話時間</span>
+                                    <span class="step">週1回のデートタイム</span>
+                                    <span class="step">お互いの関心事を聞く</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="solution-item">
+                            <div class="solution-number">3</div>
+                            <div class="solution-content">
+                                <h3>デジタルデトックスの習慣化</h3>
+                                <p>定期的にスマホから離れる時間を作り、お互いとの時間を大切にしましょう</p>
+                                <div class="solution-steps">
+                                    <span class="step">週末の午後はスマホフリー</span>
+                                    <span class="step">一緒に新しいことを始める</span>
+                                    <span class="step">共通の趣味を見つける</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 会話のガイド -->
+                <div class="conversation-guide">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h2>【会話のガイド】</h2>
+                    </div>
+                    
+                    <div class="guide-content">
+                        <div class="guide-section">
+                            <h3>💬 話し合いのポイント</h3>
+                            <div class="guide-tips">
+                                <div class="tip-item">
+                                    <i class="fas fa-heart"></i>
+                                    <span>お互いの気持ちを尊重する</span>
+                                </div>
+                                <div class="tip-item">
+                                    <i class="fas fa-ear-listen"></i>
+                                    <span>相手の話を最後まで聞く</span>
+                                </div>
+                                <div class="tip-item">
+                                    <i class="fas fa-handshake"></i>
+                                    <span>解決策を一緒に考える</span>
+                                </div>
+                                <div class="tip-item">
+                                    <i class="fas fa-smile"></i>
+                                    <span>ポジティブな姿勢を保つ</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="guide-section">
+                            <h3>🚫 避けるべきこと</h3>
+                            <div class="guide-warnings">
+                                <div class="warning-item">
+                                    <i class="fas fa-times"></i>
+                                    <span>感情的になって責め合わない</span>
+                                </div>
+                                <div class="warning-item">
+                                    <i class="fas fa-times"></i>
+                                    <span>過去のことを蒸し返さない</span>
+                                </div>
+                                <div class="warning-item">
+                                    <i class="fas fa-times"></i>
+                                    <span>一方的に話し続けない</span>
+                                </div>
+                                <div class="warning-item">
+                                    <i class="fas fa-times"></i>
+                                    <span>相手を変えようとしない</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- アクションプラン -->
+                <div class="action-plan">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <h2>【アクションプラン】</h2>
+                    </div>
+                    
+                    <div class="plan-content">
+                        <div class="plan-item">
+                            <div class="plan-day">今日</div>
+                            <div class="plan-action">
+                                <h4>スマホフリーの時間を決める</h4>
+                                <p>毎日30分、スマホを置いてお互いの話を聞く時間を作る</p>
+                            </div>
+                        </div>
+                        
+                        <div class="plan-item">
+                            <div class="plan-day">今週</div>
+                            <div class="plan-action">
+                                <h4>質の高いコミュニケーションを実践</h4>
+                                <p>毎日15分の対話時間を確保し、お互いの話を聞く</p>
+                            </div>
+                        </div>
+                        
+                        <div class="plan-item">
+                            <div class="plan-day">来週</div>
+                            <div class="plan-action">
+                                <h4>デジタルデトックスの習慣化</h4>
+                                <p>週末の午後はスマホフリーの時間を作る</p>
+                            </div>
+                        </div>
+                        
+                        <div class="plan-item">
+                            <div class="plan-day">1ヶ月後</div>
+                            <div class="plan-action">
+                                <h4>関係性の改善を確認</h4>
+                                <p>お互いの気持ちを確認し、必要に応じて調整する</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- セッション完了 -->
+                <div class="session-completion">
+                    <div class="completion-content">
+                        <h3>🎉 セッション完了</h3>
+                        <p>お互いの気持ちを理解し、一緒に解決策を見つけることができました。これからも継続的にコミュニケーションを取って、関係性を深めていきましょう。</p>
+                        <div class="completion-actions">
+                            <button class="btn btn-primary btn-large" onclick="startProgressTracking()">
+                                <i class="fas fa-chart-line"></i>
+                                進捗を追跡する
+                            </button>
+                            <button class="btn btn-outline btn-large" onclick="scheduleNextSession()">
+                                <i class="fas fa-calendar"></i>
+                                次のセッションを予約
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/common.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCoupleSession();
+        });
+        
+        function initializeCoupleSession() {
+            // アニメーション効果
+            animateSessionElements();
+        }
+        
+        function animateSessionElements() {
+            const elements = document.querySelectorAll('.feeling-card, .solution-item, .plan-item');
+            elements.forEach((element, index) => {
+                setTimeout(() => {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        }
+        
+        function startProgressTracking() {
+            showInfo('進捗追跡を開始します');
+            setTimeout(() => {
+                window.location.href = 'UC004-005.html';
+            }, 1000);
+        }
+        
+        function scheduleNextSession() {
+            showInfo('次のセッションを予約します');
+        }
+    </script>
+    
+    <style>
+        .couple-session-container {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+        
+        .session-intro {
+            background: linear-gradient(135deg, #FFE5E5, #FFF0F0);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        
+        .intro-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+        
+        .intro-icon i {
+            color: white;
+            font-size: 2rem;
+        }
+        
+        .intro-content h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+        
+        .intro-content p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .section-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .section-icon i {
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .feelings-comparison {
+            background: linear-gradient(135deg, #E3F2FD, #F3E5F5);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        
+        .feelings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+        }
+        
+        .feeling-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+        
+        .your-feelings {
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .partner-feelings {
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .user-avatar i {
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .card-header h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .feeling-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            padding: 15px;
+            background: var(--gray-50);
+            border-radius: 10px;
+            font-style: italic;
+        }
+        
+        .feeling-details {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: var(--gray-50);
+            border-radius: 8px;
+        }
+        
+        .detail-item i {
+            color: var(--primary-color);
+            font-size: 0.9rem;
+        }
+        
+        .detail-item span {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .joint-solutions {
+            background: linear-gradient(135deg, #E8F5E8, #F0F8F0);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        
+        .solutions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .solution-item {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            gap: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+        
+        .solution-number {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        
+        .solution-content h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+        
+        .solution-content p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .solution-steps {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .step {
+            background: rgba(78, 205, 196, 0.1);
+            color: var(--secondary-color);
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .conversation-guide {
+            background: linear-gradient(135deg, #FFF3E0, #FFE0B2);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        
+        .guide-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+        }
+        
+        .guide-section h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+        }
+        
+        .guide-tips, .guide-warnings {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .tip-item, .warning-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .tip-item i {
+            color: #4CAF50;
+            font-size: 1rem;
+        }
+        
+        .warning-item i {
+            color: #F44336;
+            font-size: 1rem;
+        }
+        
+        .tip-item span, .warning-item span {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .action-plan {
+            background: linear-gradient(135deg, #E3F2FD, #F3E5F5);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        
+        .plan-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .plan-item {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            gap: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+        
+        .plan-day {
+            min-width: 80px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        
+        .plan-action h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .plan-action p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin: 0;
+        }
+        
+        .session-completion {
+            background: linear-gradient(135deg, #E8F5E8, #F0F8F0);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        
+        .completion-content h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+        
+        .completion-content p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        
+        .completion-actions {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn-large {
+            padding: 16px 32px;
+            font-size: 1.1rem;
+            border-radius: 25px;
+        }
+        
+        @media (max-width: 768px) {
+            .couple-session-container {
+                gap: 30px;
+            }
+            
+            .session-intro, .feelings-comparison, .joint-solutions, .conversation-guide, .action-plan, .session-completion {
+                padding: 30px 20px;
+            }
+            
+            .feelings-grid, .guide-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .solution-item, .plan-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .completion-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</body>
+</html>

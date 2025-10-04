@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>課金管理 - CouplePlan</title>
+    <link rel="stylesheet" href="../../css/common.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- ナビゲーションバー -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-heart"></i>
+                <span>CouplePlan</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="../auth/AUTH-001.html" class="nav-link">ログイン</a>
+                <a href="../uc003/UC003-001.html" class="nav-link">ポータル</a>
+                <a href="../common/COMMON-001.html" class="nav-link">ダッシュボード</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+        <div class="container">
+            <!-- ヘッダー -->
+            <div class="page-header">
+                <div class="header-content">
+                    <h1 class="page-title">課金管理</h1>
+                    <p class="page-subtitle">あなたの利用状況と課金情報を管理します</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="goBack()">
+                        <i class="fas fa-arrow-left"></i>
+                        戻る
+                    </button>
+                    <button class="btn btn-outline" onclick="navigateTo('UC007-002')">
+                        <i class="fas fa-unlock"></i>
+                        機能解放
+                    </button>
+                </div>
+            </div>
+
+            <!-- 現在のプラン -->
+            <div class="current-plan">
+                <div class="plan-header">
+                    <h2>現在のプラン</h2>
+                    <div class="plan-status">
+                        <span class="status-badge active">アクティブ</span>
+                    </div>
+                </div>
+                
+                <div class="plan-card">
+                    <div class="plan-info">
+                        <div class="plan-icon">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                        <div class="plan-details">
+                            <h3>プレミアムプラン</h3>
+                            <p>すべての機能が利用可能</p>
+                            <div class="plan-price">
+                                <span class="price-amount">¥980</span>
+                                <span class="price-period">/月</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="plan-features">
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>無制限のデートプラン生成</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>AI仲裁機能</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>優先サポート</span>
+                        </div>
+                    </div>
+                    
+                    <div class="plan-actions">
+                        <button class="btn btn-outline" onclick="changePlan()">
+                            <i class="fas fa-exchange-alt"></i>
+                            プラン変更
+                        </button>
+                        <button class="btn btn-outline" onclick="cancelPlan()">
+                            <i class="fas fa-times"></i>
+                            解約
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 利用状況 -->
+            <div class="usage-stats">
+                <h2>今月の利用状況</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-heart"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value">12</div>
+                            <div class="stat-label">デートプラン生成</div>
+                            <div class="stat-limit">無制限</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value">3</div>
+                            <div class="stat-label">AI仲裁利用</div>
+                            <div class="stat-limit">無制限</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-paint-brush"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value">8</div>
+                            <div class="stat-label">AIプラン作成</div>
+                            <div class="stat-limit">無制限</div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <!-- 課金履歴 -->
+            <div class="billing-history">
+                <h2>課金履歴</h2>
+                <div class="history-table">
+                    <div class="table-header">
+                        <div class="table-cell">日付</div>
+                        <div class="table-cell">内容</div>
+                        <div class="table-cell">金額</div>
+                        <div class="table-cell">ステータス</div>
+                        <div class="table-cell">アクション</div>
+                    </div>
+                    
+                    <div class="table-row">
+                        <div class="table-cell">
+                            <div class="date-info">
+                                <span class="date">2025年1月15日</span>
+                                <span class="time">14:30</span>
+                            </div>
+                        </div>
+                        <div class="table-cell">
+                            <div class="content-info">
+                                <span class="content">プレミアムプラン月額料金</span>
+                                <span class="period">2025年1月15日 - 2025年2月14日</span>
+                            </div>
+                        </div>
+                        <div class="table-cell">
+                            <span class="amount">¥980</span>
+                        </div>
+                        <div class="table-cell">
+                            <span class="status-badge success">完了</span>
+                        </div>
+                        <div class="table-cell">
+                            <button class="btn btn-sm btn-outline" onclick="downloadReceipt(1)">
+                                <i class="fas fa-download"></i>
+                                領収書
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-row">
+                        <div class="table-cell">
+                            <div class="date-info">
+                                <span class="date">2024年12月15日</span>
+                                <span class="time">14:30</span>
+                            </div>
+                        </div>
+                        <div class="table-cell">
+                            <div class="content-info">
+                                <span class="content">プレミアムプラン月額料金</span>
+                                <span class="period">2024年12月15日 - 2025年1月14日</span>
+                            </div>
+                        </div>
+                        <div class="table-cell">
+                            <span class="amount">¥980</span>
+                        </div>
+                        <div class="table-cell">
+                            <span class="status-badge success">完了</span>
+                        </div>
+                        <div class="table-cell">
+                            <button class="btn btn-sm btn-outline" onclick="downloadReceipt(2)">
+                                <i class="fas fa-download"></i>
+                                領収書
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-row">
+                        <div class="table-cell">
+                            <div class="date-info">
+                                <span class="date">2024年11月15日</span>
+                                <span class="time">14:30</span>
+                            </div>
+                        </div>
+                        <div class="table-cell">
+                            <div class="content-info">
+                                <span class="content">プレミアムプラン月額料金</span>
+                                <span class="period">2024年11月15日 - 2024年12月14日</span>
+                            </div>
+                        </div>
+                        <div class="table-cell">
+                            <span class="amount">¥980</span>
+                        </div>
+                        <div class="table-cell">
+                            <span class="status-badge success">完了</span>
+                        </div>
+                        <div class="table-cell">
+                            <button class="btn btn-sm btn-outline" onclick="downloadReceipt(3)">
+                                <i class="fas fa-download"></i>
+                                領収書
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 支払い方法 -->
+            <div class="payment-methods">
+                <h2>支払い方法</h2>
+                <div class="payment-cards">
+                    <div class="payment-card active">
+                        <div class="card-info">
+                            <div class="card-icon">
+                                <i class="fab fa-cc-visa"></i>
+                            </div>
+                            <div class="card-details">
+                                <span class="card-number">**** **** **** 1234</span>
+                                <span class="card-expiry">有効期限: 12/26</span>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-sm btn-outline" onclick="editPaymentMethod(1)">
+                                <i class="fas fa-edit"></i>
+                                編集
+                            </button>
+                            <button class="btn btn-sm btn-outline" onclick="removePaymentMethod(1)">
+                                <i class="fas fa-trash"></i>
+                                削除
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-card">
+                        <div class="card-info">
+                            <div class="card-icon">
+                                <i class="fab fa-cc-mastercard"></i>
+                            </div>
+                            <div class="card-details">
+                                <span class="card-number">**** **** **** 5678</span>
+                                <span class="card-expiry">有効期限: 08/25</span>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-sm btn-outline" onclick="editPaymentMethod(2)">
+                                <i class="fas fa-edit"></i>
+                                編集
+                            </button>
+                            <button class="btn btn-sm btn-outline" onclick="removePaymentMethod(2)">
+                                <i class="fas fa-trash"></i>
+                                削除
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="payment-actions">
+                    <button class="btn btn-primary" onclick="addPaymentMethod()">
+                        <i class="fas fa-plus"></i>
+                        支払い方法を追加
+                    </button>
+                </div>
+            </div>
+
+            <!-- 次の請求日 -->
+            <div class="next-billing">
+                <div class="billing-info">
+                    <div class="billing-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="billing-content">
+                        <h3>次の請求日</h3>
+                        <p>2025年2月15日 (金) 14:30</p>
+                        <span class="billing-amount">¥980</span>
+                    </div>
+                </div>
+                
+                <div class="billing-actions">
+                    <button class="btn btn-outline" onclick="updateBillingDate()">
+                        <i class="fas fa-calendar"></i>
+                        請求日変更
+                    </button>
+                    <button class="btn btn-outline" onclick="pauseBilling()">
+                        <i class="fas fa-pause"></i>
+                        一時停止
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/common.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeBillingManagement();
+        });
+        
+        function initializeBillingManagement() {
+            // 課金管理の初期化
+            loadBillingData();
+        }
+        
+        function loadBillingData() {
+            // 実際の実装ではAPIから課金データを取得
+            console.log('課金データを読み込みました');
+        }
+        
+        function changePlan() {
+            showInfo('プラン変更画面に移動します');
+        }
+        
+        function cancelPlan() {
+            if (confirm('プランを解約しますか？解約後はプレミアム機能が利用できなくなります。')) {
+                showSuccess('プランを解約しました');
+            }
+        }
+        
+        function downloadReceipt(receiptId) {
+            showSuccess(`領収書 ${receiptId} をダウンロードしました`);
+        }
+        
+        function editPaymentMethod(methodId) {
+            showInfo(`支払い方法 ${methodId} を編集します`);
+        }
+        
+        function removePaymentMethod(methodId) {
+            if (confirm('この支払い方法を削除しますか？')) {
+                showSuccess(`支払い方法 ${methodId} を削除しました`);
+            }
+        }
+        
+        function addPaymentMethod() {
+            showInfo('新しい支払い方法を追加します');
+        }
+        
+        function updateBillingDate() {
+            showInfo('請求日を変更します');
+        }
+        
+        function pauseBilling() {
+            if (confirm('課金を一時停止しますか？停止中はプレミアム機能が利用できなくなります。')) {
+                showSuccess('課金を一時停止しました');
+            }
+        }
+        
+        // ナビゲーション関数
+        function navigateTo(screenId) {
+            const routes = {
+                'UC001-001': '../uc001/UC001-001.html',
+                'UC001-002': '../uc001/UC001-002.html',
+                'UC001-003': '../uc001/UC001-003.html',
+                'UC001-004': '../uc001/UC001-004.html',
+                'UC001-005': '../uc001/UC001-005.html',
+                'UC002-001': '../uc002/UC002-001.html',
+                'UC002-002': '../uc002/UC002-002.html',
+                'UC003-001': '../uc003/UC003-001.html',
+                'UC003-002': '../uc003/UC003-002.html',
+                'UC003-003': '../uc003/UC003-003.html',
+                'UC003-004': '../uc003/UC003-004.html',
+                'UC003-005': '../uc003/UC003-005.html',
+                'UC004-001': '../uc004/UC004-001.html',
+                'UC004-002': '../uc004/UC004-002.html',
+                'UC004-003': '../uc004/UC004-003.html',
+                'UC005-001': '../uc005/UC005-001.html',
+                'UC007-001': 'UC007-001.html',
+                'UC007-002': 'UC007-002.html',
+                'AUTH-001': '../auth/AUTH-001.html',
+                'AUTH-002': '../auth/AUTH-002.html',
+                'AUTH-003': '../auth/AUTH-003.html',
+                'AUTH-004': '../auth/AUTH-004.html',
+                'COMMON-001': '../common/COMMON-001.html',
+                'COMMON-002': '../common/COMMON-002.html',
+                'COMMON-003': '../common/COMMON-003.html',
+                'COMMON-004': '../common/COMMON-004.html',
+                'COMMON-005': '../common/COMMON-005.html'
+            };
+            
+            if (routes[screenId]) {
+                window.location.href = routes[screenId];
+            } else {
+                console.warn('ルートが見つかりません:', screenId);
+                showInfo('画面が見つかりません');
+            }
+        }
+    </script>
+    
+    <style>
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-8);
+        }
+        
+        .page-title {
+            font-size: var(--text-3xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+        }
+        
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: var(--text-lg);
+        }
+        
+        .current-plan {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-8);
+            margin-bottom: var(--space-8);
+        }
+        
+        .plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-6);
+        }
+        
+        .plan-header h2 {
+            font-size: var(--text-2xl);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .status-badge {
+            padding: var(--space-1) var(--space-3);
+            border-radius: var(--radius-full);
+            font-size: var(--text-sm);
+            font-weight: 500;
+        }
+        
+        .status-badge.active {
+            background-color: var(--secondary-color);
+            color: var(--white);
+        }
+        
+        .status-badge.success {
+            background-color: #10b981;
+            color: var(--white);
+        }
+        
+        .plan-card {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-6);
+        }
+        
+        .plan-info {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+        
+        .plan-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .plan-icon i {
+            font-size: var(--text-2xl);
+            color: var(--white);
+        }
+        
+        .plan-details h3 {
+            font-size: var(--text-xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+        
+        .plan-details p {
+            color: var(--text-secondary);
+            margin-bottom: var(--space-2);
+        }
+        
+        .plan-price {
+            display: flex;
+            align-items: baseline;
+            gap: var(--space-1);
+        }
+        
+        .price-amount {
+            font-size: var(--text-2xl);
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .price-period {
+            color: var(--text-secondary);
+        }
+        
+        .plan-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-3);
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+        
+        .feature-item i {
+            color: var(--secondary-color);
+        }
+        
+        .plan-actions {
+            display: flex;
+            gap: var(--space-3);
+        }
+        
+        .usage-stats {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-8);
+            margin-bottom: var(--space-8);
+        }
+        
+        .usage-stats h2 {
+            font-size: var(--text-2xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-6);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-4);
+        }
+        
+        .stat-card {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-4);
+            background-color: var(--gray-50);
+            border-radius: var(--radius-lg);
+        }
+        
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .stat-icon i {
+            color: var(--white);
+            font-size: var(--text-lg);
+        }
+        
+        .stat-content {
+            flex: 1;
+        }
+        
+        .stat-value {
+            font-size: var(--text-xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+        
+        .stat-label {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+            margin-bottom: var(--space-1);
+        }
+        
+        .stat-limit {
+            font-size: var(--text-xs);
+            color: var(--secondary-color);
+            font-weight: 500;
+        }
+        
+        .billing-history {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-8);
+            margin-bottom: var(--space-8);
+        }
+        
+        .billing-history h2 {
+            font-size: var(--text-2xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-6);
+        }
+        
+        .history-table {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .table-header {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr 1fr 1fr;
+            gap: var(--space-4);
+            padding: var(--space-4);
+            background-color: var(--gray-50);
+            border-radius: var(--radius-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .table-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr 1fr 1fr;
+            gap: var(--space-4);
+            padding: var(--space-4);
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .table-row:last-child {
+            border-bottom: none;
+        }
+        
+        .table-cell {
+            display: flex;
+            align-items: center;
+        }
+        
+        .date-info {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-1);
+        }
+        
+        .date {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .time {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+        }
+        
+        .content-info {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-1);
+        }
+        
+        .content {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .period {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+        }
+        
+        .amount {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .payment-methods {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-8);
+            margin-bottom: var(--space-8);
+        }
+        
+        .payment-methods h2 {
+            font-size: var(--text-2xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-6);
+        }
+        
+        .payment-cards {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
+        }
+        
+        .payment-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-4);
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            transition: all var(--transition-fast);
+        }
+        
+        .payment-card.active {
+            border-color: var(--primary-color);
+            background-color: rgba(255, 107, 107, 0.05);
+        }
+        
+        .card-info {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+        
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--gray-100);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .card-icon i {
+            font-size: var(--text-xl);
+            color: var(--text-secondary);
+        }
+        
+        .card-details {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-1);
+        }
+        
+        .card-number {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .card-expiry {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: var(--space-2);
+        }
+        
+        .payment-actions {
+            display: flex;
+            justify-content: center;
+        }
+        
+        .next-billing {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-8);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .billing-info {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+        
+        .billing-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .billing-icon i {
+            color: var(--white);
+            font-size: var(--text-xl);
+        }
+        
+        .billing-content h3 {
+            font-size: var(--text-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+        
+        .billing-content p {
+            color: var(--text-secondary);
+            margin-bottom: var(--space-1);
+        }
+        
+        .billing-amount {
+            font-size: var(--text-xl);
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .billing-actions {
+            display: flex;
+            gap: var(--space-3);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+        
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--space-4);
+            }
+            
+            .plan-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .plan-features {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .table-header,
+            .table-row {
+                grid-template-columns: 1fr;
+                gap: var(--space-2);
+            }
+            
+            .payment-card {
+                flex-direction: column;
+                gap: var(--space-3);
+            }
+            
+            .next-billing {
+                flex-direction: column;
+                gap: var(--space-4);
+            }
+            
+            .billing-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</body>
+</html>

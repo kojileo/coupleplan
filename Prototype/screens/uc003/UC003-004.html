@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>アプリ誘導 - CouplePlan</title>
+    <link rel="stylesheet" href="../../css/common.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- ナビゲーションバー -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-heart"></i>
+                <span>CouplePlan</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="../auth/AUTH-001.html" class="nav-link">ログイン</a>
+                <a href="UC003-001.html" class="nav-link">ポータル</a>
+                <a href="../common/COMMON-003.html" class="nav-link">ヘルプ</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+        <!-- ヒーローセクション -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="hero-title">CouplePlanアプリで<br>もっと便利に</h1>
+                    <p class="hero-subtitle">AIがあなたたちのデートを特別にします<br>アプリでより豊かな体験を</p>
+                    <div class="hero-features">
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>リアルタイム共同編集</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>AI仲裁・関係修復</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="phone-mockup">
+                        <div class="phone-screen">
+                            <div class="app-preview">
+                                <div class="app-header">
+                                    <i class="fas fa-heart"></i>
+                                    <span>CouplePlan</span>
+                                </div>
+                                <div class="app-content">
+                                    <div class="preview-card">
+                                        <h3>今日のデート</h3>
+                                        <p>東京タワーロマンチックデート</p>
+                                    </div>
+                                    <div class="preview-card">
+                                        <h3>AI提案</h3>
+                                        <p>新しいデートプランを生成中...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- アプリ機能紹介 -->
+        <section class="app-features">
+            <div class="container">
+                <div class="section-header">
+                    <h2>アプリの主要機能</h2>
+                    <p>Web版では体験できない特別な機能</p>
+                </div>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3>リアルタイム共同編集</h3>
+                            <p>パートナーと同時にデートプランを編集。変更がリアルタイムで反映されます。</p>
+                            <ul class="feature-list">
+                                <li>同時編集機能</li>
+                                <li>編集競合の自動解決</li>
+                                <li>編集履歴の管理</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-paint-brush"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3>位置情報ピン</h3>
+                            <p>思い出を地図上に記録・共有できます。</p>
+                            <ul class="feature-list">
+                                <li>共同描画機能</li>
+                                <li>位置情報の記録</li>
+                                <li>自動アルバム生成</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3>AI仲裁・関係修復</h3>
+                            <p>喧嘩や対立の解決をAIがサポート。関係をより深くします。</p>
+                            <ul class="feature-list">
+                                <li>状況の客観的分析</li>
+                                <li>解決策の提案</li>
+                                <li>関係修復プラン</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </section>
+
+        <!-- ダウンロードセクション -->
+        <section class="download-section">
+            <div class="container">
+                <div class="download-content">
+                    <h2>今すぐアプリをダウンロード</h2>
+                    <p>iOS・Android対応。無料でダウンロードできます。</p>
+                    
+                    <div class="download-buttons">
+                        <a href="#" class="download-btn ios" onclick="downloadApp('ios')">
+                            <div class="btn-icon">
+                                <i class="fab fa-apple"></i>
+                            </div>
+                            <div class="btn-content">
+                                <div class="btn-text">App Storeで</div>
+                                <div class="btn-subtext">ダウンロード</div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="download-btn android" onclick="downloadApp('android')">
+                            <div class="btn-icon">
+                                <i class="fab fa-google-play"></i>
+                            </div>
+                            <div class="btn-content">
+                                <div class="btn-text">Google Playで</div>
+                                <div class="btn-subtext">ダウンロード</div>
+                            </div>
+                        </a>
+                    </div>
+                    
+                    <div class="download-info">
+                        <div class="info-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>安全・セキュア</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-sync"></i>
+                            <span>リアルタイム同期</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-mobile-alt"></i>
+                            <span>オフライン対応</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ユーザーレビュー -->
+        <section class="reviews-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>ユーザーの声</h2>
+                    <p>実際に利用しているカップルの感想</p>
+                </div>
+                
+                <div class="reviews-grid">
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <div class="reviewer-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="reviewer-details">
+                                    <h4>田中さん</h4>
+                                    <p>20代・会社員</p>
+                                </div>
+                            </div>
+                            <div class="review-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <div class="review-content">
+                            <p>「AIが提案してくれるデートプランが本当に素晴らしい！私たちの好みを理解してくれて、毎回新しい発見があります。」</p>
+                        </div>
+                    </div>
+                    
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <div class="reviewer-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="reviewer-details">
+                                    <h4>佐藤さん</h4>
+                                    <p>30代・主婦</p>
+                                </div>
+                            </div>
+                            <div class="review-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <div class="review-content">
+                            <p>「位置情報ピンで思い出を記録できるのが最高！パートナーと一緒に訪れた場所が宝物になっています。」</p>
+                        </div>
+                    </div>
+                    
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="reviewer-info">
+                                <div class="reviewer-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="reviewer-details">
+                                    <h4>山田さん</h4>
+                                    <p>20代・学生</p>
+                                </div>
+                            </div>
+                            <div class="review-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <div class="review-content">
+                            <p>「喧嘩をした時にAI仲裁機能が本当に助かりました。客観的なアドバイスで関係が改善されました。」</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 最終CTA -->
+        <section class="final-cta">
+            <div class="container">
+                <div class="cta-content">
+                    <h2>今すぐ始めましょう</h2>
+                    <p>無料でダウンロードして、あなたたちのデートを特別にしましょう</p>
+                    
+                    <div class="cta-actions">
+                        <button class="btn btn-primary btn-large" onclick="downloadApp('ios')">
+                            <i class="fab fa-apple"></i>
+                            App Storeでダウンロード
+                        </button>
+                        <button class="btn btn-primary btn-large" onclick="downloadApp('android')">
+                            <i class="fab fa-google-play"></i>
+                            Google Playでダウンロード
+                        </button>
+                    </div>
+                    
+                    <div class="cta-alternative">
+                        <p>まだアプリをダウンロードしない場合</p>
+                        <button class="btn btn-outline" onclick="continueWeb()">
+                            <i class="fas fa-globe"></i>
+                            Web版で続ける
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- フッター -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>CouplePlan</h3>
+                    <p>AIがあなたたちのデートを特別にします</p>
+                </div>
+                <div class="footer-section">
+                    <h4>機能</h4>
+                    <ul>
+                        <li><a href="#">AIデートプラン</a></li>
+                        <li><a href="#">共同編集</a></li>
+                        <li><a href="#">位置情報ピン</a></li>
+                        <li><a href="#">関係修復</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>サポート</h4>
+                    <ul>
+                        <li><a href="#">ヘルプセンター</a></li>
+                        <li><a href="#">お問い合わせ</a></li>
+                        <li><a href="#">利用規約</a></li>
+                        <li><a href="#">プライバシーポリシー</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 CouplePlan. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../js/common.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeAppGuide();
+        });
+        
+        function initializeAppGuide() {
+            // アプリ誘導画面の初期化
+            setupDownloadTracking();
+            setupScrollEffects();
+        }
+        
+        function setupDownloadTracking() {
+            // ダウンロード追跡の設定
+            console.log('ダウンロード追跡を設定しました');
+        }
+        
+        function setupScrollEffects() {
+            // スクロール効果の設定
+            console.log('スクロール効果を設定しました');
+        }
+        
+        function downloadApp(platform) {
+            if (platform === 'ios') {
+                showInfo('App Storeに移動します');
+                // 実際の実装ではApp StoreのURLに遷移
+            } else if (platform === 'android') {
+                showInfo('Google Playに移動します');
+                // 実際の実装ではGoogle PlayのURLに遷移
+            }
+        }
+        
+        function continueWeb() {
+            showInfo('Web版で続けます');
+            setTimeout(() => {
+                window.location.href = '../auth/AUTH-001.html';
+            }, 500);
+        }
+    </script>
+    
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white);
+            padding: var(--space-16) 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-6);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-8);
+            align-items: center;
+        }
+        
+        .hero-title {
+            font-size: var(--text-4xl);
+            font-weight: 700;
+            margin-bottom: var(--space-4);
+            line-height: 1.2;
+        }
+        
+        .hero-subtitle {
+            font-size: var(--text-xl);
+            margin-bottom: var(--space-8);
+            opacity: 0.9;
+        }
+        
+        .hero-features {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+        
+        .feature-item i {
+            color: var(--secondary-color);
+            font-size: var(--text-lg);
+        }
+        
+        .phone-mockup {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .phone-screen {
+            width: 200px;
+            height: 400px;
+            background-color: var(--white);
+            border-radius: 30px;
+            padding: var(--space-4);
+            box-shadow: var(--shadow-xl);
+            position: relative;
+        }
+        
+        .app-preview {
+            height: 100%;
+            background-color: var(--gray-50);
+            border-radius: 20px;
+            padding: var(--space-4);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .app-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            margin-bottom: var(--space-4);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .app-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+        }
+        
+        .preview-card {
+            background-color: var(--white);
+            border-radius: var(--radius-lg);
+            padding: var(--space-3);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .preview-card h3 {
+            font-size: var(--text-sm);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+        
+        .preview-card p {
+            font-size: var(--text-xs);
+            color: var(--text-secondary);
+        }
+        
+        .app-features,
+        .reviews-section {
+            padding: var(--space-16) 0;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: var(--space-12);
+        }
+        
+        .section-header h2 {
+            font-size: var(--text-3xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-4);
+        }
+        
+        .section-header p {
+            font-size: var(--text-lg);
+            color: var(--text-secondary);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-8);
+        }
+        
+        .feature-card {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-8);
+            text-align: center;
+            transition: transform var(--transition-fast);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-4px);
+        }
+        
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--radius-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--space-6);
+        }
+        
+        .feature-icon i {
+            color: var(--white);
+            font-size: var(--text-2xl);
+        }
+        
+        .feature-content h3 {
+            font-size: var(--text-xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-4);
+        }
+        
+        .feature-content p {
+            color: var(--text-secondary);
+            margin-bottom: var(--space-4);
+        }
+        
+        .feature-list {
+            list-style: none;
+            text-align: left;
+        }
+        
+        .feature-list li {
+            padding: var(--space-1) 0;
+            color: var(--text-secondary);
+        }
+        
+        .feature-list li::before {
+            content: '✓';
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-right: var(--space-2);
+        }
+        
+        .download-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white);
+            padding: var(--space-16) 0;
+        }
+        
+        .download-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 var(--space-6);
+        }
+        
+        .download-content h2 {
+            font-size: var(--text-3xl);
+            font-weight: 700;
+            margin-bottom: var(--space-4);
+        }
+        
+        .download-content p {
+            font-size: var(--text-lg);
+            margin-bottom: var(--space-8);
+            opacity: 0.9;
+        }
+        
+        .download-buttons {
+            display: flex;
+            gap: var(--space-4);
+            justify-content: center;
+            margin-bottom: var(--space-8);
+            flex-wrap: wrap;
+        }
+        
+        .download-btn {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-4) var(--space-6);
+            background-color: var(--white);
+            color: var(--text-primary);
+            border-radius: var(--radius-lg);
+            text-decoration: none;
+            transition: transform var(--transition-fast);
+            min-width: 200px;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn-icon {
+            font-size: var(--text-2xl);
+        }
+        
+        .btn-content {
+            text-align: left;
+        }
+        
+        .btn-text {
+            font-weight: 600;
+            font-size: var(--text-sm);
+        }
+        
+        .btn-subtext {
+            font-size: var(--text-xs);
+            color: var(--text-secondary);
+        }
+        
+        .download-info {
+            display: flex;
+            gap: var(--space-6);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            opacity: 0.9;
+        }
+        
+        .info-item i {
+            color: var(--secondary-color);
+        }
+        
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-6);
+        }
+        
+        .review-card {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-6);
+        }
+        
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--space-4);
+        }
+        
+        .reviewer-info {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+        
+        .reviewer-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+        }
+        
+        .reviewer-details h4 {
+            font-size: var(--text-base);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+        
+        .reviewer-details p {
+            color: var(--text-secondary);
+            font-size: var(--text-sm);
+        }
+        
+        .review-rating {
+            color: #fbbf24;
+        }
+        
+        .review-content p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        .final-cta {
+            background-color: var(--gray-900);
+            color: var(--white);
+            padding: var(--space-16) 0;
+        }
+        
+        .cta-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 var(--space-6);
+        }
+        
+        .cta-content h2 {
+            font-size: var(--text-3xl);
+            font-weight: 700;
+            margin-bottom: var(--space-4);
+        }
+        
+        .cta-content p {
+            font-size: var(--text-lg);
+            margin-bottom: var(--space-8);
+            opacity: 0.9;
+        }
+        
+        .cta-actions {
+            display: flex;
+            gap: var(--space-4);
+            justify-content: center;
+            margin-bottom: var(--space-8);
+            flex-wrap: wrap;
+        }
+        
+        .btn-large {
+            padding: var(--space-4) var(--space-8);
+            font-size: var(--text-lg);
+        }
+        
+        .cta-alternative {
+            padding-top: var(--space-6);
+            border-top: 1px solid var(--gray-700);
+        }
+        
+        .cta-alternative p {
+            color: var(--gray-400);
+            margin-bottom: var(--space-4);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--white);
+            color: var(--white);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--white);
+            color: var(--gray-900);
+        }
+        
+        .footer {
+            background-color: var(--gray-900);
+            color: var(--white);
+            padding: var(--space-12) 0 var(--space-6);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-8);
+            margin-bottom: var(--space-8);
+        }
+        
+        .footer-section h3,
+        .footer-section h4 {
+            margin-bottom: var(--space-4);
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: var(--space-2);
+        }
+        
+        .footer-section ul li a {
+            color: var(--gray-300);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+        
+        .footer-section ul li a:hover {
+            color: var(--white);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: var(--space-6);
+            border-top: 1px solid var(--gray-700);
+            color: var(--gray-400);
+        }
+        
+        @media (max-width: 768px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .hero-title {
+                font-size: var(--text-3xl);
+            }
+            
+            .download-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .download-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .download-info {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .cta-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</body>
+</html>

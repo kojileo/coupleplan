@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ダッシュボード - CouplePlan</title>
+    <link rel="stylesheet" href="../../css/common.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- ナビゲーションバー -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-heart"></i>
+                <span>CouplePlan</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="../auth/AUTH-001.html" class="nav-link">ログイン</a>
+                <a href="../uc003/UC003-001.html" class="nav-link">ポータル</a>
+                <a href="COMMON-002.html" class="nav-link">設定</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+        <div class="container">
+            <!-- ウェルカムセクション -->
+            <div class="welcome-section">
+                <div class="welcome-content">
+                    <h1 class="welcome-title">おかえりなさい、田中さん</h1>
+                    <p class="welcome-subtitle">今日も素敵なデートの一日にしましょう</p>
+                </div>
+                <div class="welcome-actions">
+                    <button class="btn btn-primary" onclick="createNewPlan()">
+                        <i class="fas fa-plus"></i>
+                        新しいデートプラン
+                    </button>
+                </div>
+            </div>
+
+            <!-- クイックアクション -->
+            <div class="quick-actions">
+                <h2>クイックアクション</h2>
+                <div class="actions-grid">
+                    <div class="action-card" onclick="navigateTo('UC001-001')">
+                        <div class="action-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="action-content">
+                            <h3>AIデートプラン</h3>
+                            <p>AIが最適なプランを提案</p>
+                        </div>
+                    </div>
+                    
+                    <div class="action-card" onclick="navigateTo('UC004-001')">
+                        <div class="action-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="action-content">
+                            <h3>AI仲裁</h3>
+                            <p>関係の悩みを解決</p>
+                        </div>
+                    </div>
+                    
+                    <div class="action-card" onclick="navigateTo('UC005-001')">
+                        <div class="action-icon">
+                            <i class="fas fa-paint-brush"></i>
+                        </div>
+                        <div class="action-content">
+                            <h3>Date Canvas</h3>
+                            <p>思い出をキャンバスに記録</p>
+                        </div>
+                    </div>
+                    
+                    <div class="action-card" onclick="navigateTo('UC007-001')">
+                        <div class="action-icon">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <div class="action-content">
+                            <h3>課金管理</h3>
+                            <p>プラン・支払い情報の管理</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 現在のデートプラン -->
+            <div class="current-plans">
+                <div class="section-header">
+                    <h2>現在のデートプラン</h2>
+                    <button class="btn btn-outline" onclick="viewAllPlans()">
+                        すべて表示
+                    </button>
+                </div>
+                
+                <div class="plans-list">
+                    <div class="plan-card active">
+                        <div class="plan-header">
+                            <div class="plan-info">
+                                <h3>東京タワーデート</h3>
+                                <p>2025年1月25日 14:00〜</p>
+                            </div>
+                            <div class="plan-status">
+                                <span class="status-badge confirmed">確定</span>
+                            </div>
+                        </div>
+                        <div class="plan-details">
+                            <div class="plan-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>東京タワー → レストラン → 芝公園</span>
+                            </div>
+                            <div class="plan-item">
+                                <i class="fas fa-yen-sign"></i>
+                                <span>予算: ¥15,000</span>
+                            </div>
+                            <div class="plan-item">
+                                <i class="fas fa-clock"></i>
+                                <span>所要時間: 6時間</span>
+                            </div>
+                        </div>
+                        <div class="plan-actions">
+                            <button class="btn btn-sm btn-primary" onclick="viewPlanDetails()">
+                                <i class="fas fa-eye"></i>
+                                詳細
+                            </button>
+                            <button class="btn btn-sm btn-outline" onclick="editPlan()">
+                                <i class="fas fa-edit"></i>
+                                編集
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="plan-card">
+                        <div class="plan-header">
+                            <div class="plan-info">
+                                <h3>温泉旅行</h3>
+                                <p>2025年2月1日 10:00〜</p>
+                            </div>
+                            <div class="plan-status">
+                                <span class="status-badge planning">計画中</span>
+                            </div>
+                        </div>
+                        <div class="plan-details">
+                            <div class="plan-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>箱根温泉 → 芦ノ湖 → 彫刻の森美術館</span>
+                            </div>
+                            <div class="plan-item">
+                                <i class="fas fa-yen-sign"></i>
+                                <span>予算: ¥30,000</span>
+                            </div>
+                            <div class="plan-item">
+                                <i class="fas fa-clock"></i>
+                                <span>所要時間: 終日</span>
+                            </div>
+                        </div>
+                        <div class="plan-actions">
+                            <button class="btn btn-sm btn-primary" onclick="viewPlanDetails()">
+                                <i class="fas fa-eye"></i>
+                                詳細
+                            </button>
+                            <button class="btn btn-sm btn-outline" onclick="editPlan()">
+                                <i class="fas fa-edit"></i>
+                                編集
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 最近の思い出 -->
+            <div class="recent-memories">
+                <div class="section-header">
+                    <h2>最近の思い出</h2>
+                    <button class="btn btn-outline" onclick="viewAllMemories()">
+                        すべて表示
+                    </button>
+                </div>
+                
+                <div class="memories-grid">
+                    <div class="memory-card">
+                        <div class="memory-image">
+                            <img src="../../assets/images/memory1.jpg" alt="思い出" onerror="this.style.display='none'">
+                            <div class="memory-overlay">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                        </div>
+                        <div class="memory-content">
+                            <h3>初デート</h3>
+                            <p>2024年12月15日</p>
+                            <div class="memory-stats">
+                                <span class="stat">
+                                    <i class="fas fa-camera"></i>
+                                    12枚
+                                </span>
+                                <span class="stat">
+                                    <i class="fas fa-comment"></i>
+                                    8件
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="memory-card">
+                        <div class="memory-image">
+                            <img src="../../assets/images/memory2.jpg" alt="思い出" onerror="this.style.display='none'">
+                            <div class="memory-overlay">
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                        <div class="memory-content">
+                            <h3>記念日</h3>
+                            <p>2024年11月20日</p>
+                            <div class="memory-stats">
+                                <span class="stat">
+                                    <i class="fas fa-camera"></i>
+                                    25枚
+                                </span>
+                                <span class="stat">
+                                    <i class="fas fa-comment"></i>
+                                    15件
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="memory-card">
+                        <div class="memory-image">
+                            <img src="../../assets/images/memory3.jpg" alt="思い出" onerror="this.style.display='none'">
+                            <div class="memory-overlay">
+                                <i class="fas fa-gift"></i>
+                            </div>
+                        </div>
+                        <div class="memory-content">
+                            <h3>サプライズ</h3>
+                            <p>2024年10月10日</p>
+                            <div class="memory-stats">
+                                <span class="stat">
+                                    <i class="fas fa-camera"></i>
+                                    18枚
+                                </span>
+                                <span class="stat">
+                                    <i class="fas fa-comment"></i>
+                                    12件
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 関係性スコア -->
+            <div class="relationship-score">
+                <div class="score-header">
+                    <h2>関係性スコア</h2>
+                    <div class="score-value">
+                        <span class="score-number">85</span>
+                        <span class="score-unit">/100</span>
+                    </div>
+                </div>
+                
+                <div class="score-details">
+                    <div class="score-item">
+                        <div class="score-label">
+                            <i class="fas fa-heart"></i>
+                            <span>愛情度</span>
+                        </div>
+                        <div class="score-bar">
+                            <div class="score-fill" style="width: 90%"></div>
+                        </div>
+                        <span class="score-percentage">90%</span>
+                    </div>
+                    
+                    <div class="score-item">
+                        <div class="score-label">
+                            <i class="fas fa-comments"></i>
+                            <span>コミュニケーション</span>
+                        </div>
+                        <div class="score-bar">
+                            <div class="score-fill" style="width: 85%"></div>
+                        </div>
+                        <span class="score-percentage">85%</span>
+                    </div>
+                    
+                    <div class="score-item">
+                        <div class="score-label">
+                            <i class="fas fa-calendar"></i>
+                            <span>デート頻度</span>
+                        </div>
+                        <div class="score-bar">
+                            <div class="score-fill" style="width: 80%"></div>
+                        </div>
+                        <span class="score-percentage">80%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 通知 -->
+            <div class="notifications">
+                <div class="section-header">
+                    <h2>通知</h2>
+                    <button class="btn btn-outline" onclick="markAllRead()">
+                        すべて既読
+                    </button>
+                </div>
+                
+                <div class="notifications-list">
+                    <div class="notification-item unread">
+                        <div class="notification-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="notification-content">
+                            <h3>新しいデートプランが生成されました</h3>
+                            <p>AIがあなたたちに最適なプランを提案しています</p>
+                            <span class="notification-time">2時間前</span>
+                        </div>
+                        <div class="notification-action">
+                            <button class="btn btn-sm btn-primary" onclick="viewNotification()">
+                                確認
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="notification-item">
+                        <div class="notification-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="notification-content">
+                            <h3>パートナーからメッセージが届きました</h3>
+                            <p>「今日のデート、とても楽しかったです」</p>
+                            <span class="notification-time">5時間前</span>
+                        </div>
+                        <div class="notification-action">
+                            <button class="btn btn-sm btn-outline" onclick="viewNotification()">
+                                返信
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="notification-item">
+                        <div class="notification-icon">
+                            <i class="fas fa-calendar"></i>
+                        </div>
+                        <div class="notification-content">
+                            <h3>デートのリマインダー</h3>
+                            <p>明日の東京タワーデートの準備はできていますか？</p>
+                            <span class="notification-time">1日前</span>
+                        </div>
+                        <div class="notification-action">
+                            <button class="btn btn-sm btn-outline" onclick="viewNotification()">
+                                確認
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/common.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDashboard();
+        });
+        
+        function initializeDashboard() {
+            // ダッシュボードの初期化
+            loadDashboardData();
+            setupRealTimeUpdates();
+        }
+        
+        function loadDashboardData() {
+            // 実際の実装ではAPIからダッシュボードデータを取得
+            console.log('ダッシュボードデータを読み込みました');
+        }
+        
+        function setupRealTimeUpdates() {
+            // リアルタイム更新の設定
+            console.log('リアルタイム更新を設定しました');
+        }
+        
+        function createNewPlan() {
+            window.location.href = '../uc001/UC001-001.html';
+        }
+        
+        function navigateTo(screenId) {
+            const routes = {
+                'UC001-001': '../uc001/UC001-001.html',
+                'UC001-002': '../uc001/UC001-002.html',
+                'UC001-003': '../uc001/UC001-003.html',
+                'UC001-004': '../uc001/UC001-004.html',
+                'UC001-005': '../uc001/UC001-005.html',
+                'UC002-001': '../uc002/UC002-001.html',
+                'UC002-002': '../uc002/UC002-002.html',
+                'UC003-001': '../uc003/UC003-001.html',
+                'UC003-002': '../uc003/UC003-002.html',
+                'UC003-003': '../uc003/UC003-003.html',
+                'UC003-004': '../uc003/UC003-004.html',
+                'UC003-005': '../uc003/UC003-005.html',
+                'UC004-001': '../uc004/UC004-001.html',
+                'UC004-002': '../uc004/UC004-002.html',
+                'UC004-003': '../uc004/UC004-003.html',
+                'UC005-001': '../uc005/UC005-001.html',
+                'UC007-001': '../uc007/UC007-001.html',
+                'UC007-002': '../uc007/UC007-002.html',
+                'AUTH-001': '../auth/AUTH-001.html',
+                'AUTH-002': '../auth/AUTH-002.html',
+                'AUTH-003': '../auth/AUTH-003.html',
+                'AUTH-004': '../auth/AUTH-004.html',
+                'COMMON-001': 'COMMON-001.html',
+                'COMMON-002': 'COMMON-002.html',
+                'COMMON-003': 'COMMON-003.html',
+                'COMMON-004': 'COMMON-004.html',
+                'COMMON-005': 'COMMON-005.html'
+            };
+            
+            if (routes[screenId]) {
+                window.location.href = routes[screenId];
+            } else {
+                console.warn('ルートが見つかりません:', screenId);
+                showInfo('画面が見つかりません');
+            }
+        }
+        
+        function viewAllPlans() {
+            showInfo('すべてのプランを表示します');
+        }
+        
+        function viewPlanDetails() {
+            showInfo('プランの詳細を表示します');
+        }
+        
+        function editPlan() {
+            showInfo('プランを編集します');
+        }
+        
+        function viewAllMemories() {
+            showInfo('すべての思い出を表示します');
+        }
+        
+        function markAllRead() {
+            document.querySelectorAll('.notification-item').forEach(item => {
+                item.classList.remove('unread');
+            });
+            showSuccess('すべての通知を既読にしました');
+        }
+        
+        function viewNotification() {
+            showInfo('通知の詳細を表示します');
+        }
+    </script>
+    
+    <style>
+        .welcome-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--white);
+            border-radius: var(--radius-xl);
+            padding: var(--space-8);
+            margin-bottom: var(--space-8);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .welcome-title {
+            font-size: var(--text-3xl);
+            font-weight: 700;
+            margin-bottom: var(--space-2);
+        }
+        
+        .welcome-subtitle {
+            font-size: var(--text-lg);
+            opacity: 0.9;
+        }
+        
+        .quick-actions {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-8);
+            margin-bottom: var(--space-8);
+        }
+        
+        .quick-actions h2 {
+            font-size: var(--text-2xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-6);
+        }
+        
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-6);
+        }
+        
+        .action-card {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            padding: var(--space-6);
+            background-color: var(--gray-50);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        
+        .action-card:hover {
+            background-color: var(--gray-100);
+            transform: translateY(-2px);
+        }
+        
+        .action-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .action-icon i {
+            color: var(--white);
+            font-size: var(--text-xl);
+        }
+        
+        .action-content h3 {
+            font-size: var(--text-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+        
+        .action-content p {
+            color: var(--text-secondary);
+            font-size: var(--text-sm);
+        }
+        
+        .current-plans,
+        .recent-memories,
+        .relationship-score,
+        .notifications {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-8);
+            margin-bottom: var(--space-8);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-6);
+        }
+        
+        .section-header h2 {
+            font-size: var(--text-2xl);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .plans-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+        }
+        
+        .plan-card {
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            transition: all var(--transition-fast);
+        }
+        
+        .plan-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .plan-card.active {
+            border-color: var(--primary-color);
+            background-color: rgba(255, 107, 107, 0.05);
+        }
+        
+        .plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--space-4);
+        }
+        
+        .plan-info h3 {
+            font-size: var(--text-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+        
+        .plan-info p {
+            color: var(--text-secondary);
+        }
+        
+        .status-badge {
+            padding: var(--space-1) var(--space-3);
+            border-radius: var(--radius-full);
+            font-size: var(--text-sm);
+            font-weight: 500;
+        }
+        
+        .status-badge.confirmed {
+            background-color: #10b981;
+            color: var(--white);
+        }
+        
+        .status-badge.planning {
+            background-color: #f59e0b;
+            color: var(--white);
+        }
+        
+        .plan-details {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+            margin-bottom: var(--space-4);
+        }
+        
+        .plan-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            color: var(--text-secondary);
+            font-size: var(--text-sm);
+        }
+        
+        .plan-item i {
+            color: var(--primary-color);
+            width: 16px;
+        }
+        
+        .plan-actions {
+            display: flex;
+            gap: var(--space-2);
+        }
+        
+        .memories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-4);
+        }
+        
+        .memory-card {
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: transform var(--transition-fast);
+        }
+        
+        .memory-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .memory-image {
+            position: relative;
+            height: 120px;
+            background: linear-gradient(135deg, var(--gray-200), var(--gray-300));
+        }
+        
+        .memory-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .memory-overlay {
+            position: absolute;
+            top: var(--space-2);
+            right: var(--space-2);
+            width: 30px;
+            height: 30px;
+            background-color: var(--primary-color);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .memory-overlay i {
+            color: var(--white);
+            font-size: var(--text-sm);
+        }
+        
+        .memory-content {
+            padding: var(--space-4);
+        }
+        
+        .memory-content h3 {
+            font-size: var(--text-base);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+        
+        .memory-content p {
+            color: var(--text-secondary);
+            font-size: var(--text-sm);
+            margin-bottom: var(--space-2);
+        }
+        
+        .memory-stats {
+            display: flex;
+            gap: var(--space-3);
+        }
+        
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
+            color: var(--text-secondary);
+            font-size: var(--text-xs);
+        }
+        
+        .stat i {
+            color: var(--primary-color);
+        }
+        
+        .score-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-6);
+        }
+        
+        .score-value {
+            display: flex;
+            align-items: baseline;
+            gap: var(--space-1);
+        }
+        
+        .score-number {
+            font-size: var(--text-4xl);
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .score-unit {
+            font-size: var(--text-lg);
+            color: var(--text-secondary);
+        }
+        
+        .score-details {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+        }
+        
+        .score-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+        
+        .score-label {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            min-width: 150px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        
+        .score-label i {
+            color: var(--primary-color);
+        }
+        
+        .score-bar {
+            flex: 1;
+            height: 8px;
+            background-color: var(--gray-200);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+        
+        .score-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--radius-full);
+            transition: width 0.3s ease;
+        }
+        
+        .score-percentage {
+            min-width: 40px;
+            text-align: right;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+        
+        .notifications-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+        }
+        
+        .notification-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            padding: var(--space-4);
+            background-color: var(--gray-50);
+            border-radius: var(--radius-lg);
+            transition: all var(--transition-fast);
+        }
+        
+        .notification-item.unread {
+            background-color: rgba(255, 107, 107, 0.1);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .notification-icon i {
+            color: var(--white);
+            font-size: var(--text-lg);
+        }
+        
+        .notification-content {
+            flex: 1;
+        }
+        
+        .notification-content h3 {
+            font-size: var(--text-base);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+        
+        .notification-content p {
+            color: var(--text-secondary);
+            font-size: var(--text-sm);
+            margin-bottom: var(--space-1);
+        }
+        
+        .notification-time {
+            color: var(--text-secondary);
+            font-size: var(--text-xs);
+        }
+        
+        .notification-action {
+            flex-shrink: 0;
+        }
+        
+        .btn-sm {
+            padding: var(--space-2) var(--space-3);
+            font-size: var(--text-sm);
+        }
+        
+        @media (max-width: 768px) {
+            .welcome-section {
+                flex-direction: column;
+                gap: var(--space-4);
+                text-align: center;
+            }
+            
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .memories-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .score-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--space-2);
+            }
+            
+            .score-label {
+                min-width: auto;
+            }
+            
+            .notification-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--space-3);
+            }
+        }
+    </style>
+</body>
+</html>

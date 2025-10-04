@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI生成中 - CouplePlan</title>
+    <link rel="stylesheet" href="../../css/common.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- ナビゲーションバー -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-heart"></i>
+                <span>CouplePlan</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="../auth/AUTH-001.html" class="nav-link">ログイン</a>
+                <a href="../uc003/UC003-001.html" class="nav-link">ポータル</a>
+                <a href="../common/COMMON-001.html" class="nav-link">ダッシュボード</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+        <div class="container">
+            <!-- 生成中コンテンツ -->
+            <div class="generation-container">
+                <div class="generation-content">
+                    <!-- AIアイコン -->
+                    <div class="ai-icon">
+                        <div class="ai-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="ai-pulse"></div>
+                    </div>
+                    
+                    <!-- メッセージ -->
+                    <div class="generation-message">
+                        <h1 class="message-title">AIがデートプランを生成中...</h1>
+                        <p class="message-subtitle">あなたの好みに合わせて最適なプランを作成しています</p>
+                    </div>
+                    
+                    <!-- 進捗バー -->
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progressBar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <div class="progress-text" id="progressText">0%</div>
+                    </div>
+                    
+                    <!-- 生成ステップ -->
+                    <div class="generation-steps">
+                        <div class="step-item active" id="step1">
+                            <div class="step-icon">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <div class="step-content">
+                                <h3>デートスポット検索中</h3>
+                                <p>あなたの条件に合うスポットを探しています</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step-item" id="step2">
+                            <div class="step-icon">
+                                <i class="fas fa-route"></i>
+                            </div>
+                            <div class="step-content">
+                                <h3>ルート最適化中</h3>
+                                <p>効率的な移動ルートを計算しています</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step-item" id="step3">
+                            <div class="step-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="step-content">
+                                <h3>スケジュール調整中</h3>
+                                <p>時間配分を最適化しています</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step-item" id="step4">
+                            <div class="step-icon">
+                                <i class="fas fa-magic"></i>
+                            </div>
+                            <div class="step-content">
+                                <h3>プラン完成中</h3>
+                                <p>最終的なデートプランを仕上げています</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 生成時間 -->
+                    <div class="generation-time">
+                        <i class="fas fa-clock"></i>
+                        <span>予想時間: 約30秒</span>
+                    </div>
+                    
+                    <!-- キャンセルボタン -->
+                    <div class="generation-actions">
+                        <button class="btn btn-secondary" onclick="cancelGeneration()">
+                            <i class="fas fa-times"></i>
+                            キャンセル
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- サイド情報 -->
+                <div class="generation-sidebar">
+                    <div class="sidebar-card">
+                        <h3>生成中の情報</h3>
+                        <div class="info-item">
+                            <span class="info-label">デート日:</span>
+                            <span class="info-value" id="dateInfo">2025年1月25日</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">開始時間:</span>
+                            <span class="info-value" id="timeInfo">14:00</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">所要時間:</span>
+                            <span class="info-value" id="durationInfo">4時間</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">予算:</span>
+                            <span class="info-value" id="budgetInfo">10,000円〜20,000円</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">エリア:</span>
+                            <span class="info-value" id="areaInfo">東京</span>
+                        </div>
+                    </div>
+                    
+                    <div class="sidebar-card">
+                        <h3>AIの分析結果</h3>
+                        <div class="analysis-item">
+                            <div class="analysis-icon">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div class="analysis-content">
+                                <h4>ロマンチック度</h4>
+                                <div class="analysis-bar">
+                                    <div class="analysis-fill" style="width: 85%"></div>
+                                </div>
+                                <span class="analysis-value">85%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="analysis-item">
+                            <div class="analysis-icon">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                            <div class="analysis-content">
+                                <h4>グルメ重視度</h4>
+                                <div class="analysis-bar">
+                                    <div class="analysis-fill" style="width: 70%"></div>
+                                </div>
+                                <span class="analysis-value">70%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="analysis-item">
+                            <div class="analysis-icon">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <div class="analysis-content">
+                                <h4>インスタ映え度</h4>
+                                <div class="analysis-bar">
+                                    <div class="analysis-fill" style="width: 90%"></div>
+                                </div>
+                                <span class="analysis-value">90%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="sidebar-card">
+                        <h3>おすすめスポット</h3>
+                        <div class="spot-preview">
+                            <div class="spot-item">
+                                <div class="spot-image">
+                                    <img src="../../assets/images/spot1.jpg" alt="スポット" onerror="this.style.display='none'">
+                                </div>
+                                <div class="spot-info">
+                                    <h4>東京スカイツリー</h4>
+                                    <p>展望台からの絶景</p>
+                                </div>
+                            </div>
+                            
+                            <div class="spot-item">
+                                <div class="spot-image">
+                                    <img src="../../assets/images/spot2.jpg" alt="スポット" onerror="this.style.display='none'">
+                                </div>
+                                <div class="spot-info">
+                                    <h4>浅草寺</h4>
+                                    <p>伝統的な観光スポット</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/common.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <script>
+        let progress = 0;
+        let currentStep = 1;
+        let generationTimer;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeGeneration();
+        });
+        
+        function initializeGeneration() {
+            // URLパラメータから情報を取得
+            const urlParams = new URLSearchParams(window.location.search);
+            updateGenerationInfo(urlParams);
+            
+            // 生成プロセスを開始
+            startGeneration();
+        }
+        
+        function updateGenerationInfo(params) {
+            document.getElementById('dateInfo').textContent = params.get('date') || '2025年1月25日';
+            document.getElementById('timeInfo').textContent = params.get('time') || '14:00';
+            document.getElementById('durationInfo').textContent = (params.get('duration') || '4') + '時間';
+            document.getElementById('budgetInfo').textContent = getBudgetText(params.get('budget') || '20000');
+            document.getElementById('areaInfo').textContent = getAreaText(params.get('area') || 'tokyo');
+        }
+        
+        function getBudgetText(budget) {
+            const budgetMap = {
+                '5000': '5,000円以下',
+                '10000': '5,000円〜10,000円',
+                '20000': '10,000円〜20,000円',
+                '30000': '20,000円〜30,000円',
+                '50000': '30,000円〜50,000円',
+                '100000': '50,000円以上'
+            };
+            return budgetMap[budget] || budget + '円';
+        }
+        
+        function getAreaText(area) {
+            const areaMap = {
+                'tokyo': '東京',
+                'osaka': '大阪',
+                'kyoto': '京都',
+                'yokohama': '横浜',
+                'nagoya': '名古屋',
+                'fukuoka': '福岡'
+            };
+            return areaMap[area] || area;
+        }
+        
+        function startGeneration() {
+            // 進捗バーのアニメーション
+            generationTimer = setInterval(() => {
+                progress += Math.random() * 3;
+                if (progress > 100) progress = 100;
+                
+                updateProgress(progress);
+                updateSteps(progress);
+                
+                if (progress >= 100) {
+                    completeGeneration();
+                }
+            }, 200);
+        }
+        
+        function updateProgress(progress) {
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            
+            progressFill.style.width = progress + '%';
+            progressText.textContent = Math.round(progress) + '%';
+        }
+        
+        function updateSteps(progress) {
+            const steps = [
+                { progress: 25, step: 1 },
+                { progress: 50, step: 2 },
+                { progress: 75, step: 3 },
+                { progress: 100, step: 4 }
+            ];
+            
+            steps.forEach(({ progress: threshold, step }) => {
+                if (progress >= threshold) {
+                    activateStep(step);
+                }
+            });
+        }
+        
+        function activateStep(stepNumber) {
+            if (stepNumber > currentStep) {
+                // 前のステップを完了状態に
+                const prevStep = document.getElementById(`step${currentStep}`);
+                if (prevStep) {
+                    prevStep.classList.remove('active');
+                    prevStep.classList.add('completed');
+                }
+                
+                // 現在のステップをアクティブに
+                const currentStepElement = document.getElementById(`step${stepNumber}`);
+                if (currentStepElement) {
+                    currentStepElement.classList.add('active');
+                }
+                
+                currentStep = stepNumber;
+            }
+        }
+        
+        function completeGeneration() {
+            clearInterval(generationTimer);
+            
+            // 最終ステップを完了状態に
+            const finalStep = document.getElementById(`step${currentStep}`);
+            if (finalStep) {
+                finalStep.classList.remove('active');
+                finalStep.classList.add('completed');
+            }
+            
+            // 成功メッセージを表示
+            showSuccess('デートプランの生成が完了しました！');
+            
+            // 3秒後に結果画面に遷移
+            setTimeout(() => {
+                window.location.href = 'UC001-003.html';
+            }, 3000);
+        }
+        
+        function cancelGeneration() {
+            if (confirm('生成をキャンセルしますか？')) {
+                clearInterval(generationTimer);
+                showWarning('生成をキャンセルしました');
+                setTimeout(() => {
+                    window.location.href = 'UC001-001.html';
+                }, 1000);
+            }
+        }
+    </script>
+    
+    <style>
+        .generation-container {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: var(--space-8);
+            min-height: calc(100vh - 200px);
+        }
+        
+        .generation-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: var(--space-8);
+        }
+        
+        .ai-icon {
+            position: relative;
+            margin-bottom: var(--space-8);
+        }
+        
+        .ai-avatar {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .ai-avatar i {
+            font-size: var(--text-5xl);
+            color: var(--white);
+            animation: bounce 2s infinite;
+        }
+        
+        .ai-pulse {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            border: 3px solid var(--primary-color);
+            border-radius: var(--radius-full);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1.5);
+                opacity: 0;
+            }
+        }
+        
+        .generation-message {
+            margin-bottom: var(--space-8);
+        }
+        
+        .message-title {
+            font-size: var(--text-4xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-4);
+        }
+        
+        .message-subtitle {
+            font-size: var(--text-lg);
+            color: var(--text-secondary);
+        }
+        
+        .progress-container {
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: var(--space-8);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: var(--gray-200);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            margin-bottom: var(--space-2);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--radius-full);
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+        
+        .progress-text {
+            text-align: center;
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        .generation-steps {
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: var(--space-8);
+        }
+        
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            padding: var(--space-4);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-3);
+            transition: all var(--transition-fast);
+            opacity: 0.5;
+        }
+        
+        .step-item.active {
+            background-color: rgba(255, 107, 107, 0.1);
+            border: 2px solid var(--primary-color);
+            opacity: 1;
+        }
+        
+        .step-item.completed {
+            background-color: rgba(78, 205, 196, 0.1);
+            border: 2px solid var(--secondary-color);
+            opacity: 1;
+        }
+        
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--gray-200);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .step-item.active .step-icon {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+        
+        .step-item.completed .step-icon {
+            background-color: var(--secondary-color);
+            color: var(--white);
+        }
+        
+        .step-content h3 {
+            font-size: var(--text-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+        
+        .step-content p {
+            color: var(--text-secondary);
+            font-size: var(--text-sm);
+        }
+        
+        .generation-time {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            color: var(--text-secondary);
+            font-size: var(--text-sm);
+            margin-bottom: var(--space-6);
+        }
+        
+        .generation-actions {
+            margin-top: var(--space-4);
+        }
+        
+        .generation-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-6);
+        }
+        
+        .sidebar-card {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-6);
+        }
+        
+        .sidebar-card h3 {
+            font-size: var(--text-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-4);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: var(--space-2);
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-2) 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .info-item:last-child {
+            border-bottom: none;
+        }
+        
+        .info-label {
+            color: var(--text-secondary);
+            font-size: var(--text-sm);
+        }
+        
+        .info-value {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        
+        .analysis-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            margin-bottom: var(--space-4);
+        }
+        
+        .analysis-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .analysis-icon {
+            width: 30px;
+            height: 30px;
+            background-color: var(--gray-100);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .analysis-icon i {
+            font-size: var(--text-sm);
+            color: var(--text-secondary);
+        }
+        
+        .analysis-content {
+            flex: 1;
+        }
+        
+        .analysis-content h4 {
+            font-size: var(--text-sm);
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+        
+        .analysis-bar {
+            width: 100%;
+            height: 4px;
+            background-color: var(--gray-200);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            margin-bottom: var(--space-1);
+        }
+        
+        .analysis-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--radius-full);
+            transition: width 0.3s ease;
+        }
+        
+        .analysis-value {
+            font-size: var(--text-xs);
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        .spot-preview {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+        }
+        
+        .spot-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-2);
+            border-radius: var(--radius-md);
+            background-color: var(--gray-50);
+        }
+        
+        .spot-image {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        
+        .spot-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .spot-info h4 {
+            font-size: var(--text-sm);
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+        
+        .spot-info p {
+            font-size: var(--text-xs);
+            color: var(--text-secondary);
+        }
+        
+        @media (max-width: 768px) {
+            .generation-container {
+                grid-template-columns: 1fr;
+                gap: var(--space-6);
+            }
+            
+            .generation-sidebar {
+                order: -1;
+            }
+            
+            .message-title {
+                font-size: var(--text-3xl);
+            }
+            
+            .generation-steps {
+                max-width: 100%;
+            }
+        }
+    </style>
+</body>
+</html>

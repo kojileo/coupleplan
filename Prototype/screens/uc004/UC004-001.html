@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI喧嘩仲裁 - CouplePlan</title>
+    <link rel="stylesheet" href="../../css/common.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- ナビゲーションバー -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-heart"></i>
+                <span>CouplePlan</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="../auth/AUTH-001.html" class="nav-link">ログイン</a>
+                <a href="../uc003/UC003-001.html" class="nav-link">ポータル</a>
+                <a href="../common/COMMON-001.html" class="nav-link">ダッシュボード</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+        <div class="container">
+            <!-- ヘッダー -->
+            <div class="page-header">
+                <div class="header-content">
+                    <h1 class="page-title">AI喧嘩仲裁</h1>
+                    <p class="page-subtitle">自然な文章でAIがあなたたちの関係をサポートします</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="goBack()">
+                        <i class="fas fa-arrow-left"></i>
+                        戻る
+                    </button>
+                </div>
+            </div>
+
+            <!-- メイン入力エリア -->
+            <div class="conflict-input-container">
+                <div class="conflict-input">
+                    <h2>何で喧嘩してるの？</h2>
+                    <p class="input-description">自由に教えてください。AIが分析して解決策を提案します。</p>
+                    
+                    <textarea 
+                        id="conflictDescription" 
+                        class="conflict-textarea"
+                        placeholder="例: 彼氏がいつもスマホばっかり見てて、私の話を聞いてくれない。最近全然会話が成り立たなくて、寂しい気持ちになる..."
+                        rows="6"
+                    ></textarea>
+                    
+                    <div class="emotion-tags">
+                        <span class="emotion-tag" data-emotion="sad">😢 悲しい</span>
+                        <span class="emotion-tag" data-emotion="angry">😠 怒り</span>
+                        <span class="emotion-tag" data-emotion="anxious">😰 不安</span>
+                        <span class="emotion-tag" data-emotion="disappointed">😔 落ち込む</span>
+                        <span class="emotion-tag" data-emotion="lonely">😞 寂しい</span>
+                        <span class="emotion-tag" data-emotion="confused">😕 混乱</span>
+                    </div>
+                </div>
+
+                <!-- オプション設定 -->
+                <div class="optional-info">
+                    <h3>追加情報（任意）</h3>
+                    
+                    <div class="option-grid">
+                        <div class="option-item">
+                            <label for="timeFrame">いつから？</label>
+                            <select id="timeFrame" name="timeFrame">
+                                <option value="">選択してください</option>
+                                <option value="today">今日から</option>
+                                <option value="few-days">数日前から</option>
+                                <option value="week">1週間以上</option>
+                                <option value="month">1ヶ月以上</option>
+                            </select>
+                        </div>
+                        
+                        <div class="option-item">
+                            <label for="severity">深刻度</label>
+                            <div class="severity-options">
+                                <label class="severity-option">
+                                    <input type="radio" name="severity" value="light">
+                                    <span>軽い</span>
+                                </label>
+                                <label class="severity-option">
+                                    <input type="radio" name="severity" value="medium" checked>
+                                    <span>普通</span>
+                                </label>
+                                <label class="severity-option">
+                                    <input type="radio" name="severity" value="serious">
+                                    <span>深刻</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 送信ボタン -->
+                <div class="submit-section">
+                    <button type="button" class="btn btn-primary btn-large" onclick="submitConflict()">
+                        <i class="fas fa-heart"></i>
+                        AIに分析してもらう
+                    </button>
+                </div>
+            </div>
+
+            <!-- ヒントセクション -->
+            <div class="hints-section">
+                <h3>💡 ヒント</h3>
+                <div class="hints-grid">
+                    <div class="hint-card">
+                        <div class="hint-icon">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <div class="hint-content">
+                            <h4>具体的に書く</h4>
+                            <p>何が起こったか、どのような気持ちになったかを具体的に書いてください</p>
+                        </div>
+                    </div>
+                    
+                    <div class="hint-card">
+                        <div class="hint-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="hint-content">
+                            <h4>相手の立場も考える</h4>
+                            <p>相手がどのような気持ちだったかも考えてみてください</p>
+                        </div>
+                    </div>
+                    
+                    <div class="hint-card">
+                        <div class="hint-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="hint-content">
+                            <h4>プライバシー保護</h4>
+                            <p>あなたの情報は安全に保護され、第三者に共有されることはありません</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/common.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeConflictInput();
+        });
+        
+        function initializeConflictInput() {
+            // 感情タグのクリック処理
+            document.querySelectorAll('.emotion-tag').forEach(tag => {
+                tag.addEventListener('click', function() {
+                    this.classList.toggle('selected');
+                });
+            });
+        }
+        
+        function submitConflict() {
+            const description = document.getElementById('conflictDescription').value.trim();
+            
+            if (!description) {
+                showError('喧嘩の内容を入力してください');
+                return;
+            }
+            
+            // 選択された感情タグを取得
+            const selectedEmotions = Array.from(document.querySelectorAll('.emotion-tag.selected'))
+                .map(tag => tag.textContent.trim());
+            
+            const timeFrame = document.getElementById('timeFrame').value;
+            const severity = document.querySelector('input[name="severity"]:checked').value;
+            
+            // AI分析の開始
+            showInfo('AIが分析中...');
+            setTimeout(() => {
+                showSuccess('分析が完了しました');
+                window.location.href = 'UC004-002.html';
+            }, 2000);
+        }
+    </script>
+    
+    <style>
+        .conflict-input-container {
+            background: linear-gradient(135deg, #FFE5E5, #FFF0F0);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 20px rgba(255, 107, 107, 0.1);
+        }
+        
+        .conflict-input h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .input-description {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .conflict-textarea {
+            width: 100%;
+            border: 2px solid #FF6B6B;
+            border-radius: 15px;
+            padding: 20px;
+            font-size: 16px;
+            resize: vertical;
+            min-height: 120px;
+            font-family: 'Noto Sans JP', sans-serif;
+            transition: border-color 0.3s ease;
+        }
+        
+        .conflict-textarea:focus {
+            outline: none;
+            border-color: #FF5252;
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+        }
+        
+        .emotion-tags {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .emotion-tag {
+            background: #FF6B6B;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            user-select: none;
+        }
+        
+        .emotion-tag:hover {
+            background: #FF5252;
+            transform: translateY(-2px);
+        }
+        
+        .emotion-tag.selected {
+            background: #4ECDC4;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+        }
+        
+        .optional-info {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .optional-info h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .option-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .option-item label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+        
+        .option-item select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-light);
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .option-item select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .severity-options {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .severity-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 10px 16px;
+            border: 2px solid var(--border-light);
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+        
+        .severity-option:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(255, 107, 107, 0.05);
+        }
+        
+        .severity-option input[type="radio"] {
+            display: none;
+        }
+        
+        .severity-option input[type="radio"]:checked + span {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .severity-option:has(input[type="radio"]:checked) {
+            border-color: var(--primary-color);
+            background-color: rgba(255, 107, 107, 0.1);
+        }
+        
+        .submit-section {
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .btn-large {
+            padding: 16px 32px;
+            font-size: 1.2rem;
+            border-radius: 25px;
+        }
+        
+        .hints-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        
+        .hints-section h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .hints-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .hint-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            padding: 25px;
+            background: var(--gray-50);
+            border-radius: 15px;
+            transition: transform 0.3s ease;
+        }
+        
+        .hint-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .hint-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .hint-icon i {
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .hint-content h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .hint-content p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 768px) {
+            .conflict-input-container {
+                padding: 30px 20px;
+            }
+            
+            .conflict-input h2 {
+                font-size: 1.5rem;
+            }
+            
+            .emotion-tags {
+                justify-content: flex-start;
+            }
+            
+            .option-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .severity-options {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .hints-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</body>
+</html>

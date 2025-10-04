@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>解決策提案 - CouplePlan</title>
+    <link rel="stylesheet" href="../../css/common.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- ナビゲーションバー -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-heart"></i>
+                <span>CouplePlan</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="../auth/AUTH-001.html" class="nav-link">ログイン</a>
+                <a href="../uc003/UC003-001.html" class="nav-link">ポータル</a>
+                <a href="../common/COMMON-001.html" class="nav-link">ダッシュボード</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+        <div class="container">
+            <!-- ヘッダー -->
+            <div class="page-header">
+                <div class="header-content">
+                    <h1 class="page-title">解決策提案</h1>
+                    <p class="page-subtitle">AIが具体的な解決策を提案します</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="goBack()">
+                        <i class="fas fa-arrow-left"></i>
+                        戻る
+                    </button>
+                </div>
+            </div>
+
+            <!-- 解決策提案 -->
+            <div class="solution-proposal-container">
+                <!-- 今すぐできること -->
+                <div class="immediate-actions">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h2>【今すぐできること】</h2>
+                    </div>
+                    
+                    <div class="action-cards">
+                        <div class="action-card">
+                            <div class="action-number">1</div>
+                            <div class="action-content">
+                                <h3>スマホの時間を決めよう</h3>
+                                <p>「スマホの時間を決めよう」と提案して、お互いのスマホ使用時間を制限する</p>
+                                <div class="action-tips">
+                                    <span class="tip">💡 食事中はスマホを置く</span>
+                                    <span class="tip">💡 会話中はスマホを見ない</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="action-card">
+                            <div class="action-number">2</div>
+                            <div class="action-content">
+                                <h3>率直に伝える</h3>
+                                <p>「私の話を聞いてほしい」と率直に伝えて、相手に気持ちを理解してもらう</p>
+                                <div class="action-tips">
+                                    <span class="tip">💡 感情的にならずに冷静に</span>
+                                    <span class="tip">💡 具体的な例を挙げる</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="action-card">
+                            <div class="action-number">3</div>
+                            <div class="action-content">
+                                <h3>スマホフリーの時間</h3>
+                                <p>一緒にスマホフリーの時間を作って、質の高いコミュニケーションを取る</p>
+                                <div class="action-tips">
+                                    <span class="tip">💡 1日30分から始める</span>
+                                    <span class="tip">💡 お互いの話を聞く時間</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 会話のきっかけ -->
+                <div class="conversation-starter">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h2>【会話のきっかけ】</h2>
+                    </div>
+                    
+                    <div class="conversation-content">
+                        <div class="conversation-text">
+                            「最近、スマホを見ながら話すことが多くて、少し寂しい気持ちになるの。一緒にスマホフリーの時間を作らない？」
+                        </div>
+                        <div class="conversation-actions">
+                            <button class="btn btn-outline" onclick="copyConversation()">
+                                <i class="fas fa-copy"></i>
+                                コピー
+                            </button>
+                            <button class="btn btn-secondary" onclick="customizeConversation()">
+                                <i class="fas fa-edit"></i>
+                                カスタマイズ
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 長期的な改善 -->
+                <div class="long-term-improvements">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h2>【長期的な改善】</h2>
+                    </div>
+                    
+                    <div class="improvement-list">
+                        <div class="improvement-item">
+                            <div class="improvement-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <div class="improvement-content">
+                                <h3>デジタルデトックスの習慣化</h3>
+                                <p>定期的にスマホから離れる時間を作り、お互いとの時間を大切にする</p>
+                                <div class="improvement-steps">
+                                    <span class="step">週末の午後はスマホフリー</span>
+                                    <span class="step">就寝前1時間はスマホ禁止</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="improvement-item">
+                            <div class="improvement-icon">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div class="improvement-content">
+                                <h3>質の高いコミュニケーション</h3>
+                                <p>お互いの話を聞く時間を確保し、関係性を深める</p>
+                                <div class="improvement-steps">
+                                    <span class="step">毎日15分の対話時間</span>
+                                    <span class="step">週1回のデートタイム</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="improvement-item">
+                            <div class="improvement-icon">
+                                <i class="fas fa-user-friends"></i>
+                            </div>
+                            <div class="improvement-content">
+                                <h3>お互いの関心事への理解</h3>
+                                <p>相手の興味や関心事を理解し、共通の話題を見つける</p>
+                                <div class="improvement-steps">
+                                    <span class="step">相手の趣味に興味を持つ</span>
+                                    <span class="step">一緒に新しいことを始める</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- カップル向け機能 -->
+                <div class="couple-features">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h2>【パートナーと一緒に解決】</h2>
+                    </div>
+                    
+                    <div class="couple-options">
+                        <div class="couple-option">
+                            <div class="option-icon">
+                                <i class="fas fa-share"></i>
+                            </div>
+                            <div class="option-content">
+                                <h3>パートナーに送信</h3>
+                                <p>分析結果と解決策をパートナーに共有して、一緒に解決しましょう</p>
+                                <button class="btn btn-primary" onclick="shareWithPartner()">
+                                    <i class="fas fa-paper-plane"></i>
+                                    送信する
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="couple-option">
+                            <div class="option-icon">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <div class="option-content">
+                                <h3>二人で話し合う</h3>
+                                <p>解決策を参考に、二人で直接話し合いましょう</p>
+                                <button class="btn btn-outline" onclick="startDiscussion()">
+                                    <i class="fas fa-handshake"></i>
+                                    話し合いを始める
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="couple-option">
+                            <div class="option-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="option-content">
+                                <h3>後で確認</h3>
+                                <p>一人で解決策を検討してから、パートナーと話し合いましょう</p>
+                                <button class="btn btn-secondary" onclick="saveForLater()">
+                                    <i class="fas fa-bookmark"></i>
+                                    後で確認
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 次のステップ -->
+                <div class="next-steps">
+                    <h3>💡 次のステップ</h3>
+                    <p>解決策を実行して、関係性の改善を進めましょう。進捗を追跡することもできます。</p>
+                    <div class="next-step-actions">
+                        <button class="btn btn-primary btn-large" onclick="startProgressTracking()">
+                            <i class="fas fa-chart-line"></i>
+                            進捗を追跡する
+                        </button>
+                        <button class="btn btn-outline btn-large" onclick="viewMoreSolutions()">
+                            <i class="fas fa-lightbulb"></i>
+                            他の解決策を見る
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/common.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSolutionProposal();
+        });
+        
+        function initializeSolutionProposal() {
+            // アニメーション効果
+            animateSolutionCards();
+        }
+        
+        function animateSolutionCards() {
+            const cards = document.querySelectorAll('.action-card, .improvement-item, .couple-option');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 150);
+            });
+        }
+        
+        function copyConversation() {
+            const text = document.querySelector('.conversation-text').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                showSuccess('会話のきっかけをコピーしました');
+            });
+        }
+        
+        function customizeConversation() {
+            showInfo('会話のカスタマイズ機能を開発中です');
+        }
+        
+        function shareWithPartner() {
+            showInfo('パートナーに送信中...');
+            setTimeout(() => {
+                showSuccess('パートナーに送信しました');
+            }, 1000);
+        }
+        
+        function startDiscussion() {
+            showInfo('話し合いセッションを開始します');
+        }
+        
+        function saveForLater() {
+            showSuccess('後で確認できるように保存しました');
+        }
+        
+        function startProgressTracking() {
+            showInfo('進捗追跡を開始します');
+            setTimeout(() => {
+                window.location.href = 'UC004-005.html';
+            }, 1000);
+        }
+        
+        function viewMoreSolutions() {
+            showInfo('他の解決策を生成中...');
+        }
+    </script>
+    
+    <style>
+        .solution-proposal-container {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .section-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .section-icon i {
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .immediate-actions {
+            background: linear-gradient(135deg, #E8F5E8, #F0F8F0);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        
+        .action-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .action-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            gap: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+        
+        .action-number {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        
+        .action-content h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+        
+        .action-content p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .action-tips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .tip {
+            background: rgba(255, 107, 107, 0.1);
+            color: var(--primary-color);
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .conversation-starter {
+            background: linear-gradient(135deg, #FFF3E0, #FFE0B2);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        
+        .conversation-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .conversation-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            padding: 20px;
+            background: var(--gray-50);
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-color);
+            font-style: italic;
+        }
+        
+        .conversation-actions {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .long-term-improvements {
+            background: linear-gradient(135deg, #E3F2FD, #F3E5F5);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        
+        .improvement-list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .improvement-item {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            gap: 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+        
+        .improvement-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .improvement-icon i {
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .improvement-content h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+        
+        .improvement-content p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .improvement-steps {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .step {
+            background: rgba(78, 205, 196, 0.1);
+            color: var(--secondary-color);
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .couple-features {
+            background: linear-gradient(135deg, #FFE5E5, #FFF0F0);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        
+        .couple-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .couple-option {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+        
+        .option-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+        
+        .option-icon i {
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .option-content h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+        
+        .option-content p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .next-steps {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        
+        .next-steps h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+        
+        .next-steps p {
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+        }
+        
+        .next-step-actions {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn-large {
+            padding: 16px 32px;
+            font-size: 1.1rem;
+            border-radius: 25px;
+        }
+        
+        @media (max-width: 768px) {
+            .solution-proposal-container {
+                gap: 30px;
+            }
+            
+            .immediate-actions, .conversation-starter, .long-term-improvements, .couple-features {
+                padding: 30px 20px;
+            }
+            
+            .action-cards, .couple-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-card, .improvement-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .conversation-actions {
+                flex-direction: column;
+            }
+            
+            .next-step-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</body>
+</html>

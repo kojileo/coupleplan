@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>機能解放 - CouplePlan</title>
+    <link rel="stylesheet" href="../../css/common.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- ナビゲーションバー -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-heart"></i>
+                <span>CouplePlan</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="../auth/AUTH-001.html" class="nav-link">ログイン</a>
+                <a href="../uc003/UC003-001.html" class="nav-link">ポータル</a>
+                <a href="../common/COMMON-001.html" class="nav-link">ダッシュボード</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+        <div class="container">
+            <!-- ヘッダー -->
+            <div class="page-header">
+                <div class="header-content">
+                    <h1 class="page-title">機能解放</h1>
+                    <p class="page-subtitle">プレミアム機能を解放して、より充実したデート体験を</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="goBack()">
+                        <i class="fas fa-arrow-left"></i>
+                        戻る
+                    </button>
+                </div>
+            </div>
+
+            <!-- 現在のステータス -->
+            <div class="current-status">
+                <div class="status-header">
+                    <h2>現在のステータス</h2>
+                    <div class="status-badge">
+                        <span class="badge-text">フリープラン</span>
+                    </div>
+                </div>
+                
+                <div class="status-card">
+                    <div class="status-info">
+                        <div class="status-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="status-details">
+                            <h3>フリープラン</h3>
+                            <p>基本的な機能が利用可能</p>
+                            <div class="status-price">
+                                <span class="price-amount">¥0</span>
+                                <span class="price-period">/月</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="status-progress">
+                        <div class="progress-label">
+                            <span>今月の利用状況</span>
+                            <span>3/5 回</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 60%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- プレミアム機能 -->
+            <div class="premium-features">
+                <h2>プレミアム機能</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3>無制限のデートプラン生成</h3>
+                            <p>AIがあなたたちに最適なデートプランを無制限で生成します</p>
+                            <div class="feature-status">
+                                <span class="status-locked">🔒 ロック中</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3>AI仲裁機能</h3>
+                            <p>関係の悩みをAIが分析し、最適な解決策を提案します</p>
+                            <div class="feature-status">
+                                <span class="status-locked">🔒 ロック中</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-paint-brush"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3>位置情報ピン</h3>
+                            <p>思い出を地図上に記録しましょう</p>
+                            <div class="feature-status">
+                                <span class="status-locked">🔒 ロック中</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3>優先サポート</h3>
+                            <p>24時間以内の迅速なサポートを提供します</p>
+                            <div class="feature-status">
+                                <span class="status-locked">🔒 ロック中</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="feature-content">
+                            <h3>詳細分析</h3>
+                            <p>関係性の詳細な分析レポートを提供します</p>
+                            <div class="feature-status">
+                                <span class="status-locked">🔒 ロック中</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- プラン比較 -->
+            <div class="plan-comparison">
+                <h2>プラン比較</h2>
+                <div class="comparison-table">
+                    <div class="table-header">
+                        <div class="table-cell feature-column">機能</div>
+                        <div class="table-cell plan-column">
+                            <div class="plan-name">フリープラン</div>
+                            <div class="plan-price">¥0/月</div>
+                        </div>
+                        <div class="table-cell plan-column recommended">
+                            <div class="plan-name">プレミアムプラン</div>
+                            <div class="plan-price">¥980/月</div>
+                            <div class="plan-badge">おすすめ</div>
+                        </div>
+                    </div>
+                    
+                    <div class="table-row">
+                        <div class="table-cell feature-column">
+                            <span class="feature-name">デートプラン生成</span>
+                        </div>
+                        <div class="table-cell plan-column">
+                            <span class="plan-limit">月5回まで</span>
+                        </div>
+                        <div class="table-cell plan-column">
+                            <span class="plan-unlimited">無制限</span>
+                        </div>
+                    </div>
+                    
+                    <div class="table-row">
+                        <div class="table-cell feature-column">
+                            <span class="feature-name">AI仲裁機能</span>
+                        </div>
+                        <div class="table-cell plan-column">
+                            <span class="plan-unavailable">❌</span>
+                        </div>
+                        <div class="table-cell plan-column">
+                            <span class="plan-available">✅</span>
+                        </div>
+                    </div>
+                    
+                    <div class="table-row">
+                        <div class="table-cell feature-column">
+                            <span class="feature-name">位置情報ピン</span>
+                        </div>
+                        <div class="table-cell plan-column">
+                            <span class="plan-unavailable">❌</span>
+                        </div>
+                        <div class="table-cell plan-column">
+                            <span class="plan-available">✅</span>
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="table-row">
+                        <div class="table-cell feature-column">
+                            <span class="feature-name">優先サポート</span>
+                        </div>
+                        <div class="table-cell plan-column">
+                            <span class="plan-unavailable">❌</span>
+                        </div>
+                        <div class="table-cell plan-column">
+                            <span class="plan-available">✅</span>
+                        </div>
+                    </div>
+                    
+                    <div class="table-row">
+                        <div class="table-cell feature-column">
+                            <span class="feature-name">詳細分析</span>
+                        </div>
+                        <div class="table-cell plan-column">
+                            <span class="plan-unavailable">❌</span>
+                        </div>
+                        <div class="table-cell plan-column">
+                            <span class="plan-available">✅</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- アップグレードオファー -->
+            <div class="upgrade-offer">
+                <div class="offer-header">
+                    <h2>特別オファー</h2>
+                    <p>今なら初月50%オフ！</p>
+                </div>
+                
+                <div class="offer-card">
+                    <div class="offer-content">
+                        <div class="offer-price">
+                            <div class="original-price">¥980</div>
+                            <div class="discount-price">¥490</div>
+                            <div class="discount-badge">50%オフ</div>
+                        </div>
+                        
+                        <div class="offer-details">
+                            <h3>プレミアムプラン</h3>
+                            <p>初月のみ特別価格でお試しください</p>
+                            <div class="offer-features">
+                                <div class="offer-feature">
+                                    <i class="fas fa-check"></i>
+                                    <span>すべてのプレミアム機能</span>
+                                </div>
+                                <div class="offer-feature">
+                                    <i class="fas fa-check"></i>
+                                    <span>無制限の利用</span>
+                                </div>
+                                <div class="offer-feature">
+                                    <i class="fas fa-check"></i>
+                                    <span>優先サポート</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="offer-actions">
+                        <button class="btn btn-primary btn-large" onclick="upgradeToPremium()">
+                            <i class="fas fa-crown"></i>
+                            プレミアムにアップグレード
+                        </button>
+                        <div class="offer-terms">
+                            <p>初月のみの特別価格です。2ヶ月目以降は通常価格（¥980/月）が適用されます。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- よくある質問 -->
+            <div class="faq-section">
+                <h2>よくある質問</h2>
+                <div class="faq-list">
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(1)">
+                            <h3>プレミアムプランはいつでも解約できますか？</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer" id="faq1">
+                            <p>はい、プレミアムプランはいつでも解約可能です。解約後はフリープランに戻り、プレミアム機能は利用できなくなります。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(2)">
+                            <h3>支払い方法は何がありますか？</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer" id="faq2">
+                            <p>クレジットカード（Visa、Mastercard、JCB）、デビットカード、Apple Pay、Google Payに対応しています。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(3)">
+                            <h3>無料トライアルはありますか？</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer" id="faq3">
+                            <p>現在、7日間の無料トライアルを提供しています。トライアル期間中はすべてのプレミアム機能を無料でお試しいただけます。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/common.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeFeatureUnlock();
+        });
+        
+        function initializeFeatureUnlock() {
+            // 機能解放の初期化
+            loadFeatureStatus();
+        }
+        
+        function loadFeatureStatus() {
+            // 実際の実装ではAPIから機能ステータスを取得
+            console.log('機能ステータスを読み込みました');
+        }
+        
+        function upgradeToPremium() {
+            if (confirm('プレミアムプランにアップグレードしますか？')) {
+                showSuccess('プレミアムプランにアップグレードしました');
+                setTimeout(() => {
+                    window.location.href = 'UC007-001.html';
+                }, 1000);
+            }
+        }
+        
+        function toggleFAQ(faqId) {
+            const answer = document.getElementById(`faq${faqId}`);
+            const question = event.target.closest('.faq-question');
+            const icon = question.querySelector('i');
+            
+            if (answer.style.display === 'block') {
+                answer.style.display = 'none';
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                answer.style.display = 'block';
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+    </script>
+    
+    <style>
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-8);
+        }
+        
+        .page-title {
+            font-size: var(--text-3xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+        }
+        
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: var(--text-lg);
+        }
+        
+        .current-status {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-8);
+            margin-bottom: var(--space-8);
+        }
+        
+        .status-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-6);
+        }
+        
+        .status-header h2 {
+            font-size: var(--text-2xl);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .status-badge {
+            padding: var(--space-2) var(--space-4);
+            background-color: var(--gray-100);
+            border-radius: var(--radius-full);
+        }
+        
+        .badge-text {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        
+        .status-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .status-info {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+        
+        .status-icon {
+            width: 60px;
+            height: 60px;
+            background-color: var(--gray-100);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .status-icon i {
+            font-size: var(--text-2xl);
+            color: var(--text-secondary);
+        }
+        
+        .status-details h3 {
+            font-size: var(--text-xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+        
+        .status-details p {
+            color: var(--text-secondary);
+            margin-bottom: var(--space-2);
+        }
+        
+        .status-price {
+            display: flex;
+            align-items: baseline;
+            gap: var(--space-1);
+        }
+        
+        .price-amount {
+            font-size: var(--text-2xl);
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .price-period {
+            color: var(--text-secondary);
+        }
+        
+        .status-progress {
+            flex: 1;
+            max-width: 300px;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: var(--space-2);
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: var(--gray-200);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--radius-full);
+        }
+        
+        .premium-features {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-8);
+            margin-bottom: var(--space-8);
+        }
+        
+        .premium-features h2 {
+            font-size: var(--text-2xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-6);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-6);
+        }
+        
+        .feature-card {
+            display: flex;
+            gap: var(--space-4);
+            padding: var(--space-6);
+            background-color: var(--gray-50);
+            border-radius: var(--radius-lg);
+            border: 2px solid var(--border-light);
+        }
+        
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .feature-icon i {
+            color: var(--white);
+            font-size: var(--text-xl);
+        }
+        
+        .feature-content {
+            flex: 1;
+        }
+        
+        .feature-content h3 {
+            font-size: var(--text-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+        }
+        
+        .feature-content p {
+            color: var(--text-secondary);
+            margin-bottom: var(--space-3);
+        }
+        
+        .feature-status {
+            display: flex;
+            align-items: center;
+        }
+        
+        .status-locked {
+            color: var(--text-secondary);
+            font-size: var(--text-sm);
+            font-weight: 500;
+        }
+        
+        .plan-comparison {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-8);
+            margin-bottom: var(--space-8);
+        }
+        
+        .plan-comparison h2 {
+            font-size: var(--text-2xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-6);
+        }
+        
+        .comparison-table {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .table-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: var(--space-4);
+            padding: var(--space-4);
+            background-color: var(--gray-50);
+            border-radius: var(--radius-lg);
+        }
+        
+        .table-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: var(--space-4);
+            padding: var(--space-4);
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .table-row:last-child {
+            border-bottom: none;
+        }
+        
+        .table-cell {
+            display: flex;
+            align-items: center;
+        }
+        
+        .feature-column {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .plan-column {
+            text-align: center;
+            padding: var(--space-4);
+            border-radius: var(--radius-lg);
+            position: relative;
+        }
+        
+        .plan-column.recommended {
+            background-color: rgba(255, 107, 107, 0.1);
+            border: 2px solid var(--primary-color);
+        }
+        
+        .plan-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+        
+        .plan-price {
+            font-size: var(--text-lg);
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .plan-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: var(--space-1) var(--space-2);
+            border-radius: var(--radius-full);
+            font-size: var(--text-xs);
+            font-weight: 500;
+        }
+        
+        .feature-name {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+        
+        .plan-limit {
+            color: var(--text-secondary);
+        }
+        
+        .plan-unlimited {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+        
+        .plan-available {
+            color: var(--secondary-color);
+            font-size: var(--text-lg);
+        }
+        
+        .plan-unavailable {
+            color: var(--text-secondary);
+            font-size: var(--text-lg);
+        }
+        
+        .upgrade-offer {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--radius-xl);
+            padding: var(--space-8);
+            margin-bottom: var(--space-8);
+            color: var(--white);
+        }
+        
+        .offer-header {
+            text-align: center;
+            margin-bottom: var(--space-6);
+        }
+        
+        .offer-header h2 {
+            font-size: var(--text-2xl);
+            font-weight: 600;
+            margin-bottom: var(--space-2);
+        }
+        
+        .offer-header p {
+            font-size: var(--text-lg);
+            opacity: 0.9;
+        }
+        
+        .offer-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+        }
+        
+        .offer-content {
+            display: flex;
+            align-items: center;
+            gap: var(--space-6);
+        }
+        
+        .offer-price {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+        }
+        
+        .original-price {
+            font-size: var(--text-lg);
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+        
+        .discount-price {
+            font-size: var(--text-3xl);
+            font-weight: 700;
+        }
+        
+        .discount-badge {
+            background-color: var(--white);
+            color: var(--primary-color);
+            padding: var(--space-1) var(--space-3);
+            border-radius: var(--radius-full);
+            font-size: var(--text-sm);
+            font-weight: 600;
+        }
+        
+        .offer-details h3 {
+            font-size: var(--text-xl);
+            font-weight: 600;
+            margin-bottom: var(--space-2);
+        }
+        
+        .offer-details p {
+            opacity: 0.9;
+            margin-bottom: var(--space-3);
+        }
+        
+        .offer-features {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+        }
+        
+        .offer-feature {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+        
+        .offer-feature i {
+            color: var(--secondary-color);
+        }
+        
+        .offer-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-3);
+        }
+        
+        .btn-large {
+            padding: var(--space-4) var(--space-8);
+            font-size: var(--text-lg);
+        }
+        
+        .offer-terms {
+            text-align: center;
+        }
+        
+        .offer-terms p {
+            font-size: var(--text-sm);
+            opacity: 0.8;
+        }
+        
+        .faq-section {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-8);
+        }
+        
+        .faq-section h2 {
+            font-size: var(--text-2xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-6);
+        }
+        
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+        }
+        
+        .faq-item {
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-4);
+            background-color: var(--gray-50);
+            cursor: pointer;
+            transition: background-color var(--transition-fast);
+        }
+        
+        .faq-question:hover {
+            background-color: var(--gray-100);
+        }
+        
+        .faq-question h3 {
+            font-size: var(--text-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .faq-question i {
+            color: var(--text-secondary);
+            transition: transform var(--transition-fast);
+        }
+        
+        .faq-answer {
+            display: none;
+            padding: var(--space-4);
+            background-color: var(--white);
+        }
+        
+        .faq-answer p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--space-4);
+            }
+            
+            .status-card {
+                flex-direction: column;
+                gap: var(--space-4);
+            }
+            
+            .status-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .feature-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .table-header,
+            .table-row {
+                grid-template-columns: 1fr;
+                gap: var(--space-2);
+            }
+            
+            .offer-card {
+                flex-direction: column;
+                gap: var(--space-4);
+            }
+            
+            .offer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</body>
+</html>

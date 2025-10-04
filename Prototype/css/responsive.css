@@ -1,0 +1,428 @@
+/* CouplePlan レスポンシブデザイン */
+
+/* モバイルファーストアプローチ */
+
+/* スマートフォン (320px - 767px) */
+@media (max-width: 767px) {
+    /* ナビゲーション */
+    .nav-menu {
+        position: fixed;
+        top: 70px;
+        left: -100%;
+        width: 100%;
+        height: calc(100vh - 70px);
+        background-color: var(--white);
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        padding: var(--space-8) 0;
+        transition: left var(--transition-normal);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .nav-menu.active {
+        left: 0;
+    }
+
+    .nav-toggle {
+        display: flex;
+    }
+
+    .nav-toggle.active .bar:nth-child(2) {
+        opacity: 0;
+    }
+
+    .nav-toggle.active .bar:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+
+    .nav-toggle.active .bar:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+    }
+
+    /* ヒーローセクション */
+    .hero-title {
+        font-size: var(--text-4xl);
+    }
+
+    .hero-subtitle {
+        font-size: var(--text-lg);
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .btn {
+        width: 100%;
+        max-width: 280px;
+    }
+
+    /* 機能グリッド */
+    .features-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-6);
+    }
+
+    .feature-card {
+        padding: var(--space-6);
+    }
+
+    /* 画面一覧グリッド */
+    .screens-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-6);
+    }
+
+    .screen-category {
+        padding: var(--space-4);
+    }
+
+    /* フッター */
+    .footer-content {
+        grid-template-columns: 1fr;
+        gap: var(--space-6);
+        text-align: center;
+    }
+
+    /* モーダル */
+    .modal-content {
+        width: 95%;
+        margin: var(--space-4);
+    }
+
+    /* フォーム */
+    .form-input,
+    .form-select,
+    .form-textarea {
+        font-size: 16px; /* iOS ズーム防止 */
+    }
+
+    /* カード */
+    .card-header,
+    .card-body,
+    .card-footer {
+        padding: var(--space-4);
+    }
+
+    /* ボタン */
+    .btn {
+        min-height: 48px; /* タッチターゲットサイズ */
+    }
+
+    /* タブ */
+    .tab-list {
+        flex-wrap: wrap;
+    }
+
+    .tab-link {
+        padding: var(--space-2) var(--space-3);
+        font-size: var(--text-sm);
+    }
+
+    /* アコーディオン */
+    .accordion-header {
+        padding: var(--space-3);
+    }
+
+    .accordion-content {
+        padding: var(--space-3);
+    }
+
+    /* ドロップダウン */
+    .dropdown-toggle {
+        min-width: 150px;
+    }
+
+    /* ステッパー */
+    .stepper {
+        flex-direction: column;
+        gap: var(--space-4);
+    }
+
+    .stepper-item:not(:last-child)::after {
+        display: none;
+    }
+
+    .stepper-item {
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+    }
+
+    .stepper-circle {
+        margin-right: var(--space-3);
+    }
+
+    .stepper-label {
+        margin-top: 0;
+        text-align: left;
+    }
+}
+
+/* タブレット (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+    /* ナビゲーション */
+    .nav-menu {
+        gap: var(--space-4);
+    }
+
+    /* ヒーローセクション */
+    .hero-title {
+        font-size: var(--text-5xl);
+    }
+
+    /* 機能グリッド */
+    .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-6);
+    }
+
+    /* 画面一覧グリッド */
+    .screens-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-6);
+    }
+
+    /* フッター */
+    .footer-content {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* モーダル */
+    .modal-content {
+        max-width: 600px;
+    }
+}
+
+/* デスクトップ (1024px - 1199px) */
+@media (min-width: 1024px) and (max-width: 1199px) {
+    /* 機能グリッド */
+    .features-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    /* 画面一覧グリッド */
+    .screens-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    /* フッター */
+    .footer-content {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* 大型デスクトップ (1200px+) */
+@media (min-width: 1200px) {
+    /* 機能グリッド */
+    .features-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    /* 画面一覧グリッド */
+    .screens-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    /* フッター */
+    .footer-content {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* 高解像度ディスプレイ */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    /* 高解像度用のスタイル調整 */
+    .hero-section {
+        background-image: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    }
+}
+
+/* ダークモード対応 */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-primary: var(--gray-900);
+        --bg-secondary: var(--gray-800);
+        --bg-tertiary: var(--gray-700);
+        --text-primary: var(--white);
+        --text-secondary: var(--gray-300);
+        --text-disabled: var(--gray-500);
+        --border-light: var(--gray-700);
+        --border-medium: var(--gray-600);
+        --border-dark: var(--gray-500);
+    }
+
+    .navbar {
+        background-color: var(--gray-900);
+        border-bottom: 1px solid var(--gray-700);
+    }
+
+    .card {
+        background-color: var(--gray-800);
+        border: 1px solid var(--gray-700);
+    }
+
+    .form-input {
+        background-color: var(--gray-800);
+        border-color: var(--gray-600);
+        color: var(--white);
+    }
+
+    .form-input:focus {
+        border-color: var(--primary-color);
+    }
+
+    .modal-content {
+        background-color: var(--gray-800);
+    }
+
+    .dropdown-menu {
+        background-color: var(--gray-800);
+        border-color: var(--gray-700);
+    }
+
+    .toast {
+        background-color: var(--gray-800);
+        border-color: var(--gray-700);
+    }
+}
+
+/* 印刷用スタイル */
+@media print {
+    .navbar,
+    .footer,
+    .btn,
+    .nav-toggle {
+        display: none;
+    }
+
+    .main-content {
+        padding: 0;
+    }
+
+    .hero-section {
+        background: none;
+        color: var(--text-primary);
+        border: 1px solid var(--border-light);
+    }
+
+    .card {
+        box-shadow: none;
+        border: 1px solid var(--border-light);
+    }
+
+    .feature-card {
+        break-inside: avoid;
+    }
+}
+
+/* アクセシビリティ対応 */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .spinner {
+        animation: none;
+    }
+}
+
+/* 高コントラストモード */
+@media (prefers-contrast: high) {
+    :root {
+        --primary-color: #d32f2f;
+        --secondary-color: #1976d2;
+        --text-primary: #000000;
+        --text-secondary: #333333;
+        --border-light: #000000;
+    }
+
+    .btn {
+        border: 2px solid currentColor;
+    }
+
+    .card {
+        border: 2px solid var(--border-light);
+    }
+}
+
+/* フォーカス表示の強化 */
+@media (prefers-reduced-motion: no-preference) {
+    *:focus {
+        outline: 3px solid var(--primary-color);
+        outline-offset: 2px;
+    }
+}
+
+/* 横画面対応 */
+@media (orientation: landscape) and (max-height: 500px) {
+    .hero-section {
+        padding: var(--space-8) 0;
+    }
+
+    .hero-title {
+        font-size: var(--text-3xl);
+    }
+
+    .hero-subtitle {
+        font-size: var(--text-lg);
+    }
+
+    .nav-menu {
+        height: calc(100vh - 60px);
+    }
+}
+
+/* 縦画面対応 */
+@media (orientation: portrait) {
+    .hero-buttons {
+        flex-direction: column;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* タッチデバイス対応 */
+@media (hover: none) and (pointer: coarse) {
+    .btn {
+        min-height: 48px;
+        min-width: 48px;
+    }
+
+    .nav-link {
+        padding: var(--space-3);
+    }
+
+    .screen-link {
+        padding: var(--space-3);
+    }
+
+    .feature-card:hover {
+        transform: none;
+    }
+
+    .card:hover {
+        transform: none;
+    }
+}
+
+/* ホバー対応デバイス */
+@media (hover: hover) and (pointer: fine) {
+    .btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .feature-card:hover {
+        transform: translateY(-4px);
+    }
+
+    .card:hover {
+        transform: translateY(-2px);
+    }
+}

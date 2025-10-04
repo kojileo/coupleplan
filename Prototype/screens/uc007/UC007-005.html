@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>サブスクリプション - CouplePlan</title>
+    <link rel="stylesheet" href="../../css/common.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- ナビゲーションバー -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-heart"></i>
+                <span>CouplePlan</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="../auth/AUTH-001.html" class="nav-link">ログイン</a>
+                <a href="../common/COMMON-001.html" class="nav-link">ダッシュボード</a>
+                <a href="../uc003/UC003-001.html" class="nav-link">ポータル</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+        <div class="container">
+            <!-- ヘッダー -->
+            <div class="page-header">
+                <div class="header-content">
+                    <h1 class="page-title">サブスクリプション</h1>
+                    <p class="page-subtitle">利用可能なプランと機能を確認・変更できます</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="goBack()">
+                        <i class="fas fa-arrow-left"></i>
+                        戻る
+                    </button>
+                    <button class="btn btn-primary" onclick="navigateTo('UC007-001')">
+                        <i class="fas fa-credit-card"></i>
+                        課金管理
+                    </button>
+                </div>
+            </div>
+
+            <!-- 現在のプラン -->
+            <div class="current-plan">
+                <div class="plan-header">
+                    <h2>現在のプラン</h2>
+                    <div class="plan-status">
+                        <span class="status-badge active">アクティブ</span>
+                    </div>
+                </div>
+                
+                <div class="current-plan-card">
+                    <div class="plan-info">
+                        <div class="plan-name">
+                            <h3>プレミアムプラン</h3>
+                            <p>すべての機能が利用可能</p>
+                        </div>
+                        <div class="plan-price">
+                            <span class="price-amount">¥1,480</span>
+                            <span class="price-period">/月</span>
+                        </div>
+                    </div>
+                    
+                    <div class="plan-details">
+                        <div class="detail-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>次回請求日: 2025年2月25日</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-credit-card"></i>
+                            <span>支払い方法: Visa（****1234）</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-sync"></i>
+                            <span>自動更新: 有効</span>
+                        </div>
+                    </div>
+                    
+                    <div class="plan-actions">
+                        <button class="btn btn-outline" onclick="changePlan()">
+                            <i class="fas fa-edit"></i>
+                            プランを変更
+                        </button>
+                        <button class="btn btn-outline" onclick="pauseSubscription()">
+                            <i class="fas fa-pause"></i>
+                            一時停止
+                        </button>
+                        <button class="btn btn-outline" onclick="cancelSubscription()">
+                            <i class="fas fa-times"></i>
+                            解約
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 利用可能なプラン -->
+            <div class="available-plans">
+                <h2>利用可能なプラン</h2>
+                
+                <div class="plans-grid">
+                    <!-- フリープラン -->
+                    <div class="plan-card">
+                        <div class="plan-header">
+                            <h3>フリープラン</h3>
+                            <div class="plan-price">
+                                <span class="price-amount">¥0</span>
+                                <span class="price-period">/月</span>
+                            </div>
+                        </div>
+                        
+                        <div class="plan-features">
+                            <div class="feature-item">
+                                <i class="fas fa-check"></i>
+                                <span>AIデート提案（月3回まで）</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check"></i>
+                                <span>写真保存（1GB）</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-times"></i>
+                                <span>関係修復サポート</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-times"></i>
+                                <span>24時間サポート</span>
+                            </div>
+                        </div>
+                        
+                        <div class="plan-action">
+                            <button class="btn btn-outline" onclick="selectPlan('free')">
+                                現在のプラン
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- ベーシックプラン -->
+                    <div class="plan-card">
+                        <div class="plan-header">
+                            <h3>ベーシックプラン</h3>
+                            <div class="plan-price">
+                                <span class="price-amount">¥980</span>
+                                <span class="price-period">/月</span>
+                            </div>
+                        </div>
+                        
+                        <div class="plan-features">
+                            <div class="feature-item">
+                                <i class="fas fa-check"></i>
+                                <span>AIデート提案（月10回まで）</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check"></i>
+                                <span>写真保存（5GB）</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-times"></i>
+                                <span>関係修復サポート</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-times"></i>
+                                <span>24時間サポート</span>
+                            </div>
+                        </div>
+                        
+                        <div class="plan-action">
+                            <button class="btn btn-outline" onclick="selectPlan('basic')">
+                                プランを変更
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- プレミアムプラン -->
+                    <div class="plan-card recommended">
+                        <div class="plan-badge">推奨</div>
+                        <div class="plan-header">
+                            <h3>プレミアムプラン</h3>
+                            <div class="plan-price">
+                                <span class="price-amount">¥1,480</span>
+                                <span class="price-period">/月</span>
+                            </div>
+                        </div>
+                        
+                        <div class="plan-features">
+                            <div class="feature-item">
+                                <i class="fas fa-check"></i>
+                                <span>AIデート提案（無制限）</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check"></i>
+                                <span>写真保存（無制限）</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check"></i>
+                                <span>関係修復サポート</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check"></i>
+                                <span>24時間サポート</span>
+                            </div>
+                        </div>
+                        
+                        <div class="plan-action">
+                            <button class="btn btn-primary" onclick="selectPlan('premium')">
+                                現在のプラン
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- エンタープライズプラン -->
+                    <div class="plan-card">
+                        <div class="plan-header">
+                            <h3>エンタープライズプラン</h3>
+                            <div class="plan-price">
+                                <span class="price-amount">¥2,980</span>
+                                <span class="price-period">/月</span>
+                            </div>
+                        </div>
+                        
+                        <div class="plan-features">
+                            <div class="feature-item">
+                                <i class="fas fa-check"></i>
+                                <span>プレミアム機能すべて</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check"></i>
+                                <span>カスタムAI機能</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check"></i>
+                                <span>専用サポート</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check"></i>
+                                <span>APIアクセス</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check"></i>
+                                <span>カスタム統合</span>
+                            </div>
+                        </div>
+                        
+                        <div class="plan-action">
+                            <button class="btn btn-outline" onclick="selectPlan('enterprise')">
+                                お問い合わせ
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- プラン比較 -->
+            <div class="plan-comparison">
+                <h2>プラン比較</h2>
+                
+                <div class="comparison-table">
+                    <div class="table-header">
+                        <div class="header-item">機能</div>
+                        <div class="header-item">フリー</div>
+                        <div class="header-item">ベーシック</div>
+                        <div class="header-item current">プレミアム</div>
+                        <div class="header-item">エンタープライズ</div>
+                    </div>
+                    
+                    <div class="table-body">
+                        <div class="table-row">
+                            <div class="row-label">AIデート提案</div>
+                            <div class="row-value">月3回まで</div>
+                            <div class="row-value">月10回まで</div>
+                            <div class="row-value current">無制限</div>
+                            <div class="row-value">無制限</div>
+                        </div>
+                        
+                        
+                        <div class="table-row">
+                            <div class="row-label">写真保存</div>
+                            <div class="row-value">1GB</div>
+                            <div class="row-value">5GB</div>
+                            <div class="row-value current">無制限</div>
+                            <div class="row-value">無制限</div>
+                        </div>
+                        
+                        <div class="table-row">
+                            <div class="row-label">関係修復サポート</div>
+                            <div class="row-value">×</div>
+                            <div class="row-value">×</div>
+                            <div class="row-value current">○</div>
+                            <div class="row-value">○</div>
+                        </div>
+                        
+                        <div class="table-row">
+                            <div class="row-label">サポート</div>
+                            <div class="row-value">なし</div>
+                            <div class="row-value">平日のみ</div>
+                            <div class="row-value current">24時間</div>
+                            <div class="row-value">専用</div>
+                        </div>
+                        
+                        <div class="table-row">
+                            <div class="row-label">APIアクセス</div>
+                            <div class="row-value">×</div>
+                            <div class="row-value">×</div>
+                            <div class="row-value current">×</div>
+                            <div class="row-value">○</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- よくある質問 -->
+            <div class="faq-section">
+                <h2>よくある質問</h2>
+                
+                <div class="faq-list">
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3>プランはいつでも変更できますか？</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>はい、いつでもプランを変更できます。変更は即座に反映され、次回請求時に新しい料金が適用されます。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3>解約した場合、データはどうなりますか？</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>解約後も30日間はデータにアクセス可能です。その後はデータが削除されるため、必要なデータは事前にエクスポートしてください。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3>返金は可能ですか？</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>初回利用から7日以内であれば、全額返金いたします。それ以降の返金については、サポートにお問い合わせください。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3>年払いの割引はありますか？</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>年払いの場合、月額料金の20%割引が適用されます。詳細はサポートにお問い合わせください。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 最終アクション -->
+            <div class="final-actions">
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" onclick="contactSales()">
+                        <i class="fas fa-phone"></i>
+                        営業に相談
+                    </button>
+                    <button class="btn btn-primary" onclick="viewBillingHistory()">
+                        <i class="fas fa-history"></i>
+                        課金履歴を確認
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/common.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSubscription();
+        });
+        
+        function initializeSubscription() {
+            // サブスクリプション画面の初期化
+            setupPlanSelection();
+            setupFAQ();
+        }
+        
+        function setupPlanSelection() {
+            // プラン選択の設定
+            console.log('プラン選択を設定しました');
+        }
+        
+        function setupFAQ() {
+            // FAQの設定
+            console.log('FAQを設定しました');
+        }
+        
+        function selectPlan(planType) {
+            if (planType === 'premium') {
+                showInfo('現在のプランです');
+                return;
+            }
+            
+            showInfo(`${planType}プランを選択しました`);
+        }
+        
+        function changePlan() {
+            showInfo('プラン変更画面に移動します');
+        }
+        
+        function pauseSubscription() {
+            showInfo('サブスクリプションを一時停止します');
+        }
+        
+        function cancelSubscription() {
+            showInfo('解約手続きを開始します');
+        }
+        
+        function toggleFAQ(element) {
+            const faqItem = element.closest('.faq-item');
+            const answer = faqItem.querySelector('.faq-answer');
+            const icon = element.querySelector('i');
+            
+            if (answer.style.display === 'block') {
+                answer.style.display = 'none';
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                answer.style.display = 'block';
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+        
+        function contactSales() {
+            showInfo('営業に相談します');
+        }
+        
+        function viewBillingHistory() {
+            showInfo('課金履歴を確認します');
+            setTimeout(() => {
+                window.location.href = 'UC007-004.html';
+            }, 500);
+        }
+        
+        // ナビゲーション関数
+        function navigateTo(screenId) {
+            const routes = {
+                'UC001-001': '../uc001/UC001-001.html',
+                'UC001-002': '../uc001/UC001-002.html',
+                'UC001-003': '../uc001/UC001-003.html',
+                'UC001-004': '../uc001/UC001-004.html',
+                'UC001-005': '../uc001/UC001-005.html',
+                'UC002-001': '../uc002/UC002-001.html',
+                'UC002-002': '../uc002/UC002-002.html',
+                'UC003-001': '../uc003/UC003-001.html',
+                'UC003-002': '../uc003/UC003-002.html',
+                'UC003-003': '../uc003/UC003-003.html',
+                'UC003-004': '../uc003/UC003-004.html',
+                'UC003-005': '../uc003/UC003-005.html',
+                'UC004-001': '../uc004/UC004-001.html',
+                'UC004-002': '../uc004/UC004-002.html',
+                'UC004-003': '../uc004/UC004-003.html',
+                'UC005-001': '../uc005/UC005-001.html',
+                'UC007-001': 'UC007-001.html',
+                'UC007-002': 'UC007-002.html',
+                'UC007-003': 'UC007-003.html',
+                'UC007-004': 'UC007-004.html',
+                'UC007-005': 'UC007-005.html',
+                'AUTH-001': '../auth/AUTH-001.html',
+                'AUTH-002': '../auth/AUTH-002.html',
+                'AUTH-003': '../auth/AUTH-003.html',
+                'AUTH-004': '../auth/AUTH-004.html',
+                'COMMON-001': '../common/COMMON-001.html',
+                'COMMON-002': '../common/COMMON-002.html',
+                'COMMON-003': '../common/COMMON-003.html',
+                'COMMON-004': '../common/COMMON-004.html',
+                'COMMON-005': '../common/COMMON-005.html'
+            };
+            
+            if (routes[screenId]) {
+                window.location.href = routes[screenId];
+            } else {
+                console.warn('ルートが見つかりません:', screenId);
+                showInfo('画面が見つかりません');
+            }
+        }
+    </script>
+    
+    <style>
+        .current-plan {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-8);
+            margin-bottom: var(--space-8);
+        }
+        
+        .plan-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-6);
+        }
+        
+        .plan-header h2 {
+            font-size: var(--text-2xl);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .status-badge {
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-full);
+            font-size: var(--text-sm);
+            font-weight: 500;
+        }
+        
+        .status-badge.active {
+            background-color: #10b981;
+            color: var(--white);
+        }
+        
+        .current-plan-card {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-6);
+        }
+        
+        .plan-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-6);
+            background-color: var(--gray-50);
+            border-radius: var(--radius-lg);
+        }
+        
+        .plan-name h3 {
+            font-size: var(--text-xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+        
+        .plan-name p {
+            color: var(--text-secondary);
+        }
+        
+        .plan-price {
+            text-align: right;
+        }
+        
+        .price-amount {
+            font-size: var(--text-3xl);
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .price-period {
+            color: var(--text-secondary);
+            font-size: var(--text-lg);
+        }
+        
+        .plan-details {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+        }
+        
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3);
+            background-color: var(--white);
+            border-radius: var(--radius-lg);
+        }
+        
+        .detail-item i {
+            color: var(--primary-color);
+            width: 20px;
+        }
+        
+        .plan-actions {
+            display: flex;
+            gap: var(--space-3);
+            flex-wrap: wrap;
+        }
+        
+        .available-plans {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-8);
+            margin-bottom: var(--space-8);
+        }
+        
+        .available-plans h2 {
+            font-size: var(--text-2xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-6);
+        }
+        
+        .plans-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-6);
+        }
+        
+        .plan-card {
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-xl);
+            padding: var(--space-6);
+            transition: all var(--transition-fast);
+            position: relative;
+        }
+        
+        .plan-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-4px);
+        }
+        
+        .plan-card.recommended {
+            border-color: var(--primary-color);
+            background-color: rgba(255, 107, 107, 0.05);
+        }
+        
+        .plan-badge {
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-full);
+            font-size: var(--text-sm);
+            font-weight: 500;
+        }
+        
+        .plan-card .plan-header {
+            text-align: center;
+            margin-bottom: var(--space-6);
+        }
+        
+        .plan-card .plan-header h3 {
+            font-size: var(--text-xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+        }
+        
+        .plan-card .plan-price {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: var(--space-1);
+        }
+        
+        .plan-card .price-amount {
+            font-size: var(--text-3xl);
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .plan-card .price-period {
+            color: var(--text-secondary);
+            font-size: var(--text-lg);
+        }
+        
+        .plan-features {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+            margin-bottom: var(--space-6);
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-2);
+        }
+        
+        .feature-item i {
+            font-size: var(--text-sm);
+        }
+        
+        .feature-item i.fa-check {
+            color: var(--primary-color);
+        }
+        
+        .feature-item i.fa-times {
+            color: var(--text-secondary);
+        }
+        
+        .plan-action {
+            text-align: center;
+        }
+        
+        .plan-comparison {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-8);
+            margin-bottom: var(--space-8);
+        }
+        
+        .plan-comparison h2 {
+            font-size: var(--text-2xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-6);
+        }
+        
+        .comparison-table {
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+        }
+        
+        .table-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+            background-color: var(--gray-100);
+        }
+        
+        .header-item {
+            padding: var(--space-4);
+            font-weight: 600;
+            color: var(--text-primary);
+            text-align: center;
+        }
+        
+        .header-item.current {
+            background-color: rgba(255, 107, 107, 0.1);
+        }
+        
+        .table-body {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .table-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .table-row:last-child {
+            border-bottom: none;
+        }
+        
+        .row-label {
+            padding: var(--space-4);
+            font-weight: 600;
+            color: var(--text-primary);
+            background-color: var(--gray-50);
+        }
+        
+        .row-value {
+            padding: var(--space-4);
+            text-align: center;
+            color: var(--text-secondary);
+        }
+        
+        .row-value.current {
+            background-color: rgba(255, 107, 107, 0.05);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .faq-section {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-8);
+            margin-bottom: var(--space-8);
+        }
+        
+        .faq-section h2 {
+            font-size: var(--text-2xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-6);
+        }
+        
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+        }
+        
+        .faq-item {
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-4);
+            background-color: var(--gray-50);
+            cursor: pointer;
+            transition: background-color var(--transition-fast);
+        }
+        
+        .faq-question:hover {
+            background-color: var(--gray-100);
+        }
+        
+        .faq-question h3 {
+            font-size: var(--text-base);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .faq-question i {
+            color: var(--text-secondary);
+            transition: transform var(--transition-fast);
+        }
+        
+        .faq-answer {
+            display: none;
+            padding: var(--space-4);
+            background-color: var(--white);
+        }
+        
+        .faq-answer p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        .final-actions {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-8);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: var(--space-4);
+            justify-content: center;
+        }
+        
+        @media (max-width: 768px) {
+            .plan-header {
+                flex-direction: column;
+                gap: var(--space-3);
+            }
+            
+            .plan-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .plan-actions {
+                flex-direction: column;
+            }
+            
+            .plans-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .table-header,
+            .table-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .row-label {
+                text-align: center;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</body>
+</html>

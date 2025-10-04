@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>プレビュー - CouplePlan</title>
+    <link rel="stylesheet" href="../../css/common.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- ナビゲーションバー -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-heart"></i>
+                <span>CouplePlan</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="../auth/AUTH-001.html" class="nav-link">ログイン</a>
+                <a href="../common/COMMON-001.html" class="nav-link">ダッシュボード</a>
+                <a href="../uc003/UC003-001.html" class="nav-link">ポータル</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+        <div class="container">
+            <!-- ヘッダー -->
+            <div class="page-header">
+                <div class="header-content">
+                    <h1 class="page-title">プランプレビュー</h1>
+                    <p class="page-subtitle">編集内容をリアルタイムでプレビューできます</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="goBack()">
+                        <i class="fas fa-arrow-left"></i>
+                        戻る
+                    </button>
+                </div>
+            </div>
+
+            <!-- プレビューモード切り替え -->
+            <div class="preview-modes">
+                <div class="mode-tabs">
+                    <button class="tab-btn active" onclick="showMode('timeline')" id="timelineTab">
+                        <i class="fas fa-clock"></i>
+                        タイムライン
+                    </button>
+                    <button class="tab-btn" onclick="showMode('map')" id="mapTab">
+                        <i class="fas fa-map"></i>
+                        マップ
+                    </button>
+                    <button class="tab-btn" onclick="showMode('details')" id="detailsTab">
+                        <i class="fas fa-list"></i>
+                        詳細
+                    </button>
+                </div>
+            </div>
+
+            <!-- タイムラインプレビュー -->
+            <div class="preview-content" id="timelinePreview">
+                <div class="timeline-preview">
+                    <div class="preview-header">
+                        <h2>東京タワーロマンチックデート</h2>
+                        <div class="preview-meta">
+                            <span class="preview-date">2025年1月25日</span>
+                            <span class="preview-duration">6時間</span>
+                            <span class="preview-budget">¥15,000</span>
+                        </div>
+                    </div>
+                    
+                    <div class="timeline-steps">
+                        <div class="timeline-step">
+                            <div class="step-time">14:00</div>
+                            <div class="step-content">
+                                <div class="step-title">東京タワー到着</div>
+                                <div class="step-description">展望台で東京の景色を楽しむ</div>
+                                <div class="step-duration">1時間</div>
+                                <div class="step-cost">¥2,000</div>
+                            </div>
+                            <div class="step-status">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-step">
+                            <div class="step-time">15:00</div>
+                            <div class="step-content">
+                                <div class="step-title">カフェタイム</div>
+                                <div class="step-description">タワー内のカフェで休憩</div>
+                                <div class="step-duration">30分</div>
+                                <div class="step-cost">¥1,500</div>
+                            </div>
+                            <div class="step-status">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-step">
+                            <div class="step-time">15:30</div>
+                            <div class="step-content">
+                                <div class="step-title">芝公園散歩</div>
+                                <div class="step-description">緑豊かな公園でゆっくり散歩</div>
+                                <div class="step-duration">1時間</div>
+                                <div class="step-cost">¥0</div>
+                            </div>
+                            <div class="step-status">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-step">
+                            <div class="step-time">16:30</div>
+                            <div class="step-content">
+                                <div class="step-title">ディナー</div>
+                                <div class="step-description">レストランでロマンチックなディナー</div>
+                                <div class="step-duration">2時間</div>
+                                <div class="step-cost">¥10,000</div>
+                            </div>
+                            <div class="step-status">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- マッププレビュー -->
+            <div class="preview-content" id="mapPreview" style="display: none;">
+                <div class="map-preview">
+                    <div class="map-container">
+                        <div class="map-placeholder">
+                            <i class="fas fa-map"></i>
+                            <p>マップがここに表示されます</p>
+                        </div>
+                    </div>
+                    
+                    <div class="map-route">
+                        <div class="route-point">
+                            <div class="point-marker start">
+                                <i class="fas fa-play"></i>
+                            </div>
+                            <div class="point-info">
+                                <h4>東京タワー</h4>
+                                <p>14:00 到着</p>
+                            </div>
+                        </div>
+                        
+                        <div class="route-line"></div>
+                        
+                        <div class="route-point">
+                            <div class="point-marker">
+                                <i class="fas fa-coffee"></i>
+                            </div>
+                            <div class="point-info">
+                                <h4>カフェ</h4>
+                                <p>15:00 カフェタイム</p>
+                            </div>
+                        </div>
+                        
+                        <div class="route-line"></div>
+                        
+                        <div class="route-point">
+                            <div class="point-marker">
+                                <i class="fas fa-tree"></i>
+                            </div>
+                            <div class="point-info">
+                                <h4>芝公園</h4>
+                                <p>15:30 散歩</p>
+                            </div>
+                        </div>
+                        
+                        <div class="route-line"></div>
+                        
+                        <div class="route-point">
+                            <div class="point-marker end">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                            <div class="point-info">
+                                <h4>レストラン</h4>
+                                <p>16:30 ディナー</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 詳細プレビュー -->
+            <div class="preview-content" id="detailsPreview" style="display: none;">
+                <div class="details-preview">
+                    <div class="details-section">
+                        <h3>基本情報</h3>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <span class="detail-label">日時:</span>
+                                <span class="detail-value">2025年1月25日 14:00〜20:00</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">所要時間:</span>
+                                <span class="detail-value">6時間</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">予算:</span>
+                                <span class="detail-value">¥15,000</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">移動手段:</span>
+                                <span class="detail-value">徒歩・電車</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="details-section">
+                        <h3>予算内訳</h3>
+                        <div class="budget-breakdown">
+                            <div class="budget-item">
+                                <span class="budget-label">東京タワー入場料</span>
+                                <span class="budget-amount">¥2,000</span>
+                            </div>
+                            <div class="budget-item">
+                                <span class="budget-label">カフェ</span>
+                                <span class="budget-amount">¥1,500</span>
+                            </div>
+                            <div class="budget-item">
+                                <span class="budget-label">ディナー</span>
+                                <span class="budget-amount">¥10,000</span>
+                            </div>
+                            <div class="budget-item">
+                                <span class="budget-label">交通費</span>
+                                <span class="budget-amount">¥1,500</span>
+                            </div>
+                            <div class="budget-total">
+                                <span class="budget-label">合計</span>
+                                <span class="budget-amount">¥15,000</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="details-section">
+                        <h3>注意事項</h3>
+                        <div class="notes-list">
+                            <div class="note-item">
+                                <i class="fas fa-info-circle"></i>
+                                <span>東京タワーは混雑が予想されるため、事前予約を推奨</span>
+                            </div>
+                            <div class="note-item">
+                                <i class="fas fa-umbrella"></i>
+                                <span>天候が悪い場合は屋内施設に変更可能</span>
+                            </div>
+                            <div class="note-item">
+                                <i class="fas fa-utensils"></i>
+                                <span>レストランは要予約（2日前までに予約推奨）</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- プレビューアクション -->
+            <div class="preview-actions">
+                <div class="action-group">
+                    <button class="btn btn-outline" onclick="editPlan()">
+                        <i class="fas fa-edit"></i>
+                        編集に戻る
+                    </button>
+                    <button class="btn btn-outline" onclick="sharePlan()">
+                        <i class="fas fa-share"></i>
+                        共有
+                    </button>
+                </div>
+                
+                <div class="action-group">
+                    <button class="btn btn-primary" onclick="savePlan()">
+                        <i class="fas fa-save"></i>
+                        プランを保存
+                    </button>
+                    <button class="btn btn-primary" onclick="startCollaboration()">
+                        <i class="fas fa-users"></i>
+                        共同編集を開始
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/common.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initializePreview();
+        });
+        
+        function initializePreview() {
+            // プレビュー画面の初期化
+            setupPreviewModes();
+            setupRealTimeUpdates();
+        }
+        
+        function setupPreviewModes() {
+            // プレビューモードの設定
+            console.log('プレビューモードを設定しました');
+        }
+        
+        function setupRealTimeUpdates() {
+            // リアルタイム更新の設定
+            console.log('リアルタイム更新を設定しました');
+        }
+        
+        function showMode(mode) {
+            // プレビューモードの切り替え
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(mode + 'Tab').classList.add('active');
+            
+            document.querySelectorAll('.preview-content').forEach(content => {
+                content.style.display = 'none';
+            });
+            document.getElementById(mode + 'Preview').style.display = 'block';
+        }
+        
+        function editPlan() {
+            showInfo('編集画面に戻ります');
+            setTimeout(() => {
+                window.location.href = '../uc001/UC001-005.html';
+            }, 500);
+        }
+        
+        function sharePlan() {
+            showInfo('プランを共有します');
+        }
+        
+        function savePlan() {
+            showInfo('プランを保存しています...');
+            setTimeout(() => {
+                showSuccess('プランが保存されました');
+            }, 1000);
+        }
+        
+        function startCollaboration() {
+            showInfo('共同編集を開始します');
+            setTimeout(() => {
+                window.location.href = '../uc002/UC002-001.html';
+            }, 1000);
+        }
+    </script>
+    
+    <style>
+        .preview-modes {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-6);
+            margin-bottom: var(--space-8);
+        }
+        
+        .mode-tabs {
+            display: flex;
+            gap: var(--space-2);
+        }
+        
+        .tab-btn {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-3) var(--space-6);
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            background-color: var(--white);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-weight: 500;
+        }
+        
+        .tab-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .tab-btn.active {
+            border-color: var(--primary-color);
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+        
+        .preview-content {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-8);
+            margin-bottom: var(--space-8);
+        }
+        
+        .timeline-preview {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-8);
+        }
+        
+        .preview-header {
+            text-align: center;
+            padding-bottom: var(--space-6);
+            border-bottom: 2px solid var(--border-light);
+        }
+        
+        .preview-header h2 {
+            font-size: var(--text-2xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-4);
+        }
+        
+        .preview-meta {
+            display: flex;
+            gap: var(--space-6);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .preview-meta span {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            color: var(--text-secondary);
+            font-size: var(--text-sm);
+        }
+        
+        .timeline-steps {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+        }
+        
+        .timeline-step {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            padding: var(--space-6);
+            background-color: var(--gray-50);
+            border-radius: var(--radius-lg);
+            transition: all var(--transition-fast);
+        }
+        
+        .timeline-step:hover {
+            background-color: var(--gray-100);
+            transform: translateY(-2px);
+        }
+        
+        .step-time {
+            min-width: 80px;
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: var(--text-lg);
+        }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        .step-title {
+            font-size: var(--text-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+        
+        .step-description {
+            color: var(--text-secondary);
+            margin-bottom: var(--space-2);
+        }
+        
+        .step-duration,
+        .step-cost {
+            display: inline-block;
+            margin-right: var(--space-4);
+            color: var(--text-secondary);
+            font-size: var(--text-sm);
+        }
+        
+        .step-cost {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .step-status {
+            color: var(--primary-color);
+            font-size: var(--text-xl);
+        }
+        
+        .map-preview {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--space-8);
+        }
+        
+        .map-container {
+            background-color: var(--gray-100);
+            border-radius: var(--radius-lg);
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .map-placeholder {
+            text-align: center;
+            color: var(--text-secondary);
+        }
+        
+        .map-placeholder i {
+            font-size: var(--text-4xl);
+            margin-bottom: var(--space-4);
+        }
+        
+        .map-route {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+        }
+        
+        .route-point {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            padding: var(--space-4);
+            background-color: var(--gray-50);
+            border-radius: var(--radius-lg);
+        }
+        
+        .point-marker {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: var(--text-lg);
+        }
+        
+        .point-marker.start {
+            background-color: #10b981;
+        }
+        
+        .point-marker.end {
+            background-color: #ef4444;
+        }
+        
+        .point-marker:not(.start):not(.end) {
+            background-color: var(--primary-color);
+        }
+        
+        .point-info h4 {
+            font-size: var(--text-base);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+        
+        .point-info p {
+            color: var(--text-secondary);
+            font-size: var(--text-sm);
+        }
+        
+        .route-line {
+            width: 2px;
+            height: 20px;
+            background-color: var(--border-light);
+            margin-left: 20px;
+        }
+        
+        .details-preview {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-8);
+        }
+        
+        .details-section h3 {
+            font-size: var(--text-xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-4);
+            padding-bottom: var(--space-2);
+            border-bottom: 2px solid var(--border-light);
+        }
+        
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-4);
+        }
+        
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-3);
+            background-color: var(--gray-50);
+            border-radius: var(--radius-lg);
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .detail-value {
+            color: var(--text-secondary);
+        }
+        
+        .budget-breakdown {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+        }
+        
+        .budget-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-2) 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .budget-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-3) 0;
+            font-weight: 600;
+            color: var(--primary-color);
+            border-top: 2px solid var(--primary-color);
+            margin-top: var(--space-2);
+        }
+        
+        .notes-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+        }
+        
+        .note-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3);
+            background-color: var(--gray-50);
+            border-radius: var(--radius-lg);
+        }
+        
+        .note-item i {
+            color: var(--primary-color);
+            font-size: var(--text-lg);
+        }
+        
+        .preview-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: var(--space-4);
+            flex-wrap: wrap;
+        }
+        
+        .action-group {
+            display: flex;
+            gap: var(--space-3);
+        }
+        
+        @media (max-width: 768px) {
+            .mode-tabs {
+                flex-direction: column;
+            }
+            
+            .map-preview {
+                grid-template-columns: 1fr;
+            }
+            
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .preview-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .action-group {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</body>
+</html>

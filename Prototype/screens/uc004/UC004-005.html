@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>解決進捗追跡 - CouplePlan</title>
+    <link rel="stylesheet" href="../../css/common.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- ナビゲーションバー -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-heart"></i>
+                <span>CouplePlan</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="../auth/AUTH-001.html" class="nav-link">ログイン</a>
+                <a href="../uc003/UC003-001.html" class="nav-link">ポータル</a>
+                <a href="../common/COMMON-001.html" class="nav-link">ダッシュボード</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+        <div class="container">
+            <!-- ヘッダー -->
+            <div class="page-header">
+                <div class="header-content">
+                    <h1 class="page-title">解決進捗追跡</h1>
+                    <p class="page-subtitle">問題解決の進捗を確認し、関係性の改善を追跡します</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="goBack()">
+                        <i class="fas fa-arrow-left"></i>
+                        戻る
+                    </button>
+                    <button class="btn btn-primary" onclick="navigateTo('UC004-001')">
+                        <i class="fas fa-heart"></i>
+                        仲裁に戻る
+                    </button>
+                </div>
+            </div>
+
+            <!-- 進捗追跡コンテナ -->
+            <div class="progress-tracking-container">
+                <!-- 全体進捗 -->
+                <div class="overall-progress">
+                    <div class="progress-header">
+                        <h2>🎯 全体進捗</h2>
+                        <div class="progress-percentage">
+                            <span class="percentage">75%</span>
+                            <span class="label">完了</span>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 75%"></div>
+                    </div>
+                    
+                    <div class="progress-description">
+                        <p>スマホ依存問題の解決に向けて、順調に進んでいます。継続的な取り組みで関係性が改善されています。</p>
+                    </div>
+                </div>
+
+                <!-- 関係性スコア -->
+                <div class="relationship-scores">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h2>【関係性スコアの変化】</h2>
+                    </div>
+                    
+                    <div class="scores-grid">
+                        <div class="score-item">
+                            <div class="score-label">
+                                <i class="fas fa-heart"></i>
+                                <span>愛情度</span>
+                            </div>
+                            <div class="score-comparison">
+                                <div class="score-before">60%</div>
+                                <div class="score-arrow">
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                                <div class="score-after">85%</div>
+                            </div>
+                            <div class="score-change positive">+25%</div>
+                        </div>
+                        
+                        <div class="score-item">
+                            <div class="score-label">
+                                <i class="fas fa-comments"></i>
+                                <span>コミュニケーション</span>
+                            </div>
+                            <div class="score-comparison">
+                                <div class="score-before">30%</div>
+                                <div class="score-arrow">
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                                <div class="score-after">70%</div>
+                            </div>
+                            <div class="score-change positive">+40%</div>
+                        </div>
+                        
+                        <div class="score-item">
+                            <div class="score-label">
+                                <i class="fas fa-user-friends"></i>
+                                <span>信頼度</span>
+                            </div>
+                            <div class="score-comparison">
+                                <div class="score-before">70%</div>
+                                <div class="score-arrow">
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                                <div class="score-after">90%</div>
+                            </div>
+                            <div class="score-change positive">+20%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 実践したアクション -->
+                <div class="practiced-actions">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h2>【実践したアクション】</h2>
+                    </div>
+                    
+                    <div class="actions-timeline">
+                        <div class="timeline-item completed">
+                            <div class="timeline-date">3日前</div>
+                            <div class="timeline-content">
+                                <h4>スマホフリーの時間を決める</h4>
+                                <p>毎日30分、スマホを置いてお互いの話を聞く時間を作りました</p>
+                                <div class="action-status">
+                                    <i class="fas fa-check"></i>
+                                    <span>完了</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item completed">
+                            <div class="timeline-date">2日前</div>
+                            <div class="timeline-content">
+                                <h4>質の高いコミュニケーション</h4>
+                                <p>毎日15分の対話時間を確保し、お互いの話を聞きました</p>
+                                <div class="action-status">
+                                    <i class="fas fa-check"></i>
+                                    <span>完了</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item in-progress">
+                            <div class="timeline-date">1日前</div>
+                            <div class="timeline-content">
+                                <h4>デジタルデトックスの習慣化</h4>
+                                <p>週末の午後はスマホフリーの時間を作っています</p>
+                                <div class="action-status">
+                                    <i class="fas fa-clock"></i>
+                                    <span>進行中</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item pending">
+                            <div class="timeline-date">今日</div>
+                            <div class="timeline-content">
+                                <h4>関係性の改善を確認</h4>
+                                <p>お互いの気持ちを確認し、必要に応じて調整します</p>
+                                <div class="action-status">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>予定</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 改善のポイント -->
+                <div class="improvement-points">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <h2>【改善のポイント】</h2>
+                    </div>
+                    
+                    <div class="points-grid">
+                        <div class="point-card positive">
+                            <div class="point-icon">
+                                <i class="fas fa-thumbs-up"></i>
+                            </div>
+                            <div class="point-content">
+                                <h4>良い変化</h4>
+                                <ul>
+                                    <li>スマホを見ながら話すことが減った</li>
+                                    <li>お互いの話を聞く時間が増えた</li>
+                                    <li>関係性が改善されている</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="point-card neutral">
+                            <div class="point-icon">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <div class="point-content">
+                                <h4>継続すべきこと</h4>
+                                <ul>
+                                    <li>スマホフリーの時間を維持する</li>
+                                    <li>質の高いコミュニケーションを続ける</li>
+                                    <li>お互いの気持ちを確認し合う</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="point-card attention">
+                            <div class="point-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="point-content">
+                                <h4>注意すべきこと</h4>
+                                <ul>
+                                    <li>スマホ依存が再発する可能性</li>
+                                    <li>コミュニケーション不足の再発</li>
+                                    <li>関係性の悪化の兆候</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 次のステップ -->
+                <div class="next-steps">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                        <h2>【次のステップ】</h2>
+                    </div>
+                    
+                    <div class="steps-content">
+                        <div class="step-item">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>継続的な実践</h4>
+                                <p>現在の取り組みを継続し、習慣化を図りましょう</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step-item">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>関係性の確認</h4>
+                                <p>定期的にお互いの気持ちを確認し、関係性を維持しましょう</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step-item">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>新しい取り組み</h4>
+                                <p>関係性をさらに深めるための新しいアクションを考えましょう</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 完了・継続ボタン -->
+                <div class="completion-actions">
+                    <div class="action-buttons">
+                        <button class="btn btn-primary btn-large" onclick="continueTracking()">
+                            <i class="fas fa-chart-line"></i>
+                            継続して追跡する
+                        </button>
+                        <button class="btn btn-outline btn-large" onclick="completeResolution()">
+                            <i class="fas fa-check"></i>
+                            解決完了として記録
+                        </button>
+                        <button class="btn btn-secondary btn-large" onclick="scheduleReview()">
+                            <i class="fas fa-calendar"></i>
+                            定期レビューを設定
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/common.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeProgressTracking();
+        });
+        
+        function initializeProgressTracking() {
+            // アニメーション効果
+            animateProgressElements();
+        }
+        
+        function animateProgressElements() {
+            const elements = document.querySelectorAll('.score-item, .timeline-item, .point-card, .step-item');
+            elements.forEach((element, index) => {
+                setTimeout(() => {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }, index * 150);
+            });
+        }
+        
+        function continueTracking() {
+            showInfo('継続的な追跡を開始します');
+        }
+        
+        function completeResolution() {
+            showInfo('解決完了として記録しました');
+        }
+        
+        function scheduleReview() {
+            showInfo('定期レビューを設定します');
+        }
+        
+        // ナビゲーション関数
+        function navigateTo(screenId) {
+            const routes = {
+                'UC001-001': '../uc001/UC001-001.html',
+                'UC001-002': '../uc001/UC001-002.html',
+                'UC001-003': '../uc001/UC001-003.html',
+                'UC001-004': '../uc001/UC001-004.html',
+                'UC001-005': '../uc001/UC001-005.html',
+                'UC002-001': '../uc002/UC002-001.html',
+                'UC002-002': '../uc002/UC002-002.html',
+                'UC003-001': '../uc003/UC003-001.html',
+                'UC003-002': '../uc003/UC003-002.html',
+                'UC003-003': '../uc003/UC003-003.html',
+                'UC003-004': '../uc003/UC003-004.html',
+                'UC003-005': '../uc003/UC003-005.html',
+                'UC004-001': 'UC004-001.html',
+                'UC004-002': 'UC004-002.html',
+                'UC004-003': 'UC004-003.html',
+                'UC004-004': 'UC004-004.html',
+                'UC004-005': 'UC004-005.html',
+                'UC005-001': '../uc005/UC005-001.html',
+                'UC007-001': '../uc007/UC007-001.html',
+                'UC007-002': '../uc007/UC007-002.html',
+                'AUTH-001': '../auth/AUTH-001.html',
+                'AUTH-002': '../auth/AUTH-002.html',
+                'AUTH-003': '../auth/AUTH-003.html',
+                'AUTH-004': '../auth/AUTH-004.html',
+                'COMMON-001': '../common/COMMON-001.html',
+                'COMMON-002': '../common/COMMON-002.html',
+                'COMMON-003': '../common/COMMON-003.html',
+                'COMMON-004': '../common/COMMON-004.html',
+                'COMMON-005': '../common/COMMON-005.html'
+            };
+            
+            if (routes[screenId]) {
+                window.location.href = routes[screenId];
+            } else {
+                console.warn('ルートが見つかりません:', screenId);
+                showInfo('画面が見つかりません');
+            }
+        }
+    </script>
+    
+    <style>
+        .progress-tracking-container {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+        
+        .overall-progress {
+            background: linear-gradient(135deg, #E8F5E8, #F0F8F0);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .progress-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .progress-percentage {
+            display: flex;
+            align-items: baseline;
+            gap: 5px;
+        }
+        
+        .percentage {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background-color: var(--gray-200);
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 6px;
+            transition: width 0.8s ease;
+        }
+        
+        .progress-description p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin: 0;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .section-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .section-icon i {
+            color: white;
+            font-size: 1.2rem;
+        }
+        
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .relationship-scores {
+            background: linear-gradient(135deg, #E3F2FD, #F3E5F5);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        
+        .scores-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .score-item {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+        
+        .score-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .score-label i {
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+        
+        .score-label span {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .score-comparison {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .score-before, .score-after {
+            font-size: 1.5rem;
+            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: 8px;
+        }
+        
+        .score-before {
+            background: #FFE5E5;
+            color: #F44336;
+        }
+        
+        .score-after {
+            background: #E8F5E8;
+            color: #4CAF50;
+        }
+        
+        .score-arrow {
+            color: var(--text-secondary);
+        }
+        
+        .score-change {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .score-change.positive {
+            color: #4CAF50;
+        }
+        
+        .practiced-actions {
+            background: linear-gradient(135deg, #FFF3E0, #FFE0B2);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        
+        .actions-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .timeline-item {
+            display: flex;
+            gap: 20px;
+            padding: 25px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+        
+        .timeline-item.completed {
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .timeline-item.in-progress {
+            border-left: 4px solid #FF9800;
+        }
+        
+        .timeline-item.pending {
+            border-left: 4px solid var(--gray-300);
+        }
+        
+        .timeline-date {
+            min-width: 80px;
+            background: var(--gray-100);
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        
+        .timeline-content {
+            flex: 1;
+        }
+        
+        .timeline-content h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .timeline-content p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .action-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .action-status i {
+            font-size: 0.8rem;
+        }
+        
+        .completed .action-status {
+            color: #4CAF50;
+        }
+        
+        .in-progress .action-status {
+            color: #FF9800;
+        }
+        
+        .pending .action-status {
+            color: var(--text-secondary);
+        }
+        
+        .improvement-points {
+            background: linear-gradient(135deg, #FFE5E5, #FFF0F0);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        
+        .points-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .point-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+        
+        .point-card.positive {
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .point-card.neutral {
+            border-left: 4px solid #FF9800;
+        }
+        
+        .point-card.attention {
+            border-left: 4px solid #F44336;
+        }
+        
+        .point-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        
+        .positive .point-icon {
+            background: #E8F5E8;
+            color: #4CAF50;
+        }
+        
+        .neutral .point-icon {
+            background: #FFF3E0;
+            color: #FF9800;
+        }
+        
+        .attention .point-icon {
+            background: #FFE5E5;
+            color: #F44336;
+        }
+        
+        .point-content h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+        }
+        
+        .point-content ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .point-content li {
+            padding: 5px 0;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        
+        .point-content li:before {
+            content: '•';
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        .next-steps {
+            background: linear-gradient(135deg, #E3F2FD, #F3E5F5);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        
+        .steps-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .step-item {
+            display: flex;
+            gap: 20px;
+            padding: 25px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+        
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        
+        .step-content h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+        
+        .step-content p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin: 0;
+        }
+        
+        .completion-actions {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn-large {
+            padding: 16px 32px;
+            font-size: 1.1rem;
+            border-radius: 25px;
+        }
+        
+        @media (max-width: 768px) {
+            .progress-tracking-container {
+                gap: 30px;
+            }
+            
+            .overall-progress, .relationship-scores, .practiced-actions, .improvement-points, .next-steps, .completion-actions {
+                padding: 30px 20px;
+            }
+            
+            .progress-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .scores-grid, .points-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .timeline-item, .step-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</body>
+</html>

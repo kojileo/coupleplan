@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>パートナー連携設定 - CouplePlan</title>
+    <link rel="stylesheet" href="../../css/common.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- ナビゲーションバー -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-heart"></i>
+                <span>CouplePlan</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="AUTH-001.html" class="nav-link">ログイン</a>
+                <a href="../uc003/UC003-001.html" class="nav-link">ポータル</a>
+                <a href="../common/COMMON-001.html" class="nav-link">ダッシュボード</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+        <div class="container">
+            <!-- ヘッダー -->
+            <div class="page-header">
+                <div class="header-content">
+                    <h1 class="page-title">パートナー連携設定</h1>
+                    <p class="page-subtitle">パートナーと連携して、より楽しいデート体験を</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="goBack()">
+                        <i class="fas fa-arrow-left"></i>
+                        戻る
+                    </button>
+                </div>
+            </div>
+
+            <!-- 連携状況 -->
+            <div class="connection-status">
+                <div class="status-card">
+                    <div class="status-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <div class="status-content">
+                        <h3>パートナー未連携</h3>
+                        <p>パートナーと連携すると、共同編集やDate Canvasなどの特別な機能が利用できます。</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 連携方法選択 -->
+            <div class="connection-methods">
+                <h2 class="section-title">連携方法を選択</h2>
+                <div class="methods-grid">
+                    <div class="method-card" onclick="selectMethod('qr')">
+                        <div class="method-icon">
+                            <i class="fas fa-qrcode"></i>
+                        </div>
+                        <h3>QRコード</h3>
+                        <p>パートナーにQRコードを送信して連携</p>
+                        <div class="method-badge">
+                            <span class="badge badge-primary">おすすめ</span>
+                        </div>
+                    </div>
+                    
+                    <div class="method-card" onclick="selectMethod('link')">
+                        <div class="method-icon">
+                            <i class="fas fa-link"></i>
+                        </div>
+                        <h3>招待リンク</h3>
+                        <p>招待リンクを送信して連携</p>
+                    </div>
+                    
+                    <div class="method-card" onclick="selectMethod('code')">
+                        <div class="method-icon">
+                            <i class="fas fa-key"></i>
+                        </div>
+                        <h3>連携コード</h3>
+                        <p>6桁の連携コードで連携</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QRコード連携 -->
+            <div class="connection-section" id="qrSection" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">QRコード連携</h2>
+                    <p class="section-description">パートナーにQRコードを送信してください</p>
+                </div>
+                
+                <div class="qr-container">
+                    <div class="qr-code">
+                        <div class="qr-placeholder">
+                            <i class="fas fa-qrcode"></i>
+                            <span>QRコード生成中...</span>
+                        </div>
+                    </div>
+                    <div class="qr-actions">
+                        <button class="btn btn-primary" onclick="generateQR()">
+                            <i class="fas fa-sync"></i>
+                            QRコードを生成
+                        </button>
+                        <button class="btn btn-secondary" onclick="shareQR()">
+                            <i class="fas fa-share"></i>
+                            共有する
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 招待リンク連携 -->
+            <div class="connection-section" id="linkSection" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">招待リンク連携</h2>
+                    <p class="section-description">パートナーに招待リンクを送信してください</p>
+                </div>
+                
+                <div class="link-container">
+                    <div class="link-input-group">
+                        <input type="text" id="inviteLink" class="form-input" value="https://coupleplan.app/invite/abc123" readonly>
+                        <button class="btn btn-primary" onclick="copyLink()">
+                            <i class="fas fa-copy"></i>
+                            コピー
+                        </button>
+                    </div>
+                    <div class="link-actions">
+                        <button class="btn btn-secondary" onclick="shareLink('email')">
+                            <i class="fas fa-envelope"></i>
+                            メールで送信
+                        </button>
+                        <button class="btn btn-secondary" onclick="shareLink('sms')">
+                            <i class="fas fa-sms"></i>
+                            SMSで送信
+                        </button>
+                        <button class="btn btn-secondary" onclick="shareLink('social')">
+                            <i class="fas fa-share-alt"></i>
+                            ソーシャルで共有
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 連携コード連携 -->
+            <div class="connection-section" id="codeSection" style="display: none;">
+                <div class="section-header">
+                    <h2 class="section-title">連携コード連携</h2>
+                    <p class="section-description">6桁の連携コードをパートナーに伝えてください</p>
+                </div>
+                
+                <div class="code-container">
+                    <div class="code-display">
+                        <div class="code-digits">
+                            <span class="digit">A</span>
+                            <span class="digit">B</span>
+                            <span class="digit">C</span>
+                            <span class="digit">1</span>
+                            <span class="digit">2</span>
+                            <span class="digit">3</span>
+                        </div>
+                    </div>
+                    <div class="code-actions">
+                        <button class="btn btn-primary" onclick="generateCode()">
+                            <i class="fas fa-sync"></i>
+                            新しいコードを生成
+                        </button>
+                        <button class="btn btn-secondary" onclick="copyCode()">
+                            <i class="fas fa-copy"></i>
+                            コピー
+                        </button>
+                    </div>
+                    <div class="code-timer">
+                        <i class="fas fa-clock"></i>
+                        <span>このコードは5分間有効です</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 連携待機中 -->
+            <div class="connection-waiting" id="waitingSection" style="display: none;">
+                <div class="waiting-content">
+                    <div class="waiting-icon">
+                        <div class="spinner"></div>
+                    </div>
+                    <h3>パートナーの連携を待機中...</h3>
+                    <p>パートナーが連携を完了するまでお待ちください</p>
+                    <div class="waiting-actions">
+                        <button class="btn btn-secondary" onclick="cancelConnection()">
+                            <i class="fas fa-times"></i>
+                            キャンセル
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 連携完了 -->
+            <div class="connection-success" id="successSection" style="display: none;">
+                <div class="success-content">
+                    <div class="success-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h3>連携完了！</h3>
+                    <p>パートナーとの連携が完了しました。カップル機能が利用できるようになりました。</p>
+                    <div class="success-actions">
+                        <button class="btn btn-primary" onclick="goToDashboard()">
+                            <i class="fas fa-home"></i>
+                            ダッシュボードへ
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 連携済みパートナー情報 -->
+            <div class="partner-info" id="partnerInfo" style="display: none;">
+                <div class="partner-card">
+                    <div class="partner-avatar">
+                        <img src="../../assets/images/partner-avatar.jpg" alt="パートナー" onerror="this.style.display='none'">
+                        <div class="avatar-placeholder">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                    <div class="partner-details">
+                        <h3>田中 花子</h3>
+                        <p>連携日: 2025年1月20日</p>
+                        <div class="partner-status">
+                            <span class="status-online">
+                                <i class="fas fa-circle"></i>
+                                オンライン
+                            </span>
+                        </div>
+                    </div>
+                    <div class="partner-actions">
+                        <button class="btn btn-outline" onclick="viewPartnerProfile()">
+                            <i class="fas fa-user"></i>
+                            プロフィール
+                        </button>
+                        <button class="btn btn-outline" onclick="disconnectPartner()">
+                            <i class="fas fa-unlink"></i>
+                            連携解除
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- フォームアクション -->
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="goBack()">
+                    <i class="fas fa-arrow-left"></i>
+                    戻る
+                </button>
+                <button type="button" class="btn btn-primary" onclick="skipConnection()" id="skipBtn">
+                    <i class="fas fa-forward"></i>
+                    スキップ
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/common.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <script>
+        let currentMethod = null;
+        let connectionTimer = null;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeConnection();
+        });
+        
+        function initializeConnection() {
+            // 連携状況の確認
+            checkConnectionStatus();
+        }
+        
+        function checkConnectionStatus() {
+            // 実際の実装ではAPIから連携状況を取得
+            const isConnected = false; // 仮の値
+            
+            if (isConnected) {
+                showPartnerInfo();
+            } else {
+                showConnectionMethods();
+            }
+        }
+        
+        function selectMethod(method) {
+            currentMethod = method;
+            
+            // すべてのセクションを非表示
+            document.querySelectorAll('.connection-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // 選択されたメソッドのセクションを表示
+            document.getElementById(method + 'Section').style.display = 'block';
+            
+            // 連携方法選択を非表示
+            document.querySelector('.connection-methods').style.display = 'none';
+        }
+        
+        function generateQR() {
+            const qrPlaceholder = document.querySelector('.qr-placeholder');
+            qrPlaceholder.innerHTML = '<i class="fas fa-qrcode"></i><span>QRコード生成中...</span>';
+            
+            // 実際の実装ではQRコードを生成
+            setTimeout(() => {
+                qrPlaceholder.innerHTML = '<div class="qr-code-image">QRコード画像</div>';
+                showWaiting();
+            }, 2000);
+        }
+        
+        function generateCode() {
+            // 実際の実装では新しいコードを生成
+            const digits = document.querySelectorAll('.digit');
+            const newCode = 'XYZ789';
+            
+            newCode.split('').forEach((char, index) => {
+                digits[index].textContent = char;
+            });
+            
+            showWaiting();
+        }
+        
+        function showWaiting() {
+            document.getElementById('waitingSection').style.display = 'block';
+            document.querySelector('.connection-section').style.display = 'none';
+            
+            // 5秒後に成功画面を表示（実際の実装ではパートナーの連携完了を待機）
+            connectionTimer = setTimeout(() => {
+                showSuccess();
+            }, 5000);
+        }
+        
+        function showSuccess() {
+            document.getElementById('successSection').style.display = 'block';
+            document.getElementById('waitingSection').style.display = 'none';
+            document.getElementById('skipBtn').style.display = 'none';
+        }
+        
+        function showPartnerInfo() {
+            document.getElementById('partnerInfo').style.display = 'block';
+            document.querySelector('.connection-methods').style.display = 'none';
+            document.getElementById('skipBtn').style.display = 'none';
+        }
+        
+        function showConnectionMethods() {
+            document.querySelector('.connection-methods').style.display = 'block';
+        }
+        
+        function copyLink() {
+            const linkInput = document.getElementById('inviteLink');
+            linkInput.select();
+            document.execCommand('copy');
+            showSuccess('招待リンクをコピーしました');
+        }
+        
+        function copyCode() {
+            const code = document.querySelector('.code-digits').textContent;
+            navigator.clipboard.writeText(code);
+            showSuccess('連携コードをコピーしました');
+        }
+        
+        function shareLink(type) {
+            const link = document.getElementById('inviteLink').value;
+            
+            switch(type) {
+                case 'email':
+                    window.location.href = `mailto:?subject=CouplePlan招待&body=パートナー連携の招待リンク: ${link}`;
+                    break;
+                case 'sms':
+                    window.location.href = `sms:?body=CouplePlan招待: ${link}`;
+                    break;
+                case 'social':
+                    if (navigator.share) {
+                        navigator.share({
+                            title: 'CouplePlan招待',
+                            text: 'パートナー連携の招待リンク',
+                            url: link
+                        });
+                    }
+                    break;
+            }
+        }
+        
+        function shareQR() {
+            // 実際の実装ではQRコード画像を共有
+            showInfo('QRコードを共有しました');
+        }
+        
+        function cancelConnection() {
+            if (connectionTimer) {
+                clearTimeout(connectionTimer);
+            }
+            showConnectionMethods();
+        }
+        
+        function goToDashboard() {
+            window.location.href = '../common/COMMON-001.html';
+        }
+        
+        function skipConnection() {
+            if (confirm('パートナー連携をスキップしますか？後から設定できます。')) {
+                window.location.href = '../common/COMMON-001.html';
+            }
+        }
+        
+        function viewPartnerProfile() {
+            showInfo('パートナープロフィールを表示');
+        }
+        
+        function disconnectPartner() {
+            if (confirm('パートナーとの連携を解除しますか？')) {
+                showSuccess('連携を解除しました');
+                setTimeout(() => {
+                    showConnectionMethods();
+                }, 1000);
+            }
+        }
+    </script>
+    
+    <style>
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-8);
+        }
+        
+        .page-title {
+            font-size: var(--text-3xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+        }
+        
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: var(--text-lg);
+        }
+        
+        .connection-status {
+            margin-bottom: var(--space-8);
+        }
+        
+        .status-card {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            color: var(--white);
+            border-radius: var(--radius-xl);
+            padding: var(--space-6);
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+        
+        .status-icon {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .status-icon i {
+            font-size: var(--text-2xl);
+        }
+        
+        .status-content h3 {
+            font-size: var(--text-xl);
+            font-weight: 600;
+            margin-bottom: var(--space-2);
+        }
+        
+        .status-content p {
+            opacity: 0.9;
+        }
+        
+        .connection-methods {
+            margin-bottom: var(--space-8);
+        }
+        
+        .section-title {
+            font-size: var(--text-2xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-6);
+            text-align: center;
+        }
+        
+        .methods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-6);
+        }
+        
+        .method-card {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            padding: var(--space-6);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border: 2px solid transparent;
+            position: relative;
+        }
+        
+        .method-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-color);
+        }
+        
+        .method-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--space-4);
+        }
+        
+        .method-icon i {
+            font-size: var(--text-3xl);
+            color: var(--white);
+        }
+        
+        .method-card h3 {
+            font-size: var(--text-xl);
+            font-weight: 600;
+            margin-bottom: var(--space-2);
+            color: var(--text-primary);
+        }
+        
+        .method-card p {
+            color: var(--text-secondary);
+            margin-bottom: var(--space-4);
+        }
+        
+        .method-badge {
+            position: absolute;
+            top: var(--space-3);
+            right: var(--space-3);
+        }
+        
+        .connection-section {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-8);
+            margin-bottom: var(--space-8);
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: var(--space-8);
+        }
+        
+        .section-description {
+            color: var(--text-secondary);
+            margin-bottom: var(--space-6);
+        }
+        
+        .qr-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-6);
+        }
+        
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            background-color: var(--white);
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .qr-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-2);
+            color: var(--text-secondary);
+        }
+        
+        .qr-placeholder i {
+            font-size: var(--text-4xl);
+        }
+        
+        .qr-actions {
+            display: flex;
+            gap: var(--space-3);
+        }
+        
+        .link-container {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-6);
+        }
+        
+        .link-input-group {
+            display: flex;
+            gap: var(--space-3);
+        }
+        
+        .link-input-group .form-input {
+            flex: 1;
+        }
+        
+        .link-actions {
+            display: flex;
+            gap: var(--space-3);
+            flex-wrap: wrap;
+        }
+        
+        .code-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-6);
+        }
+        
+        .code-display {
+            background-color: var(--gray-50);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+        }
+        
+        .code-digits {
+            display: flex;
+            gap: var(--space-2);
+        }
+        
+        .digit {
+            width: 40px;
+            height: 40px;
+            background-color: var(--white);
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--text-xl);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .code-actions {
+            display: flex;
+            gap: var(--space-3);
+        }
+        
+        .code-timer {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            color: var(--text-secondary);
+            font-size: var(--text-sm);
+        }
+        
+        .connection-waiting,
+        .connection-success {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-8);
+            text-align: center;
+        }
+        
+        .waiting-content,
+        .success-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-4);
+        }
+        
+        .waiting-icon {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .success-icon i {
+            font-size: var(--text-3xl);
+            color: var(--white);
+        }
+        
+        .waiting-content h3,
+        .success-content h3 {
+            font-size: var(--text-2xl);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .waiting-content p,
+        .success-content p {
+            color: var(--text-secondary);
+        }
+        
+        .waiting-actions,
+        .success-actions {
+            margin-top: var(--space-4);
+        }
+        
+        .partner-info {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-6);
+            margin-bottom: var(--space-8);
+        }
+        
+        .partner-card {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+        
+        .partner-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        
+        .partner-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .avatar-placeholder {
+            width: 100%;
+            height: 100%;
+            background-color: var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+        }
+        
+        .partner-details {
+            flex: 1;
+        }
+        
+        .partner-details h3 {
+            font-size: var(--text-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+        
+        .partner-details p {
+            color: var(--text-secondary);
+            font-size: var(--text-sm);
+            margin-bottom: var(--space-2);
+        }
+        
+        .partner-status {
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
+        }
+        
+        .status-online {
+            color: var(--secondary-color);
+            font-size: var(--text-sm);
+            font-weight: 500;
+        }
+        
+        .status-online i {
+            font-size: var(--text-xs);
+        }
+        
+        .partner-actions {
+            display: flex;
+            gap: var(--space-2);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: var(--space-8);
+            padding-top: var(--space-6);
+            border-top: 1px solid var(--border-light);
+        }
+        
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--space-4);
+            }
+            
+            .methods-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .link-input-group {
+                flex-direction: column;
+            }
+            
+            .link-actions {
+                flex-direction: column;
+            }
+            
+            .partner-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .partner-actions {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+                gap: var(--space-3);
+            }
+        }
+    </style>
+</body>
+</html>

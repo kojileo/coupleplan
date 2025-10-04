@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>編集履歴 - CouplePlan</title>
+    <link rel="stylesheet" href="../../css/common.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- ナビゲーションバー -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-heart"></i>
+                <span>CouplePlan</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="../auth/AUTH-001.html" class="nav-link">ログイン</a>
+                <a href="../common/COMMON-001.html" class="nav-link">ダッシュボード</a>
+                <a href="../uc003/UC003-001.html" class="nav-link">ポータル</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+        <div class="container">
+            <!-- ヘッダー -->
+            <div class="page-header">
+                <div class="header-content">
+                    <h1 class="page-title">編集履歴</h1>
+                    <p class="page-subtitle">プランの変更履歴を確認・復元できます</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="goBack()">
+                        <i class="fas fa-arrow-left"></i>
+                        戻る
+                    </button>
+                    <button class="btn btn-primary" onclick="navigateTo('UC002-001')">
+                        <i class="fas fa-edit"></i>
+                        編集に戻る
+                    </button>
+                </div>
+            </div>
+
+            <!-- 履歴フィルター -->
+            <div class="history-filters">
+                <div class="filter-group">
+                    <label for="userFilter" class="filter-label">編集者</label>
+                    <select id="userFilter" class="filter-select" onchange="filterHistory()">
+                        <option value="all">すべて</option>
+                        <option value="me">自分</option>
+                        <option value="partner">パートナー</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="typeFilter" class="filter-label">変更タイプ</label>
+                    <select id="typeFilter" class="filter-select" onchange="filterHistory()">
+                        <option value="all">すべて</option>
+                        <option value="schedule">スケジュール</option>
+                        <option value="location">場所</option>
+                        <option value="budget">予算</option>
+                        <option value="note">メモ</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="dateFilter" class="filter-label">期間</label>
+                    <select id="dateFilter" class="filter-select" onchange="filterHistory()">
+                        <option value="all">すべて</option>
+                        <option value="today">今日</option>
+                        <option value="week">今週</option>
+                        <option value="month">今月</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 履歴タイムライン -->
+            <div class="history-timeline">
+                <div class="timeline-header">
+                    <h2>編集履歴</h2>
+                    <div class="timeline-actions">
+                        <button class="btn btn-outline" onclick="exportHistory()">
+                            <i class="fas fa-download"></i>
+                            履歴をエクスポート
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="timeline-list">
+                    <!-- 履歴項目1 -->
+                    <div class="timeline-item" data-user="me" data-type="schedule" data-date="2025-01-25">
+                        <div class="timeline-marker">
+                            <div class="marker-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-header">
+                                <div class="timeline-title">
+                                    <h3>スケジュールを変更</h3>
+                                    <span class="timeline-time">2時間前</span>
+                                </div>
+                                <div class="timeline-user">
+                                    <i class="fas fa-user"></i>
+                                    <span>あなた</span>
+                                </div>
+                            </div>
+                            <div class="timeline-details">
+                                <div class="change-item">
+                                    <div class="change-label">変更前:</div>
+                                    <div class="change-content old">15:00 カフェタイム</div>
+                                </div>
+                                <div class="change-item">
+                                    <div class="change-label">変更後:</div>
+                                    <div class="change-content new">15:30 カフェタイム</div>
+                                </div>
+                            </div>
+                            <div class="timeline-actions">
+                                <button class="btn btn-sm btn-outline" onclick="restoreVersion(1)">
+                                    <i class="fas fa-undo"></i>
+                                    この版に戻す
+                                </button>
+                                <button class="btn btn-sm btn-outline" onclick="viewDiff(1)">
+                                    <i class="fas fa-eye"></i>
+                                    差分表示
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 履歴項目2 -->
+                    <div class="timeline-item" data-user="partner" data-type="location" data-date="2025-01-25">
+                        <div class="timeline-marker">
+                            <div class="marker-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-header">
+                                <div class="timeline-title">
+                                    <h3>レストランを変更</h3>
+                                    <span class="timeline-time">4時間前</span>
+                                </div>
+                                <div class="timeline-user">
+                                    <i class="fas fa-user-friends"></i>
+                                    <span>パートナー</span>
+                                </div>
+                            </div>
+                            <div class="timeline-details">
+                                <div class="change-item">
+                                    <div class="change-label">変更前:</div>
+                                    <div class="change-content old">レストラン A (フレンチ)</div>
+                                </div>
+                                <div class="change-item">
+                                    <div class="change-label">変更後:</div>
+                                    <div class="change-content new">レストラン B (イタリアン)</div>
+                                </div>
+                            </div>
+                            <div class="timeline-actions">
+                                <button class="btn btn-sm btn-outline" onclick="restoreVersion(2)">
+                                    <i class="fas fa-undo"></i>
+                                    この版に戻す
+                                </button>
+                                <button class="btn btn-sm btn-outline" onclick="viewDiff(2)">
+                                    <i class="fas fa-eye"></i>
+                                    差分表示
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 履歴項目3 -->
+                    <div class="timeline-item" data-user="me" data-type="budget" data-date="2025-01-24">
+                        <div class="timeline-marker">
+                            <div class="marker-icon">
+                                <i class="fas fa-yen-sign"></i>
+                            </div>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-header">
+                                <div class="timeline-title">
+                                    <h3>予算を調整</h3>
+                                    <span class="timeline-time">1日前</span>
+                                </div>
+                                <div class="timeline-user">
+                                    <i class="fas fa-user"></i>
+                                    <span>あなた</span>
+                                </div>
+                            </div>
+                            <div class="timeline-details">
+                                <div class="change-item">
+                                    <div class="change-label">変更前:</div>
+                                    <div class="change-content old">¥12,000</div>
+                                </div>
+                                <div class="change-item">
+                                    <div class="change-label">変更後:</div>
+                                    <div class="change-content new">¥15,000</div>
+                                </div>
+                            </div>
+                            <div class="timeline-actions">
+                                <button class="btn btn-sm btn-outline" onclick="restoreVersion(3)">
+                                    <i class="fas fa-undo"></i>
+                                    この版に戻す
+                                </button>
+                                <button class="btn btn-sm btn-outline" onclick="viewDiff(3)">
+                                    <i class="fas fa-eye"></i>
+                                    差分表示
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 履歴項目4 -->
+                    <div class="timeline-item" data-user="partner" data-type="note" data-date="2025-01-24">
+                        <div class="timeline-marker">
+                            <div class="marker-icon">
+                                <i class="fas fa-sticky-note"></i>
+                            </div>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-header">
+                                <div class="timeline-title">
+                                    <h3>メモを追加</h3>
+                                    <span class="timeline-time">1日前</span>
+                                </div>
+                                <div class="timeline-user">
+                                    <i class="fas fa-user-friends"></i>
+                                    <span>パートナー</span>
+                                </div>
+                            </div>
+                            <div class="timeline-details">
+                                <div class="change-item">
+                                    <div class="change-label">追加されたメモ:</div>
+                                    <div class="change-content new">「天気が良ければ芝公園でピクニックもいいかも」</div>
+                                </div>
+                            </div>
+                            <div class="timeline-actions">
+                                <button class="btn btn-sm btn-outline" onclick="restoreVersion(4)">
+                                    <i class="fas fa-undo"></i>
+                                    この版に戻す
+                                </button>
+                                <button class="btn btn-sm btn-outline" onclick="viewDiff(4)">
+                                    <i class="fas fa-eye"></i>
+                                    差分表示
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 履歴項目5 -->
+                    <div class="timeline-item" data-user="me" data-type="schedule" data-date="2025-01-23">
+                        <div class="timeline-marker">
+                            <div class="marker-icon">
+                                <i class="fas fa-plus"></i>
+                            </div>
+                        </div>
+                        <div class="timeline-content">
+                            <div class="timeline-header">
+                                <div class="timeline-title">
+                                    <h3>プランを作成</h3>
+                                    <span class="timeline-time">2日前</span>
+                                </div>
+                                <div class="timeline-user">
+                                    <i class="fas fa-user"></i>
+                                    <span>あなた</span>
+                                </div>
+                            </div>
+                            <div class="timeline-details">
+                                <div class="change-item">
+                                    <div class="change-label">初期プラン:</div>
+                                    <div class="change-content new">東京タワーロマンチックデート</div>
+                                </div>
+                            </div>
+                            <div class="timeline-actions">
+                                <button class="btn btn-sm btn-outline" onclick="restoreVersion(5)">
+                                    <i class="fas fa-undo"></i>
+                                    この版に戻す
+                                </button>
+                                <button class="btn btn-sm btn-outline" onclick="viewDiff(5)">
+                                    <i class="fas fa-eye"></i>
+                                    差分表示
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- バージョン比較 -->
+            <div class="version-comparison" id="versionComparison" style="display: none;">
+                <div class="comparison-header">
+                    <h2>バージョン比較</h2>
+                    <button class="btn btn-outline" onclick="closeComparison()">
+                        <i class="fas fa-times"></i>
+                        閉じる
+                    </button>
+                </div>
+                
+                <div class="comparison-content">
+                    <div class="version-side">
+                        <h3>現在のバージョン</h3>
+                        <div class="version-content">
+                            <div class="version-item">
+                                <div class="version-label">スケジュール:</div>
+                                <div class="version-text">14:00 東京タワー → 15:30 カフェ → 16:30 芝公園 → 18:30 ディナー</div>
+                            </div>
+                            <div class="version-item">
+                                <div class="version-label">レストラン:</div>
+                                <div class="version-text">レストラン B (イタリアン)</div>
+                            </div>
+                            <div class="version-item">
+                                <div class="version-label">予算:</div>
+                                <div class="version-text">¥15,000</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="version-side">
+                        <h3>選択したバージョン</h3>
+                        <div class="version-content">
+                            <div class="version-item">
+                                <div class="version-label">スケジュール:</div>
+                                <div class="version-text">14:00 東京タワー → 15:00 カフェ → 16:00 芝公園 → 18:00 ディナー</div>
+                            </div>
+                            <div class="version-item">
+                                <div class="version-label">レストラン:</div>
+                                <div class="version-text">レストラン A (フレンチ)</div>
+                            </div>
+                            <div class="version-item">
+                                <div class="version-label">予算:</div>
+                                <div class="version-text">¥12,000</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="comparison-actions">
+                    <button class="btn btn-secondary" onclick="closeComparison()">
+                        キャンセル
+                    </button>
+                    <button class="btn btn-primary" onclick="confirmRestore()">
+                        <i class="fas fa-undo"></i>
+                        この版に戻す
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/common.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeHistory();
+        });
+        
+        function initializeHistory() {
+            // 履歴画面の初期化
+            setupHistoryFilters();
+            setupTimelineInteractions();
+        }
+        
+        function setupHistoryFilters() {
+            // フィルターの設定
+            console.log('履歴フィルターを設定しました');
+        }
+        
+        function setupTimelineInteractions() {
+            // タイムラインのインタラクション設定
+            console.log('タイムラインインタラクションを設定しました');
+        }
+        
+        function filterHistory() {
+            const userFilter = document.getElementById('userFilter').value;
+            const typeFilter = document.getElementById('typeFilter').value;
+            const dateFilter = document.getElementById('dateFilter').value;
+            
+            // フィルターに基づいて履歴を表示/非表示
+            document.querySelectorAll('.timeline-item').forEach(item => {
+                let show = true;
+                
+                if (userFilter !== 'all' && item.dataset.user !== userFilter) {
+                    show = false;
+                }
+                
+                if (typeFilter !== 'all' && item.dataset.type !== typeFilter) {
+                    show = false;
+                }
+                
+                // 日付フィルターの処理
+                if (dateFilter !== 'all') {
+                    const itemDate = new Date(item.dataset.date);
+                    const now = new Date();
+                    const diffTime = now - itemDate;
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    
+                    if (dateFilter === 'today' && diffDays > 1) show = false;
+                    if (dateFilter === 'week' && diffDays > 7) show = false;
+                    if (dateFilter === 'month' && diffDays > 30) show = false;
+                }
+                
+                item.style.display = show ? 'block' : 'none';
+            });
+        }
+        
+        function restoreVersion(versionId) {
+            showInfo(`バージョン ${versionId} に戻しますか？`);
+            // 実際の実装では確認ダイアログを表示
+        }
+        
+        function viewDiff(versionId) {
+            document.getElementById('versionComparison').style.display = 'block';
+            showInfo(`バージョン ${versionId} との差分を表示します`);
+        }
+        
+        function closeComparison() {
+            document.getElementById('versionComparison').style.display = 'none';
+        }
+        
+        function confirmRestore() {
+            showInfo('選択したバージョンに戻しています...');
+            setTimeout(() => {
+                showSuccess('バージョンを復元しました');
+                closeComparison();
+            }, 1000);
+        }
+        
+        function exportHistory() {
+            showInfo('履歴をエクスポートしています...');
+            setTimeout(() => {
+                showSuccess('履歴をエクスポートしました');
+            }, 1000);
+        }
+        
+        // ナビゲーション関数
+        function navigateTo(screenId) {
+            const routes = {
+                'UC001-001': '../uc001/UC001-001.html',
+                'UC001-002': '../uc001/UC001-002.html',
+                'UC001-003': '../uc001/UC001-003.html',
+                'UC001-004': '../uc001/UC001-004.html',
+                'UC001-005': '../uc001/UC001-005.html',
+                'UC002-001': 'UC002-001.html',
+                'UC002-002': 'UC002-002.html',
+                'UC002-003': 'UC002-003.html',
+                'UC002-004': 'UC002-004.html',
+                'UC002-005': 'UC002-005.html',
+                'UC003-001': '../uc003/UC003-001.html',
+                'UC003-002': '../uc003/UC003-002.html',
+                'UC003-003': '../uc003/UC003-003.html',
+                'UC003-004': '../uc003/UC003-004.html',
+                'UC003-005': '../uc003/UC003-005.html',
+                'UC004-001': '../uc004/UC004-001.html',
+                'UC004-002': '../uc004/UC004-002.html',
+                'UC004-003': '../uc004/UC004-003.html',
+                'UC005-001': '../uc005/UC005-001.html',
+                'UC007-001': '../uc007/UC007-001.html',
+                'UC007-002': '../uc007/UC007-002.html',
+                'AUTH-001': '../auth/AUTH-001.html',
+                'AUTH-002': '../auth/AUTH-002.html',
+                'AUTH-003': '../auth/AUTH-003.html',
+                'AUTH-004': '../auth/AUTH-004.html',
+                'COMMON-001': '../common/COMMON-001.html',
+                'COMMON-002': '../common/COMMON-002.html',
+                'COMMON-003': '../common/COMMON-003.html',
+                'COMMON-004': '../common/COMMON-004.html',
+                'COMMON-005': '../common/COMMON-005.html'
+            };
+            
+            if (routes[screenId]) {
+                window.location.href = routes[screenId];
+            } else {
+                console.warn('ルートが見つかりません:', screenId);
+                showInfo('画面が見つかりません');
+            }
+        }
+    </script>
+    
+    <style>
+        .history-filters {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-6);
+            margin-bottom: var(--space-8);
+            display: flex;
+            gap: var(--space-6);
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+            min-width: 150px;
+        }
+        
+        .filter-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: var(--text-sm);
+        }
+        
+        .filter-select {
+            padding: var(--space-2) var(--space-3);
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            background-color: var(--white);
+            color: var(--text-primary);
+            font-size: var(--text-sm);
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .history-timeline {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-8);
+            margin-bottom: var(--space-8);
+        }
+        
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-8);
+        }
+        
+        .timeline-header h2 {
+            font-size: var(--text-2xl);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .timeline-list {
+            position: relative;
+        }
+        
+        .timeline-list::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: var(--border-light);
+        }
+        
+        .timeline-item {
+            display: flex;
+            gap: var(--space-6);
+            margin-bottom: var(--space-8);
+            position: relative;
+        }
+        
+        .timeline-marker {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .marker-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: var(--text-lg);
+        }
+        
+        .timeline-content {
+            flex: 1;
+            background-color: var(--gray-50);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+        }
+        
+        .timeline-content .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--space-4);
+        }
+        
+        .timeline-title h3 {
+            font-size: var(--text-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+        
+        .timeline-time {
+            color: var(--text-secondary);
+            font-size: var(--text-sm);
+        }
+        
+        .timeline-user {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            color: var(--text-secondary);
+            font-size: var(--text-sm);
+        }
+        
+        .timeline-user i {
+            color: var(--primary-color);
+        }
+        
+        .timeline-details {
+            margin-bottom: var(--space-4);
+        }
+        
+        .change-item {
+            display: flex;
+            gap: var(--space-4);
+            margin-bottom: var(--space-2);
+        }
+        
+        .change-label {
+            min-width: 80px;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: var(--text-sm);
+        }
+        
+        .change-content {
+            flex: 1;
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-md);
+            font-size: var(--text-sm);
+        }
+        
+        .change-content.old {
+            background-color: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+        
+        .change-content.new {
+            background-color: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+        }
+        
+        .timeline-actions {
+            display: flex;
+            gap: var(--space-2);
+        }
+        
+        .version-comparison {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            padding: var(--space-8);
+            margin-bottom: var(--space-8);
+        }
+        
+        .comparison-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-8);
+        }
+        
+        .comparison-header h2 {
+            font-size: var(--text-2xl);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .comparison-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-8);
+            margin-bottom: var(--space-8);
+        }
+        
+        .version-side h3 {
+            font-size: var(--text-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-4);
+            padding-bottom: var(--space-2);
+            border-bottom: 2px solid var(--border-light);
+        }
+        
+        .version-content {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+        }
+        
+        .version-item {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+        }
+        
+        .version-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: var(--text-sm);
+        }
+        
+        .version-text {
+            color: var(--text-secondary);
+            font-size: var(--text-sm);
+            padding: var(--space-2);
+            background-color: var(--gray-50);
+            border-radius: var(--radius-md);
+        }
+        
+        .comparison-actions {
+            display: flex;
+            gap: var(--space-4);
+            justify-content: center;
+        }
+        
+        @media (max-width: 768px) {
+            .history-filters {
+                flex-direction: column;
+            }
+            
+            .timeline-item {
+                flex-direction: column;
+                gap: var(--space-4);
+            }
+            
+            .timeline-content .timeline-header {
+                flex-direction: column;
+                gap: var(--space-2);
+            }
+            
+            .comparison-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .timeline-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</body>
+</html>

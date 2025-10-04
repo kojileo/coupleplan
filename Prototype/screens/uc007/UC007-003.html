@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>課金変更通知 - CouplePlan</title>
+    <link rel="stylesheet" href="../../css/common.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- ナビゲーションバー -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-heart"></i>
+                <span>CouplePlan</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="../auth/AUTH-001.html" class="nav-link">ログイン</a>
+                <a href="../common/COMMON-001.html" class="nav-link">ダッシュボード</a>
+                <a href="../uc003/UC003-001.html" class="nav-link">ポータル</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+        <div class="container">
+            <!-- ヘッダー -->
+            <div class="page-header">
+                <div class="header-content">
+                    <h1 class="page-title">課金変更通知</h1>
+                    <p class="page-subtitle">サブスクリプションの変更についてお知らせします</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="goBack()">
+                        <i class="fas fa-arrow-left"></i>
+                        戻る
+                    </button>
+                    <button class="btn btn-primary" onclick="navigateTo('UC007-001')">
+                        <i class="fas fa-credit-card"></i>
+                        課金管理
+                    </button>
+                </div>
+            </div>
+
+            <!-- 通知内容 -->
+            <div class="notification-content">
+                <div class="notification-header">
+                    <div class="notification-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <div class="notification-title">
+                        <h2>サブスクリプション変更のお知らせ</h2>
+                        <p>2025年2月1日より料金プランが変更されます</p>
+                    </div>
+                </div>
+                
+                <div class="notification-body">
+                    <div class="change-summary">
+                        <h3>変更内容</h3>
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <div class="item-label">現在のプラン</div>
+                                <div class="item-value">ベーシックプラン</div>
+                                <div class="item-price">¥980/月</div>
+                            </div>
+                            
+                            <div class="summary-arrow">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                            
+                            <div class="summary-item new">
+                                <div class="item-label">新しいプラン</div>
+                                <div class="item-value">プレミアムプラン</div>
+                                <div class="item-price">¥1,480/月</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="change-details">
+                        <h3>変更理由</h3>
+                        <ul class="reasons-list">
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span>AI機能の大幅な改善と追加</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span>24時間サポートの提供開始</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check"></i>
+                                <span>クラウドストレージ容量の拡張</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="new-features">
+                        <h3>新機能の詳細</h3>
+                        <div class="features-grid">
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <h4>高度なAI機能</h4>
+                                    <p>より精度の高いデート提案と関係修復サポート</p>
+                                </div>
+                            </div>
+                            
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-paint-brush"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-headset"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <h4>24時間サポート</h4>
+                                    <p>いつでも専門スタッフに相談可能</p>
+                                </div>
+                            </div>
+                            
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fas fa-cloud"></i>
+                                </div>
+                                <div class="feature-content">
+                                    <h4>大容量ストレージ</h4>
+                                    <p>無制限の写真・動画保存</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 料金比較 -->
+            <div class="price-comparison">
+                <h2>料金プラン比較</h2>
+                
+                <div class="comparison-table">
+                    <div class="table-header">
+                        <div class="header-item">機能</div>
+                        <div class="header-item current">現在のプラン</div>
+                        <div class="header-item new">新しいプラン</div>
+                    </div>
+                    
+                    <div class="table-body">
+                        <div class="table-row">
+                            <div class="row-label">AIデート提案</div>
+                            <div class="row-value current">
+                                <i class="fas fa-check"></i>
+                                <span>月5回まで</span>
+                            </div>
+                            <div class="row-value new">
+                                <i class="fas fa-check"></i>
+                                <span>無制限</span>
+                            </div>
+                        </div>
+                        
+                        <div class="table-row">
+                            <div class="row-label">Date Canvas</div>
+                            <div class="row-value current">
+                                <i class="fas fa-check"></i>
+                                <span>基本機能</span>
+                            </div>
+                            <div class="row-value new">
+                                <i class="fas fa-check"></i>
+                                <span>Pro機能</span>
+                            </div>
+                        </div>
+                        
+                        <div class="table-row">
+                            <div class="row-label">関係修復サポート</div>
+                            <div class="row-value current">
+                                <i class="fas fa-times"></i>
+                                <span>なし</span>
+                            </div>
+                            <div class="row-value new">
+                                <i class="fas fa-check"></i>
+                                <span>あり</span>
+                            </div>
+                        </div>
+                        
+                        <div class="table-row">
+                            <div class="row-label">サポート</div>
+                            <div class="row-value current">
+                                <i class="fas fa-check"></i>
+                                <span>平日のみ</span>
+                            </div>
+                            <div class="row-value new">
+                                <i class="fas fa-check"></i>
+                                <span>24時間</span>
+                            </div>
+                        </div>
+                        
+                        <div class="table-row">
+                            <div class="row-label">ストレージ</div>
+                            <div class="row-value current">
+                                <i class="fas fa-check"></i>
+                                <span>5GB</span>
+                            </div>
+                            <div class="row-value new">
+                                <i class="fas fa-check"></i>
+                                <span>無制限</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 移行オプション -->
+            <div class="migration-options">
+                <h2>移行オプション</h2>
+                
+                <div class="options-grid">
+                    <div class="option-card recommended">
+                        <div class="option-header">
+                            <div class="option-badge">推奨</div>
+                            <h3>自動移行</h3>
+                            <p>新しいプランに自動で移行します</p>
+                        </div>
+                        
+                        <div class="option-content">
+                            <div class="option-price">
+                                <span class="price-label">新しい料金</span>
+                                <span class="price-value">¥1,480/月</span>
+                            </div>
+                            
+                            <div class="option-features">
+                                <div class="feature-item">
+                                    <i class="fas fa-check"></i>
+                                    <span>2025年2月1日から自動適用</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-check"></i>
+                                    <span>データはそのまま保持</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-check"></i>
+                                    <span>新機能をすぐに利用可能</span>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-primary" onclick="selectAutoMigration()">
+                                <i class="fas fa-magic"></i>
+                                自動移行を選択
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="option-card">
+                        <div class="option-header">
+                            <h3>手動移行</h3>
+                            <p>自分で移行タイミングを選択</p>
+                        </div>
+                        
+                        <div class="option-content">
+                            <div class="option-price">
+                                <span class="price-label">移行日</span>
+                                <input type="date" class="form-input" value="2025-02-01">
+                            </div>
+                            
+                            <div class="option-features">
+                                <div class="feature-item">
+                                    <i class="fas fa-check"></i>
+                                    <span>移行日を自由に設定</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-check"></i>
+                                    <span>事前に準備可能</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-check"></i>
+                                    <span>段階的な移行</span>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-outline" onclick="selectManualMigration()">
+                                <i class="fas fa-calendar"></i>
+                                手動移行を選択
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="option-card">
+                        <div class="option-header">
+                            <h3>プラン変更なし</h3>
+                            <p>現在のプランを維持</p>
+                        </div>
+                        
+                        <div class="option-content">
+                            <div class="option-price">
+                                <span class="price-label">現在の料金</span>
+                                <span class="price-value">¥980/月</span>
+                            </div>
+                            
+                            <div class="option-features">
+                                <div class="feature-item">
+                                    <i class="fas fa-info"></i>
+                                    <span>新機能は利用できません</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-info"></i>
+                                    <span>現在の機能のみ利用可能</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-info"></i>
+                                    <span>将来的に制限される可能性</span>
+                                </div>
+                            </div>
+                            
+                            <button class="btn btn-outline" onclick="selectNoChange()">
+                                <i class="fas fa-pause"></i>
+                                変更しない
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- よくある質問 -->
+            <div class="faq-section">
+                <h2>よくある質問</h2>
+                
+                <div class="faq-list">
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3>料金変更の理由は何ですか？</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>新しいAI機能の追加、24時間サポートの開始など、大幅な機能向上により料金を調整いたします。これにより、より価値の高いサービスを提供できます。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3>現在のデータはどうなりますか？</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>すべてのデータはそのまま保持されます。デート履歴、写真、メッセージなど、これまでに保存したすべての情報は新しいプランでも引き続き利用できます。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3>解約はできますか？</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>はい、いつでも解約可能です。解約手続きは設定画面から行えます。解約後も、現在のプラン期間中はサービスを利用できます。</p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <h3>新機能はいつから利用できますか？</h3>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>自動移行を選択した場合、2025年2月1日からすぐに利用可能です。手動移行の場合は、設定した日付から利用開始となります。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 最終アクション -->
+            <div class="final-actions">
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" onclick="contactSupport()">
+                        <i class="fas fa-headset"></i>
+                        サポートに問い合わせ
+                    </button>
+                    <button class="btn btn-primary" onclick="confirmMigration()">
+                        <i class="fas fa-check"></i>
+                        移行を確定
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/common.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeBillingChange();
+        });
+        
+        function initializeBillingChange() {
+            // 課金変更通知画面の初期化
+            setupMigrationOptions();
+            setupFAQ();
+        }
+        
+        function setupMigrationOptions() {
+            // 移行オプションの設定
+            console.log('移行オプションを設定しました');
+        }
+        
+        function setupFAQ() {
+            // FAQの設定
+            console.log('FAQを設定しました');
+        }
+        
+        function selectAutoMigration() {
+            showInfo('自動移行を選択しました');
+            document.querySelectorAll('.option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            document.querySelector('.option-card.recommended').classList.add('selected');
+        }
+        
+        function selectManualMigration() {
+            showInfo('手動移行を選択しました');
+            document.querySelectorAll('.option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.target.closest('.option-card').classList.add('selected');
+        }
+        
+        function selectNoChange() {
+            showInfo('プラン変更なしを選択しました');
+            document.querySelectorAll('.option-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.target.closest('.option-card').classList.add('selected');
+        }
+        
+        function toggleFAQ(element) {
+            const faqItem = element.closest('.faq-item');
+            const answer = faqItem.querySelector('.faq-answer');
+            const icon = element.querySelector('i');
+            
+            if (answer.style.display === 'block') {
+                answer.style.display = 'none';
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                answer.style.display = 'block';
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+        
+        function contactSupport() {
+            showInfo('サポートに問い合わせます');
+        }
+        
+        function confirmMigration() {
+            const selectedOption = document.querySelector('.option-card.selected');
+            if (!selectedOption) {
+                showInfo('移行オプションを選択してください');
+                return;
+            }
+            
+            showInfo('移行を確定しています...');
+            setTimeout(() => {
+                showSuccess('移行が確定されました');
+            }, 1000);
+        }
+        
+        // ナビゲーション関数
+        function navigateTo(screenId) {
+            const routes = {
+                'UC001-001': '../uc001/UC001-001.html',
+                'UC001-002': '../uc001/UC001-002.html',
+                'UC001-003': '../uc001/UC001-003.html',
+                'UC001-004': '../uc001/UC001-004.html',
+                'UC001-005': '../uc001/UC001-005.html',
+                'UC002-001': '../uc002/UC002-001.html',
+                'UC002-002': '../uc002/UC002-002.html',
+                'UC003-001': '../uc003/UC003-001.html',
+                'UC003-002': '../uc003/UC003-002.html',
+                'UC003-003': '../uc003/UC003-003.html',
+                'UC003-004': '../uc003/UC003-004.html',
+                'UC003-005': '../uc003/UC003-005.html',
+                'UC004-001': '../uc004/UC004-001.html',
+                'UC004-002': '../uc004/UC004-002.html',
+                'UC004-003': '../uc004/UC004-003.html',
+                'UC005-001': '../uc005/UC005-001.html',
+                'UC007-001': 'UC007-001.html',
+                'UC007-002': 'UC007-002.html',
+                'UC007-003': 'UC007-003.html',
+                'UC007-004': 'UC007-004.html',
+                'UC007-005': 'UC007-005.html',
+                'AUTH-001': '../auth/AUTH-001.html',
+                'AUTH-002': '../auth/AUTH-002.html',
+                'AUTH-003': '../auth/AUTH-003.html',
+                'AUTH-004': '../auth/AUTH-004.html',
+                'COMMON-001': '../common/COMMON-001.html',
+                'COMMON-002': '../common/COMMON-002.html',
+                'COMMON-003': '../common/COMMON-003.html',
+                'COMMON-004': '../common/COMMON-004.html',
+                'COMMON-005': '../common/COMMON-005.html'
+            };
+            
+            if (routes[screenId]) {
+                window.location.href = routes[screenId];
+            } else {
+                console.warn('ルートが見つかりません:', screenId);
+                showInfo('画面が見つかりません');
+            }
+        }
+    </script>
+    
+    <style>
+        .notification-content {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-8);
+            margin-bottom: var(--space-8);
+        }
+        
+        .notification-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
+            padding-bottom: var(--space-4);
+            border-bottom: 2px solid var(--border-light);
+        }
+        
+        .notification-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--radius-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: var(--text-2xl);
+        }
+        
+        .notification-title h2 {
+            font-size: var(--text-2xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+        
+        .notification-title p {
+            color: var(--text-secondary);
+        }
+        
+        .change-summary {
+            margin-bottom: var(--space-8);
+        }
+        
+        .change-summary h3 {
+            font-size: var(--text-xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-4);
+        }
+        
+        .summary-grid {
+            display: flex;
+            align-items: center;
+            gap: var(--space-6);
+            padding: var(--space-6);
+            background-color: var(--gray-50);
+            border-radius: var(--radius-lg);
+        }
+        
+        .summary-item {
+            flex: 1;
+            text-align: center;
+            padding: var(--space-4);
+            background-color: var(--white);
+            border-radius: var(--radius-lg);
+        }
+        
+        .summary-item.new {
+            border: 2px solid var(--primary-color);
+            background-color: rgba(255, 107, 107, 0.05);
+        }
+        
+        .item-label {
+            color: var(--text-secondary);
+            font-size: var(--text-sm);
+            margin-bottom: var(--space-2);
+        }
+        
+        .item-value {
+            font-size: var(--text-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+        }
+        
+        .item-price {
+            font-size: var(--text-xl);
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .summary-arrow {
+            color: var(--primary-color);
+            font-size: var(--text-2xl);
+        }
+        
+        .change-details {
+            margin-bottom: var(--space-8);
+        }
+        
+        .change-details h3 {
+            font-size: var(--text-xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-4);
+        }
+        
+        .reasons-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+        }
+        
+        .reasons-list li {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3);
+            background-color: var(--gray-50);
+            border-radius: var(--radius-lg);
+        }
+        
+        .reasons-list li i {
+            color: var(--primary-color);
+            font-size: var(--text-lg);
+        }
+        
+        .new-features h3 {
+            font-size: var(--text-xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-4);
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-4);
+        }
+        
+        .feature-item {
+            display: flex;
+            gap: var(--space-3);
+            padding: var(--space-4);
+            background-color: var(--gray-50);
+            border-radius: var(--radius-lg);
+        }
+        
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            flex-shrink: 0;
+        }
+        
+        .feature-content h4 {
+            font-size: var(--text-base);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+        
+        .feature-content p {
+            color: var(--text-secondary);
+            font-size: var(--text-sm);
+        }
+        
+        .price-comparison {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-8);
+            margin-bottom: var(--space-8);
+        }
+        
+        .price-comparison h2 {
+            font-size: var(--text-2xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-6);
+        }
+        
+        .comparison-table {
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+        }
+        
+        .table-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            background-color: var(--gray-100);
+        }
+        
+        .header-item {
+            padding: var(--space-4);
+            font-weight: 600;
+            color: var(--text-primary);
+            text-align: center;
+        }
+        
+        .header-item.current {
+            background-color: var(--gray-200);
+        }
+        
+        .header-item.new {
+            background-color: rgba(255, 107, 107, 0.1);
+        }
+        
+        .table-body {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .table-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            border-bottom: 1px solid var(--border-light);
+        }
+        
+        .table-row:last-child {
+            border-bottom: none;
+        }
+        
+        .row-label {
+            padding: var(--space-4);
+            font-weight: 600;
+            color: var(--text-primary);
+            background-color: var(--gray-50);
+        }
+        
+        .row-value {
+            padding: var(--space-4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+        }
+        
+        .row-value.current {
+            background-color: var(--gray-50);
+        }
+        
+        .row-value.new {
+            background-color: rgba(255, 107, 107, 0.05);
+        }
+        
+        .row-value i {
+            font-size: var(--text-sm);
+        }
+        
+        .row-value i.fa-check {
+            color: #10b981;
+        }
+        
+        .row-value i.fa-times {
+            color: #ef4444;
+        }
+        
+        .migration-options {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-8);
+            margin-bottom: var(--space-8);
+        }
+        
+        .migration-options h2 {
+            font-size: var(--text-2xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-6);
+        }
+        
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-6);
+        }
+        
+        .option-card {
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius-xl);
+            padding: var(--space-6);
+            transition: all var(--transition-fast);
+        }
+        
+        .option-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+        
+        .option-card.selected {
+            border-color: var(--primary-color);
+            background-color: rgba(255, 107, 107, 0.05);
+        }
+        
+        .option-card.recommended {
+            border-color: var(--primary-color);
+            background-color: rgba(255, 107, 107, 0.05);
+        }
+        
+        .option-header {
+            text-align: center;
+            margin-bottom: var(--space-4);
+        }
+        
+        .option-badge {
+            display: inline-block;
+            padding: var(--space-1) var(--space-3);
+            background-color: var(--primary-color);
+            color: var(--white);
+            border-radius: var(--radius-full);
+            font-size: var(--text-sm);
+            font-weight: 500;
+            margin-bottom: var(--space-2);
+        }
+        
+        .option-header h3 {
+            font-size: var(--text-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+        
+        .option-header p {
+            color: var(--text-secondary);
+            font-size: var(--text-sm);
+        }
+        
+        .option-content {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+        }
+        
+        .option-price {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-3);
+            background-color: var(--gray-50);
+            border-radius: var(--radius-lg);
+        }
+        
+        .price-label {
+            color: var(--text-secondary);
+            font-size: var(--text-sm);
+        }
+        
+        .price-value {
+            font-size: var(--text-lg);
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .option-features {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+        }
+        
+        .option-features .feature-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            padding: var(--space-2);
+            background-color: var(--white);
+            border-radius: var(--radius-lg);
+        }
+        
+        .option-features .feature-item i {
+            color: var(--primary-color);
+            font-size: var(--text-sm);
+        }
+        
+        .option-features .feature-item i.fa-info {
+            color: var(--text-secondary);
+        }
+        
+        .faq-section {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-8);
+            margin-bottom: var(--space-8);
+        }
+        
+        .faq-section h2 {
+            font-size: var(--text-2xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-6);
+        }
+        
+        .faq-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+        }
+        
+        .faq-item {
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-4);
+            background-color: var(--gray-50);
+            cursor: pointer;
+            transition: background-color var(--transition-fast);
+        }
+        
+        .faq-question:hover {
+            background-color: var(--gray-100);
+        }
+        
+        .faq-question h3 {
+            font-size: var(--text-base);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .faq-question i {
+            color: var(--text-secondary);
+            transition: transform var(--transition-fast);
+        }
+        
+        .faq-answer {
+            display: none;
+            padding: var(--space-4);
+            background-color: var(--white);
+        }
+        
+        .faq-answer p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        .final-actions {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-8);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: var(--space-4);
+            justify-content: center;
+        }
+        
+        @media (max-width: 768px) {
+            .summary-grid {
+                flex-direction: column;
+            }
+            
+            .summary-arrow {
+                transform: rotate(90deg);
+            }
+            
+            .table-header,
+            .table-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .row-label {
+                text-align: center;
+            }
+            
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</body>
+</html>

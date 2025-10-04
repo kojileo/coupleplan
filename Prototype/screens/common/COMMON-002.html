@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>設定 - CouplePlan</title>
+    <link rel="stylesheet" href="../../css/common.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- ナビゲーションバー -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-heart"></i>
+                <span>CouplePlan</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="../auth/AUTH-001.html" class="nav-link">ログイン</a>
+                <a href="../uc003/UC003-001.html" class="nav-link">ポータル</a>
+                <a href="COMMON-001.html" class="nav-link">ダッシュボード</a>
+            </div>
+            <div class="nav-toggle" id="nav-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- メインコンテンツ -->
+    <main class="main-content">
+        <div class="container">
+            <!-- ヘッダー -->
+            <div class="page-header">
+                <div class="header-content">
+                    <h1 class="page-title">設定</h1>
+                    <p class="page-subtitle">アカウントとアプリケーションの設定を管理します</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="goBack()">
+                        <i class="fas fa-arrow-left"></i>
+                        戻る
+                    </button>
+                </div>
+            </div>
+
+            <!-- 設定メニュー -->
+            <div class="settings-container">
+                <!-- アカウント設定 -->
+                <div class="settings-section">
+                    <h2>アカウント設定</h2>
+                    <div class="settings-list">
+                        <div class="setting-item">
+                            <div class="setting-icon">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="setting-content">
+                                <h3>プロフィール</h3>
+                                <p>名前、写真、基本情報の設定</p>
+                            </div>
+                            <div class="setting-action">
+                                <button class="btn btn-outline" onclick="editProfile()">
+                                    <i class="fas fa-edit"></i>
+                                    編集
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-icon">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                            <div class="setting-content">
+                                <h3>セキュリティ</h3>
+                                <p>パスワード、二段階認証の設定</p>
+                            </div>
+                            <div class="setting-action">
+                                <button class="btn btn-outline" onclick="securitySettings()">
+                                    <i class="fas fa-shield-alt"></i>
+                                    設定
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-icon">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <div class="setting-content">
+                                <h3>通知設定</h3>
+                                <p>プッシュ通知、メール通知の設定</p>
+                            </div>
+                            <div class="setting-action">
+                                <button class="btn btn-outline" onclick="notificationSettings()">
+                                    <i class="fas fa-cog"></i>
+                                    設定
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- プライバシー設定 -->
+                <div class="settings-section">
+                    <h2>プライバシー設定</h2>
+                    <div class="settings-list">
+                        <div class="setting-item">
+                            <div class="setting-icon">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                            <div class="setting-content">
+                                <h3>プロフィール公開設定</h3>
+                                <p>他のユーザーに表示する情報の設定</p>
+                            </div>
+                            <div class="setting-action">
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="profilePublic" checked>
+                                    <label for="profilePublic"></label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="setting-content">
+                                <h3>位置情報</h3>
+                                <p>位置情報の利用許可設定</p>
+                            </div>
+                            <div class="setting-action">
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="locationAccess" checked>
+                                    <label for="locationAccess"></label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-icon">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                            <div class="setting-content">
+                                <h3>写真アクセス</h3>
+                                <p>写真ライブラリへのアクセス許可</p>
+                            </div>
+                            <div class="setting-action">
+                                <div class="toggle-switch">
+                                    <input type="checkbox" id="photoAccess" checked>
+                                    <label for="photoAccess"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 課金・プラン設定 -->
+                <div class="settings-section">
+                    <h2>課金・プラン設定</h2>
+                    <div class="settings-list">
+                        <div class="setting-item">
+                            <div class="setting-icon">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <div class="setting-content">
+                                <h3>課金管理</h3>
+                                <p>プラン・支払い情報の管理</p>
+                            </div>
+                            <div class="setting-action">
+                                <button class="btn btn-outline" onclick="navigateTo('UC007-001')">
+                                    <i class="fas fa-cog"></i>
+                                    管理
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-icon">
+                                <i class="fas fa-unlock"></i>
+                            </div>
+                            <div class="setting-content">
+                                <h3>機能解放</h3>
+                                <p>プレミアム機能の解放</p>
+                            </div>
+                            <div class="setting-action">
+                                <button class="btn btn-outline" onclick="navigateTo('UC007-002')">
+                                    <i class="fas fa-star"></i>
+                                    解放
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- アプリケーション設定 -->
+                <div class="settings-section">
+                    <h2>アプリケーション設定</h2>
+                    <div class="settings-list">
+                        <div class="setting-item">
+                            <div class="setting-icon">
+                                <i class="fas fa-palette"></i>
+                            </div>
+                            <div class="setting-content">
+                                <h3>テーマ</h3>
+                                <p>アプリケーションの外観設定</p>
+                            </div>
+                            <div class="setting-action">
+                                <select class="form-select" id="themeSelect" onchange="changeTheme()">
+                                    <option value="light" selected>ライト</option>
+                                    <option value="dark">ダーク</option>
+                                    <option value="auto">自動</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-icon">
+                                <i class="fas fa-language"></i>
+                            </div>
+                            <div class="setting-content">
+                                <h3>言語</h3>
+                                <p>表示言語の設定</p>
+                            </div>
+                            <div class="setting-action">
+                                <select class="form-select" id="languageSelect" onchange="changeLanguage()">
+                                    <option value="ja" selected>日本語</option>
+                                    <option value="en">English</option>
+                                    <option value="ko">한국어</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="setting-content">
+                                <h3>タイムゾーン</h3>
+                                <p>地域と時間の設定</p>
+                            </div>
+                            <div class="setting-action">
+                                <select class="form-select" id="timezoneSelect" onchange="changeTimezone()">
+                                    <option value="Asia/Tokyo" selected>東京 (UTC+9)</option>
+                                    <option value="America/New_York">ニューヨーク (UTC-5)</option>
+                                    <option value="Europe/London">ロンドン (UTC+0)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- データ管理 -->
+                <div class="settings-section">
+                    <h2>データ管理</h2>
+                    <div class="settings-list">
+                        <div class="setting-item">
+                            <div class="setting-icon">
+                                <i class="fas fa-download"></i>
+                            </div>
+                            <div class="setting-content">
+                                <h3>データエクスポート</h3>
+                                <p>アカウントデータのダウンロード</p>
+                            </div>
+                            <div class="setting-action">
+                                <button class="btn btn-outline" onclick="exportData()">
+                                    <i class="fas fa-file-export"></i>
+                                    エクスポート
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-icon">
+                                <i class="fas fa-trash"></i>
+                            </div>
+                            <div class="setting-content">
+                                <h3>データ削除</h3>
+                                <p>アカウントとデータの完全削除</p>
+                            </div>
+                            <div class="setting-action">
+                                <button class="btn btn-danger" onclick="deleteAccount()">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    削除
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- サポート -->
+                <div class="settings-section">
+                    <h2>サポート</h2>
+                    <div class="settings-list">
+                        <div class="setting-item">
+                            <div class="setting-icon">
+                                <i class="fas fa-question-circle"></i>
+                            </div>
+                            <div class="setting-content">
+                                <h3>ヘルプセンター</h3>
+                                <p>よくある質問とサポート情報</p>
+                            </div>
+                            <div class="setting-action">
+                                <button class="btn btn-outline" onclick="openHelp()">
+                                    <i class="fas fa-external-link-alt"></i>
+                                    開く
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="setting-content">
+                                <h3>お問い合わせ</h3>
+                                <p>サポートチームへの連絡</p>
+                            </div>
+                            <div class="setting-action">
+                                <button class="btn btn-outline" onclick="contactSupport()">
+                                    <i class="fas fa-paper-plane"></i>
+                                    連絡
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-icon">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                            <div class="setting-content">
+                                <h3>アプリ情報</h3>
+                                <p>バージョン 1.0.0</p>
+                            </div>
+                            <div class="setting-action">
+                                <button class="btn btn-outline" onclick="showAppInfo()">
+                                    <i class="fas fa-info"></i>
+                                    詳細
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/common.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSettings();
+        });
+        
+        function initializeSettings() {
+            // 設定の初期化
+            loadSettings();
+        }
+        
+        function loadSettings() {
+            // 実際の実装ではAPIから設定データを取得
+            console.log('設定データを読み込みました');
+        }
+        
+        function editProfile() {
+            window.location.href = '../auth/AUTH-002.html';
+        }
+        
+        function securitySettings() {
+            showInfo('セキュリティ設定画面に移動します');
+        }
+        
+        function notificationSettings() {
+            showInfo('通知設定画面に移動します');
+        }
+        
+        function changeTheme() {
+            const theme = document.getElementById('themeSelect').value;
+            showSuccess(`テーマを${theme}に変更しました`);
+        }
+        
+        function changeLanguage() {
+            const language = document.getElementById('languageSelect').value;
+            showSuccess(`言語を${language}に変更しました`);
+        }
+        
+        function changeTimezone() {
+            const timezone = document.getElementById('timezoneSelect').value;
+            showSuccess(`タイムゾーンを${timezone}に変更しました`);
+        }
+        
+        function exportData() {
+            showSuccess('データのエクスポートを開始しました');
+        }
+        
+        function deleteAccount() {
+            if (confirm('アカウントを完全に削除しますか？この操作は取り消せません。')) {
+                showWarning('アカウントの削除を実行しました');
+            }
+        }
+        
+        // ナビゲーション関数
+        function navigateTo(screenId) {
+            const routes = {
+                'UC001-001': '../uc001/UC001-001.html',
+                'UC001-002': '../uc001/UC001-002.html',
+                'UC001-003': '../uc001/UC001-003.html',
+                'UC001-004': '../uc001/UC001-004.html',
+                'UC001-005': '../uc001/UC001-005.html',
+                'UC002-001': '../uc002/UC002-001.html',
+                'UC002-002': '../uc002/UC002-002.html',
+                'UC003-001': '../uc003/UC003-001.html',
+                'UC003-002': '../uc003/UC003-002.html',
+                'UC003-003': '../uc003/UC003-003.html',
+                'UC003-004': '../uc003/UC003-004.html',
+                'UC003-005': '../uc003/UC003-005.html',
+                'UC004-001': '../uc004/UC004-001.html',
+                'UC004-002': '../uc004/UC004-002.html',
+                'UC004-003': '../uc004/UC004-003.html',
+                'UC005-001': '../uc005/UC005-001.html',
+                'UC007-001': '../uc007/UC007-001.html',
+                'UC007-002': '../uc007/UC007-002.html',
+                'AUTH-001': '../auth/AUTH-001.html',
+                'AUTH-002': '../auth/AUTH-002.html',
+                'AUTH-003': '../auth/AUTH-003.html',
+                'AUTH-004': '../auth/AUTH-004.html',
+                'COMMON-001': 'COMMON-001.html',
+                'COMMON-002': 'COMMON-002.html',
+                'COMMON-003': 'COMMON-003.html',
+                'COMMON-004': 'COMMON-004.html',
+                'COMMON-005': 'COMMON-005.html'
+            };
+            
+            if (routes[screenId]) {
+                window.location.href = routes[screenId];
+            } else {
+                console.warn('ルートが見つかりません:', screenId);
+                showInfo('画面が見つかりません');
+            }
+        }
+        
+        function openHelp() {
+            window.location.href = 'COMMON-003.html';
+        }
+        
+        function contactSupport() {
+            showInfo('サポートチームに連絡します');
+        }
+        
+        function showAppInfo() {
+            showInfo('アプリ情報: CouplePlan v1.0.0');
+        }
+    </script>
+    
+    <style>
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-8);
+        }
+        
+        .page-title {
+            font-size: var(--text-3xl);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--space-2);
+        }
+        
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: var(--text-lg);
+        }
+        
+        .settings-container {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-8);
+        }
+        
+        .settings-section {
+            background-color: var(--white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            padding: var(--space-8);
+        }
+        
+        .settings-section h2 {
+            font-size: var(--text-2xl);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-6);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: var(--space-2);
+        }
+        
+        .settings-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+        }
+        
+        .setting-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            padding: var(--space-4);
+            border-radius: var(--radius-lg);
+            transition: background-color var(--transition-fast);
+        }
+        
+        .setting-item:hover {
+            background-color: var(--gray-50);
+        }
+        
+        .setting-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .setting-icon i {
+            color: var(--white);
+            font-size: var(--text-xl);
+        }
+        
+        .setting-content {
+            flex: 1;
+        }
+        
+        .setting-content h3 {
+            font-size: var(--text-lg);
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-1);
+        }
+        
+        .setting-content p {
+            color: var(--text-secondary);
+            font-size: var(--text-sm);
+        }
+        
+        .setting-action {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-switch label {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--gray-300);
+            border-radius: 24px;
+            transition: background-color var(--transition-fast);
+        }
+        
+        .toggle-switch label:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: var(--white);
+            border-radius: 50%;
+            transition: transform var(--transition-fast);
+        }
+        
+        .toggle-switch input:checked + label {
+            background-color: var(--primary-color);
+        }
+        
+        .toggle-switch input:checked + label:before {
+            transform: translateX(26px);
+        }
+        
+        .btn-danger {
+            background-color: #ef4444;
+            color: var(--white);
+            border: none;
+        }
+        
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+        
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--space-4);
+            }
+            
+            .setting-item {
+                flex-direction: column;
+                text-align: center;
+                gap: var(--space-3);
+            }
+            
+            .setting-action {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</body>
+</html>
