@@ -101,7 +101,7 @@ export default function Dashboard(): ReactElement {
                   <p className="text-gray-600 mb-6 leading-relaxed">
                     あなたの好みを学習したAIが、二人にぴったりのデートプランを自動生成・提案します。
                   </p>
-                  <Link href="/plans/new">
+                  <Link href="/dashboard/ai-plan">
                     <Button className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white">
                       プランを作成
                     </Button>
@@ -121,7 +121,7 @@ export default function Dashboard(): ReactElement {
                   <p className="text-gray-600 mb-6 leading-relaxed">
                     リアルタイムでカップルが一緒にプランを編集・カスタマイズし、双方の希望を反映します。
                   </p>
-                  <Link href="/collaboration">
+                  <Link href="/dashboard/collaboration">
                     <Button className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white">
                       共同編集を開始
                     </Button>
@@ -141,7 +141,7 @@ export default function Dashboard(): ReactElement {
                   <p className="text-gray-600 mb-6 leading-relaxed">
                     喧嘩や対立パターンを検知し、AIが中立的に仲裁提案を行い、関係性を修復・強化します。
                   </p>
-                  <Link href="/mediation">
+                  <Link href="/dashboard/mediation">
                     <Button className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white">
                       仲裁を依頼
                     </Button>
@@ -161,7 +161,7 @@ export default function Dashboard(): ReactElement {
                   <p className="text-gray-600 mb-6 leading-relaxed">
                     デートの思い出をキャンバス上に自由に記録し、パートナーとリアルタイムで協働編集できます。
                   </p>
-                  <Link href="/canvas">
+                  <Link href="/dashboard/date-canvas">
                     <Button className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white">
                       キャンバスを開く
                     </Button>
@@ -181,7 +181,7 @@ export default function Dashboard(): ReactElement {
                   <p className="text-gray-600 mb-6 leading-relaxed">
                     デート情報ポータルからAIデートプラン生成まで、カップルのデート体験を一貫してサポートします。
                   </p>
-                  <Link href="/portal">
+                  <Link href="/dashboard/portal">
                     <Button className="w-full bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white">
                       ポータルを開く
                     </Button>
@@ -201,7 +201,7 @@ export default function Dashboard(): ReactElement {
                   <p className="text-gray-600 mb-6 leading-relaxed">
                     アカウント設定、課金管理、機能制御など、アプリの設定を管理できます。
                   </p>
-                  <Link href="/settings">
+                  <Link href="/dashboard/settings">
                     <Button className="w-full bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white">
                       設定を開く
                     </Button>
