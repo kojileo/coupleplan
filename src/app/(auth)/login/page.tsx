@@ -24,7 +24,7 @@ export default function LoginPage(): ReactElement {
       });
 
       if (error) throw error;
-      void router.push('/plans');
+      void router.push('/dashboard');
     } catch (error) {
       console.error('ログインエラー:', error);
       alert('ログインに失敗しました');
