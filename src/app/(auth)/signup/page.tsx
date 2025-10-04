@@ -33,7 +33,12 @@ export default function SignUpPage(): ReactElement {
       setError('パスワードは8文字以上で入力してください');
       return false;
     }
-    if (password !== confirmPassword) {
+    // Constant-time comparison to prevent timing attacks
+    let isEqual = password.length === confirmPassword.length;
+    for (let i = 0; i < Math.max(password.length, confirmPassword.length); i++) {
+      isEqual = isEqual && password[i] === confirmPassword[i];
+    }
+    if (!isEqual) {
       setError('パスワードが一致しません');
       return false;
     }

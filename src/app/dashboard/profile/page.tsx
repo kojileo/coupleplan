@@ -308,8 +308,9 @@ export default function ProfilePage(): ReactElement {
             <div className="flex-shrink-0">
               <img
                 src={
-                  profile.avatar ||
-                  'https://ui-avatars.com/api/?name=User&background=rose&color=fff'
+                  profile.avatar && profile.avatar.startsWith('http')
+                    ? profile.avatar
+                    : 'https://ui-avatars.com/api/?name=User&background=rose&color=fff'
                 }
                 alt={profile.name}
                 className="w-24 h-24 rounded-full object-cover border-4 border-rose-200"
@@ -389,8 +390,9 @@ export default function ProfilePage(): ReactElement {
             <div className="flex items-center space-x-4">
               <img
                 src={
-                  profile.partner.avatar ||
-                  'https://ui-avatars.com/api/?name=Partner&background=purple&color=fff'
+                  profile.partner.avatar && profile.partner.avatar.startsWith('http')
+                    ? profile.partner.avatar
+                    : 'https://ui-avatars.com/api/?name=Partner&background=purple&color=fff'
                 }
                 alt={profile.partner.name}
                 className="w-16 h-16 rounded-full object-cover border-2 border-rose-200"
