@@ -7,7 +7,14 @@ import { useAuth } from '@/contexts/AuthContext';
 import Button from '@/components/ui/button';
 
 export default function Dashboard(): ReactElement {
-  const { session, isLoading } = useAuth();
+  const { session, isLoading, user, signOut } = useAuth();
+
+  // デバッグ情報をコンソールに出力
+  console.log('Dashboard - isLoading:', isLoading, 'session:', session, 'user:', user);
+  console.log(
+    'Dashboard - 現在のURL:',
+    typeof window !== 'undefined' ? window.location.href : 'SSR'
+  );
 
   if (isLoading) {
     return (
@@ -24,12 +31,29 @@ export default function Dashboard(): ReactElement {
     );
   }
 
+  // セッションが読み込まれていない場合の処理
+  if (!session && !isLoading) {
+    console.log('Dashboard - セッションが読み込まれていません、少し待機');
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-rose-50 to-purple-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-transparent border-t-rose-500 border-r-pink-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">セッションを読み込み中...</p>
+        </div>
+      </div>
+    );
+  }
+
   if (!session) {
+    console.log('Dashboard - No session found, showing login prompt');
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-rose-50 to-purple-50">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">ログインが必要です</h1>
-          <Link href="/login">
+          <p className="text-gray-600 mb-6">
+            セッションが確認できません。再度ログインしてください。
+          </p>
+          <Link href="/login?redirectTo=/dashboard">
             <Button className="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white">
               ログイン
             </Button>
@@ -75,14 +99,16 @@ export default function Dashboard(): ReactElement {
                   👤 プロフィール
                 </Button>
               </Link>
-              <Link href="/logout">
-                <Button
-                  size="sm"
-                  className="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 shadow-lg hover:shadow-xl transition-all duration-300 font-medium"
-                >
-                  ログアウト
-                </Button>
-              </Link>
+              <Button
+                size="sm"
+                className="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 shadow-lg hover:shadow-xl transition-all duration-300 font-medium"
+                onClick={async () => {
+                  await signOut();
+                  window.location.href = '/';
+                }}
+              >
+                ログアウト
+              </Button>
             </div>
           </div>
         </div>

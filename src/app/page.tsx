@@ -12,11 +12,14 @@ export default function Home(): ReactElement {
   const { session, isLoading } = useAuth();
   const router = useRouter();
 
-  useEffect(() => {
-    if (session) {
-      void router.push('/dashboard');
-    }
-  }, [router, session]);
+  // 自動遷移は無効化 - ユーザーが明示的にアクセスした場合のみ処理
+  // useEffect(() => {
+  //   if (session) {
+  //     const redirectTo =
+  //       new URLSearchParams(window.location.search).get('redirectTo') || '/dashboard';
+  //     void router.push(redirectTo);
+  //   }
+  // }, [router, session]);
 
   if (isLoading) {
     return (
@@ -89,7 +92,7 @@ export default function Home(): ReactElement {
             </div>
 
             <div className="flex items-center space-x-4">
-              <Link href="/login">
+              <Link href="/login?redirectTo=/dashboard">
                 <Button
                   variant="outline"
                   size="sm"
@@ -98,7 +101,7 @@ export default function Home(): ReactElement {
                   ログイン
                 </Button>
               </Link>
-              <Link href="/signup">
+              <Link href="/signup?redirectTo=/dashboard">
                 <Button
                   size="sm"
                   className="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 shadow-lg hover:shadow-xl transition-all duration-300 font-medium"
@@ -146,7 +149,7 @@ export default function Home(): ReactElement {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-6 justify-center mb-20">
-                <Link href="/signup">
+                <Link href="/signup?redirectTo=/dashboard">
                   <Button
                     size="lg"
                     className="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white text-lg px-10 py-5 rounded-2xl shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 transition-all duration-300 font-semibold"
@@ -486,7 +489,7 @@ export default function Home(): ReactElement {
               <ul className="space-y-4">
                 <li>
                   <Link
-                    href="/login"
+                    href="/login?redirectTo=/dashboard"
                     className="text-gray-300 hover:text-rose-400 transition-colors text-lg hover:underline"
                   >
                     ログイン
@@ -494,7 +497,7 @@ export default function Home(): ReactElement {
                 </li>
                 <li>
                   <Link
-                    href="/signup"
+                    href="/signup?redirectTo=/dashboard"
                     className="text-gray-300 hover:text-rose-400 transition-colors text-lg hover:underline"
                   >
                     新規登録

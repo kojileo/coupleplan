@@ -18,13 +18,68 @@ export default function LoginPage(): ReactElement {
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      console.log('ログイン処理開始:', email);
+
+      // APIルートを使用してログイン
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
       });
 
-      if (error) throw error;
-      void router.push('/dashboard');
+      const result = await response.json();
+
+      if (!response.ok) {
+        console.error('ログインエラー:', result.error);
+        alert(result.error || 'ログインに失敗しました');
+        return;
+      }
+
+      console.log('API - ログイン成功:', result);
+      console.log('API - ユーザー情報:', result.user);
+      console.log('API - セッション情報:', result.session);
+
+      // ログイン成功後の処理
+      console.log('ログイン成功、セッション確認中...');
+
+      // セッションを明示的に取得
+      const {
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
+
+      if (sessionError) {
+        console.error('セッション取得エラー:', sessionError);
+        alert('セッションの取得に失敗しました');
+        return;
+      }
+
+      console.log('取得したセッション:', session);
+
+      if (session) {
+        console.log('セッション確認済み、ダッシュボードに遷移');
+        // セッションが確認できた場合のみリダイレクト
+        window.location.href = '/dashboard';
+      } else {
+        console.log('セッションが見つかりません、少し待機してから再試行');
+        // セッションが見つからない場合は少し待機してから再試行
+        setTimeout(async () => {
+          const {
+            data: { session: retrySession },
+          } = await supabase.auth.getSession();
+          console.log('再試行後のセッション:', retrySession);
+
+          if (retrySession) {
+            console.log('再試行でセッション確認、ダッシュボードに遷移');
+            window.location.href = '/dashboard';
+          } else {
+            console.log('セッションが取得できません、強制リダイレクト');
+            window.location.href = '/dashboard';
+          }
+        }, 1000);
+      }
     } catch (error) {
       console.error('ログインエラー:', error);
       alert('ログインに失敗しました');

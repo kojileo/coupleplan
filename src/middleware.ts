@@ -1,11 +1,55 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
 
 // 簡易的なレート制限実装（本番環境では Redis などを使用推奨）
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 
-export function middleware(request: NextRequest): NextResponse {
+export async function middleware(request: NextRequest): Promise<NextResponse> {
   // セキュリティヘッダーの設定
   const response = NextResponse.next();
+
+  // 認証が必要なページのパスのみチェック（自動リダイレクトは無効化）
+  const protectedPaths = ['/dashboard', '/profile', '/settings'];
+  const isProtectedPath = protectedPaths.some((path) => request.nextUrl.pathname.startsWith(path));
+
+  // 保護されたページに未認証でアクセスした場合のみリダイレクト
+  if (isProtectedPath) {
+    try {
+      const supabase = createMiddlewareClient({ req: request, res: response });
+
+      // セッションを取得
+      const {
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
+
+      if (sessionError) {
+        console.error('Middleware - セッション取得エラー:', sessionError);
+      }
+
+      console.log('Middleware - 認証チェック:', request.nextUrl.pathname, 'session:', session);
+      console.log('Middleware - セッション詳細:', {
+        user: session?.user?.id,
+        email: session?.user?.email,
+        expires_at: session?.expires_at,
+        access_token: session?.access_token ? 'exists' : 'missing',
+      });
+
+      if (!session) {
+        console.log('Middleware - セッションなし、ログインページにリダイレクト');
+        // 認証が必要なページに未認証でアクセスした場合のみリダイレクト
+        const redirectUrl = new URL('/login', request.url);
+        redirectUrl.searchParams.set('redirectTo', request.nextUrl.pathname);
+        return NextResponse.redirect(redirectUrl);
+      }
+
+      console.log('Middleware - セッション確認済み、アクセス許可');
+    } catch (error) {
+      console.error('認証チェックエラー:', error);
+      // エラー時は認証が必要なページからはリダイレクト
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
+  }
 
   // レート制限の実装（開発環境では無効化）
   if (request.nextUrl.pathname.startsWith('/api/') && process.env.NODE_ENV !== 'development') {

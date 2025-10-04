@@ -1,11 +1,82 @@
 'use client';
 
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
 import type { ReactElement } from 'react';
 
 import Button from '@/components/ui/button';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/lib/supabase-auth';
 
 export default function SettingsPage(): ReactElement {
+  const { user } = useAuth();
+  const [userSettings, setUserSettings] = useState({
+    notifications: true,
+    emailUpdates: true,
+    privacy: 'friends',
+    theme: 'light',
+  });
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    if (user) {
+      loadUserSettings();
+    }
+  }, [user]);
+
+  const loadUserSettings = async () => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('user_settings')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        throw error;
+      }
+
+      if (data) {
+        setUserSettings({
+          notifications: data.notifications || true,
+          emailUpdates: data.email_updates || true,
+          privacy: data.privacy || 'friends',
+          theme: data.theme || 'light',
+        });
+      }
+    } catch (error) {
+      console.error('設定読み込みエラー:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      window.location.href = '/';
+    } catch (error) {
+      console.error('ログアウトエラー:', error);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-50 via-white to-purple-50">
+        <div className="relative">
+          <div
+            className="animate-spin rounded-full h-16 w-16 border-4 border-transparent border-t-rose-500 border-r-pink-500"
+            role="status"
+            aria-label="読み込み中"
+          />
+          <div className="absolute inset-0 rounded-full border-4 border-gray-200 opacity-30" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-purple-50">
       {/* ヘッダー */}
@@ -17,6 +88,12 @@ export default function SettingsPage(): ReactElement {
                 ← 戻る
               </Button>
               <h1 className="text-2xl font-bold text-gray-900">設定・管理</h1>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="text-sm text-gray-600">ログイン中: {user?.email}</div>
+              <Button onClick={handleLogout} variant="outline" size="sm">
+                ログアウト
+              </Button>
             </div>
           </div>
         </div>
@@ -136,12 +213,11 @@ export default function SettingsPage(): ReactElement {
                 <p className="text-gray-600 mb-6 leading-relaxed">
                   プロフィール、パスワード、プライバシー設定などの管理を行えます。
                 </p>
-                <Button
-                  className="w-full bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white"
-                  disabled
-                >
-                  準備中
-                </Button>
+                <Link href="/dashboard/profile">
+                  <Button className="w-full bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white">
+                    プロフィールを編集
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>

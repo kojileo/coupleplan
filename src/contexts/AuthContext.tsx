@@ -49,11 +49,12 @@ export function AuthProvider({ children }: { children: ReactNode }): ReactElemen
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(function onAuthStateChange(
-      _event: string,
+      event: string,
       session: Session | null
     ): void {
       if (!mounted) return;
 
+      console.log('Auth state change:', event, 'session:', session);
       setSession(session);
       setUser(session?.user ?? null);
       setIsLoading(false);

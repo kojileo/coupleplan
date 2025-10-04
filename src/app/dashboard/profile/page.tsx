@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import type { ReactElement } from 'react';
 
 import Button from '@/components/ui/button';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/lib/supabase-auth';
 
 interface UserProfile {
   id: string;
@@ -35,6 +37,7 @@ interface UserProfile {
 }
 
 export default function ProfilePage(): ReactElement {
+  const { user, session } = useAuth();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -47,54 +50,101 @@ export default function ProfilePage(): ReactElement {
   });
 
   useEffect(() => {
-    loadProfile();
-  }, []);
+    if (user) {
+      loadProfile();
+    }
+  }, [user]);
 
   const loadProfile = async () => {
+    if (!user) return;
+
     setIsLoading(true);
 
-    // プロフィールデータのシミュレーション
-    const mockProfile: UserProfile = {
-      id: 'user123',
-      name: '田中 花子',
-      email: 'hanako@example.com',
-      avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150',
-      bio: 'デートプラン作成が大好きなカップルです。新しい場所を発見するのが趣味です。',
-      location: '東京都渋谷区',
-      birthday: '1995-03-15',
-      anniversary: '2020-06-20',
-      preferences: {
-        favoriteCategories: ['カフェ', 'レストラン', '美術館', '公園'],
-        budgetRange: '¥5,000-¥15,000',
-        timePreference: '午後から夕方',
-        activityLevel: '中程度',
-      },
-      stats: {
-        totalPlans: 24,
-        completedPlans: 18,
-        favoriteSpots: 12,
-        memberSince: Date.now() - 365 * 24 * 60 * 60 * 1000, // 1年前
-      },
-      partner: {
-        name: '佐藤 太郎',
-        email: 'taro@example.com',
-        avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
-        connectedAt: Date.now() - 300 * 24 * 60 * 60 * 1000, // 300日前
-      },
-    };
+    try {
+      // Supabaseからプロフィールデータを取得
+      const { data: profileData, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single();
 
-    // データ読み込みのシミュレーション
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+      if (error && error.code !== 'PGRST116') {
+        throw error;
+      }
 
-    setProfile(mockProfile);
-    setEditForm({
-      name: mockProfile.name,
-      bio: mockProfile.bio || '',
-      location: mockProfile.location || '',
-      birthday: mockProfile.birthday || '',
-      anniversary: mockProfile.anniversary || '',
-    });
-    setIsLoading(false);
+      // プロフィールデータが存在しない場合はデフォルト値を使用
+      const defaultProfile: UserProfile = {
+        id: user.id,
+        name: user.user_metadata?.name || user.email?.split('@')[0] || 'ユーザー',
+        email: user.email || '',
+        avatar:
+          user.user_metadata?.avatar_url ||
+          `https://ui-avatars.com/api/?name=${encodeURIComponent(user.user_metadata?.name || 'User')}&background=rose&color=fff`,
+        bio: profileData?.bio || '',
+        location: profileData?.location || '',
+        birthday: profileData?.birthday || '',
+        anniversary: profileData?.anniversary || '',
+        preferences: {
+          favoriteCategories: profileData?.favorite_categories || ['カフェ', 'レストラン'],
+          budgetRange: profileData?.budget_range || '¥5,000-¥15,000',
+          timePreference: profileData?.time_preference || '午後から夕方',
+          activityLevel: profileData?.activity_level || '中程度',
+        },
+        stats: {
+          totalPlans: profileData?.total_plans || 0,
+          completedPlans: profileData?.completed_plans || 0,
+          favoriteSpots: profileData?.favorite_spots || 0,
+          memberSince: new Date(user.created_at).getTime(),
+        },
+        partner: profileData?.partner_id
+          ? {
+              name: profileData?.partner_name || 'パートナー',
+              email: profileData?.partner_email || '',
+              avatar:
+                profileData?.partner_avatar ||
+                'https://ui-avatars.com/api/?name=Partner&background=purple&color=fff',
+              connectedAt: profileData?.connected_at || Date.now(),
+            }
+          : undefined,
+      };
+
+      setProfile(defaultProfile);
+      setEditForm({
+        name: defaultProfile.name,
+        bio: defaultProfile.bio || '',
+        location: defaultProfile.location || '',
+        birthday: defaultProfile.birthday || '',
+        anniversary: defaultProfile.anniversary || '',
+      });
+    } catch (error) {
+      console.error('プロフィール読み込みエラー:', error);
+      // エラー時はデフォルトプロフィールを表示
+      const fallbackProfile: UserProfile = {
+        id: user.id,
+        name: user.user_metadata?.name || user.email?.split('@')[0] || 'ユーザー',
+        email: user.email || '',
+        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(user.user_metadata?.name || 'User')}&background=rose&color=fff`,
+        bio: '',
+        location: '',
+        birthday: '',
+        anniversary: '',
+        preferences: {
+          favoriteCategories: ['カフェ', 'レストラン'],
+          budgetRange: '¥5,000-¥15,000',
+          timePreference: '午後から夕方',
+          activityLevel: '中程度',
+        },
+        stats: {
+          totalPlans: 0,
+          completedPlans: 0,
+          favoriteSpots: 0,
+          memberSince: new Date(user.created_at).getTime(),
+        },
+      };
+      setProfile(fallbackProfile);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleEdit = () => {
@@ -102,12 +152,23 @@ export default function ProfilePage(): ReactElement {
   };
 
   const handleSave = async () => {
-    if (!profile) return;
+    if (!profile || !user) return;
 
     try {
-      // プロフィール更新のシミュレーション
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Supabaseにプロフィールデータを保存
+      const { error } = await supabase.from('profiles').upsert({
+        id: user.id,
+        name: editForm.name,
+        bio: editForm.bio,
+        location: editForm.location,
+        birthday: editForm.birthday,
+        anniversary: editForm.anniversary,
+        updated_at: new Date().toISOString(),
+      });
 
+      if (error) throw error;
+
+      // ローカル状態を更新
       setProfile({
         ...profile,
         name: editForm.name,
@@ -120,6 +181,7 @@ export default function ProfilePage(): ReactElement {
       alert('プロフィールを更新しました');
       setIsEditing(false);
     } catch (error) {
+      console.error('プロフィール更新エラー:', error);
       alert('更新に失敗しました');
     }
   };
@@ -137,13 +199,37 @@ export default function ProfilePage(): ReactElement {
     setIsEditing(false);
   };
 
-  const handleChangePassword = () => {
-    alert('パスワード変更機能は準備中です');
+  const handleChangePassword = async () => {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(user?.email || '', {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+
+      if (error) throw error;
+      alert('パスワードリセットメールを送信しました。メールをご確認ください。');
+    } catch (error) {
+      console.error('パスワードリセットエラー:', error);
+      alert('パスワードリセットに失敗しました');
+    }
   };
 
-  const handleDeleteAccount = () => {
+  const handleDeleteAccount = async () => {
     if (confirm('アカウントを削除しますか？この操作は取り消せません。')) {
-      alert('アカウント削除機能は準備中です');
+      try {
+        // プロフィールデータを削除
+        await supabase.from('profiles').delete().eq('id', user?.id);
+
+        // アカウントを削除
+        const { error } = await supabase.auth.admin.deleteUser(user?.id || '');
+
+        if (error) throw error;
+
+        alert('アカウントを削除しました');
+        window.location.href = '/';
+      } catch (error) {
+        console.error('アカウント削除エラー:', error);
+        alert('アカウント削除に失敗しました');
+      }
     }
   };
 
@@ -221,7 +307,10 @@ export default function ProfilePage(): ReactElement {
           <div className="flex items-start space-x-6">
             <div className="flex-shrink-0">
               <img
-                src={profile.avatar}
+                src={
+                  profile.avatar ||
+                  'https://ui-avatars.com/api/?name=User&background=rose&color=fff'
+                }
                 alt={profile.name}
                 className="w-24 h-24 rounded-full object-cover border-4 border-rose-200"
               />
@@ -299,7 +388,10 @@ export default function ProfilePage(): ReactElement {
             <h3 className="text-2xl font-bold text-gray-900 mb-6">パートナー情報</h3>
             <div className="flex items-center space-x-4">
               <img
-                src={profile.partner.avatar}
+                src={
+                  profile.partner.avatar ||
+                  'https://ui-avatars.com/api/?name=Partner&background=purple&color=fff'
+                }
                 alt={profile.partner.name}
                 className="w-16 h-16 rounded-full object-cover border-2 border-rose-200"
               />
