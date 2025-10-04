@@ -57,13 +57,22 @@ export default function Dashboard(): ReactElement {
             </div>
 
             <div className="flex items-center space-x-4">
-              <Link href="/profile">
+              <Link href="/dashboard/plans">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border-blue-200 text-blue-600 hover:bg-blue-50 font-medium"
+                >
+                  📝 保存されたプラン
+                </Button>
+              </Link>
+              <Link href="/dashboard/profile">
                 <Button
                   variant="outline"
                   size="sm"
                   className="border-rose-200 text-rose-600 hover:bg-rose-50 font-medium"
                 >
-                  プロフィール
+                  👤 プロフィール
                 </Button>
               </Link>
               <Link href="/logout">
@@ -101,11 +110,18 @@ export default function Dashboard(): ReactElement {
                   <p className="text-gray-600 mb-6 leading-relaxed">
                     あなたの好みを学習したAIが、二人にぴったりのデートプランを自動生成・提案します。
                   </p>
-                  <Link href="/dashboard/ai-plan">
-                    <Button className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white">
-                      プランを作成
-                    </Button>
-                  </Link>
+                  <div className="space-y-3">
+                    <Link href="/dashboard/ai-plan">
+                      <Button className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white">
+                        プランを作成
+                      </Button>
+                    </Link>
+                    <Link href="/dashboard/plans">
+                      <Button variant="outline" className="w-full">
+                        📝 保存されたプランを見る
+                      </Button>
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>

@@ -125,6 +125,10 @@ export default function CustomizePlanPage({
   const handleSaveCustomization = () => {
     // カスタマイズを保存する処理
     alert('カスタマイズを保存しました');
+    // プラン一覧画面に遷移
+    setTimeout(() => {
+      window.location.href = '/dashboard/plans';
+    }, 1000);
   };
 
   const handleStartCollaboration = () => {

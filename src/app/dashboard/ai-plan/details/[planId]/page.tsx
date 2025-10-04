@@ -119,6 +119,10 @@ export default function PlanDetailsPage({ params }: { params: { planId: string }
   const handleSave = () => {
     // プランを保存する処理
     alert('プランを保存しました');
+    // プラン一覧画面に遷移
+    setTimeout(() => {
+      window.location.href = '/dashboard/plans';
+    }, 1000);
   };
 
   return (

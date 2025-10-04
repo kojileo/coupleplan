@@ -131,6 +131,10 @@ export default function CollaborationPage(): ReactElement {
   const handleSave = () => {
     // 保存処理
     alert('プランを保存しました');
+    // プラン一覧画面に遷移
+    setTimeout(() => {
+      window.location.href = '/dashboard/plans';
+    }, 1000);
   };
 
   const handleInvitePartner = () => {
