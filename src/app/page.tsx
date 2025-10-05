@@ -12,14 +12,14 @@ export default function Home(): ReactElement {
   const { session, isLoading } = useAuth();
   const router = useRouter();
 
-  // 自動遷移は無効化 - ユーザーが明示的にアクセスした場合のみ処理
-  // useEffect(() => {
-  //   if (session) {
-  //     const redirectTo =
-  //       new URLSearchParams(window.location.search).get('redirectTo') || '/dashboard';
-  //     void router.push(redirectTo);
-  //   }
-  // }, [router, session]);
+  // 認証済みユーザーはダッシュボードに誘導
+  useEffect(() => {
+    if (session) {
+      const redirectTo =
+        new URLSearchParams(window.location.search).get('redirectTo') || '/dashboard';
+      void router.push(redirectTo);
+    }
+  }, [router, session]);
 
   if (isLoading) {
     return (

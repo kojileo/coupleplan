@@ -28,41 +28,56 @@ export function AuthProvider({ children }: { children: ReactNode }): ReactElemen
   useEffect(() => {
     let mounted = true;
 
-    const initializeAuth = async (): Promise<void> => {
+    // 初期セッション取得
+    const getInitialSession = async () => {
       try {
         const {
           data: { session },
+          error,
         } = await supabase.auth.getSession();
-        if (!mounted) return;
 
-        setSession(session);
-        setUser(session?.user ?? null);
-      } catch (error) {
-        console.error('セッションの取得に失敗:', error);
-      } finally {
+        if (error) {
+          console.error('初期セッション取得エラー:', error);
+          if (mounted) {
+            setSession(null);
+            setUser(null);
+            setIsLoading(false);
+          }
+          return;
+        }
+
         if (mounted) {
+          setSession(session);
+          setUser(session?.user ?? null);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error('セッション取得に失敗:', error);
+        if (mounted) {
+          setSession(null);
+          setUser(null);
           setIsLoading(false);
         }
       }
     };
 
+    // 認証状態変更の監視
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(function onAuthStateChange(
-      event: string,
-      session: Session | null
-    ): void {
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (!mounted) return;
 
-      console.log('Auth state change:', event, 'session:', session);
+      console.log('認証状態変更:', event, 'session:', session ? 'exists' : 'null');
+
       setSession(session);
       setUser(session?.user ?? null);
       setIsLoading(false);
     });
 
-    void initializeAuth();
+    // 初期セッション取得
+    void getInitialSession();
 
-    return (): void => {
+    return () => {
       mounted = false;
       subscription.unsubscribe();
     };

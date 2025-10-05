@@ -9,13 +9,7 @@ import Button from '@/components/ui/button';
 export default function Dashboard(): ReactElement {
   const { session, isLoading, user, signOut } = useAuth();
 
-  // デバッグ情報をコンソールに出力
-  console.log('Dashboard - isLoading:', isLoading, 'session:', session, 'user:', user);
-  console.log(
-    'Dashboard - 現在のURL:',
-    typeof window !== 'undefined' ? window.location.href : 'SSR'
-  );
-
+  // ローディング中
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-rose-50 to-purple-50">
@@ -31,21 +25,8 @@ export default function Dashboard(): ReactElement {
     );
   }
 
-  // セッションが読み込まれていない場合の処理
-  if (!session && !isLoading) {
-    console.log('Dashboard - セッションが読み込まれていません、少し待機');
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-rose-50 to-purple-50">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-transparent border-t-rose-500 border-r-pink-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">セッションを読み込み中...</p>
-        </div>
-      </div>
-    );
-  }
-
+  // セッションがない場合
   if (!session) {
-    console.log('Dashboard - No session found, showing login prompt');
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-rose-50 to-purple-50">
         <div className="text-center">
@@ -121,6 +102,7 @@ export default function Dashboard(): ReactElement {
             <p className="text-xl text-gray-600">
               カップルの絆を深める統合プラットフォームへようこそ
             </p>
+            {user && <p className="text-lg text-gray-500 mt-2">こんにちは、{user.email} さん！</p>}
           </div>
 
           {/* 主要機能カード */}

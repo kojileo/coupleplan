@@ -1,4 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import type { LoginRequest } from '@/types/api';
 
@@ -11,11 +12,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     const { email, password } = body;
 
-    // サーバーサイドでSupabaseクライアントを作成
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    // サーバーサイドでSupabaseクライアントを作成（Next.js 15対応）
+    const cookieStore = await cookies();
+    const supabase = createRouteHandlerClient({
+      cookies: () => cookieStore,
+    });
 
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
@@ -24,7 +25,18 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     if (error) {
       console.error('ログインエラー:', error);
-      return NextResponse.json({ error: 'ログインに失敗しました' }, { status: 401 });
+
+      // より詳細なエラーメッセージを提供
+      let errorMessage = 'ログインに失敗しました';
+      if (error.message.includes('Invalid login credentials')) {
+        errorMessage = 'メールアドレスまたはパスワードが正しくありません';
+      } else if (error.message.includes('Email not confirmed')) {
+        errorMessage = 'メールアドレスが確認されていません。確認メールをご確認ください';
+      } else if (error.message.includes('Too many requests')) {
+        errorMessage = 'ログイン試行回数が多すぎます。しばらく待ってから再試行してください';
+      }
+
+      return NextResponse.json({ error: errorMessage }, { status: 401 });
     }
 
     console.log(
@@ -32,6 +44,18 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       data.user?.id,
       data.session?.access_token ? 'exists' : 'missing'
     );
+
+    // セッションが正しく設定されているか確認
+    const {
+      data: { session: verifySession },
+      error: sessionError,
+    } = await supabase.auth.getSession();
+
+    if (sessionError) {
+      console.error('API - セッション確認エラー:', sessionError);
+    }
+
+    console.log('API - セッション確認:', verifySession ? 'exists' : 'missing');
 
     return NextResponse.json(
       {

@@ -8,7 +8,7 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
   // セキュリティヘッダーの設定
   const response = NextResponse.next();
 
-  // 認証が必要なページのパスのみチェック（自動リダイレクトは無効化）
+  // 認証が必要なページのパスのみチェック
   const protectedPaths = ['/dashboard', '/profile', '/settings'];
   const isProtectedPath = protectedPaths.some((path) => request.nextUrl.pathname.startsWith(path));
 
@@ -25,19 +25,13 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
 
       if (sessionError) {
         console.error('Middleware - セッション取得エラー:', sessionError);
+        const redirectUrl = new URL('/login', request.url);
+        redirectUrl.searchParams.set('redirectTo', request.nextUrl.pathname);
+        return NextResponse.redirect(redirectUrl);
       }
-
-      console.log('Middleware - 認証チェック:', request.nextUrl.pathname, 'session:', session);
-      console.log('Middleware - セッション詳細:', {
-        user: session?.user?.id,
-        email: session?.user?.email,
-        expires_at: session?.expires_at,
-        access_token: session?.access_token ? 'exists' : 'missing',
-      });
 
       if (!session) {
         console.log('Middleware - セッションなし、ログインページにリダイレクト');
-        // 認証が必要なページに未認証でアクセスした場合のみリダイレクト
         const redirectUrl = new URL('/login', request.url);
         redirectUrl.searchParams.set('redirectTo', request.nextUrl.pathname);
         return NextResponse.redirect(redirectUrl);
@@ -46,7 +40,6 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
       console.log('Middleware - セッション確認済み、アクセス許可');
     } catch (error) {
       console.error('認証チェックエラー:', error);
-      // エラー時は認証が必要なページからはリダイレクト
       return NextResponse.redirect(new URL('/login', request.url));
     }
   }
