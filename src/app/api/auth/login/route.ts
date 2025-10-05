@@ -1,4 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
+import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import type { LoginRequest } from '@/types/api';
 
@@ -11,11 +12,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     const { email, password } = body;
 
-    // サーバーサイドでSupabaseクライアントを作成
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    // サーバーサイドでSupabaseクライアントを作成（Next.js 15対応）
+    const cookieStore = await cookies();
+    const supabase = createRouteHandlerClient({
+      cookies: () => cookieStore,
+    });
 
     const { data, error } = await supabase.auth.signInWithPassword({
       email,

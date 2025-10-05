@@ -54,7 +54,6 @@ export function AuthProvider({ children }: { children: ReactNode }): ReactElemen
     ): void {
       if (!mounted) return;
 
-      console.log('Auth state change:', event, 'session:', session);
       setSession(session);
       setUser(session?.user ?? null);
       setIsLoading(false);
