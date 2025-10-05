@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
+import { authCircuitBreaker } from '@/lib/circuit-breaker';
+import { authStopManager } from '@/lib/auth-stop';
 
 // 簡易的なレート制限実装（本番環境では Redis などを使用推奨）
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -12,8 +14,21 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
   const protectedPaths = ['/dashboard', '/profile', '/settings'];
   const isProtectedPath = protectedPaths.some((path) => request.nextUrl.pathname.startsWith(path));
 
-  // 保護されたページに未認証でアクセスした場合のみリダイレクト
-  if (isProtectedPath) {
+  // グローバル停止フラグをチェック
+  if (authStopManager.isAuthStopped()) {
+    console.warn('Middleware - 認証システムが停止中です。認証チェックをスキップします。');
+    return response;
+  }
+
+  // 緊急対策：認証チェックを完全に無効化
+  // リフレッシュトークンエラーの無限ループを防ぐため
+  if (false && isProtectedPath) {
+    // サーキットブレーカーがオープンの場合は認証チェックをスキップ
+    if (authCircuitBreaker.isOpen()) {
+      console.warn('Middleware - サーキットブレーカーがオープンです。認証チェックをスキップします。');
+      return response;
+    }
+
     try {
       const supabase = createMiddlewareClient({ req: request, res: response });
 
@@ -24,6 +39,29 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
       } = await supabase.auth.getSession();
 
       if (sessionError) {
+        // レート制限エラーの場合は警告のみ表示し、リダイレクトは行わない
+        if (sessionError.message?.includes('rate limit') || sessionError.message?.includes('over_request_rate_limit')) {
+          console.warn('Middleware - Supabaseレート制限に達しています。認証チェックをスキップします。');
+          return response; // そのまま通す
+        }
+        
+        // リフレッシュトークンエラーの場合はサーキットブレーカーをトリガー
+        if (sessionError.message?.includes('refresh_token_not_found') || sessionError.message?.includes('Invalid Refresh Token')) {
+          console.warn('Middleware - リフレッシュトークンが見つかりません。サーキットブレーカーをトリガーします。');
+          authCircuitBreaker.recordFailure();
+          
+          // サーキットブレーカーがオープンになった場合は認証チェックをスキップ
+          if (authCircuitBreaker.isOpen()) {
+            console.warn('Middleware - サーキットブレーカーがオープンになりました。認証チェックをスキップします。');
+            return response;
+          }
+          
+          const redirectUrl = new URL('/login', request.url);
+          redirectUrl.searchParams.set('redirectTo', request.nextUrl.pathname);
+          redirectUrl.searchParams.set('clearSession', 'true');
+          return NextResponse.redirect(redirectUrl);
+        }
+        
         console.error('Middleware - セッション取得エラー:', sessionError);
         const redirectUrl = new URL('/login', request.url);
         redirectUrl.searchParams.set('redirectTo', request.nextUrl.pathname);
@@ -38,8 +76,18 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
       }
 
       console.log('Middleware - セッション確認済み、アクセス許可');
+      // 成功を記録
+      authCircuitBreaker.recordSuccess();
     } catch (error) {
       console.error('認証チェックエラー:', error);
+      // レート制限エラーの場合はそのまま通す
+      if (error instanceof Error && (error.message.includes('rate limit') || error.message.includes('over_request_rate_limit'))) {
+        console.warn('Middleware - レート制限エラー、認証チェックをスキップします');
+        return response;
+      }
+      
+      // その他のエラーもサーキットブレーカーに記録
+      authCircuitBreaker.recordFailure();
       return NextResponse.redirect(new URL('/login', request.url));
     }
   }

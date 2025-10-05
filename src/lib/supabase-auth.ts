@@ -21,7 +21,7 @@ if (process.env.NODE_ENV === 'production') {
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
-    autoRefreshToken: true,
+    autoRefreshToken: false, // 緊急対策：自動リフレッシュを無効化
     persistSession: true,
     detectSessionInUrl: true,
     flowType: 'pkce',

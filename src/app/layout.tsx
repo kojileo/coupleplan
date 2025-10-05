@@ -6,6 +6,11 @@ import type { ReactElement } from 'react';
 import './globals.css';
 import { AuthProvider } from '@/contexts/AuthContext';
 
+// 緊急停止スクリプトを読み込み（開発環境のみ）
+if (process.env.NODE_ENV === 'development') {
+  import('@/lib/force-stop');
+}
+
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {

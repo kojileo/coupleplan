@@ -3,10 +3,11 @@
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { FormEvent, ReactElement } from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import Button from '@/components/ui/button';
 import { supabase } from '@/lib/supabase-auth';
+import { clearSession } from '@/lib/manual-auth';
 
 export default function LoginPage(): ReactElement {
   const router = useRouter();
@@ -16,6 +17,17 @@ export default function LoginPage(): ReactElement {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
+  // セッションクリアが必要な場合の処理
+  useEffect(() => {
+    const clearSessionParam = searchParams.get('clearSession');
+    if (clearSessionParam === 'true') {
+      console.log('破損したセッションをクリアします');
+      clearSession().then(() => {
+        console.log('セッションをクリアしました');
+      });
+    }
+  }, [searchParams]);
 
   const getRedirectUrl = () => {
     const redirectTo = searchParams.get('redirectTo');
