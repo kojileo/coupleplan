@@ -54,6 +54,22 @@ model Couple {
   @@map("couples")
 }
 
+// カップル招待テーブル
+model CoupleInvitation {
+  id             String    @id @default(uuid()) @db.Uuid
+  fromUserId     String    @map("from_user_id") @db.Uuid
+  toUserId       String?   @map("to_user_id") @db.Uuid
+  invitationCode String    @unique @map("invitation_code")
+  status         String    @default("active") // active, used, expired
+  expiresAt      DateTime  @map("expires_at") @db.Timestamptz(6)
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([invitationCode])
+  @@index([fromUserId])
+  @@map("couple_invitations")
+}
+
 // デートプランテーブル
 model DatePlan {
   id          String    @id @default(uuid()) @db.Uuid

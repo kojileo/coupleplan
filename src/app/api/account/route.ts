@@ -1,7 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { prisma } from '@/lib/db';
 import { supabase } from '@/lib/supabase-auth';
 
 /**
@@ -55,27 +54,44 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
     console.log(`ユーザーID: ${userId} のアカウント削除を開始します`);
 
     try {
-      // トランザクションを使用して、関連データを削除
+      // Supabaseクライアントを使用して関連データを削除
       console.log('データベースからユーザー関連データを削除します');
-      await prisma.$transaction(async (prisma) => {
-        // ユーザーが作成したプランを削除
-        const deletedPlans = await prisma.plan.deleteMany({
-          where: { userId },
-        });
-        console.log(`削除されたプラン数: ${deletedPlans.count}`);
 
-        // ユーザーのいいねを削除
-        const deletedLikes = await prisma.like.deleteMany({
-          where: { userId },
-        });
-        console.log(`削除されたいいね数: ${deletedLikes.count}`);
+      // プロフィールを削除
+      const { error: profileError } = await supabaseAdmin
+        .from('profiles')
+        .delete()
+        .eq('id', userId);
 
-        // ユーザーのプロフィールを削除
-        const profile = await prisma.profile.delete({
-          where: { userId },
-        });
-        console.log(`プロフィールを削除しました: ${profile.id}`);
-      });
+      if (profileError) {
+        console.error('プロフィール削除エラー:', profileError);
+      } else {
+        console.log('プロフィールを削除しました');
+      }
+
+      // カップル招待を削除
+      const { error: invitationError } = await supabaseAdmin
+        .from('couple_invitations')
+        .delete()
+        .or(`from_user_id.eq.${userId},to_user_id.eq.${userId}`);
+
+      if (invitationError) {
+        console.error('招待削除エラー:', invitationError);
+      } else {
+        console.log('カップル招待を削除しました');
+      }
+
+      // カップル関係を削除
+      const { error: coupleError } = await supabaseAdmin
+        .from('couples')
+        .delete()
+        .or(`user1_id.eq.${userId},user2_id.eq.${userId}`);
+
+      if (coupleError) {
+        console.error('カップル関係削除エラー:', coupleError);
+      } else {
+        console.log('カップル関係を削除しました');
+      }
 
       // Supabase Authからユーザーを削除
       console.log('Supabaseからユーザーを削除します');
@@ -90,7 +106,11 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
       }
 
       console.log(`ユーザーID: ${userId} のアカウント削除が完了しました`);
-      return NextResponse.json({ data: 'アカウントを削除しました' });
+
+      // レスポンスヘッダーにサインアウト指示を追加
+      const response = NextResponse.json({ data: 'アカウントを削除しました' });
+      response.headers.set('Clear-Site-Data', '"cookies", "storage"');
+      return response;
     } catch (error) {
       // Supabase/Prismaの操作エラー
       console.error('データベース操作エラー:', error);

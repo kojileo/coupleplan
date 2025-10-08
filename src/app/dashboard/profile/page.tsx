@@ -6,6 +6,7 @@ import type { ReactElement } from 'react';
 import Button from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase-auth';
+import { validateProfileForm, type ProfileFormData } from '@/lib/validation';
 
 interface UserProfile {
   id: string;
@@ -43,11 +44,18 @@ export default function ProfilePage(): ReactElement {
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
     name: '',
-    bio: '',
+    email: '',
     location: '',
     birthday: '',
     anniversary: '',
   });
+  const [validationErrors, setValidationErrors] = useState<{
+    name?: string;
+    email?: string;
+    location?: string;
+    birthday?: string;
+    anniversary?: string;
+  }>({});
 
   useEffect(() => {
     if (user) {
@@ -111,7 +119,7 @@ export default function ProfilePage(): ReactElement {
       setProfile(defaultProfile);
       setEditForm({
         name: defaultProfile.name,
-        bio: defaultProfile.bio || '',
+        email: defaultProfile.email || '',
         location: defaultProfile.location || '',
         birthday: defaultProfile.birthday || '',
         anniversary: defaultProfile.anniversary || '',
@@ -154,17 +162,45 @@ export default function ProfilePage(): ReactElement {
   const handleSave = async () => {
     if (!profile || !user) return;
 
+    // バリデーション
+    const formData: ProfileFormData = {
+      name: editForm.name,
+      email: editForm.email,
+      location: editForm.location,
+      birthday: editForm.birthday,
+      anniversary: editForm.anniversary,
+    };
+
+    const validation = validateProfileForm(formData);
+    if (!validation.valid) {
+      setValidationErrors(validation.errors);
+      return;
+    }
+
+    // バリデーションエラーをクリア
+    setValidationErrors({});
+
     try {
-      // Supabaseにプロフィールデータを保存
-      const { error } = await supabase.from('profiles').upsert({
+      // 空文字列やundefinedをnullに変換
+      const profileData = {
         id: user.id,
         name: editForm.name,
-        bio: editForm.bio,
-        location: editForm.location,
-        birthday: editForm.birthday,
-        anniversary: editForm.anniversary,
+        email: editForm.email,
+        location: editForm.location && editForm.location.trim() !== '' ? editForm.location : null,
+        birthday: editForm.birthday && editForm.birthday.trim() !== '' ? editForm.birthday : null,
+        anniversary:
+          editForm.anniversary && editForm.anniversary.trim() !== '' ? editForm.anniversary : null,
         updated_at: new Date().toISOString(),
-      });
+      };
+
+      console.log('保存するデータ:', profileData);
+      console.log('birthday値:', editForm.birthday, '→', profileData.birthday);
+      console.log('anniversary値:', editForm.anniversary, '→', profileData.anniversary);
+
+      // Supabaseにプロフィールデータを保存
+      const { data, error } = await supabase.from('profiles').upsert(profileData);
+
+      console.log('Supabaseレスポンス:', { data, error });
 
       if (error) throw error;
 
@@ -172,7 +208,7 @@ export default function ProfilePage(): ReactElement {
       setProfile({
         ...profile,
         name: editForm.name,
-        bio: editForm.bio,
+        email: editForm.email,
         location: editForm.location,
         birthday: editForm.birthday,
         anniversary: editForm.anniversary,
@@ -190,12 +226,13 @@ export default function ProfilePage(): ReactElement {
     if (profile) {
       setEditForm({
         name: profile.name,
-        bio: profile.bio || '',
+        email: profile.email || '',
         location: profile.location || '',
         birthday: profile.birthday || '',
         anniversary: profile.anniversary || '',
       });
     }
+    setValidationErrors({});
     setIsEditing(false);
   };
 
@@ -214,21 +251,47 @@ export default function ProfilePage(): ReactElement {
   };
 
   const handleDeleteAccount = async () => {
-    if (confirm('アカウントを削除しますか？この操作は取り消せません。')) {
+    if (confirm('アカウントを完全に削除しますか？この操作は取り消せません。')) {
       try {
-        // プロフィールデータを削除
-        await supabase.from('profiles').delete().eq('id', user?.id);
+        // セッショントークンを取得
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
 
-        // アカウントを削除
-        const { error } = await supabase.auth.admin.deleteUser(user?.id || '');
+        if (!session) {
+          throw new Error('認証が必要です。再度ログインしてください。');
+        }
 
-        if (error) throw error;
+        // アカウント削除APIを呼び出し
+        const response = await fetch('/api/account', {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${session.access_token}`,
+          },
+        });
 
-        alert('アカウントを削除しました');
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'アカウント削除に失敗しました');
+        }
+
+        // 強制的にサインアウト
+        await supabase.auth.signOut();
+
+        // ローカルストレージをクリア
+        localStorage.clear();
+        sessionStorage.clear();
+
+        alert('アカウントを完全に削除しました。');
         window.location.href = '/';
       } catch (error) {
         console.error('アカウント削除エラー:', error);
-        alert('アカウント削除に失敗しました');
+        alert(
+          error instanceof Error
+            ? error.message
+            : 'アカウント削除に失敗しました。サポートにお問い合わせください。'
+        );
       }
     }
   };
@@ -304,82 +367,100 @@ export default function ProfilePage(): ReactElement {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* プロフィール情報 */}
         <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
-          <div className="flex items-start space-x-6">
-            <div className="flex-shrink-0">
-              <img
-                src={
-                  profile.avatar && profile.avatar.startsWith('http')
-                    ? profile.avatar
-                    : 'https://ui-avatars.com/api/?name=User&background=rose&color=fff'
-                }
-                alt={profile.name}
-                className="w-24 h-24 rounded-full object-cover border-4 border-rose-200"
-              />
-            </div>
-            <div className="flex-1">
-              {isEditing ? (
-                <div className="space-y-4">
+          <div className="space-y-6">
+            {isEditing ? (
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">名前</label>
+                  <input
+                    type="text"
+                    value={editForm.name}
+                    onChange={(e) => {
+                      setEditForm({ ...editForm, name: e.target.value });
+                      setValidationErrors({ ...validationErrors, name: undefined });
+                    }}
+                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent ${validationErrors.name ? 'border-red-500' : 'border-gray-300'}`}
+                  />
+                  {validationErrors.name && (
+                    <p className="mt-1 text-sm text-red-600">{validationErrors.name}</p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    メールアドレス
+                  </label>
+                  <input
+                    type="email"
+                    value={editForm.email}
+                    onChange={(e) => {
+                      setEditForm({ ...editForm, email: e.target.value });
+                      setValidationErrors({ ...validationErrors, email: undefined });
+                    }}
+                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent ${validationErrors.email ? 'border-red-500' : 'border-gray-300'}`}
+                  />
+                  {validationErrors.email && (
+                    <p className="mt-1 text-sm text-red-600">{validationErrors.email}</p>
+                  )}
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">名前</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">居住地</label>
                     <input
                       type="text"
-                      value={editForm.name}
-                      onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                      value={editForm.location}
+                      onChange={(e) => {
+                        setEditForm({ ...editForm, location: e.target.value });
+                        setValidationErrors({ ...validationErrors, location: undefined });
+                      }}
+                      className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent ${validationErrors.location ? 'border-red-500' : 'border-gray-300'}`}
                     />
+                    {validationErrors.location && (
+                      <p className="mt-1 text-sm text-red-600">{validationErrors.location}</p>
+                    )}
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">自己紹介</label>
-                    <textarea
-                      value={editForm.bio}
-                      onChange={(e) => setEditForm({ ...editForm, bio: e.target.value })}
-                      rows={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent"
-                    />
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">居住地</label>
-                      <input
-                        type="text"
-                        value={editForm.location}
-                        onChange={(e) => setEditForm({ ...editForm, location: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">誕生日</label>
-                      <input
-                        type="date"
-                        value={editForm.birthday}
-                        onChange={(e) => setEditForm({ ...editForm, birthday: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">記念日</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">誕生日</label>
                     <input
                       type="date"
-                      value={editForm.anniversary}
-                      onChange={(e) => setEditForm({ ...editForm, anniversary: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                      value={editForm.birthday}
+                      onChange={(e) => {
+                        setEditForm({ ...editForm, birthday: e.target.value });
+                        setValidationErrors({ ...validationErrors, birthday: undefined });
+                      }}
+                      className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent ${validationErrors.birthday ? 'border-red-500' : 'border-gray-300'}`}
                     />
+                    {validationErrors.birthday && (
+                      <p className="mt-1 text-sm text-red-600">{validationErrors.birthday}</p>
+                    )}
                   </div>
                 </div>
-              ) : (
                 <div>
-                  <h2 className="text-3xl font-bold text-gray-900 mb-2">{profile.name}</h2>
-                  <p className="text-gray-600 mb-4">{profile.bio}</p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-500">
-                    <div>📍 {profile.location}</div>
-                    <div>📧 {profile.email}</div>
-                    {profile.birthday && <div>🎂 {profile.birthday}</div>}
-                    {profile.anniversary && <div>💕 {profile.anniversary}</div>}
-                  </div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">記念日</label>
+                  <input
+                    type="date"
+                    value={editForm.anniversary}
+                    onChange={(e) => {
+                      setEditForm({ ...editForm, anniversary: e.target.value });
+                      setValidationErrors({ ...validationErrors, anniversary: undefined });
+                    }}
+                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent ${validationErrors.anniversary ? 'border-red-500' : 'border-gray-300'}`}
+                  />
+                  {validationErrors.anniversary && (
+                    <p className="mt-1 text-sm text-red-600">{validationErrors.anniversary}</p>
+                  )}
                 </div>
-              )}
-            </div>
+              </div>
+            ) : (
+              <div>
+                <h2 className="text-3xl font-bold text-gray-900 mb-2">{profile.name}</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-500 mb-4">
+                  <div>📍 {profile.location}</div>
+                  <div>📧 {profile.email}</div>
+                  {profile.birthday && <div>🎂 {profile.birthday}</div>}
+                  {profile.anniversary && <div>💕 {profile.anniversary}</div>}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
