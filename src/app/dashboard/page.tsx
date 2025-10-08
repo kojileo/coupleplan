@@ -46,55 +46,6 @@ export default function Dashboard(): ReactElement {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-rose-50">
-      {/* ナビゲーションヘッダー */}
-      <nav className="bg-white/95 backdrop-blur-md shadow-lg border-b border-rose-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            <div className="flex items-center">
-              <Link href="/" className="group flex items-center space-x-3">
-                <div className="bg-gradient-to-br from-rose-500 to-pink-600 p-2 rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300">
-                  <span className="text-2xl">💑</span>
-                </div>
-                <span className="text-2xl font-bold bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
-                  CouplePlan
-                </span>
-              </Link>
-            </div>
-
-            <div className="flex items-center space-x-4">
-              <Link href="/dashboard/plans">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="border-blue-200 text-blue-600 hover:bg-blue-50 font-medium"
-                >
-                  📝 保存されたプラン
-                </Button>
-              </Link>
-              <Link href="/dashboard/profile">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="border-rose-200 text-rose-600 hover:bg-rose-50 font-medium"
-                >
-                  👤 プロフィール
-                </Button>
-              </Link>
-              <Button
-                size="sm"
-                className="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 shadow-lg hover:shadow-xl transition-all duration-300 font-medium"
-                onClick={async () => {
-                  await signOut();
-                  window.location.href = '/';
-                }}
-              >
-                ログアウト
-              </Button>
-            </div>
-          </div>
-        </div>
-      </nav>
-
       <main className="pt-8">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
