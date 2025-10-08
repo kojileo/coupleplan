@@ -3,7 +3,7 @@
  * 連携コード生成、検証、カップル関係の確立を管理
  */
 
-import { supabase } from './supabase-auth';
+import { createClient } from '@supabase/supabase-js';
 
 /**
  * 6桁の連携コードを生成
@@ -11,6 +11,26 @@ import { supabase } from './supabase-auth';
 export function generateLinkageCode(): string {
   // 6桁のランダムな数字を生成
   return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+/**
+ * 認証トークン付きSupabaseクライアントを作成
+ */
+function createAuthenticatedSupabaseClient(accessToken: string) {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error('Supabase環境変数が設定されていません');
+  }
+
+  return createClient(supabaseUrl, supabaseAnonKey, {
+    global: {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    },
+  });
 }
 
 /**
@@ -24,8 +44,13 @@ export interface CreateInvitationResult {
   error?: string;
 }
 
-export async function createPartnerInvitation(userId: string): Promise<CreateInvitationResult> {
+export async function createPartnerInvitation(
+  userId: string,
+  accessToken: string
+): Promise<CreateInvitationResult> {
   try {
+    const supabase = createAuthenticatedSupabaseClient(accessToken);
+
     // 既存の有効な招待があるか確認
     const { data: existingInvitations, error: fetchError } = await supabase
       .from('couple_invitations')
@@ -102,9 +127,12 @@ export interface VerifyInvitationResult {
 
 export async function verifyPartnerInvitation(
   invitationCode: string,
-  currentUserId: string
+  currentUserId: string,
+  accessToken: string
 ): Promise<VerifyInvitationResult> {
   try {
+    const supabase = createAuthenticatedSupabaseClient(accessToken);
+
     // 連携コードで招待を検索
     const { data: invitation, error: invitationError } = await supabase
       .from('couple_invitations')
@@ -187,9 +215,12 @@ export interface CreateCoupleResult {
 export async function createCouple(
   invitationId: string,
   fromUserId: string,
-  toUserId: string
+  toUserId: string,
+  accessToken: string
 ): Promise<CreateCoupleResult> {
   try {
+    const supabase = createAuthenticatedSupabaseClient(accessToken);
+
     // 既にカップル関係があるかチェック
     const { data: existingCouple, error: fetchError } = await supabase
       .from('couples')
@@ -261,8 +292,10 @@ export interface GetCoupleResult {
   error?: string;
 }
 
-export async function getCouple(userId: string): Promise<GetCoupleResult> {
+export async function getCouple(userId: string, accessToken: string): Promise<GetCoupleResult> {
   try {
+    const supabase = createAuthenticatedSupabaseClient(accessToken);
+
     // カップル関係を検索
     const { data: couple, error: coupleError } = await supabase
       .from('couples')

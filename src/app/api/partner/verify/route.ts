@@ -39,7 +39,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     // 連携コードを検証
-    const result = await verifyPartnerInvitation(body.invitationCode, userId);
+    const result = await verifyPartnerInvitation(body.invitationCode, userId, token);
 
     if (!result.success) {
       return NextResponse.json({ error: result.error }, { status: 400 });

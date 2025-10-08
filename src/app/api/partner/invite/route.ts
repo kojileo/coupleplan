@@ -28,7 +28,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const userId = user.id;
 
     // 連携招待を作成
-    const result = await createPartnerInvitation(userId);
+    const result = await createPartnerInvitation(userId, token);
 
     if (!result.success) {
       return NextResponse.json({ error: result.error }, { status: 400 });

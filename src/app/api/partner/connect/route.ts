@@ -40,7 +40,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     // カップル関係を確立
-    const result = await createCouple(body.invitationId, body.fromUserId, toUserId);
+    const result = await createCouple(body.invitationId, body.fromUserId, toUserId, token);
 
     if (!result.success) {
       return NextResponse.json({ error: result.error }, { status: 400 });

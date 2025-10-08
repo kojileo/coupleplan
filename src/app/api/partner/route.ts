@@ -28,7 +28,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const userId = user.id;
 
     // カップル情報を取得
-    const result = await getCouple(userId);
+    const result = await getCouple(userId, token);
 
     if (!result.success) {
       return NextResponse.json({ error: result.error }, { status: 500 });

@@ -214,6 +214,26 @@ export default function Dashboard(): ReactElement {
               </div>
             </div>
 
+            {/* パートナー連携 */}
+            <div className="group hover:scale-105 transition-all duration-500">
+              <div className="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100 h-full">
+                <div className="text-center">
+                  <div className="bg-gradient-to-br from-pink-500 to-pink-600 w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
+                    <span className="text-3xl">💑</span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4">パートナー連携</h3>
+                  <p className="text-gray-600 mb-6 leading-relaxed">
+                    パートナーとの連携設定、招待コードの生成・検証、カップル関係の確立を行います。
+                  </p>
+                  <Link href="/dashboard/partner-linkage">
+                    <Button className="w-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white">
+                      パートナー連携
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+
             {/* 設定・管理 */}
             <div className="group hover:scale-105 transition-all duration-500">
               <div className="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100 h-full">
