@@ -86,81 +86,93 @@ export default function Dashboard(): ReactElement {
             </div>
 
             {/* カップル共同編集 */}
-            <div className="group hover:scale-105 transition-all duration-500">
-              <div className="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100 h-full">
+            <div className="group transition-all duration-500 relative">
+              <div className="bg-white rounded-3xl p-8 shadow-xl transition-all duration-500 border border-gray-100 h-full opacity-60">
+                <div className="absolute top-4 right-4 z-10">
+                  <span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded-full">
+                    準備中
+                  </span>
+                </div>
                 <div className="text-center">
-                  <div className="bg-gradient-to-br from-purple-500 to-purple-600 w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
+                  <div className="bg-gradient-to-br from-purple-300 to-purple-400 w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg">
                     <span className="text-3xl">👥</span>
                   </div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-4">共同編集</h3>
                   <p className="text-gray-600 mb-6 leading-relaxed">
                     リアルタイムでカップルが一緒にプランを編集・カスタマイズし、双方の希望を反映します。
                   </p>
-                  <Link href="/dashboard/collaboration">
-                    <Button className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white">
-                      共同編集を開始
-                    </Button>
-                  </Link>
+                  <Button disabled className="w-full bg-gray-300 text-gray-500 cursor-not-allowed">
+                    近日公開
+                  </Button>
                 </div>
               </div>
             </div>
 
             {/* AI喧嘩仲裁・関係修復 */}
-            <div className="group hover:scale-105 transition-all duration-500">
-              <div className="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100 h-full">
+            <div className="group transition-all duration-500 relative">
+              <div className="bg-white rounded-3xl p-8 shadow-xl transition-all duration-500 border border-gray-100 h-full opacity-60">
+                <div className="absolute top-4 right-4 z-10">
+                  <span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded-full">
+                    準備中
+                  </span>
+                </div>
                 <div className="text-center">
-                  <div className="bg-gradient-to-br from-green-500 to-green-600 w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
+                  <div className="bg-gradient-to-br from-green-300 to-green-400 w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg">
                     <span className="text-3xl">💕</span>
                   </div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-4">関係修復</h3>
                   <p className="text-gray-600 mb-6 leading-relaxed">
                     喧嘩や対立パターンを検知し、AIが中立的に仲裁提案を行い、関係性を修復・強化します。
                   </p>
-                  <Link href="/dashboard/mediation">
-                    <Button className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white">
-                      仲裁を依頼
-                    </Button>
-                  </Link>
+                  <Button disabled className="w-full bg-gray-300 text-gray-500 cursor-not-allowed">
+                    近日公開
+                  </Button>
                 </div>
               </div>
             </div>
 
             {/* Date Canvas */}
-            <div className="group hover:scale-105 transition-all duration-500">
-              <div className="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100 h-full">
+            <div className="group transition-all duration-500 relative">
+              <div className="bg-white rounded-3xl p-8 shadow-xl transition-all duration-500 border border-gray-100 h-full opacity-60">
+                <div className="absolute top-4 right-4 z-10">
+                  <span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded-full">
+                    準備中
+                  </span>
+                </div>
                 <div className="text-center">
-                  <div className="bg-gradient-to-br from-orange-500 to-orange-600 w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
+                  <div className="bg-gradient-to-br from-orange-300 to-orange-400 w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg">
                     <span className="text-3xl">🎨</span>
                   </div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-4">Date Canvas</h3>
                   <p className="text-gray-600 mb-6 leading-relaxed">
                     デートの思い出をキャンバス上に自由に記録し、パートナーとリアルタイムで協働編集できます。
                   </p>
-                  <Link href="/dashboard/date-canvas">
-                    <Button className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white">
-                      キャンバスを開く
-                    </Button>
-                  </Link>
+                  <Button disabled className="w-full bg-gray-300 text-gray-500 cursor-not-allowed">
+                    近日公開
+                  </Button>
                 </div>
               </div>
             </div>
 
             {/* ポータル統合 */}
-            <div className="group hover:scale-105 transition-all duration-500">
-              <div className="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100 h-full">
+            <div className="group transition-all duration-500 relative">
+              <div className="bg-white rounded-3xl p-8 shadow-xl transition-all duration-500 border border-gray-100 h-full opacity-60">
+                <div className="absolute top-4 right-4 z-10">
+                  <span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded-full">
+                    準備中
+                  </span>
+                </div>
                 <div className="text-center">
-                  <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
+                  <div className="bg-gradient-to-br from-indigo-300 to-indigo-400 w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg">
                     <span className="text-3xl">🌐</span>
                   </div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-4">ポータル統合</h3>
                   <p className="text-gray-600 mb-6 leading-relaxed">
                     デート情報ポータルからAIデートプラン生成まで、カップルのデート体験を一貫してサポートします。
                   </p>
-                  <Link href="/dashboard/portal">
-                    <Button className="w-full bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white">
-                      ポータルを開く
-                    </Button>
-                  </Link>
+                  <Button disabled className="w-full bg-gray-300 text-gray-500 cursor-not-allowed">
+                    近日公開
+                  </Button>
                 </div>
               </div>
             </div>
@@ -185,18 +197,18 @@ export default function Dashboard(): ReactElement {
               </div>
             </div>
 
-            {/* 設定・管理 */}
+            {/* プロフィール設定 */}
             <div className="group hover:scale-105 transition-all duration-500">
               <div className="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100 h-full">
                 <div className="text-center">
                   <div className="bg-gradient-to-br from-gray-500 to-gray-600 w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
                     <span className="text-3xl">⚙️</span>
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4">設定・管理</h3>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4">プロフィール設定</h3>
                   <p className="text-gray-600 mb-6 leading-relaxed">
-                    アカウント設定、課金管理、機能制御など、アプリの設定を管理できます。
+                    アカウント情報、プロフィール、プライバシー設定を管理できます。
                   </p>
-                  <Link href="/dashboard/settings">
+                  <Link href="/dashboard/profile">
                     <Button className="w-full bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white">
                       設定を開く
                     </Button>
