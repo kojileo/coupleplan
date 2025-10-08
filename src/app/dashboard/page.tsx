@@ -119,7 +119,7 @@ export default function Dashboard(): ReactElement {
                     あなたの好みを学習したAIが、二人にぴったりのデートプランを自動生成・提案します。
                   </p>
                   <div className="space-y-3">
-                    <Link href="/dashboard/ai-plan">
+                    <Link href="/dashboard/plans/create">
                       <Button className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white">
                         プランを作成
                       </Button>
