@@ -131,8 +131,13 @@ export default function AIGeneratingPage(): ReactElement {
             </div>
           </div>
 
-          <h1 className="text-4xl font-extrabold text-gray-900 mb-4">AIがデートプランを生成中</h1>
-          <p className="text-xl text-gray-600">あなただけの特別なデートプランを作成しています</p>
+          <h1 className="text-4xl font-extrabold text-gray-900 mb-4">AIが最適なプランを生成中</h1>
+          <p className="text-xl text-gray-600 mb-2">
+            あなただけの特別なデートプランを作成しています
+          </p>
+          <div className="inline-flex items-center px-4 py-2 bg-purple-100 rounded-full">
+            <span className="text-sm font-medium text-purple-700">Gemini 2.5 思考モード搭載</span>
+          </div>
         </div>
 
         {/* プログレスバー */}
@@ -257,8 +262,8 @@ export default function AIGeneratingPage(): ReactElement {
             <div>
               <h3 className="font-medium text-blue-900 mb-2">AI生成のヒント</h3>
               <p className="text-sm text-blue-700">
-                より良いプランを生成するために、過去のデート履歴や好みの情報を活用しています。
-                生成には通常30秒〜2分程度かかります。
+                Gemini 2.5の思考モードで、あなたに最適な1つのプランを深く分析・生成しています。
+                生成には通常15〜25秒程度かかります。
               </p>
             </div>
           </div>

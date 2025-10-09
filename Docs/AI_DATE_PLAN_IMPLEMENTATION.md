@@ -78,19 +78,40 @@ UC-001: AIデートプラン提案・生成機能の実装が完了しました�
 
 #### サポートするAIプロバイダー
 
-1. **OpenAI** (GPT-4)
-2. **Anthropic** (Claude)
-3. **Mock** (開発用モックデータ)
+1. **Google Gemini** (Gemini Pro) ⭐ 推奨 - 無料利用枠あり
+2. **OpenAI** (GPT-4)
+3. **Anthropic** (Claude)
+4. **Mock** (開発用モックデータ)
 
 #### 環境変数
 
 ```env
-AI_PROVIDER=mock           # openai | anthropic | mock
-AI_API_KEY=your_api_key   # OpenAI or Anthropic API key
-AI_MODEL=gpt-4             # Model name
-AI_MAX_TOKENS=2000         # Max tokens
+# Gemini API（推奨）
+AI_PROVIDER=gemini                    # gemini | openai | anthropic | mock
+GEMINI_API_KEY=your_gemini_api_key   # Google Gemini API key
+AI_MODEL=gemini-2.5-flash             # Model name (gemini-2.5-flash が最新推奨)
+
+# OpenAI API（オプション）
+# AI_PROVIDER=openai
+# AI_API_KEY=your_openai_api_key
+# AI_MODEL=gpt-4
+
+# Anthropic API（オプション）
+# AI_PROVIDER=anthropic
+# AI_API_KEY=your_anthropic_api_key
+# AI_MODEL=claude-3-sonnet
+
+# 共通設定
+AI_MAX_TOKENS=3000         # Max tokens（gemini-2.5系は思考トークン含めて3000推奨）
 AI_TEMPERATURE=0.7         # Temperature
 ```
+
+#### Gemini API 無料利用枠
+
+- **1分間あたり**: 15リクエスト
+- **1日あたり**: 1,500リクエスト
+- **月間推定**: 45,000リクエスト（十分な容量）
+- **コスト**: 完全無料（開発・小規模運用）
 
 #### 機能
 
@@ -363,7 +384,11 @@ vercel --prod
 
 ### 短期（1-2週間）
 
-1. AI API統合（OpenAI / Anthropic）
+1. **Google Gemini API統合** ⭐ 最優先
+   - Gemini API実装
+   - レート制限ハンドリング
+   - エラーリカバリー
+   - プロンプト最適化
 2. プラン編集機能の完成
 3. プランテンプレート機能
 4. フィードバック送信機能
@@ -390,8 +415,58 @@ vercel --prod
 
 **解決策**:
 
-1. `.env.local` に正しいAPIキーを設定
+1. **Gemini APIを使用する場合** ⭐ 推奨
+   - Google AI Studio (https://aistudio.google.com/) でAPIキー取得
+   - `.env.local` に設定:
+     ```env
+     AI_PROVIDER=gemini
+     GEMINI_API_KEY=your_gemini_api_key
+     AI_MODEL=gemini-2.5-flash
+     AI_MAX_TOKENS=3000
+     ```
+   - 利用可能なモデル（2025年10月時点）:
+     - `gemini-2.5-flash` (最新推奨) ⭐
+     - `gemini-2.0-flash` (安定版)
+     - ❌ `gemini-1.5-flash-latest` (非推奨)
+     - ❌ `gemini-1.5-pro-latest` (非推奨)
 2. モードを `AI_PROVIDER=mock` に設定してモックデータでテスト
+
+### レート制限エラー
+
+**原因**: Gemini API無料枠の制限超過（1分間15リクエスト or 1日1,500リクエスト）
+
+**解決策**:
+
+1. レート制限ハンドリングの実装 ✅ 完了
+2. キューイングシステムの導入 ✅ 完了
+3. リトライロジックの実装 ✅ 完了
+4. 使用量モニタリングの設定 ✅ 完了
+
+### MAX_TOKENSエラー
+
+**原因**: レスポンスがトークン制限に達した
+
+**症状**:
+
+```
+finishReason: "MAX_TOKENS"
+エラー: レスポンスがトークン制限に達しました
+```
+
+**解決策**:
+
+1. **`.env.local` でトークン数を増やす**:
+
+   ```env
+   AI_MAX_TOKENS=8000
+   ```
+
+2. **開発サーバーを再起動**
+
+3. **推奨値**:
+   - 最小: `4000`
+   - 推奨: `8000` ⭐
+   - 最大: `32768`（gemini-1.5-pro）
 
 ### プラン一覧が表示されない
 
@@ -459,5 +534,6 @@ vercel --prod
 
 ---
 
-**最終更新**: 2025年10月8日  
-**ドキュメントバージョン**: 1.0
+**最終更新**: 2025年10月9日  
+**ドキュメントバージョン**: 1.1  
+**変更内容**: Google Gemini API統合計画を追加

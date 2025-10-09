@@ -8,6 +8,7 @@ import {
   GeneratedPlanItem,
   PlanItemType,
 } from '@/types/date-plan';
+import { getRateLimiter } from './rate-limiter';
 
 /**
  * AI生成エラー
@@ -26,7 +27,7 @@ export class AIGenerationError extends Error {
 /**
  * AIプロバイダー
  */
-type AIProvider = 'openai' | 'anthropic' | 'mock';
+type AIProvider = 'gemini' | 'openai' | 'anthropic' | 'mock';
 
 /**
  * AI設定
@@ -34,6 +35,7 @@ type AIProvider = 'openai' | 'anthropic' | 'mock';
 interface AIConfig {
   provider: AIProvider;
   apiKey?: string;
+  geminiApiKey?: string;
   model?: string;
   maxTokens?: number;
   temperature?: number;
@@ -41,21 +43,53 @@ interface AIConfig {
 
 /**
  * AI設定の取得
+ *
+ * 環境変数のバリデーション付き
  */
 function getAIConfig(): AIConfig {
   const provider = (process.env.AI_PROVIDER || 'mock') as AIProvider;
 
+  // プロバイダーのバリデーション
+  const validProviders: AIProvider[] = ['gemini', 'openai', 'anthropic', 'mock'];
+  if (!validProviders.includes(provider)) {
+    console.warn(`無効なAIプロバイダー: ${provider}. mockにフォールバックします。`);
+    return {
+      provider: 'mock',
+      maxTokens: 2000,
+      temperature: 0.7,
+    };
+  }
+
+  // モデル名のデフォルト設定
+  let defaultModel = 'mock';
+  if (provider === 'gemini') {
+    // Gemini 2.5 Flash が最新の推奨モデル（2025年10月時点）
+    // 1.5系は非推奨になりました
+    // 2.5系は思考トークンを使用するため、AI_MAX_TOKENSは3000以上推奨
+    defaultModel = 'gemini-2.5-flash';
+  } else if (provider === 'openai') {
+    defaultModel = 'gpt-4';
+  } else if (provider === 'anthropic') {
+    defaultModel = 'claude-3-sonnet-20240229';
+  }
+
   return {
     provider,
     apiKey: process.env.AI_API_KEY,
-    model: process.env.AI_MODEL || (provider === 'openai' ? 'gpt-4' : 'claude-3-sonnet'),
-    maxTokens: parseInt(process.env.AI_MAX_TOKENS || '2000'),
+    geminiApiKey: process.env.GEMINI_API_KEY,
+    model: process.env.AI_MODEL || defaultModel,
+    // Gemini 2.5系は思考トークン約2000 + 出力1000 = 3000推奨
+    maxTokens: parseInt(process.env.AI_MAX_TOKENS || '3000'),
     temperature: parseFloat(process.env.AI_TEMPERATURE || '0.7'),
   };
 }
 
 /**
  * デートプランを生成
+ *
+ * 多重リクエスト防止機能:
+ * - リクエストごとに一意のIDを生成
+ * - レート制限マネージャーで重複実行を防止
  */
 export async function generateDatePlan(
   request: AIGenerationRequest
@@ -66,18 +100,31 @@ export async function generateDatePlan(
   try {
     let plans: GeneratedPlan[];
 
-    switch (config.provider) {
-      case 'openai':
-        plans = await generateWithOpenAI(request, config);
-        break;
-      case 'anthropic':
-        plans = await generateWithAnthropic(request, config);
-        break;
-      case 'mock':
-      default:
-        plans = await generateWithMock(request);
-        break;
-    }
+    // レート制限マネージャーを取得（シングルトン）
+    const rateLimiter = getRateLimiter({
+      maxRequestsPerMinute: 10, // Gemini 2.5無料枠（公式ドキュメント準拠）
+      maxRequestsPerDay: 1500, // Gemini無料枠
+      requestTimeout: getTimeoutForTokens(config.maxTokens || 3000) + 30000, // API + 30秒バッファ
+      maxRetries: 2, // 最大2回リトライ
+    });
+
+    // 一意のリクエストIDを生成（重複防止）
+    const requestId = `plan_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+
+    // レート制限付きで実行（キューイング、リトライ、重複防止すべて含む）
+    plans = await rateLimiter.execute(async () => {
+      switch (config.provider) {
+        case 'gemini':
+          return await generateWithGemini(request, config);
+        case 'openai':
+          return await generateWithOpenAI(request, config);
+        case 'anthropic':
+          return await generateWithAnthropic(request, config);
+        case 'mock':
+        default:
+          return await generateWithMock(request);
+      }
+    }, requestId);
 
     const generationTime = (Date.now() - startTime) / 1000;
 
@@ -92,7 +139,248 @@ export async function generateDatePlan(
     };
   } catch (error) {
     console.error('AI生成エラー:', error);
-    throw new AIGenerationError('デートプランの生成に失敗しました', 'GENERATION_FAILED', error);
+
+    // エラーの種類に応じた適切なメッセージ
+    if (error instanceof AIGenerationError) {
+      throw error;
+    }
+
+    const message = error instanceof Error ? error.message : 'デートプランの生成に失敗しました';
+    throw new AIGenerationError(message, 'GENERATION_FAILED', error);
+  }
+}
+
+/**
+ * トークン数に応じた適切なタイムアウトを取得
+ */
+function getTimeoutForTokens(maxTokens: number): number {
+  // トークン数に応じてタイムアウトを動的に設定
+  if (maxTokens <= 2000) {
+    return 30000; // 30秒
+  } else if (maxTokens <= 4000) {
+    return 45000; // 45秒
+  } else if (maxTokens <= 6000) {
+    return 60000; // 60秒
+  } else {
+    return 90000; // 90秒
+  }
+}
+
+/**
+ * Google Gemini APIを使用してプランを生成
+ *
+ * 安全機能:
+ * - APIキーのバリデーション
+ * - タイムアウト設定
+ * - エラーハンドリング
+ * - レスポンスのバリデーション
+ */
+async function generateWithGemini(
+  request: AIGenerationRequest,
+  config: AIConfig
+): Promise<GeneratedPlan[]> {
+  const apiKey = config.geminiApiKey;
+
+  if (!apiKey) {
+    throw new AIGenerationError('Gemini APIキーが設定されていません', 'MISSING_API_KEY');
+  }
+
+  const prompt = buildPrompt(request);
+
+  try {
+    // Gemini API v1エンドポイント（最新版）
+    // モデル名からバージョンプレフィックスを削除（例: gemini-1.5-pro → gemini-1.5-pro）
+    const modelName = config.model || 'gemini-pro';
+    const apiUrl = `https://generativelanguage.googleapis.com/v1/models/${modelName}:generateContent?key=${apiKey}`;
+
+    console.log(`[Gemini API] リクエスト送信: ${modelName}`);
+
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [
+              {
+                text: prompt,
+              },
+            ],
+          },
+        ],
+        generationConfig: {
+          temperature: config.temperature,
+          maxOutputTokens: config.maxTokens || 2000, // ユーザー設定を尊重
+          topP: 0.8,
+          topK: 40,
+        },
+      }),
+      // タイムアウト設定（トークン数に応じて動的に調整）
+      signal: AbortSignal.timeout(getTimeoutForTokens(config.maxTokens || 2000)),
+    });
+
+    console.log(`[Gemini API] レスポンス受信: ${response.status}`);
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+
+      console.error('[Gemini API] エラー詳細:', {
+        status: response.status,
+        statusText: response.statusText,
+        url: apiUrl.replace(apiKey, 'API_KEY_HIDDEN'),
+        error: errorData,
+      });
+
+      // レート制限エラーの特別処理
+      if (response.status === 429) {
+        throw new AIGenerationError(
+          'レート制限に達しました。しばらく待ってから再試行してください。',
+          'RATE_LIMIT_ERROR',
+          { status: 429, details: errorData }
+        );
+      }
+
+      // 404エラーの詳細情報
+      if (response.status === 404) {
+        throw new AIGenerationError(
+          `Gemini APIエンドポイントが見つかりません。モデル名 "${modelName}" が正しいか確認してください。`,
+          'GEMINI_API_ERROR',
+          { status: 404, model: modelName, details: errorData }
+        );
+      }
+
+      throw new AIGenerationError(
+        `Gemini APIエラー: ${response.status} ${response.statusText}`,
+        'GEMINI_API_ERROR',
+        { status: response.status, details: errorData }
+      );
+    }
+
+    const data = await response.json();
+
+    // デバッグ: レスポンス構造を確認
+    console.log('[Gemini API] レスポンス全体:', JSON.stringify(data, null, 2));
+
+    // レスポンスのバリデーション
+    if (!data.candidates || data.candidates.length === 0) {
+      console.error('[Gemini API] 候補が空です:', data);
+      throw new AIGenerationError('Gemini APIの応答が空です', 'EMPTY_RESPONSE', data);
+    }
+
+    const candidate = data.candidates[0];
+    console.log('[Gemini API] 候補[0]:', JSON.stringify(candidate, null, 2));
+
+    // finishReasonをチェック
+    const finishReason = candidate.finishReason;
+    console.log('[Gemini API] 終了理由:', finishReason);
+
+    // MAX_TOKENSエラーのチェック
+    if (finishReason === 'MAX_TOKENS') {
+      const usage = data.usageMetadata;
+
+      // Gemini 2.5系の思考トークン問題をチェック
+      const thoughtsTokens = usage?.thoughtsTokenCount || 0;
+      const currentModel = config.model || 'unknown';
+
+      let errorMessage = `レスポンスがトークン制限に達しました。使用トークン: ${usage?.totalTokenCount || '不明'}`;
+
+      if (thoughtsTokens > 1500) {
+        errorMessage +=
+          `\n\n⚠️ 思考トークン（${thoughtsTokens}）が使用されています。\n` +
+          `現在のモデル: ${currentModel}\n\n` +
+          `Gemini 2.5系は思考モード（約2000トークン）+ 出力（約1000トークン）= 計3000トークンを使用します。\n\n` +
+          `解決策: .env.local で以下を設定してください：\n` +
+          `AI_MAX_TOKENS=3000\n\n` +
+          `注: Gemini 1.5系は非推奨です。2.5系を使用してください。`;
+      } else {
+        errorMessage += `\n\nAI_MAX_TOKENSを増やすか、プロンプトを短くしてください。`;
+      }
+
+      throw new AIGenerationError(errorMessage, 'MAX_TOKENS_ERROR', {
+        finishReason,
+        usageMetadata: usage,
+        currentMaxTokens: config.maxTokens,
+        currentModel,
+        thoughtsTokenCount: thoughtsTokens,
+      });
+    }
+
+    // 安全性フィルターエラーのチェック
+    if (finishReason === 'SAFETY') {
+      throw new AIGenerationError(
+        'Geminiの安全性フィルターにより、コンテンツ生成がブロックされました。プロンプトを変更してください。',
+        'SAFETY_FILTER_ERROR',
+        { finishReason, safetyRatings: candidate.safetyRatings }
+      );
+    }
+
+    // Gemini APIのレスポンス構造に対応（複数パターン対応）
+    let content: string | undefined;
+
+    // パターン1: candidate.content.parts[0].text
+    if (
+      candidate?.content?.parts &&
+      Array.isArray(candidate.content.parts) &&
+      candidate.content.parts.length > 0
+    ) {
+      content = candidate.content.parts[0].text;
+    }
+    // パターン2: candidate.text
+    else if (candidate?.text) {
+      content = candidate.text;
+    }
+    // パターン3: candidateが直接文字列
+    else if (typeof candidate === 'string') {
+      content = candidate;
+    }
+
+    if (!content) {
+      console.error('[Gemini API] テキスト抽出失敗。候補データ:', candidate);
+      throw new AIGenerationError(
+        `Gemini APIの応答にテキストが含まれていません（終了理由: ${finishReason || '不明'}）`,
+        'INVALID_RESPONSE',
+        { candidate, fullResponse: data, finishReason }
+      );
+    }
+
+    console.log('[Gemini API] 抽出成功。テキスト長:', content.length);
+
+    // 安全性チェック（有害コンテンツフィルター）
+    const safetyRatings = data.candidates[0]?.safetyRatings;
+    if (safetyRatings) {
+      const blockedRating = safetyRatings.find(
+        (rating: any) => rating.probability === 'HIGH' || rating.probability === 'MEDIUM'
+      );
+      if (blockedRating) {
+        console.warn('Gemini安全性フィルターが反応しました:', blockedRating);
+      }
+    }
+
+    return parseAIResponse(content);
+  } catch (error) {
+    // タイムアウトエラー
+    if (error instanceof Error && error.name === 'TimeoutError') {
+      throw new AIGenerationError(
+        'Gemini APIリクエストがタイムアウトしました',
+        'TIMEOUT_ERROR',
+        error
+      );
+    }
+
+    // ネットワークエラー
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new AIGenerationError('ネットワークエラーが発生しました', 'NETWORK_ERROR', error);
+    }
+
+    // 既知のエラーはそのまま再スロー
+    if (error instanceof AIGenerationError) {
+      throw error;
+    }
+
+    // その他のエラー
+    throw new AIGenerationError('Gemini APIの呼び出しに失敗しました', 'GEMINI_API_ERROR', error);
   }
 }
 
@@ -205,7 +493,7 @@ async function generateWithMock(request: AIGenerationRequest): Promise<Generated
 
   const { location, budget, duration, preferences } = request;
 
-  // サンプルプランを生成
+  // サンプルプランを生成（1つのみ）
   const plans: GeneratedPlan[] = [
     {
       title: `${location.city}で楽しむ${duration}時間デート`,
@@ -267,116 +555,6 @@ async function generateWithMock(request: AIGenerationRequest): Promise<Generated
         },
       ],
     },
-    {
-      title: `${location.city}アクティブデート`,
-      description: `体を動かして楽しむ、予算${budget.toLocaleString()}円のアクティブなデートプランです。`,
-      budget: budget * 0.9,
-      duration: duration * 60,
-      score: 0.88,
-      reason: 'アクティブな活動を好む傾向から、体験型のプランを提案しました。',
-      items: [
-        {
-          type: 'activity',
-          name: preferences[0] || 'スポーツ体験',
-          description: `${preferences[0] || 'スポーツ'}を一緒に体験します`,
-          location: `${location.city}の体験施設`,
-          start_time: '10:00',
-          duration: 120,
-          cost: budget * 0.3,
-          order_index: 1,
-        },
-        {
-          type: 'restaurant',
-          name: 'ヘルシーランチ',
-          description: '体を動かした後の美味しいランチ',
-          location: `${location.city}のヘルシーレストラン`,
-          start_time: '12:30',
-          duration: 60,
-          cost: budget * 0.35,
-          order_index: 2,
-        },
-        {
-          type: 'sightseeing',
-          name: `${location.city}観光`,
-          description: '地元の魅力的なスポットを巡ります',
-          location: `${location.city}の観光スポット`,
-          start_time: '14:00',
-          duration: 120,
-          cost: 0,
-          order_index: 3,
-        },
-        {
-          type: 'cafe',
-          name: 'カフェでクールダウン',
-          description: '一日の思い出を振り返りながらゆっくり',
-          location: `${location.city}の落ち着いたカフェ`,
-          start_time: '16:00',
-          duration: 60,
-          cost: 1500,
-          order_index: 4,
-        },
-      ],
-    },
-    {
-      title: `${location.city}リラックスデート`,
-      description: `ゆったりとした時間を過ごす、予算${budget.toLocaleString()}円のリラックスプランです。`,
-      budget: budget * 0.85,
-      duration: duration * 60,
-      score: 0.85,
-      reason: 'のんびりとした時間を大切にする傾向から、リラックスできるプランを提案しました。',
-      items: [
-        {
-          type: 'cafe',
-          name: '朝のカフェタイム',
-          description: 'ゆったりとした朝食で一日をスタート',
-          location: `${location.city}の静かなカフェ`,
-          start_time: '10:30',
-          duration: 90,
-          cost: 2500,
-          order_index: 1,
-        },
-        {
-          type: 'sightseeing',
-          name: preferences[1] || '散策',
-          description: `${preferences[1] || '公園や庭園'}を散策します`,
-          location: `${location.city}の癒しスポット`,
-          start_time: '12:00',
-          duration: 90,
-          cost: 0,
-          order_index: 2,
-        },
-        {
-          type: 'restaurant',
-          name: '落ち着いたレストランでランチ',
-          description: '静かな雰囲気の中でゆっくり食事を楽しみます',
-          location: `${location.city}の隠れ家レストラン`,
-          start_time: '13:30',
-          duration: 90,
-          cost: budget * 0.5,
-          order_index: 3,
-        },
-        {
-          type: 'entertainment',
-          name: preferences[2] || '美術館・博物館',
-          description: `${preferences[2] || '美術館'}で芸術を鑑賞します`,
-          location: `${location.city}の文化施設`,
-          start_time: '15:00',
-          duration: 90,
-          cost: 2000,
-          order_index: 4,
-        },
-        {
-          type: 'cafe',
-          name: 'ディナー前のカフェ',
-          description: '一日を振り返りながらゆっくりお茶を',
-          location: `${location.city}の景色の良いカフェ`,
-          start_time: '16:30',
-          duration: 60,
-          cost: 1500,
-          order_index: 5,
-        },
-      ],
-    },
   ];
 
   return plans;
@@ -386,74 +564,25 @@ async function generateWithMock(request: AIGenerationRequest): Promise<Generated
  * プロンプトを構築
  */
 function buildPrompt(request: AIGenerationRequest): string {
-  const { budget, duration, location, preferences, special_requests, user_profile, date_history } =
-    request;
+  const { budget, duration, location, preferences, special_requests } = request;
 
-  let prompt = `以下の条件でデートプランを3つ提案してください。\n\n`;
-  prompt += `【基本情報】\n`;
-  prompt += `- 予算: ${budget.toLocaleString()}円\n`;
-  prompt += `- 所要時間: ${duration}時間\n`;
-  prompt += `- 場所: ${location.prefecture}${location.city}`;
+  // 簡潔なプロンプト（トークン数削減）
+  let prompt = `予算${budget.toLocaleString()}円、${duration}時間、${location.prefecture}${location.city}`;
   if (location.station) {
-    prompt += `（最寄り駅: ${location.station}）`;
+    prompt += `（${location.station}駅）`;
   }
-  prompt += `\n`;
+  prompt += `のデートプラン1つ提案。`;
 
   if (preferences.length > 0) {
-    prompt += `- 好み: ${preferences.join('、')}\n`;
+    prompt += `好み: ${preferences.slice(0, 3).join('、')}。`;
   }
 
   if (special_requests) {
-    prompt += `- 特別な要望: ${special_requests}\n`;
+    prompt += `要望: ${special_requests.substring(0, 100)}。`;
   }
 
-  if (user_profile) {
-    prompt += `\n【ユーザー情報】\n`;
-    prompt += `- 名前: ${user_profile.name}\n`;
-    if (user_profile.age) {
-      prompt += `- 年齢: ${user_profile.age}歳\n`;
-    }
-    if (user_profile.interests && user_profile.interests.length > 0) {
-      prompt += `- 興味: ${user_profile.interests.join('、')}\n`;
-    }
-  }
-
-  if (date_history && date_history.length > 0) {
-    prompt += `\n【過去のデート履歴】\n`;
-    date_history.slice(0, 3).forEach((history, index) => {
-      prompt += `${index + 1}. ${history.date} - ${history.location}（${history.activities.join('、')}）`;
-      if (history.rating) {
-        prompt += ` - 評価: ${history.rating}/5`;
-      }
-      prompt += `\n`;
-    });
-  }
-
-  prompt += `\n各プランは以下のJSON形式で出力してください：\n`;
-  prompt += `{
-  "plans": [
-    {
-      "title": "プラン名",
-      "description": "プランの説明",
-      "budget": 実際の予算,
-      "duration": 所要時間（分）,
-      "score": 推薦スコア（0-1）,
-      "reason": "このプランを推薦する理由",
-      "items": [
-        {
-          "type": "activity|restaurant|cafe|transportation|shopping|sightseeing|entertainment|other",
-          "name": "アイテム名",
-          "description": "詳細説明",
-          "location": "場所",
-          "start_time": "HH:MM形式",
-          "duration": 所要時間（分）,
-          "cost": 費用,
-          "order_index": 順番
-        }
-      ]
-    }
-  ]
-}`;
+  prompt += `\n\nJSON形式で出力（説明は簡潔に）:\n`;
+  prompt += `{"plans":[{"title":"","description":"","budget":0,"duration":0,"score":0.9,"reason":"","items":[{"type":"","name":"","description":"","location":"","start_time":"","duration":0,"cost":0,"order_index":1}]}]}`;
 
   return prompt;
 }

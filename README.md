@@ -30,8 +30,15 @@
 #### 4. **AIデートプラン提案（UC-001）** ⭐ NEW
 
 - ✅ デートプラン作成画面
-- ✅ AI生成機能（モック実装）
-- ✅ プラン提案画面（複数候補から選択）
+- ✅ **AI生成機能** - 本格的なAI統合完了 🎉
+  - Google Gemini 2.5 Flash統合（最新推奨モデル）
+  - 思考モード搭載（高度な推論）
+  - OpenAI API統合
+  - Anthropic Claude API統合
+  - レート制限管理（キューイング、リトライ）
+  - 多重リクエスト防止機構
+  - **トークン最適化**: 1プラン約3000トークン（15-25秒）
+- ✅ プラン提案画面
 - ✅ プラン詳細表示
 - ✅ **カスタマイズビュー** - プラン編集機能
   - プラン基本情報の編集
@@ -55,7 +62,6 @@
 - 🚧 **AI喧嘩仲裁・関係修復（UC-004）** - AI仲裁機能
 - 🚧 **Date Canvas（UC-005）** - 思い出記録キャンバス
 - 🚧 **ポータル統合（UC-003）** - デート情報ポータル
-- 🚧 **実AI API連携** - OpenAI/Anthropic Claude
 
 ## 🛠️ 技術スタック
 
@@ -87,9 +93,13 @@
 
 ### AI/ML
 
-- **Mock AI Service** - 現在はモック実装
-- **OpenAI API** - 将来的に統合予定
-- **Anthropic Claude API** - 将来的に統合予定
+- **Google Gemini API** ⭐ 推奨 - 無料利用枠あり
+  - Gemini Pro モデル
+  - 1分間15リクエスト、1日1,500リクエスト無料
+  - レート制限管理・キューイングシステム実装済み
+- **OpenAI API** - 統合済み（オプション）
+- **Anthropic Claude API** - 統合済み（オプション）
+- **Mock AI Service** - 開発・テスト用
 
 ## 📦 セットアップ
 
@@ -114,28 +124,45 @@ npm install
 
 ### 3. 環境変数の設定
 
-`.env.example` をコピーして `.env` を作成：
+`.env.local` ファイルを作成：
 
 ```bash
-cp .env.example .env
+touch .env.local
 ```
 
 以下の環境変数を設定：
 
 ```env
-# Supabase
+# Supabase Configuration
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 
-# Database
-DATABASE_URL=your_database_url
+# AI Provider Configuration (推奨: Gemini)
+AI_PROVIDER=gemini
 
-# AI (Optional - 現在はモック)
-AI_PROVIDER=mock
-OPENAI_API_KEY=your_openai_key
-ANTHROPIC_API_KEY=your_anthropic_key
+# Google Gemini API (推奨 - 無料利用枠あり)
+# APIキーの取得: https://aistudio.google.com/
+GEMINI_API_KEY=your_gemini_api_key_here
+
+# AI Model Configuration
+AI_MODEL=gemini-2.5-flash
+AI_MAX_TOKENS=3000
+AI_TEMPERATURE=0.7
+
+# オプション: OpenAI API
+# AI_PROVIDER=openai
+# AI_API_KEY=your_openai_api_key
+
+# オプション: Anthropic Claude API
+# AI_PROVIDER=anthropic
+# AI_API_KEY=your_anthropic_api_key
+
+# オプション: モック（開発・テスト用）
+# AI_PROVIDER=mock
 ```
+
+**Gemini APIキーの取得方法** については、[Docs/GEMINI_API_SETUP.md](Docs/GEMINI_API_SETUP.md) を参照してください。
 
 ### 4. データベースマイグレーション
 
@@ -165,10 +192,19 @@ vercel deploy
 
 Vercelダッシュボードで以下を設定：
 
+**必須:**
+
 - `NEXT_PUBLIC_SUPABASE_URL`
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
-- `DATABASE_URL`
+
+**AI機能（推奨: Gemini）:**
+
+- `AI_PROVIDER` = `gemini`
+- `GEMINI_API_KEY` = (Google AI Studioで取得)
+- `AI_MODEL` = `gemini-2.5-flash`
+- `AI_MAX_TOKENS` = `3000`
+- `AI_TEMPERATURE` = `0.7`
 
 ## 📖 使い方
 
@@ -224,7 +260,8 @@ coupleplan/
 │   ├── contexts/              # Reactコンテキスト
 │   ├── lib/                   # ユーティリティ
 │   │   ├── supabase/          # Supabaseクライアント
-│   │   ├── ai-service.ts      # AI統合
+│   │   ├── ai-service.ts      # AI統合（Gemini/OpenAI/Claude）
+│   │   ├── rate-limiter.ts    # レート制限管理
 │   │   ├── validation.ts      # バリデーション
 │   │   └── plan-validation.ts # プランバリデーション
 │   └── types/                 # TypeScript型定義
@@ -232,8 +269,9 @@ coupleplan/
 │   └── migrations/            # データベースマイグレーション
 ├── Docs/                      # ドキュメント
 │   ├── 開発計画.md
-│   ├── UC-001_AIデートプラン提案・生成_詳細ユースケース.md
-│   └── AI_DATE_PLAN_IMPLEMENTATION.md
+│   ├── GEMINI_API_SETUP.md    # Gemini API統合ガイド
+│   ├── AI_DATE_PLAN_IMPLEMENTATION.md
+│   └── UC-001_AIデートプラン提案・生成_詳細ユースケース.md
 └── public/                    # 静的ファイル
 ```
 
