@@ -32,21 +32,26 @@ interface Spot {
   isBookmarked: boolean;
 }
 
-export default function SpotDetailPage({ params }: { params: { id: string } }): ReactElement {
+export default async function SpotDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<ReactElement> {
+  const { id } = await params;
   const [spot, setSpot] = useState<Spot | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isBookmarked, setIsBookmarked] = useState(false);
 
   useEffect(() => {
     loadSpotData();
-  }, [params.id]);
+  }, [id]);
 
   const loadSpotData = async () => {
     setIsLoading(true);
 
     // スポットデータのシミュレーション
     const mockSpot: Spot = {
-      id: params.id,
+      id: id,
       name: 'ロマンチックなレストラン「Bella Vista」',
       category: 'レストラン',
       description:

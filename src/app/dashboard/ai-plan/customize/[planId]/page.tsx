@@ -22,11 +22,12 @@ interface CustomizableSpot {
   }[];
 }
 
-export default function CustomizePlanPage({
+export default async function CustomizePlanPage({
   params,
 }: {
-  params: { planId: string };
-}): ReactElement {
+  params: Promise<{ planId: string }>;
+}): Promise<ReactElement> {
+  const { planId } = await params;
   const [spots, setSpots] = useState<CustomizableSpot[]>([
     {
       id: 'spot1',

@@ -1,4 +1,9 @@
-import type { Profile } from './profile';
+// Profile型は将来実装予定
+export interface Profile {
+  id: string;
+  email: string;
+  name: string;
+}
 
 export interface LoginRequest {
   email: string;

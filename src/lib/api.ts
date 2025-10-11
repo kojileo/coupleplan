@@ -1,6 +1,5 @@
 import { ApiResponse, LoginRequest, SignUpRequest, PlanRequest } from '@/types/api';
-import type { Plan } from '@/types/plan';
-import type { Profile } from '@/types/profile';
+import type { DatePlanDetail } from '@/types/date-plan';
 
 const API_BASE = '/api';
 
@@ -31,21 +30,21 @@ export const api = {
   },
 
   profile: {
-    get: async (token: string, userId: string): Promise<ApiResponse<Profile>> => {
+    get: async (token: string, userId: string): Promise<ApiResponse<any>> => {
       try {
         const response = await fetch(`${API_BASE}/profile/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        return (await response.json()) as ApiResponse<Profile>;
+        return (await response.json()) as ApiResponse<any>;
       } catch (error) {
         console.error('Profile get error:', error);
         return { error: 'プロフィールの取得に失敗しました' };
       }
     },
 
-    update: async (token: string, name: string, email: string): Promise<ApiResponse<Profile>> => {
+    update: async (token: string, name: string, email: string): Promise<ApiResponse<any>> => {
       try {
         const response = await fetch(`${API_BASE}/profile`, {
           method: 'PUT',
@@ -55,7 +54,7 @@ export const api = {
           },
           body: JSON.stringify({ name, email }),
         });
-        return (await response.json()) as ApiResponse<Profile>;
+        return (await response.json()) as ApiResponse<any>;
       } catch (error) {
         console.error('Profile update error:', error);
         return { error: 'プロフィールの更新に失敗しました' };
@@ -64,7 +63,7 @@ export const api = {
   },
 
   plans: {
-    list: async (token: string): Promise<{ data: Plan[] } | { error: string }> => {
+    list: async (token: string): Promise<{ data: DatePlanDetail[] } | { error: string }> => {
       try {
         const response = await fetch('/api/plans', {
           headers: {
@@ -76,7 +75,7 @@ export const api = {
           throw new Error('プラン一覧の取得に失敗しました');
         }
 
-        const responseData = (await response.json()) as { data: Plan[] };
+        const responseData = (await response.json()) as { data: DatePlanDetail[] };
         return { data: responseData.data };
       } catch (error) {
         console.error('Plans list error:', error);
@@ -84,7 +83,7 @@ export const api = {
       }
     },
 
-    create: async (token: string, data: PlanRequest): Promise<ApiResponse<Plan>> => {
+    create: async (token: string, data: PlanRequest): Promise<ApiResponse<DatePlanDetail>> => {
       try {
         const response = await fetch(`${API_BASE}/plans`, {
           method: 'POST',
@@ -95,7 +94,7 @@ export const api = {
           body: JSON.stringify(data),
         });
 
-        const responseData = (await response.json()) as ApiResponse<Plan>;
+        const responseData = (await response.json()) as ApiResponse<DatePlanDetail>;
 
         if (!response.ok) {
           console.error('API Error:', responseData);
@@ -109,21 +108,25 @@ export const api = {
       }
     },
 
-    get: async (token: string, id: string): Promise<ApiResponse<Plan>> => {
+    get: async (token: string, id: string): Promise<ApiResponse<DatePlanDetail>> => {
       try {
         const response = await fetch(`${API_BASE}/plans/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        return (await response.json()) as ApiResponse<Plan>;
+        return (await response.json()) as ApiResponse<DatePlanDetail>;
       } catch (error) {
         console.error('Plan get error:', error);
         return { error: 'プランの取得に失敗しました' };
       }
     },
 
-    update: async (token: string, id: string, data: PlanRequest): Promise<ApiResponse<Plan>> => {
+    update: async (
+      token: string,
+      id: string,
+      data: PlanRequest
+    ): Promise<ApiResponse<DatePlanDetail>> => {
       try {
         const response = await fetch(`${API_BASE}/plans/${id}`, {
           method: 'PUT',
@@ -133,7 +136,7 @@ export const api = {
           },
           body: JSON.stringify(data),
         });
-        return (await response.json()) as ApiResponse<Plan>;
+        return (await response.json()) as ApiResponse<DatePlanDetail>;
       } catch (error) {
         console.error('Plan update error:', error);
         return { error: 'プランの更新に失敗しました' };
@@ -155,7 +158,7 @@ export const api = {
       }
     },
 
-    listPublic: async (): Promise<{ data: Plan[] } | { error: string }> => {
+    listPublic: async (): Promise<{ data: DatePlanDetail[] } | { error: string }> => {
       try {
         const response = await fetch('/api/plans/public');
 
@@ -163,7 +166,7 @@ export const api = {
           throw new Error('公開プラン一覧の取得に失敗しました');
         }
 
-        const responseData = (await response.json()) as { data: Plan[] };
+        const responseData = (await response.json()) as { data: DatePlanDetail[] };
         return { data: responseData.data };
       } catch (error) {
         console.error('Public plans list error:', error);
@@ -175,7 +178,7 @@ export const api = {
       token: string,
       planId: string,
       isPublic: boolean
-    ): Promise<ApiResponse<Plan>> => {
+    ): Promise<ApiResponse<DatePlanDetail>> => {
       try {
         const response = await fetch(`${API_BASE}/plans/${planId}/publish`, {
           method: 'POST',
@@ -185,7 +188,7 @@ export const api = {
           },
           body: JSON.stringify({ isPublic }),
         });
-        return (await response.json()) as ApiResponse<Plan>;
+        return (await response.json()) as ApiResponse<DatePlanDetail>;
       } catch (error) {
         console.error('Plan publish error:', error);
         return { error: 'プランの公開設定の更新に失敗しました' };

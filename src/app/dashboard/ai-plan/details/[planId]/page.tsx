@@ -33,9 +33,14 @@ interface DatePlan {
   tips: string[];
 }
 
-export default function PlanDetailsPage({ params }: { params: { planId: string } }): ReactElement {
+export default async function PlanDetailsPage({
+  params,
+}: {
+  params: Promise<{ planId: string }>;
+}): Promise<ReactElement> {
+  const { planId } = await params;
   const [plan] = useState<DatePlan>({
-    id: params.planId,
+    id: planId,
     title: 'ロマンチックな渋谷デート',
     description: 'カフェ巡りから夜景まで、二人だけの特別な時間を過ごせるプラン',
     duration: '6時間',

@@ -31,7 +31,12 @@ interface RelatedArticle {
   publishedAt: number;
 }
 
-export default function ArticleDetailPage({ params }: { params: { id: string } }): ReactElement {
+export default async function ArticleDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<ReactElement> {
+  const { id } = await params;
   const [article, setArticle] = useState<Article | null>(null);
   const [relatedArticles, setRelatedArticles] = useState<RelatedArticle[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -44,7 +49,7 @@ export default function ArticleDetailPage({ params }: { params: { id: string } }
 
       // 記事データのシミュレーション
       const mockArticle: Article = {
-        id: params.id,
+        id: id,
         title: '渋谷で楽しめるロマンチックなデートスポット10選',
         content: `# 渋谷で楽しめるロマンチックなデートスポット10選
 
@@ -181,7 +186,7 @@ export default function ArticleDetailPage({ params }: { params: { id: string } }
     };
 
     loadArticle();
-  }, [params.id]);
+  }, [id]);
 
   const handleLike = () => {
     setIsLiked(!isLiked);

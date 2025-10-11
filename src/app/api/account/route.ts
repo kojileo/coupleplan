@@ -112,7 +112,7 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
       response.headers.set('Clear-Site-Data', '"cookies", "storage"');
       return response;
     } catch (error) {
-      // Supabase/Prismaの操作エラー
+      // Supabaseの操作エラー
       console.error('データベース操作エラー:', error);
       if (error instanceof Error) {
         return NextResponse.json(

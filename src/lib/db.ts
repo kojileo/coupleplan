@@ -1,17 +1,6 @@
-import { PrismaClient } from '@prisma/client';
+import { createClient } from '@supabase/supabase-js';
 
-const globalForPrisma = global as unknown as {
-  prisma: PrismaClient | undefined;
-};
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-const prismaClientSingleton = (): PrismaClient => {
-  return new PrismaClient({
-    log: ['query', 'error', 'warn'],
-  });
-};
-
-if (!globalForPrisma.prisma) {
-  globalForPrisma.prisma = prismaClientSingleton();
-}
-
-export const prisma = globalForPrisma.prisma;
+export const supabase = createClient(supabaseUrl, supabaseKey);

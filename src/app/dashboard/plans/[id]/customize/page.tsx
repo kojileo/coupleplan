@@ -332,8 +332,10 @@ export default function PlanCustomizePage() {
       restaurant: 'レストラン',
       activity: 'アクティビティ',
       cafe: 'カフェ',
-      transport: '移動',
+      transportation: '移動',
       shopping: 'ショッピング',
+      sightseeing: '観光',
+      entertainment: 'エンターテイメント',
       other: 'その他',
     };
     return labels[type] || type;
@@ -344,8 +346,10 @@ export default function PlanCustomizePage() {
       restaurant: '🍽️',
       activity: '🎯',
       cafe: '☕',
-      transport: '🚗',
+      transportation: '🚗',
       shopping: '🛍️',
+      sightseeing: '🏛️',
+      entertainment: '🎭',
       other: '📍',
     };
     return icons[type] || '📍';
@@ -620,7 +624,7 @@ export default function PlanCustomizePage() {
                   <option value="restaurant">レストラン</option>
                   <option value="activity">アクティビティ</option>
                   <option value="cafe">カフェ</option>
-                  <option value="transport">移動</option>
+                  <option value="transportation">移動</option>
                   <option value="shopping">ショッピング</option>
                   <option value="other">その他</option>
                 </Select>
@@ -717,7 +721,7 @@ export default function PlanCustomizePage() {
                   <option value="restaurant">レストラン</option>
                   <option value="activity">アクティビティ</option>
                   <option value="cafe">カフェ</option>
-                  <option value="transport">移動</option>
+                  <option value="transportation">移動</option>
                   <option value="shopping">ショッピング</option>
                   <option value="other">その他</option>
                 </Select>
