@@ -1,75 +1,176 @@
-import DOMPurify from 'isomorphic-dompurify';
+/**
+ * バリデーションユーティリティ
+ */
 
-// HTMLサニタイゼーション
-export function sanitizeHtml(input: string): string {
-  return DOMPurify.sanitize(input, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
+export interface ValidationResult {
+  valid: boolean;
+  error?: string;
 }
 
-// SQLインジェクション対策（基本的な検証）
-export function validateInput(input: string): boolean {
-  const sqlInjectionPattern =
-    /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION|SCRIPT)\b)/i;
-  return !sqlInjectionPattern.test(input);
+/**
+ * 名前のバリデーション
+ */
+export function validateName(name: string): ValidationResult {
+  if (!name || name.trim().length === 0) {
+    return { valid: false, error: '名前を入力してください' };
+  }
+
+  if (name.length > 50) {
+    return { valid: false, error: '名前は50文字以内で入力してください' };
+  }
+
+  return { valid: true };
 }
 
-// メールアドレス検証強化
-export function validateEmail(email: string): boolean {
-  const emailRegex =
-    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-  return emailRegex.test(email) && email.length <= 254;
+/**
+ * メールアドレスのバリデーション
+ */
+export function validateEmail(email: string): ValidationResult {
+  if (!email || email.trim().length === 0) {
+    return { valid: false, error: 'メールアドレスを入力してください' };
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return { valid: false, error: '有効なメールアドレスを入力してください' };
+  }
+
+  return { valid: true };
 }
 
-// パスワード強度検証
-export function validatePassword(password: string): { valid: boolean; errors: string[] } {
-  const errors: string[] = [];
+/**
+ * パスワードのバリデーション
+ */
+export function validatePassword(password: string): ValidationResult {
+  if (!password || password.length === 0) {
+    return { valid: false, error: 'パスワードを入力してください' };
+  }
 
   if (password.length < 8) {
-    errors.push('パスワードは8文字以上である必要があります');
+    return { valid: false, error: 'パスワードは8文字以上で入力してください' };
   }
 
-  if (!/[A-Z]/.test(password)) {
-    errors.push('パスワードには大文字を含める必要があります');
+  if (password.length > 100) {
+    return { valid: false, error: 'パスワードは100文字以内で入力してください' };
   }
 
-  if (!/[a-z]/.test(password)) {
-    errors.push('パスワードには小文字を含める必要があります');
+  // 英数字を含む
+  if (!/[a-zA-Z]/.test(password) || !/[0-9]/.test(password)) {
+    return { valid: false, error: 'パスワードは英字と数字を含む必要があります' };
   }
 
-  if (!/\d/.test(password)) {
-    errors.push('パスワードには数字を含める必要があります');
-  }
-
-  if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-    errors.push('パスワードには特殊文字を含める必要があります');
-  }
-
-  return { valid: errors.length === 0, errors };
+  return { valid: true };
 }
 
-// URLバリデーション
-export function validateUrl(url: string): boolean {
-  try {
-    const urlObj = new URL(url);
-    return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
-  } catch {
-    return false;
+/**
+ * 自己紹介のバリデーション
+ */
+export function validateBio(bio: string): ValidationResult {
+  if (bio && bio.length > 500) {
+    return { valid: false, error: '自己紹介は500文字以内で入力してください' };
   }
+
+  return { valid: true };
 }
 
-// 文字列長制限
-export function validateStringLength(str: string, maxLength: number, minLength = 0): boolean {
-  return str.length >= minLength && str.length <= maxLength;
+/**
+ * 居住地のバリデーション
+ */
+export function validateLocation(location: string): ValidationResult {
+  if (location && location.length > 100) {
+    return { valid: false, error: '居住地は100文字以内で入力してください' };
+  }
+
+  return { valid: true };
 }
 
-// XSS対策のための文字列エスケープ
-export function escapeHtml(text: string): string {
-  const map: { [key: string]: string } = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#039;',
+/**
+ * 日付のバリデーション
+ */
+export function validateDate(date: string): ValidationResult {
+  if (!date) {
+    return { valid: true }; // 日付は任意
+  }
+
+  const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+  if (!dateRegex.test(date)) {
+    return { valid: false, error: '有効な日付形式で入力してください（YYYY-MM-DD）' };
+  }
+
+  const parsedDate = new Date(date);
+  if (isNaN(parsedDate.getTime())) {
+    return { valid: false, error: '有効な日付を入力してください' };
+  }
+
+  return { valid: true };
+}
+
+/**
+ * プロフィールフォーム全体のバリデーション
+ */
+export interface ProfileFormData {
+  name: string;
+  email: string;
+  location?: string;
+  birthday?: string;
+  anniversary?: string;
+}
+
+export interface ProfileValidationResult {
+  valid: boolean;
+  errors: {
+    name?: string;
+    email?: string;
+    location?: string;
+    birthday?: string;
+    anniversary?: string;
   };
+}
 
-  return text.replace(/[&<>"']/g, (m) => map[m]);
+export function validateProfileForm(data: ProfileFormData): ProfileValidationResult {
+  const errors: ProfileValidationResult['errors'] = {};
+  let valid = true;
+
+  // 名前のバリデーション
+  const nameValidation = validateName(data.name);
+  if (!nameValidation.valid) {
+    errors.name = nameValidation.error;
+    valid = false;
+  }
+
+  // メールアドレスのバリデーション
+  const emailValidation = validateEmail(data.email);
+  if (!emailValidation.valid) {
+    errors.email = emailValidation.error;
+    valid = false;
+  }
+
+  // 居住地のバリデーション
+  if (data.location) {
+    const locationValidation = validateLocation(data.location);
+    if (!locationValidation.valid) {
+      errors.location = locationValidation.error;
+      valid = false;
+    }
+  }
+
+  // 誕生日のバリデーション
+  if (data.birthday) {
+    const birthdayValidation = validateDate(data.birthday);
+    if (!birthdayValidation.valid) {
+      errors.birthday = birthdayValidation.error;
+      valid = false;
+    }
+  }
+
+  // 記念日のバリデーション
+  if (data.anniversary) {
+    const anniversaryValidation = validateDate(data.anniversary);
+    if (!anniversaryValidation.valid) {
+      errors.anniversary = anniversaryValidation.error;
+      valid = false;
+    }
+  }
+
+  return { valid, errors };
 }

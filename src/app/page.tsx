@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import type { ReactElement } from 'react';
 import { useEffect } from 'react';
 
-import { EmergencyButton } from '@/components/features/emergency/EmergencyButton';
 import Button from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -13,9 +12,12 @@ export default function Home(): ReactElement {
   const { session, isLoading } = useAuth();
   const router = useRouter();
 
+  // 認証済みユーザーはダッシュボードに誘導
   useEffect(() => {
     if (session) {
-      void router.push('/plans');
+      const redirectTo =
+        new URLSearchParams(window.location.search).get('redirectTo') || '/dashboard';
+      void router.push(redirectTo);
     }
   }, [router, session]);
 
@@ -90,7 +92,7 @@ export default function Home(): ReactElement {
             </div>
 
             <div className="flex items-center space-x-4">
-              <Link href="/login">
+              <Link href="/login?redirectTo=/dashboard">
                 <Button
                   variant="outline"
                   size="sm"
@@ -99,7 +101,7 @@ export default function Home(): ReactElement {
                   ログイン
                 </Button>
               </Link>
-              <Link href="/signup">
+              <Link href="/signup?redirectTo=/dashboard">
                 <Button
                   size="sm"
                   className="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 shadow-lg hover:shadow-xl transition-all duration-300 font-medium"
@@ -131,23 +133,23 @@ export default function Home(): ReactElement {
 
               <h1 className="text-6xl lg:text-7xl font-extrabold text-gray-900 mb-8 leading-tight">
                 <span className="bg-gradient-to-r from-rose-600 via-pink-600 to-purple-600 bg-clip-text text-transparent">
-                  Couple Plan
+                  CouplePlan
                 </span>
                 <span className="block text-2xl lg:text-3xl font-medium text-gray-600 mt-6 leading-relaxed">
-                  デート前・中・後の全てをサポート
+                  カップルの絆を深める統合プラットフォーム
                 </span>
               </h1>
 
               <p className="text-xl lg:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed">
-                行きたい場所を保存して、カップルで予定を共有。
+                AIが提案するデートプランから、カップルでの共同編集、
                 <br />
                 <span className="font-bold bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
-                  デート中の困ったも瞬間解決！
+                  関係修復まで、すべてをサポート
                 </span>
               </p>
 
               <div className="flex flex-col sm:flex-row gap-6 justify-center mb-20">
-                <Link href="/signup">
+                <Link href="/signup?redirectTo=/dashboard">
                   <Button
                     size="lg"
                     className="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white text-lg px-10 py-5 rounded-2xl shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 transition-all duration-300 font-semibold"
@@ -169,96 +171,96 @@ export default function Home(): ReactElement {
           </div>
         </section>
 
-        {/* 緊急ヘルプ機能ハイライト */}
+        {/* AIデートプラン提案機能ハイライト */}
         <section className="py-24 bg-white">
           <div className="container mx-auto px-4">
             <div className="text-center mb-20">
-              <div className="inline-flex items-center bg-red-50 border border-red-200 rounded-full px-6 py-3 mb-6">
-                <span className="text-red-500 text-2xl mr-3">🆘</span>
-                <span className="text-red-700 font-semibold">緊急時サポート機能</span>
+              <div className="inline-flex items-center bg-blue-50 border border-blue-200 rounded-full px-6 py-3 mb-6">
+                <span className="text-blue-500 text-2xl mr-3">🤖</span>
+                <span className="text-blue-700 font-semibold">AIデートプラン提案</span>
               </div>
 
               <h2 className="text-5xl font-bold text-gray-900 mb-6">
-                デート中の「困った」を
-                <span className="block text-rose-600">瞬間解決</span>
+                あなただけの
+                <span className="block text-rose-600">パーソナライズデートプラン</span>
               </h2>
               <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-                お手洗い探しや会話の沈黙に困ったら即座に解決！
+                AIがあなたの好み・予算・時間・地域を分析し、
                 <br />
-                デート中の緊急事態をサポートする機能で、せっかくのデート時間をより楽しく過ごせます。
+                二人にぴったりのデートプランを自動生成・提案します。
               </p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-7xl mx-auto mb-16">
-              {/* お手洗い検索機能 */}
+              {/* AIプラン生成機能 */}
               <div className="group hover:scale-105 transition-all duration-500">
                 <div className="bg-gradient-to-br from-blue-50 via-blue-50 to-cyan-50 rounded-3xl p-10 h-full border border-blue-100 shadow-xl hover:shadow-2xl transition-all duration-500 relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-200 to-transparent rounded-full opacity-20 -translate-y-16 translate-x-16" />
 
                   <div className="flex items-center mb-8">
                     <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-5 rounded-3xl mr-6 shadow-lg">
-                      <span className="text-4xl">🚻</span>
+                      <span className="text-4xl">🤖</span>
                     </div>
-                    <h3 className="text-3xl font-bold text-gray-900">お手洗い検索</h3>
+                    <h3 className="text-3xl font-bold text-gray-900">AIプラン生成</h3>
                   </div>
 
                   <div className="mb-8">
                     <p className="text-gray-700 text-lg leading-relaxed">
-                      <strong className="text-blue-700">デート中の急なお手洗い探しに！</strong>
+                      <strong className="text-blue-700">あなたの好みを学習したAIが提案！</strong>
                       <br />
-                      現在地から最も近いお手洗いを距離順で表示し、迷わず目的地まで案内します。
+                      過去のデート履歴や好みを分析し、二人に最適なデートプランを自動生成します。
                     </p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="flex items-center text-blue-600 font-semibold text-lg">
-                      <span className="mr-3 text-xl">✓</span> 距離順表示
+                      <span className="mr-3 text-xl">✓</span> パーソナライズ
                     </div>
                     <div className="flex items-center text-blue-600 font-semibold text-lg">
-                      <span className="mr-3 text-xl">✓</span> Googleマップ連携
+                      <span className="mr-3 text-xl">✓</span> 予算・時間考慮
                     </div>
                     <div className="flex items-center text-blue-600 font-semibold text-lg">
-                      <span className="mr-3 text-xl">✓</span> リアルタイム位置情報
+                      <span className="mr-3 text-xl">✓</span> 地域特化
                     </div>
                     <div className="flex items-center text-blue-600 font-semibold text-lg">
-                      <span className="mr-3 text-xl">✓</span> ワンタップ検索
+                      <span className="mr-3 text-xl">✓</span> 複数候補提示
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* 会話ネタ提供機能 */}
+              {/* カップル共同編集機能 */}
               <div className="group hover:scale-105 transition-all duration-500">
                 <div className="bg-gradient-to-br from-purple-50 via-purple-50 to-pink-50 rounded-3xl p-10 h-full border border-purple-100 shadow-xl hover:shadow-2xl transition-all duration-500 relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-200 to-transparent rounded-full opacity-20 -translate-y-16 translate-x-16" />
 
                   <div className="flex items-center mb-8">
                     <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-5 rounded-3xl mr-6 shadow-lg">
-                      <span className="text-4xl">💬</span>
+                      <span className="text-4xl">👥</span>
                     </div>
-                    <h3 className="text-3xl font-bold text-gray-900">会話ネタ提供</h3>
+                    <h3 className="text-3xl font-bold text-gray-900">共同編集</h3>
                   </div>
 
                   <div className="mb-8">
                     <p className="text-gray-700 text-lg leading-relaxed">
-                      <strong className="text-purple-700">会話が途切れた時の救世主！</strong>
+                      <strong className="text-purple-700">リアルタイムで一緒にプラン作成！</strong>
                       <br />
-                      6つのカテゴリから選べる豊富な会話ネタで、二人の距離をぐっと縮める質問を瞬時に提案。
+                      カップルが同時にプランを編集・カスタマイズし、双方の希望を反映した完璧なプランを作成。
                     </p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="flex items-center text-purple-600 font-semibold text-lg">
-                      <span className="mr-3 text-xl">✓</span> カテゴリ別選択
+                      <span className="mr-3 text-xl">✓</span> リアルタイム同期
                     </div>
                     <div className="flex items-center text-purple-600 font-semibold text-lg">
-                      <span className="mr-3 text-xl">✓</span> 関係性を深める質問
+                      <span className="mr-3 text-xl">✓</span> 競合解決
                     </div>
                     <div className="flex items-center text-purple-600 font-semibold text-lg">
-                      <span className="mr-3 text-xl">✓</span> 盛り上がる話題
+                      <span className="mr-3 text-xl">✓</span> 編集履歴
                     </div>
                     <div className="flex items-center text-purple-600 font-semibold text-lg">
-                      <span className="mr-3 text-xl">✓</span> 使い方のコツ付き
+                      <span className="mr-3 text-xl">✓</span> 承認ワークフロー
                     </div>
                   </div>
                 </div>
@@ -267,82 +269,79 @@ export default function Home(): ReactElement {
 
             <div className="text-center">
               <div className="inline-flex items-center bg-gradient-to-r from-rose-50 to-pink-50 border border-rose-200 rounded-full px-8 py-4 shadow-lg">
-                <span className="text-rose-500 mr-4 text-2xl animate-pulse">🆘</span>
+                <span className="text-rose-500 mr-4 text-2xl animate-pulse">✨</span>
                 <span className="text-gray-700 font-semibold text-lg">
-                  右下のボタンから今すぐ体験できます！
+                  今すぐ無料で始められます！
                 </span>
               </div>
             </div>
           </div>
         </section>
 
-        {/* 天気・服装提案機能ハイライト */}
-        <section className="py-24 bg-gradient-to-br from-orange-50 via-yellow-50 to-amber-50">
+        {/* AI喧嘩仲裁・関係修復機能ハイライト */}
+        <section className="py-24 bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50">
           <div className="container mx-auto px-4">
             <div className="text-center mb-20">
-              <div className="inline-flex items-center bg-orange-100 border border-orange-200 rounded-full px-6 py-3 mb-6">
-                <span className="text-orange-500 text-2xl mr-3">🌤️</span>
-                <span className="text-orange-700 font-semibold">スマート服装提案</span>
+              <div className="inline-flex items-center bg-green-100 border border-green-200 rounded-full px-6 py-3 mb-6">
+                <span className="text-green-500 text-2xl mr-3">💕</span>
+                <span className="text-green-700 font-semibold">AI喧嘩仲裁・関係修復</span>
               </div>
 
               <h2 className="text-5xl font-bold text-gray-900 mb-6">
-                今日の天気に合わせた
-                <span className="block text-orange-600">完璧な服装提案</span>
+                カップルの対立を
+                <span className="block text-green-600">AIが中立的に仲裁</span>
               </h2>
               <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
-                デート当日の天気を確認して、二人にぴったりの服装を提案。
+                喧嘩や対立パターンを検知し、AIが中立的な立場で仲裁提案。
                 <br />
-                雨の日も暑い日も、天気に左右されずに素敵なデートを楽しめます。
+                建設的な解決策と関係修復プランで、二人の絆をより深くします。
               </p>
             </div>
 
             <div className="max-w-6xl mx-auto">
-              <div className="bg-white rounded-3xl shadow-2xl p-12 border border-orange-100 relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-40 h-40 bg-gradient-to-br from-orange-200 to-transparent rounded-full opacity-20 -translate-y-20 -translate-x-20" />
-                <div className="absolute bottom-0 right-0 w-40 h-40 bg-gradient-to-tl from-yellow-200 to-transparent rounded-full opacity-20 translate-y-20 translate-x-20" />
+              <div className="bg-white rounded-3xl shadow-2xl p-12 border border-green-100 relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-40 h-40 bg-gradient-to-br from-green-200 to-transparent rounded-full opacity-20 -translate-y-20 -translate-x-20" />
+                <div className="absolute bottom-0 right-0 w-40 h-40 bg-gradient-to-tl from-emerald-200 to-transparent rounded-full opacity-20 translate-y-20 translate-x-20" />
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 relative">
-                  {/* 天気情報表示 */}
+                  {/* 対立パターン分析 */}
                   <div className="space-y-8">
                     <h3 className="text-3xl font-bold text-gray-900 flex items-center">
-                      <span className="bg-gradient-to-br from-orange-500 to-orange-600 p-4 rounded-2xl mr-6 text-white shadow-lg">
-                        🌡️
+                      <span className="bg-gradient-to-br from-green-500 to-green-600 p-4 rounded-2xl mr-6 text-white shadow-lg">
+                        🔍
                       </span>
-                      リアルタイム天気情報
+                      対立パターン分析
                     </h3>
                     <div className="space-y-6">
-                      <div className="flex items-center text-orange-600 font-semibold text-lg">
-                        <span className="mr-4 text-xl">✓</span> 現在地の詳細な天気情報
+                      <div className="flex items-center text-green-600 font-semibold text-lg">
+                        <span className="mr-4 text-xl">✓</span> 喧嘩の原因を自動検知
                       </div>
-                      <div className="flex items-center text-orange-600 font-semibold text-lg">
-                        <span className="mr-4 text-xl">✓</span> 気温・体感温度・湿度・風速
+                      <div className="flex items-center text-green-600 font-semibold text-lg">
+                        <span className="mr-4 text-xl">✓</span> 感情のパターン分析
                       </div>
-                      <div className="flex items-center text-orange-600 font-semibold text-lg">
-                        <span className="mr-4 text-xl">✓</span> 時間別天気予報
+                      <div className="flex items-center text-green-600 font-semibold text-lg">
+                        <span className="mr-4 text-xl">✓</span> 関係性の状態把握
                       </div>
                     </div>
                   </div>
 
-                  {/* 服装提案 */}
+                  {/* 仲裁提案 */}
                   <div className="space-y-8">
                     <h3 className="text-3xl font-bold text-gray-900 flex items-center">
-                      <span className="bg-gradient-to-br from-orange-500 to-orange-600 p-4 rounded-2xl mr-6 text-white shadow-lg">
-                        👕
+                      <span className="bg-gradient-to-br from-green-500 to-green-600 p-4 rounded-2xl mr-6 text-white shadow-lg">
+                        🤝
                       </span>
-                      スマート服装提案
+                      中立的仲裁提案
                     </h3>
                     <div className="space-y-6">
-                      <div className="flex items-center text-orange-600 font-semibold text-lg">
-                        <span className="mr-4 text-xl">✓</span> 気温に応じた基本コーディネート
+                      <div className="flex items-center text-green-600 font-semibold text-lg">
+                        <span className="mr-4 text-xl">✓</span> 建設的な解決策提示
                       </div>
-                      <div className="flex items-center text-orange-600 font-semibold text-lg">
-                        <span className="mr-4 text-xl">✓</span> 雨・雪・風など天候別アドバイス
+                      <div className="flex items-center text-green-600 font-semibold text-lg">
+                        <span className="mr-4 text-xl">✓</span> 関係修復プラン
                       </div>
-                      <div className="flex items-center text-orange-600 font-semibold text-lg">
-                        <span className="mr-4 text-xl">✓</span> 湿度を考慮した素材選び
-                      </div>
-                      <div className="flex items-center text-orange-600 font-semibold text-lg">
-                        <span className="mr-4 text-xl">✓</span> 具体的なアイテム提案
+                      <div className="flex items-center text-green-600 font-semibold text-lg">
+                        <span className="mr-4 text-xl">✓</span> 継続的なフォローアップ
                       </div>
                     </div>
                   </div>
@@ -358,43 +357,43 @@ export default function Home(): ReactElement {
             <div className="text-center mb-20">
               <h2 className="text-5xl font-bold text-gray-900 mb-6">主要機能</h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                カップルのデートを完全サポートする充実した機能群
+                カップルの絆を深める統合プラットフォームの充実した機能群
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-6xl mx-auto">
               <div className="text-center group hover:scale-105 transition-all duration-500">
                 <div className="bg-white rounded-3xl p-10 shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100">
-                  <div className="bg-gradient-to-br from-rose-400 to-rose-500 w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform shadow-lg">
-                    <span className="text-3xl">🆘</span>
-                  </div>
-                  <h3 className="font-bold text-gray-900 mb-4 text-2xl">緊急ヘルプ</h3>
-                  <p className="text-gray-600 text-lg leading-relaxed">
-                    デート中の困った瞬間を瞬時に解決する救世主機能
-                  </p>
-                </div>
-              </div>
-
-              <div className="text-center group hover:scale-105 transition-all duration-500">
-                <div className="bg-white rounded-3xl p-10 shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100">
                   <div className="bg-gradient-to-br from-blue-400 to-blue-500 w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform shadow-lg">
-                    <span className="text-3xl">📝</span>
+                    <span className="text-3xl">🤖</span>
                   </div>
-                  <h3 className="font-bold text-gray-900 mb-4 text-2xl">プラン作成</h3>
+                  <h3 className="font-bold text-gray-900 mb-4 text-2xl">AIデートプラン</h3>
                   <p className="text-gray-600 text-lg leading-relaxed">
-                    直感的な操作でデートプランを簡単作成・共有
+                    パーソナライズされたデートプランを自動生成・提案
                   </p>
                 </div>
               </div>
 
               <div className="text-center group hover:scale-105 transition-all duration-500">
                 <div className="bg-white rounded-3xl p-10 shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100">
-                  <div className="bg-gradient-to-br from-orange-400 to-orange-500 w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform shadow-lg">
-                    <span className="text-3xl">🌤️</span>
+                  <div className="bg-gradient-to-br from-purple-400 to-purple-500 w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform shadow-lg">
+                    <span className="text-3xl">👥</span>
                   </div>
-                  <h3 className="font-bold text-gray-900 mb-4 text-2xl">天気・服装提案</h3>
+                  <h3 className="font-bold text-gray-900 mb-4 text-2xl">共同編集</h3>
                   <p className="text-gray-600 text-lg leading-relaxed">
-                    今日の天気に合わせた完璧な服装を提案
+                    リアルタイムでカップルが一緒にプランを作成
+                  </p>
+                </div>
+              </div>
+
+              <div className="text-center group hover:scale-105 transition-all duration-500">
+                <div className="bg-white rounded-3xl p-10 shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100">
+                  <div className="bg-gradient-to-br from-green-400 to-green-500 w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform shadow-lg">
+                    <span className="text-3xl">💕</span>
+                  </div>
+                  <h3 className="font-bold text-gray-900 mb-4 text-2xl">関係修復</h3>
+                  <p className="text-gray-600 text-lg leading-relaxed">
+                    AIが中立的に仲裁し、関係性を修復・強化
                   </p>
                 </div>
               </div>
@@ -490,7 +489,7 @@ export default function Home(): ReactElement {
               <ul className="space-y-4">
                 <li>
                   <Link
-                    href="/login"
+                    href="/login?redirectTo=/dashboard"
                     className="text-gray-300 hover:text-rose-400 transition-colors text-lg hover:underline"
                   >
                     ログイン
@@ -498,7 +497,7 @@ export default function Home(): ReactElement {
                 </li>
                 <li>
                   <Link
-                    href="/signup"
+                    href="/signup?redirectTo=/dashboard"
                     className="text-gray-300 hover:text-rose-400 transition-colors text-lg hover:underline"
                   >
                     新規登録
@@ -516,9 +515,6 @@ export default function Home(): ReactElement {
           </div>
         </div>
       </footer>
-
-      {/* 緊急ヘルプボタン */}
-      <EmergencyButton />
     </div>
   );
 }

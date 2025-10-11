@@ -8,25 +8,30 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = 'primary', size = 'md', ...props }, ref) => {
+  ({ className, variant = 'primary', size = 'md', disabled, type = 'button', ...props }, ref) => {
     return (
       <button
+        type={type}
         className={cn(
           'rounded-lg font-medium transition-colors',
           {
-            'bg-rose-600 text-white hover:bg-rose-700': variant === 'primary',
-            'bg-pink-100 text-rose-800 hover:bg-pink-200': variant === 'secondary',
+            'bg-rose-600 text-white hover:bg-rose-700': variant === 'primary' && !disabled,
+            'bg-pink-100 text-rose-800 hover:bg-pink-200': variant === 'secondary' && !disabled,
             'border-2 border-rose-200 text-rose-700 bg-transparent hover:bg-rose-50':
-              variant === 'outline',
+              variant === 'outline' && !disabled,
           },
           {
             'px-3 py-1.5 text-sm': size === 'sm',
             'px-4 py-2': size === 'md',
             'px-6 py-3 text-lg': size === 'lg',
           },
+          {
+            'opacity-50 cursor-not-allowed': disabled,
+          },
           className
         )}
         ref={ref}
+        disabled={disabled}
         {...props}
       />
     );
