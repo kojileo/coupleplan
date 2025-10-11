@@ -7,6 +7,8 @@ import { DatePlanCreateRequest, PlanValidationError } from '@/types/date-plan';
 import { validateDatePlanRequest } from '@/lib/plan-validation';
 import { getPrefectures, getCities } from '@/lib/location-data';
 import { getAllTags, getAllCategories, getTagsByCategory } from '@/lib/preference-tags';
+import { UsageLimitDisplay } from '@/components/subscription/UsageLimitDisplay';
+import { LimitReachedModal } from '@/components/subscription/LimitReachedModal';
 
 export default function CreateDatePlanPage() {
   const router = useRouter();
@@ -30,6 +32,14 @@ export default function CreateDatePlanPage() {
   const [validationErrors, setValidationErrors] = useState<PlanValidationError[]>([]);
   const [cities, setCities] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
+
+  // サブスクリプション制限関連
+  const [showLimitModal, setShowLimitModal] = useState(false);
+  const [limitType, setLimitType] = useState<'daily' | 'monthly'>('daily');
+  const [remaining, setRemaining] = useState<{ daily: number | null; monthly: number | null }>({
+    daily: null,
+    monthly: null,
+  });
 
   // 都道府県と市区町村のデータ
   const prefectures = getPrefectures();
@@ -104,7 +114,24 @@ export default function CreateDatePlanPage() {
     setValidationErrors([]);
 
     try {
-      // 認証トークンを取得
+      // 1. サブスクリプション制限チェック
+      const limitResponse = await fetch('/api/subscription/check-limit');
+      const limitData = await limitResponse.json();
+
+      if (!limitResponse.ok) {
+        console.error('制限チェックエラー:', limitData);
+        // エラー時はそのまま生成を試みる（Graceful degradation）
+      } else if (!limitData.canGenerate) {
+        // 制限到達時はモーダルを表示して処理を中断
+        const type = limitData.remaining.daily === 0 ? 'daily' : 'monthly';
+        setLimitType(type);
+        setRemaining(limitData.remaining);
+        setShowLimitModal(true);
+        setLoading(false);
+        return;
+      }
+
+      // 2. 認証トークンを取得
       const {
         data: { session },
       } = await supabase.auth.getSession();
@@ -115,7 +142,7 @@ export default function CreateDatePlanPage() {
         return;
       }
 
-      // AI生成APIを呼び出し
+      // 3. AI生成APIを呼び出し
       const response = await fetch('/api/plans/generate', {
         method: 'POST',
         headers: {
@@ -136,7 +163,21 @@ export default function CreateDatePlanPage() {
         return;
       }
 
-      // 生成されたプランの一覧画面に遷移
+      // 4. 使用履歴を記録
+      try {
+        await fetch('/api/subscription/usage', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ planId: data.plan?.id || null }),
+        });
+      } catch (usageError) {
+        // 使用履歴記録のエラーは処理を継続（ログのみ）
+        console.error('使用履歴記録エラー:', usageError);
+      }
+
+      // 5. 生成されたプランの一覧画面に遷移
       router.push(`/dashboard/plans/results?generation_id=${data.generation_id}`);
     } catch (error) {
       console.error('プラン生成エラー:', error);
@@ -175,6 +216,9 @@ export default function CreateDatePlanPage() {
               AIがあなたの好みに合わせた最適なデートプランを提案します
             </p>
           </div>
+
+          {/* 使用制限表示 */}
+          <UsageLimitDisplay />
 
           {/* フォーム */}
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -428,6 +472,14 @@ export default function CreateDatePlanPage() {
           </form>
         </div>
       </div>
+
+      {/* 制限到達モーダル */}
+      <LimitReachedModal
+        isOpen={showLimitModal}
+        onClose={() => setShowLimitModal(false)}
+        limitType={limitType}
+        remaining={remaining}
+      />
     </div>
   );
 }

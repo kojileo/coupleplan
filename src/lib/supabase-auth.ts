@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { createBrowserClient } from '@supabase/ssr';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -19,11 +19,4 @@ if (process.env.NODE_ENV === 'production') {
   }
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    autoRefreshToken: false, // 緊急対策：自動リフレッシュを無効化
-    persistSession: true,
-    detectSessionInUrl: true,
-    flowType: 'pkce',
-  },
-});
+export const supabase = createBrowserClient(supabaseUrl, supabaseAnonKey);

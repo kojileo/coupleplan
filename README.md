@@ -48,7 +48,27 @@
 - ✅ プラン一覧・検索
 - ✅ カップル専用プラン管理
 
-#### 5. **UI/UX**
+#### 5. **マネタイズ機能（UC-007）** 💰 NEW
+
+- ✅ **サブスクリプションシステム** - 段階的マネタイズ
+  - **Freeプラン**: 日次3回、月次10回、プラン保存5件
+  - **Premiumプラン**: 無制限（¥480/月、将来実装）
+- ✅ **使用制限機能**
+  - AIプラン生成の回数制限（日次・月次）
+  - 使用履歴の記録と管理
+  - リアルタイム残り回数表示
+  - 制限到達時のユーザーフィードバック
+- ✅ **サブスクリプション管理画面**
+  - 現在のプラン表示
+  - 使用状況の可視化
+  - Premium案内
+- ✅ **データベース設計**
+  - `subscription_plans` - プラン定義
+  - `user_subscriptions` - ユーザーのサブスク状態
+  - `plan_generation_usage` - 使用履歴
+  - 自動プラン割り当てトリガー
+
+#### 6. **UI/UX**
 
 - ✅ レスポンシブデザイン（デスクトップ・タブレット・モバイル対応）
 - ✅ グローバルナビゲーションバー
@@ -90,6 +110,9 @@
   - `plan_items` - プランアイテム
   - `plan_feedback` - フィードバック
   - `plan_templates` - テンプレート
+  - **`subscription_plans`** 💰 - サブスクリプションプラン定義
+  - **`user_subscriptions`** 💰 - ユーザーのサブスク状態
+  - **`plan_generation_usage`** 💰 - AIプラン生成使用履歴
 
 ### AI/ML
 
@@ -167,10 +190,34 @@ AI_TEMPERATURE=0.7
 
 ### 4. データベースマイグレーション
 
-Supabase Studioで以下のSQLファイルを実行：
+Supabase Studioで以下のSQLファイルを順番に実行：
 
-1. `supabase/migrations/create_couple_invitations.sql`
-2. `supabase/migrations/create_date_plans.sql`
+1. `supabase/migrations/create_couple_invitations.sql` - パートナー連携機能
+2. `supabase/migrations/create_date_plans.sql` - デートプラン機能
+3. **`supabase/migrations/create_subscription_system.sql`** 💰 - マネタイズ機能（NEW）
+
+**重要**: マイグレーションは順番通りに実行してください。
+
+#### マイグレーション実行手順
+
+**エラーが出ている場合は、必ずマイグレーションを実行してください！**
+
+```bash
+# 1. Supabaseダッシュボードにアクセス
+# https://supabase.com/dashboard/project/[your-project-id]
+
+# 2. SQL Editor → New query
+
+# 3. マイグレーションファイルの内容をコピー&ペースト
+# supabase/migrations/create_subscription_system.sql
+
+# 4. Run をクリック
+```
+
+詳細な手順とトラブルシューティング:
+
+- **[Docs/SUBSCRIPTION_SETUP.md](Docs/SUBSCRIPTION_SETUP.md)** 🔥 セットアップガイド（5分で完了）
+- [Docs/MONETIZATION_IMPLEMENTATION_GUIDE.md](Docs/MONETIZATION_IMPLEMENTATION_GUIDE.md) - 実装ガイド
 
 ### 5. 開発サーバーの起動
 
@@ -236,6 +283,14 @@ Vercelダッシュボードで以下を設定：
 4. 予算と時間を自動計算で確認
 5. 「プランを確定」で完了
 
+### 5. サブスクリプション管理 💰
+
+1. ダッシュボードで使用状況を確認
+   - 今日の残り: X / 3回
+   - 今月の残り: Y / 10回
+2. 制限到達時は翌日または来月まで待つ
+3. 「💎 無制限で使う」からPremium案内を確認（近日公開予定）
+
 ## 📁 プロジェクト構造
 
 ```
@@ -245,18 +300,26 @@ coupleplan/
 │   │   ├── api/               # API Routes
 │   │   │   ├── account/       # アカウント管理
 │   │   │   ├── partner/       # パートナー連携
-│   │   │   └── plans/         # デートプラン管理
+│   │   │   ├── plans/         # デートプラン管理
+│   │   │   └── subscription/  💰 # サブスクリプション管理（NEW）
+│   │   │       ├── check-limit/
+│   │   │       ├── usage/
+│   │   │       └── current/
 │   │   ├── auth/              # 認証ページ
 │   │   ├── dashboard/         # ダッシュボード
 │   │   │   ├── plans/         # プラン管理
 │   │   │   │   └── [id]/
 │   │   │   │       └── customize/  # カスタマイズビュー
 │   │   │   ├── profile/       # プロフィール
-│   │   │   └── partner-linkage/   # パートナー連携
+│   │   │   ├── partner-linkage/   # パートナー連携
+│   │   │   └── subscription/  💰 # サブスク管理画面（NEW）
 │   │   ├── login/             # ログイン
 │   │   └── signup/            # サインアップ
 │   ├── components/            # Reactコンポーネント
 │   │   ├── layout/            # レイアウト（Navbar等）
+│   │   ├── subscription/      💰 # サブスク関連（NEW）
+│   │   │   ├── UsageLimitDisplay.tsx
+│   │   │   └── LimitReachedModal.tsx
 │   │   └── ui/                # UIコンポーネント
 │   ├── contexts/              # Reactコンテキスト
 │   ├── lib/                   # ユーティリティ
@@ -266,11 +329,18 @@ coupleplan/
 │   │   ├── validation.ts      # バリデーション
 │   │   └── plan-validation.ts # プランバリデーション
 │   └── types/                 # TypeScript型定義
+│       ├── subscription.ts    💰 # サブスク型定義（NEW）
+│       └── database.ts        # データベース型定義
 ├── supabase/
 │   └── migrations/            # データベースマイグレーション
+│       ├── create_couple_invitations.sql
+│       ├── create_date_plans.sql
+│       └── create_subscription_system.sql 💰 # NEW
 ├── Docs/                      # ドキュメント
 │   ├── 開発計画.md
-│   ├── GEMINI_API_SETUP.md    # Gemini API統合ガイド
+│   ├── ビジネス要件定義書.md
+│   ├── MONETIZATION_IMPLEMENTATION_GUIDE.md 💰 # NEW
+│   ├── GEMINI_API_SETUP.md
 │   ├── AI_DATE_PLAN_IMPLEMENTATION.md
 │   └── UC-001_AIデートプラン提案・生成_詳細ユースケース.md
 └── public/                    # 静的ファイル

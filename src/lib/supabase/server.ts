@@ -1,8 +1,9 @@
 // Supabase クライアント（サーバーサイド用）
 // API Routes用のSupabaseクライアント作成
 
-import { createClient as createSupabaseClient } from '@supabase/supabase-js';
+import { createServerClient } from '@supabase/ssr';
 import { NextRequest } from 'next/server';
+import { cookies } from 'next/headers';
 
 export async function createClient(request?: NextRequest) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -12,28 +13,24 @@ export async function createClient(request?: NextRequest) {
     throw new Error('Supabase環境変数が設定されていません');
   }
 
-  // リクエストから認証ヘッダーを取得
-  let accessToken: string | undefined;
-  if (request) {
-    const authHeader = request.headers.get('authorization');
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      accessToken = authHeader.substring(7);
-    }
-  }
+  // クッキーストアを取得
+  const cookieStore = await cookies();
 
-  // 認証ヘッダーを含むSupabaseクライアントを作成
-  const supabase = createSupabaseClient(supabaseUrl, supabaseAnonKey, {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false,
-      detectSessionInUrl: false,
-    },
-    global: {
-      headers: accessToken
-        ? {
-            Authorization: `Bearer ${accessToken}`,
-          }
-        : {},
+  // Supabase SSRクライアントを作成
+  const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+    cookies: {
+      getAll() {
+        return cookieStore.getAll();
+      },
+      setAll(cookiesToSet) {
+        try {
+          cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options));
+        } catch {
+          // The `setAll` method was called from a Server Component.
+          // This can be ignored if you have middleware refreshing
+          // user sessions.
+        }
+      },
     },
   });
 
