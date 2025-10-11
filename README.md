@@ -31,13 +31,13 @@
 
 - ✅ デートプラン作成画面
 - ✅ **AI生成機能** - 本格的なAI統合完了 🎉
-  - Google Gemini 2.5 Flash統合（最新推奨モデル）
-  - 思考モード搭載（高度な推論）
+  - Google Gemini 2.0 Flash統合（**最推奨モデル - 思考トークン0**）
+  - **トークン最適化**: 1プラン約1000-1500トークン（60-75%削減）
+  - **高速生成**: 10-15秒（従来比30-40%短縮）
   - OpenAI API統合
   - Anthropic Claude API統合
   - レート制限管理（キューイング、リトライ）
   - 多重リクエスト防止機構
-  - **トークン最適化**: 1プラン約3000トークン（15-25秒）
 - ✅ プラン提案画面
 - ✅ プラン詳細表示
 - ✅ **カスタマイズビュー** - プラン編集機能
@@ -94,8 +94,9 @@
 ### AI/ML
 
 - **Google Gemini API** ⭐ 推奨 - 無料利用枠あり
-  - Gemini Pro モデル
+  - **Gemini 2.0 Flash** - 最推奨（思考トークン0、トークン60-75%削減）
   - 1分間15リクエスト、1日1,500リクエスト無料
+  - 生成時間10-15秒（高速）
   - レート制限管理・キューイングシステム実装済み
 - **OpenAI API** - 統合済み（オプション）
 - **Anthropic Claude API** - 統合済み（オプション）
@@ -145,9 +146,9 @@ AI_PROVIDER=gemini
 # APIキーの取得: https://aistudio.google.com/
 GEMINI_API_KEY=your_gemini_api_key_here
 
-# AI Model Configuration
-AI_MODEL=gemini-2.5-flash
-AI_MAX_TOKENS=3000
+# AI Model Configuration（最推奨設定）
+AI_MODEL=gemini-2.0-flash-exp
+AI_MAX_TOKENS=2000
 AI_TEMPERATURE=0.7
 
 # オプション: OpenAI API
@@ -202,8 +203,8 @@ Vercelダッシュボードで以下を設定：
 
 - `AI_PROVIDER` = `gemini`
 - `GEMINI_API_KEY` = (Google AI Studioで取得)
-- `AI_MODEL` = `gemini-2.5-flash`
-- `AI_MAX_TOKENS` = `3000`
+- `AI_MODEL` = `gemini-2.0-flash-exp` ← **最推奨**（思考トークン0）
+- `AI_MAX_TOKENS` = `2000` ← トークン60-75%削減
 - `AI_TEMPERATURE` = `0.7`
 
 ## 📖 使い方

@@ -6,6 +6,24 @@ import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { DatePlanDetail, PlanItem } from '@/types/date-plan';
 
+// 緯度経度の安全なURL生成（XSS対策）
+function createMapsUrl(latitude: number, longitude: number): string {
+  // 数値であることを確認
+  const lat = Number(latitude);
+  const lng = Number(longitude);
+
+  if (isNaN(lat) || isNaN(lng)) {
+    return '#';
+  }
+
+  // 緯度経度の範囲チェック
+  if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+    return '#';
+  }
+
+  return `https://www.google.com/maps/search/?api=1&query=${lat.toFixed(6)},${lng.toFixed(6)}`;
+}
+
 export default function PlanDetailPage() {
   const router = useRouter();
   const params = useParams();
@@ -294,25 +312,41 @@ export default function PlanDetailPage() {
 
                       {item.description && <p className="text-gray-600 mb-3">{item.description}</p>}
 
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                      <div className="space-y-3">
                         {item.location && (
-                          <div className="flex items-center text-gray-600">
-                            <span className="mr-1">📍</span>
-                            <span>{item.location}</span>
+                          <div className="flex items-start text-gray-600">
+                            <span className="mr-2 mt-0.5">📍</span>
+                            <div className="flex-1">
+                              <p className="text-gray-900 font-medium">{item.location}</p>
+                              {item.latitude && item.longitude && (
+                                <a
+                                  href={createMapsUrl(item.latitude, item.longitude)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-blue-600 hover:text-blue-700 text-sm inline-flex items-center mt-1"
+                                >
+                                  <span className="mr-1">🗺️</span>
+                                  Google Mapsで開く
+                                </a>
+                              )}
+                            </div>
                           </div>
                         )}
-                        {item.duration && (
-                          <div className="flex items-center text-gray-600">
-                            <span className="mr-1">⏰</span>
-                            <span>{item.duration}分</span>
-                          </div>
-                        )}
-                        {item.cost !== undefined && (
-                          <div className="flex items-center text-gray-600">
-                            <span className="mr-1">💰</span>
-                            <span>{item.cost.toLocaleString()}円</span>
-                          </div>
-                        )}
+
+                        <div className="grid grid-cols-2 gap-4 text-sm">
+                          {item.duration && (
+                            <div className="flex items-center text-gray-600">
+                              <span className="mr-1">⏰</span>
+                              <span>{item.duration}分</span>
+                            </div>
+                          )}
+                          {item.cost !== undefined && (
+                            <div className="flex items-center text-gray-600">
+                              <span className="mr-1">💰</span>
+                              <span>{item.cost.toLocaleString()}円</span>
+                            </div>
+                          )}
+                        </div>
                       </div>
 
                       {item.notes && (

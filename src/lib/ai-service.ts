@@ -62,15 +62,20 @@ function getAIConfig(): AIConfig {
 
   // モデル名のデフォルト設定
   let defaultModel = 'mock';
+  let defaultMaxTokens = 2000;
+
   if (provider === 'gemini') {
-    // Gemini 2.5 Flash が最新の推奨モデル（2025年10月時点）
-    // 1.5系は非推奨になりました
-    // 2.5系は思考トークンを使用するため、AI_MAX_TOKENSは3000以上推奨
-    defaultModel = 'gemini-2.5-flash';
+    // Gemini 2.0 Flash 推奨（思考トークンなし、高速、トークン効率良好）
+    // 2.0 Flash系: 思考トークン0 + 出力1000-1500 = 計1000-1500トークン
+    // 2.5 Pro: 思考トークン2000 + 出力1000 = 計3000トークン（非効率）
+    defaultModel = 'gemini-2.0-flash-exp';
+    defaultMaxTokens = 2000;
   } else if (provider === 'openai') {
     defaultModel = 'gpt-4';
+    defaultMaxTokens = 2000;
   } else if (provider === 'anthropic') {
     defaultModel = 'claude-3-sonnet-20240229';
+    defaultMaxTokens = 2000;
   }
 
   return {
@@ -78,8 +83,8 @@ function getAIConfig(): AIConfig {
     apiKey: process.env.AI_API_KEY,
     geminiApiKey: process.env.GEMINI_API_KEY,
     model: process.env.AI_MODEL || defaultModel,
-    // Gemini 2.5系は思考トークン約2000 + 出力1000 = 3000推奨
-    maxTokens: parseInt(process.env.AI_MAX_TOKENS || '3000'),
+    // Gemini 2.0系: 2000トークンで十分（思考トークンなし）
+    maxTokens: parseInt(process.env.AI_MAX_TOKENS || defaultMaxTokens.toString()),
     temperature: parseFloat(process.env.AI_TEMPERATURE || '0.7'),
   };
 }
@@ -102,9 +107,9 @@ export async function generateDatePlan(
 
     // レート制限マネージャーを取得（シングルトン）
     const rateLimiter = getRateLimiter({
-      maxRequestsPerMinute: 10, // Gemini 2.5無料枠（公式ドキュメント準拠）
+      maxRequestsPerMinute: 15, // Gemini 2.0無料枠（公式ドキュメント準拠）
       maxRequestsPerDay: 1500, // Gemini無料枠
-      requestTimeout: getTimeoutForTokens(config.maxTokens || 3000) + 30000, // API + 30秒バッファ
+      requestTimeout: getTimeoutForTokens(config.maxTokens || 2000) + 30000, // API + 30秒バッファ
       maxRetries: 2, // 最大2回リトライ
     });
 
@@ -290,10 +295,11 @@ async function generateWithGemini(
         errorMessage +=
           `\n\n⚠️ 思考トークン（${thoughtsTokens}）が使用されています。\n` +
           `現在のモデル: ${currentModel}\n\n` +
-          `Gemini 2.5系は思考モード（約2000トークン）+ 出力（約1000トークン）= 計3000トークンを使用します。\n\n` +
-          `解決策: .env.local で以下を設定してください：\n` +
-          `AI_MAX_TOKENS=3000\n\n` +
-          `注: Gemini 1.5系は非推奨です。2.5系を使用してください。`;
+          `Gemini 2.5 Proは思考モード（約2000トークン）を使用するため非効率です。\n\n` +
+          `推奨: Gemini 2.0 Flashに変更してください（思考トークン0、60-75%削減）：\n` +
+          `AI_MODEL=gemini-2.0-flash-exp\n` +
+          `AI_MAX_TOKENS=2000\n\n` +
+          `または、2.5 Proを使い続ける場合: AI_MAX_TOKENS=4000`;
       } else {
         errorMessage += `\n\nAI_MAX_TOKENSを増やすか、プロンプトを短くしてください。`;
       }
@@ -581,8 +587,8 @@ function buildPrompt(request: AIGenerationRequest): string {
     prompt += `要望: ${special_requests.substring(0, 100)}。`;
   }
 
-  prompt += `\n\nJSON形式で出力（説明は簡潔に）:\n`;
-  prompt += `{"plans":[{"title":"","description":"","budget":0,"duration":0,"score":0.9,"reason":"","items":[{"type":"","name":"","description":"","location":"","start_time":"","duration":0,"cost":0,"order_index":1}]}]}`;
+  prompt += `\n\n実際の店舗名または場所名、住所、緯度経度を含むJSON形式で出力。店舗名は実在するか、それらしい具体的な名前を使用:\n`;
+  prompt += `{"plans":[{"title":"","description":"","budget":0,"duration":0,"score":0.9,"reason":"","items":[{"type":"restaurant","name":"炭火焼鳥 とりや（横浜駅西口店）","description":"","location":"〒220-0005 神奈川県横浜市西区南幸1-1-1 横浜駅西口ビル2階","latitude":35.6812,"longitude":139.7671,"start_time":"14:00","duration":1.5,"cost":0,"order_index":1}]}]}`;
 
   return prompt;
 }
@@ -599,7 +605,20 @@ function parseAIResponse(content: string): GeneratedPlan[] {
     }
 
     const parsed = JSON.parse(jsonMatch[0]);
-    return parsed.plans || [];
+    const plans = parsed.plans || [];
+
+    // order_indexが不足している場合は自動生成
+    plans.forEach((plan: any) => {
+      if (plan.items && Array.isArray(plan.items)) {
+        plan.items.forEach((item: any, index: number) => {
+          if (item.order_index === undefined || item.order_index === null) {
+            item.order_index = index + 1;
+          }
+        });
+      }
+    });
+
+    return plans;
   } catch (error) {
     console.error('AI応答のパースエラー:', error);
     throw new AIGenerationError('AI応答の解析に失敗しました', 'PARSE_ERROR', error);

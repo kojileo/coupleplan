@@ -103,7 +103,8 @@ export async function POST(request: NextRequest) {
             title: plan.title,
             description: plan.description,
             budget: plan.budget,
-            duration: plan.duration,
+            // durationを時間→分に変換（データベースは分単位の整数）
+            duration: Math.round(plan.duration * 60),
             status: 'draft',
             location_prefecture: body.location.prefecture,
             location_city: body.location.city,
@@ -132,7 +133,8 @@ export async function POST(request: NextRequest) {
             latitude: item.latitude,
             longitude: item.longitude,
             start_time: item.start_time,
-            duration: item.duration,
+            // durationを時間→分に変換（データベースは分単位の整数）
+            duration: Math.round((item.duration || 0) * 60),
             cost: item.cost,
             order_index: item.order_index,
           }));
