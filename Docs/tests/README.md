@@ -6,14 +6,16 @@
 
 ### メインドキュメント
 
-| ドキュメント                                       | 説明                                                             | 対象者         |
-| -------------------------------------------------- | ---------------------------------------------------------------- | -------------- |
-| **[TEST_PLAN.md](../TEST_PLAN.md)**                | メインテスト計画書<br>全体戦略、スコープ、品質目標               | 全員           |
-| **[TEST_STRATEGY.md](./TEST_STRATEGY.md)**         | テスト戦略詳細<br>各テストレベルの実装方法、ベストプラクティス   | 開発者         |
-| **[TEST_CASES.md](./TEST_CASES.md)**               | テストケース集<br>画面別・機能別の具体的なテストケース           | QA, 開発者     |
-| **[TEST_ENVIRONMENTS.md](./TEST_ENVIRONMENTS.md)** | テスト環境設定ガイド<br>環境セットアップ、トラブルシューティング | 開発者, DevOps |
-| **[DOCKER_TEST.md](./DOCKER_TEST.md)**             | Dockerテスト戦略<br>Cloud Run対応、コンテナテスト、セキュリティ  | 開発者, DevOps |
-| **[CI_CD_WORKFLOWS.md](./CI_CD_WORKFLOWS.md)**     | CI/CDワークフロー<br>GitHub Actions設定、デプロイ自動化          | DevOps         |
+| ドキュメント                                             | 説明                                                             | 対象者         |
+| -------------------------------------------------------- | ---------------------------------------------------------------- | -------------- |
+| **[TEST_PLAN.md](../TEST_PLAN.md)**                      | メインテスト計画書<br>全体戦略、スコープ、品質目標               | 全員           |
+| **[TEST_STRATEGY.md](./TEST_STRATEGY.md)**               | テスト戦略詳細<br>各テストレベルの実装方法、ベストプラクティス   | 開発者         |
+| **[TEST_CASES.md](./TEST_CASES.md)**                     | テストケース集<br>画面別・機能別の具体的なテストケース           | QA, 開発者     |
+| **[TEST_ENVIRONMENTS.md](./TEST_ENVIRONMENTS.md)**       | テスト環境設定ガイド<br>環境セットアップ、トラブルシューティング | 開発者, DevOps |
+| **[DOCKER_TEST.md](./DOCKER_TEST.md)**                   | Dockerテスト戦略<br>Cloud Run対応、コンテナテスト、セキュリティ  | 開発者, DevOps |
+| **[CI_CD_WORKFLOWS.md](./CI_CD_WORKFLOWS.md)**           | CI/CDワークフロー<br>GitHub Actions設定、デプロイ自動化          | DevOps         |
+| **[GITHUB_SECRETS_SETUP.md](./GITHUB_SECRETS_SETUP.md)** | GitHub Secrets設定ガイド<br>Secrets一覧、GCP設定手順             | DevOps         |
+| **[REQUIRED_SECRETS.md](./REQUIRED_SECRETS.md)**         | 必要なSecrets一覧<br>23個のSecrets、環境別設定                   | DevOps         |
 
 ---
 
@@ -111,6 +113,11 @@
    - Dockerビルドテスト
    - セキュリティスキャン
    - 性能最適化
+
+3. [GITHUB_SECRETS_SETUP.md](./GITHUB_SECRETS_SETUP.md)
+   - GitHub Secrets設定手順
+   - GCP環境構築
+   - トラブルシューティング
 
 #### QAエンジニア
 
