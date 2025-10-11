@@ -3,13 +3,13 @@
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { FormEvent, ReactElement } from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 
 import Button from '@/components/ui/button';
 import { supabase } from '@/lib/supabase-auth';
 import { clearSession } from '@/lib/manual-auth';
 
-export default function LoginPage(): ReactElement {
+function LoginForm(): ReactElement {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState('');
@@ -195,5 +195,19 @@ export default function LoginPage(): ReactElement {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage(): ReactElement {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50 flex items-center justify-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-rose-600"></div>
+        </div>
+      }
+    >
+      <LoginForm />
+    </Suspense>
   );
 }

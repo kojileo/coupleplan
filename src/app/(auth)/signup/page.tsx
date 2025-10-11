@@ -2,13 +2,13 @@
 
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import type { FormEvent, ReactElement } from 'react';
 
 import Button from '@/components/ui/button';
 import { supabase } from '@/lib/supabase-auth';
 
-export default function SignUpPage(): ReactElement {
+function SignUpForm(): ReactElement {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [name, setName] = useState('');
@@ -254,5 +254,19 @@ export default function SignUpPage(): ReactElement {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SignUpPage(): ReactElement {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50 flex items-center justify-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-rose-600"></div>
+        </div>
+      }
+    >
+      <SignUpForm />
+    </Suspense>
   );
 }
