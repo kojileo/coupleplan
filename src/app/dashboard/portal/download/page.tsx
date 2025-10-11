@@ -257,7 +257,7 @@ export default function AppDownloadPage(): ReactElement {
                     </div>
                   </div>
                 </div>
-                <p className="text-gray-600 text-sm mb-3">"{testimonial.comment}"</p>
+                <p className="text-gray-600 text-sm mb-3">&quot;{testimonial.comment}&quot;</p>
                 <p className="text-xs text-gray-500">
                   {new Date(testimonial.date).toLocaleDateString()}
                 </p>
