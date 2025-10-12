@@ -63,10 +63,10 @@ desktop.ini
 .prettierrc
 .eslintrc.json
 .editorconfig
-tsconfig.json
-next-env.d.ts
-postcss.config.mjs
-tailwind.config.ts
+# tsconfig.json - ビルドに必要（パス解決）
+# next-env.d.ts - ビルドに必要（Next.js型定義）
+# postcss.config.mjs - ビルドに必要（PostCSS設定）
+# tailwind.config.ts - ビルドに必要（TailwindCSS設定）
 
 # Docker
 Dockerfile
