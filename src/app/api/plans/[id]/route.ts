@@ -1,190 +1,207 @@
+// デートプラン詳細API
+// UC-001: AIデートプラン提案・生成機能
+
 import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@/lib/supabase/server';
 
-import { prisma } from '@/lib/db';
-import { supabase } from '@/lib/supabase-auth';
-import type { PlanRequest } from '@/types/api';
-
-type RouteParams = {
-  params: Promise<{ id: string }>;
-};
-
-export async function GET(request: NextRequest, { params }: RouteParams): Promise<NextResponse> {
+/**
+ * プラン詳細取得
+ */
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = await params;
-    const authHeader = request.headers.get('Authorization');
-    if (!authHeader) {
-      return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
-    }
+    const supabase = await createClient(request);
 
-    const token = authHeader.replace('Bearer ', '');
+    // 認証チェック
     const {
       data: { user },
-      error,
-    } = await supabase.auth.getUser(token);
+      error: authError,
+    } = await supabase.auth.getUser();
 
-    if (error || !user) {
+    if (authError || !user) {
       return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
     }
 
-    // プランの取得（所有者または公開プラン）
-    const plan = await prisma.plan.findFirst({
-      where: {
-        id,
-        OR: [{ userId: user.id }, { isPublic: true }],
-      },
-      include: {
-        profile: {
-          select: {
-            name: true,
-          },
-        },
-        likes: true,
-        locations: true,
-        _count: {
-          select: {
-            likes: true,
-          },
-        },
-      },
-    });
+    const { id: planId } = await params;
 
-    if (!plan) {
+    // プランの取得
+    const { data: plan, error: planError } = await supabase
+      .from('date_plans')
+      .select('*')
+      .eq('id', planId)
+      .single();
+
+    if (planError || !plan) {
       return NextResponse.json({ error: 'プランが見つかりません' }, { status: 404 });
     }
 
-    return NextResponse.json({ data: plan });
-  } catch (error) {
-    console.error('プラン取得エラー:', error);
+    // アクセス権限の確認（カップルメンバーかチェック）
+    const { data: couple } = await supabase
+      .from('couples')
+      .select('*')
+      .eq('id', plan.couple_id)
+      .or(`user1_id.eq.${user.id},user2_id.eq.${user.id}`)
+      .single();
+
+    if (!couple) {
+      return NextResponse.json({ error: 'アクセス権限がありません' }, { status: 403 });
+    }
+
+    // プランアイテムの取得
+    const { data: items, error: itemsError } = await supabase
+      .from('plan_items')
+      .select('*')
+      .eq('plan_id', planId)
+      .order('order_index', { ascending: true });
+
+    if (itemsError) {
+      console.error('アイテム取得エラー:', itemsError);
+    }
+
+    // フィードバックの取得
+    const { data: feedback, error: feedbackError } = await supabase
+      .from('plan_feedback')
+      .select('*')
+      .eq('plan_id', planId)
+      .order('submitted_at', { ascending: false });
+
+    if (feedbackError) {
+      console.error('フィードバック取得エラー:', feedbackError);
+    }
+
+    return NextResponse.json({
+      ...plan,
+      items: items || [],
+      feedback: feedback || [],
+    });
+  } catch (error: any) {
+    console.error('プラン詳細取得エラー:', error);
     return NextResponse.json({ error: 'プランの取得に失敗しました' }, { status: 500 });
   }
 }
 
-export async function PUT(request: NextRequest, { params }: RouteParams): Promise<NextResponse> {
+/**
+ * プラン更新
+ */
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const { id } = await params;
-    const authHeader = request.headers.get('Authorization');
-    if (!authHeader) {
-      return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
-    }
+    const supabase = await createClient(request);
 
-    const token = authHeader.replace('Bearer ', '');
+    // 認証チェック
     const {
       data: { user },
-      error,
-    } = await supabase.auth.getUser(token);
+      error: authError,
+    } = await supabase.auth.getUser();
 
-    if (error || !user) {
+    if (authError || !user) {
       return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
     }
 
-    const body = (await request.json()) as unknown;
-    // バリデーション
-    if (!isPlanRequest(body)) {
-      return NextResponse.json({ error: '無効なリクエストデータです' }, { status: 400 });
+    const { id: planId } = await params;
+    const body = await request.json();
+
+    // プランの取得
+    const { data: plan, error: planError } = await supabase
+      .from('date_plans')
+      .select('*')
+      .eq('id', planId)
+      .single();
+
+    if (planError || !plan) {
+      return NextResponse.json({ error: 'プランが見つかりません' }, { status: 404 });
     }
 
-    try {
-      // プランの存在確認
-      const existingPlan = await prisma.plan.findUnique({
-        where: {
-          id,
-          userId: user.id,
-        },
-      });
+    // アクセス権限の確認
+    const { data: couple } = await supabase
+      .from('couples')
+      .select('*')
+      .eq('id', plan.couple_id)
+      .or(`user1_id.eq.${user.id},user2_id.eq.${user.id}`)
+      .single();
 
-      if (!existingPlan) {
-        return NextResponse.json({ error: 'プランが見つかりません' }, { status: 404 });
-      }
+    if (!couple) {
+      return NextResponse.json({ error: 'アクセス権限がありません' }, { status: 403 });
+    }
 
-      const plan = await prisma.plan.update({
-        where: {
-          id,
-          userId: user.id,
-        },
-        data: {
-          title: body.title,
-          description: body.description,
-          date: body.date,
-          region: body.region,
-          budget: body.budget,
-          isPublic: body.isPublic,
-          locations: {
-            deleteMany: {},
-            create:
-              body.locations?.map((location) => ({
-                name: location.name || null,
-                url: location.url || '',
-              })) || [],
-          },
-        },
-        include: {
-          profile: {
-            select: {
-              name: true,
-            },
-          },
-          likes: true,
-          locations: true,
-          _count: {
-            select: {
-              likes: true,
-            },
-          },
-        },
-      });
+    // プランの更新
+    const { data: updatedPlan, error: updateError } = await supabase
+      .from('date_plans')
+      .update({
+        title: body.title,
+        description: body.description,
+        budget: body.budget,
+        duration: body.duration,
+        status: body.status,
+        location_prefecture: body.location_prefecture,
+        location_city: body.location_city,
+        location_station: body.location_station,
+        preferences: body.preferences,
+        special_requests: body.special_requests,
+      })
+      .eq('id', planId)
+      .select()
+      .single();
 
-      return NextResponse.json({ data: plan });
-    } catch (error) {
-      console.error('プラン更新エラー:', error instanceof Error ? error.message : 'Unknown error');
+    if (updateError) {
+      console.error('プラン更新エラー:', updateError);
       return NextResponse.json({ error: 'プランの更新に失敗しました' }, { status: 500 });
     }
-  } catch (error) {
-    console.error('プラン更新エラー:', error instanceof Error ? error.message : 'Unknown error');
+
+    return NextResponse.json(updatedPlan);
+  } catch (error: any) {
+    console.error('プラン更新エラー:', error);
     return NextResponse.json({ error: 'プランの更新に失敗しました' }, { status: 500 });
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: RouteParams): Promise<NextResponse> {
+/**
+ * プラン削除
+ */
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const { id } = await params;
-    const authHeader = request.headers.get('Authorization');
-    if (!authHeader) {
-      return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
-    }
+    const supabase = await createClient(request);
 
-    const token = authHeader.replace('Bearer ', '');
+    // 認証チェック
     const {
       data: { user },
-      error,
-    } = await supabase.auth.getUser(token);
+      error: authError,
+    } = await supabase.auth.getUser();
 
-    if (error || !user) {
+    if (authError || !user) {
       return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
     }
 
-    await prisma.plan.delete({
-      where: {
-        id,
-        userId: user.id,
-      },
-    });
+    const { id: planId } = await params;
 
-    return NextResponse.json({ data: { success: true } });
-  } catch (error) {
+    // プランの取得
+    const { data: plan, error: planError } = await supabase
+      .from('date_plans')
+      .select('*')
+      .eq('id', planId)
+      .single();
+
+    if (planError || !plan) {
+      return NextResponse.json({ error: 'プランが見つかりません' }, { status: 404 });
+    }
+
+    // 削除権限の確認（作成者のみ削除可能）
+    if (plan.created_by !== user.id) {
+      return NextResponse.json({ error: '削除権限がありません' }, { status: 403 });
+    }
+
+    // プランの削除（カスケード削除でplan_itemsも削除される）
+    const { error: deleteError } = await supabase.from('date_plans').delete().eq('id', planId);
+
+    if (deleteError) {
+      console.error('プラン削除エラー:', deleteError);
+      return NextResponse.json({ error: 'プランの削除に失敗しました' }, { status: 500 });
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
     console.error('プラン削除エラー:', error);
     return NextResponse.json({ error: 'プランの削除に失敗しました' }, { status: 500 });
   }
-}
-
-// 型ガードの関数
-function isPlanRequest(data: unknown): data is PlanRequest {
-  if (!data || typeof data !== 'object') return false;
-  const plan = data as Partial<PlanRequest>;
-  // PlanRequestの必須フィールドをチェック
-  // 注: 実際のPlanRequest型の必須フィールドに応じて調整してください
-  return (
-    typeof plan.title === 'string' &&
-    typeof plan.description === 'string' &&
-    typeof plan.isPublic === 'boolean'
-  );
 }

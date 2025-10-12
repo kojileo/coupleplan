@@ -1,269 +1,405 @@
-## プロジェクト構成
+# 💑 CouplePlan - カップル向けデートプラン統合プラットフォーム
 
-```
-coupleplan/
-├── .github/                 # GitHub関連設定
-│   └── workflows/          # GitHub Actions
-│       └── ci.yml          # CI設定
-├── .next/                   # Next.jsのビルド出力
-├── coverage/                # テストカバレッジレポート
-├── prisma/                  # Prisma関連
-│   ├── migrations/         # マイグレーションファイル
-│   └── schema.prisma       # データベーススキーマ
-├── public/                  # 静的ファイル
-├── src/                     # アプリケーションコード
-│   ├── app/                 # Next.js App Router
-│   │   ├── (auth)/          # 認証関連ページ
-│   │   │   ├── forgot-password/       # パスワードお忘れですか
-│   │   │   ├── reset-password/      # パスワードリセット
-│   │   │   ├── login/       # ログイン
-│   │   │   ├── signup/      # サインアップ
-│   │   │   └── verify-email/# メール確認
-│   │   ├── (dashboard)/     # ダッシュボード
-│   │   │   ├── layout.tsx   # ダッシュボードレイアウト
-│   │   │   ├── profile/     # プロフィール
-│   │   │   └── plans/       # プラン管理
-│   │   │       ├── page.tsx # プラン一覧
-│   │   │       ├── [id]/    # プラン詳細
-│   │   │       │   └── edit/# プラン編集
-│   │   │       ├── new/     # プラン作成
-│   │   │       └── public/  # 公開プラン
-│   │   ├── api/             # APIルート
-│   │   │   ├── account/     # アカウント管理API
-│   │   │   ├── auth/        # 認証API
-│   │   │   │   ├── login/
-│   │   │   │   ├── reset-password/
-│   │   │   │   └── signup/
-│   │   │   ├── plans/       # プランAPI
-│   │   │   │   ├── [id]/
-│   │   │   │   │   ├── likes/
-│   │   │   │   │   └── publish/
-│   │   │   │   ├── public/
-│   │   │   │   └── route.ts
-│   │   │   └── profile/     # プロフィールAPI
-│   │   │       ├── [userId]/
-│   │   │       └── route.ts
-│   │   ├── globals.css      # グローバルCSS
-│   │   ├── layout.tsx       # ルートレイアウト
-│   │   └── page.tsx         # ホームページ
-│   ├── components/          # コンポーネント
-│   │   ├── ui/             # 共通UI
-│   │   │   └── button.tsx  # ボタンコンポーネント
-│   │   └── features/       # 機能別
-│   │       ├── auth/       # 認証関連コンポーネント
-│   │       ├── dashboard/  # ダッシュボード関連コンポーネント
-│   │       └── plans/      # プラン関連コンポーネント
-│   ├── contexts/           # コンテキスト
-│   │   └── AuthContext.tsx # 認証コンテキスト
-│   ├── hooks/              # カスタムフック
-│   │   ├── useProfile.ts   # プロフィール関連フック
-│   │   └── useRequireAuth.ts # 認証要求フック
-│   ├── lib/                # ユーティリティ
-│   │   ├── api/            # API関連モジュール
-│   │   │   └── profile.ts  # プロフィールAPI
-│   │   ├── api.ts          # APIクライアント
-│   │   ├── db.ts           # Prismaクライアント
-│   │   ├── supabase-auth.ts# Supabase認証
-│   │   └── utils.ts        # ユーティリティ関数
-│   └── types/              # 型定義
-│       ├── api.ts          # API関連の型
-│       ├── auth.ts         # 認証関連の型
-│       ├── database.ts     # データベース関連の型
-│       ├── plan.ts         # プラン関連の型
-│       └── profile.ts      # プロフィール関連の型
-├── tests/                   # 自動テストコード
-│   ├── unit/                # ユニットテスト
-│   │   ├── app/             # App Router、ページの単体テスト
-│   │   ├── components/      # コンポーネントの単体テスト
-│   │   ├── contexts/        # コンテキストのテスト
-│   │   ├── hooks/           # カスタムフックのテスト
-│   │   └── lib/             # ユーティリティ・APIクライアントのテスト
-│   ├── integration/         # 統合テスト（APIエンドポイント等）
-│   └── e2e/                 # エンドツーエンドテスト
-├── .env                     # 環境変数
-├── .env.local               # ローカル環境変数
-├── .env.test.local          # テスト環境変数
-├── .eslintrc.json           # ESLint設定
-├── .gitignore               # Git除外設定
-├── jest.config.js           # Jest設定
-├── jest.setup.js            # Jestセットアップ
-├── next.config.ts           # Next.js設定
-├── package.json             # パッケージ設定
-├── postcss.config.mjs       # PostCSS設定
-├── tailwind.config.ts       # Tailwind CSS設定
-└── tsconfig.json            # TypeScript設定
-```
+カップルの絆を深める、AI駆動のデートプラン提案・管理統合プラットフォーム
 
-## 環境設定
+## ✨ 主な機能
 
-このアプリケーションを動作させるには、以下の環境変数の設定が必要です。
+### 🚀 実装済み機能
 
-### 必須設定
+#### 1. **認証システム**
 
-プロジェクトルートに `.env.local` ファイルを作成し、以下の変数を設定してください：
+- ✅ ユーザー登録・ログイン
+- ✅ メール認証
+- ✅ パスワードリセット
+- ✅ セッション管理
+
+#### 2. **プロフィール管理**
+
+- ✅ プロフィール編集（名前、メール、居住地、誕生日、記念日）
+- ✅ アカウント削除
+- ✅ パスワード変更
+- ✅ プライバシー設定
+
+#### 3. **パートナー連携**
+
+- ✅ 招待コード生成（6桁、24時間有効）
+- ✅ 招待コード検証
+- ✅ カップル関係の確立
+- ✅ パートナー情報の表示
+
+#### 4. **AIデートプラン提案（UC-001）** ⭐ NEW
+
+- ✅ デートプラン作成画面
+- ✅ **AI生成機能** - 本格的なAI統合完了 🎉
+  - Google Gemini 2.0 Flash統合（**最推奨モデル - 思考トークン0**）
+  - **トークン最適化**: 1プラン約1000-1500トークン（60-75%削減）
+  - **高速生成**: 10-15秒（従来比30-40%短縮）
+  - OpenAI API統合
+  - Anthropic Claude API統合
+  - レート制限管理（キューイング、リトライ）
+  - 多重リクエスト防止機構
+- ✅ プラン提案画面
+- ✅ プラン詳細表示
+- ✅ **カスタマイズビュー** - プラン編集機能
+  - プラン基本情報の編集
+  - プランアイテムの追加・編集・削除
+  - 予算・時間の自動計算
+  - プラン確定機能（ステータス管理）
+- ✅ プラン一覧・検索
+- ✅ カップル専用プラン管理
+
+#### 5. **マネタイズ機能（UC-007）** 💰 NEW
+
+- ✅ **サブスクリプションシステム** - 段階的マネタイズ
+  - **Freeプラン**: 日次3回、月次10回、プラン保存5件
+  - **Premiumプラン**: 無制限（¥480/月、将来実装）
+- ✅ **使用制限機能**
+  - AIプラン生成の回数制限（日次・月次）
+  - 使用履歴の記録と管理
+  - リアルタイム残り回数表示
+  - 制限到達時のユーザーフィードバック
+- ✅ **サブスクリプション管理画面**
+  - 現在のプラン表示
+  - 使用状況の可視化
+  - Premium案内
+- ✅ **データベース設計**
+  - `subscription_plans` - プラン定義
+  - `user_subscriptions` - ユーザーのサブスク状態
+  - `plan_generation_usage` - 使用履歴
+  - 自動プラン割り当てトリガー
+
+#### 6. **UI/UX**
+
+- ✅ レスポンシブデザイン（デスクトップ・タブレット・モバイル対応）
+- ✅ グローバルナビゲーションバー
+- ✅ モダンなデザイン（Tailwind CSS）
+- ✅ ローディング状態表示
+- ✅ エラーハンドリング
+
+### 🔮 近日公開予定
+
+- 🚧 **共同編集機能（UC-002）** - リアルタイム共同編集
+- 🚧 **AI喧嘩仲裁・関係修復（UC-004）** - AI仲裁機能
+- 🚧 **Date Canvas（UC-005）** - 思い出記録キャンバス
+- 🚧 **ポータル統合（UC-003）** - デート情報ポータル
+
+## 🛠️ 技術スタック
+
+### フロントエンド
+
+- **Next.js 15** - React フレームワーク
+- **TypeScript** - 型安全性
+- **Tailwind CSS** - スタイリング
+- **React Hooks** - 状態管理
+
+### バックエンド
+
+- **Next.js API Routes** - サーバーサイドAPI
+- **Supabase** - 認証・データベース・ストレージ
+  - PostgreSQL
+  - Row Level Security (RLS)
+  - Auth
+
+### データベース
+
+- **Supabase PostgreSQL**
+  - `profiles` - ユーザープロフィール
+  - `couples` - カップル関係
+  - `couple_invitations` - 招待コード
+  - `date_plans` - デートプラン
+  - `plan_items` - プランアイテム
+  - `plan_feedback` - フィードバック
+  - `plan_templates` - テンプレート
+  - **`subscription_plans`** 💰 - サブスクリプションプラン定義
+  - **`user_subscriptions`** 💰 - ユーザーのサブスク状態
+  - **`plan_generation_usage`** 💰 - AIプラン生成使用履歴
+
+### AI/ML
+
+- **Google Gemini API** ⭐ 推奨 - 無料利用枠あり
+  - **Gemini 2.0 Flash** - 最推奨（思考トークン0、トークン60-75%削減）
+  - 1分間15リクエスト、1日1,500リクエスト無料
+  - 生成時間10-15秒（高速）
+  - レート制限管理・キューイングシステム実装済み
+- **OpenAI API** - 統合済み（オプション）
+- **Anthropic Claude API** - 統合済み（オプション）
+- **Mock AI Service** - 開発・テスト用
+
+## 📦 セットアップ
+
+### 前提条件
+
+- Node.js 18以降
+- npm または yarn
+- Supabaseアカウント
+
+### 1. リポジトリのクローン
 
 ```bash
-# OpenWeatherMap API設定（天気情報取得用）
-NEXT_PUBLIC_OPENWEATHER_API_KEY=your_openweather_api_key_here
-
-# Supabase設定
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url_here
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key_here
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key_here
-
-# データベース設定
-DATABASE_URL=your_database_url_here
+git clone https://github.com/yourusername/coupleplan.git
+cd coupleplan
 ```
 
-### OpenWeatherMap APIキーの取得
+### 2. 依存関係のインストール
 
-1. [OpenWeatherMap](https://openweathermap.org/api) にアクセス
-2. 無料アカウントを作成
-3. API Keysページで新しいキーを生成
-4. 生成されたキーを `.env.local` の `NEXT_PUBLIC_OPENWEATHER_API_KEY` に設定
+```bash
+npm install
+```
 
-### 開発サーバーの起動
+### 3. 環境変数の設定
 
-環境変数を設定後、開発サーバーを再起動してください：
+`.env.local` ファイルを作成：
+
+```bash
+touch .env.local
+```
+
+以下の環境変数を設定：
+
+```env
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+
+# AI Provider Configuration (推奨: Gemini)
+AI_PROVIDER=gemini
+
+# Google Gemini API (推奨 - 無料利用枠あり)
+# APIキーの取得: https://aistudio.google.com/
+GEMINI_API_KEY=your_gemini_api_key_here
+
+# AI Model Configuration（最推奨設定）
+AI_MODEL=gemini-2.0-flash-exp
+AI_MAX_TOKENS=2000
+AI_TEMPERATURE=0.7
+
+# オプション: OpenAI API
+# AI_PROVIDER=openai
+# AI_API_KEY=your_openai_api_key
+
+# オプション: Anthropic Claude API
+# AI_PROVIDER=anthropic
+# AI_API_KEY=your_anthropic_api_key
+
+# オプション: モック（開発・テスト用）
+# AI_PROVIDER=mock
+```
+
+**Gemini APIキーの取得方法** については、[Docs/GEMINI_API_SETUP.md](Docs/GEMINI_API_SETUP.md) を参照してください。
+
+### 4. データベースマイグレーション
+
+Supabase Studioで以下のSQLファイルを順番に実行：
+
+1. `supabase/migrations/create_couple_invitations.sql` - パートナー連携機能
+2. `supabase/migrations/create_date_plans.sql` - デートプラン機能
+3. **`supabase/migrations/create_subscription_system.sql`** 💰 - マネタイズ機能（NEW）
+
+**重要**: マイグレーションは順番通りに実行してください。
+
+#### マイグレーション実行手順
+
+**エラーが出ている場合は、必ずマイグレーションを実行してください！**
+
+```bash
+# 1. Supabaseダッシュボードにアクセス
+# https://supabase.com/dashboard/project/[your-project-id]
+
+# 2. SQL Editor → New query
+
+# 3. マイグレーションファイルの内容をコピー&ペースト
+# supabase/migrations/create_subscription_system.sql
+
+# 4. Run をクリック
+```
+
+詳細な手順とトラブルシューティング:
+
+- **[Docs/SUBSCRIPTION_SETUP.md](Docs/SUBSCRIPTION_SETUP.md)** 🔥 セットアップガイド（5分で完了）
+- [Docs/MONETIZATION_IMPLEMENTATION_GUIDE.md](Docs/MONETIZATION_IMPLEMENTATION_GUIDE.md) - 実装ガイド
+
+### 5. 開発サーバーの起動
 
 ```bash
 npm run dev
 ```
 
-## テストとカバレッジ
+ブラウザで `http://localhost:3000` を開きます。
 
-プロジェクトには自動テストが組み込まれており、以下のコマンドで実行できます：
+## 🚀 デプロイ
 
-```bash
-# 通常のテスト実行
-npm test
+### Google Cloud Run（本番環境）🎯
 
-# ウォッチモードでテスト実行（ファイル変更時に自動実行）
-npm run test:watch
+**自動デプロイ設定済み！**
 
-# カバレッジレポート付きでテスト実行
-npm run test:coverage
+- **Staging**: `develop` ブランチへのプッシュで自動デプロイ
+- **Production**: `main` ブランチへのプッシュで自動デプロイ
 
-# CI環境用のテスト実行（GitHub Actions用）
-npm run test:ci
-```
+**詳細な構築手順**:
+- 📘 [本番環境構築ガイド（完全版）](./Docs/PRODUCTION_SETUP_GUIDE.md) - 60-90分で完了
+- ⚡ [クイックリファレンス](./Docs/PRODUCTION_QUICK_REFERENCE.md) - 1ページで要点確認
 
-### 自動テスト実行
+**必要なリソース**:
+- Supabase 本番プロジェクト
+- Google Gemini API キー
+- Resend API キー（メール送信）
+- GitHub Secrets 設定（13個）
 
-このプロジェクトでは以下のタイミングで自動的にテストが実行されます：
+**コスト見積もり**:
+- 小規模運用: $0-10/月
+- 中規模運用: $30-100/月
 
-1. **プルリクエスト作成時**：GitHub Actionsによりテストが実行され、カバレッジレポートが生成されます
-2. **Vercelへのデプロイ時**：ビルドプロセスの一部としてテストが実行されます
-
-テストカバレッジレポートは `coverage/` ディレクトリに生成され、GitHub Actionsの実行結果からも確認できます。
-
-## テスト環境のセットアップ
-
-テスト実行時は専用のデータベースと環境変数を使用します。
-
-1. `.env.test.local` ファイルを作成してテスト用の秘密情報を設定：
-
-```
-# テスト環境用の非公開環境変数（GitHubにコミットしない）
-
-# Supabase テスト環境のキー
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
-
-# テスト用のデータベース接続情報（ローカルのPostgreSQLを使用）
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/couple_plan_test
-
-# テスト用ユーザー情報
-TEST_USER_ID=test-user-id-123
-TEST_USER_EMAIL=test@example.com
-TEST_USER_PASSWORD=Test123!
-
-# テスト用トークン情報（実際の環境では使用されない）
-TEST_ACCESS_TOKEN="test-secure-token-for-testing-only"
-TEST_REFRESH_TOKEN="test-secure-refresh-token-for-testing-only"
-```
-
-2. テスト用データベースを作成：
+### Vercel（代替オプション）
 
 ```bash
-# PostgreSQLに接続
-psql -U postgres
-
-# テスト用データベース作成（存在しない場合）
-CREATE DATABASE couple_plan_test;
-
-# 終了
-\q
+npm run build
+vercel deploy
 ```
 
-3. テスト用データベースにスキーマを適用：
+### 環境変数の設定
+
+**必須:**
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+
+**AI機能（推奨: Gemini）:**
+
+- `AI_PROVIDER` = `gemini`
+- `GEMINI_API_KEY` = (Google AI Studioで取得)
+- `AI_MODEL` = `gemini-2.0-flash-exp` ← **最推奨**（思考トークン0）
+- `AI_MAX_TOKENS` = `2000` ← トークン60-75%削減
+- `AI_TEMPERATURE` = `0.7`
+
+## 📖 使い方
+
+### 1. アカウント作成
+
+1. サインアップページでアカウントを作成
+2. メール認証を完了
+3. プロフィール情報を入力
+
+### 2. パートナー連携
+
+1. ダッシュボードから「パートナー連携」を選択
+2. 招待コードを生成してパートナーに共有
+3. パートナーがコードを入力して連携完了
+
+### 3. デートプラン作成
+
+1. 「AIデートプラン提案」→「プランを作成」
+2. 予算、時間、場所、好みを入力
+3. AIが複数のプランを生成
+4. お好みのプランを選択
+
+### 4. プランカスタマイズ
+
+1. プラン詳細画面から「カスタマイズ」
+2. プラン基本情報を編集
+3. アイテムを追加・編集・削除
+4. 予算と時間を自動計算で確認
+5. 「プランを確定」で完了
+
+### 5. サブスクリプション管理 💰
+
+1. ダッシュボードで使用状況を確認
+   - 今日の残り: X / 3回
+   - 今月の残り: Y / 10回
+2. 制限到達時は翌日または来月まで待つ
+3. 「💎 無制限で使う」からPremium案内を確認（近日公開予定）
+
+## 📁 プロジェクト構造
+
+```
+coupleplan/
+├── src/
+│   ├── app/                    # Next.js App Router
+│   │   ├── api/               # API Routes
+│   │   │   ├── account/       # アカウント管理
+│   │   │   ├── partner/       # パートナー連携
+│   │   │   ├── plans/         # デートプラン管理
+│   │   │   └── subscription/  💰 # サブスクリプション管理（NEW）
+│   │   │       ├── check-limit/
+│   │   │       ├── usage/
+│   │   │       └── current/
+│   │   ├── auth/              # 認証ページ
+│   │   ├── dashboard/         # ダッシュボード
+│   │   │   ├── plans/         # プラン管理
+│   │   │   │   └── [id]/
+│   │   │   │       └── customize/  # カスタマイズビュー
+│   │   │   ├── profile/       # プロフィール
+│   │   │   ├── partner-linkage/   # パートナー連携
+│   │   │   └── subscription/  💰 # サブスク管理画面（NEW）
+│   │   ├── login/             # ログイン
+│   │   └── signup/            # サインアップ
+│   ├── components/            # Reactコンポーネント
+│   │   ├── layout/            # レイアウト（Navbar等）
+│   │   ├── subscription/      💰 # サブスク関連（NEW）
+│   │   │   ├── UsageLimitDisplay.tsx
+│   │   │   └── LimitReachedModal.tsx
+│   │   └── ui/                # UIコンポーネント
+│   ├── contexts/              # Reactコンテキスト
+│   ├── lib/                   # ユーティリティ
+│   │   ├── supabase/          # Supabaseクライアント
+│   │   ├── ai-service.ts      # AI統合（Gemini/OpenAI/Claude）
+│   │   ├── rate-limiter.ts    # レート制限管理
+│   │   ├── validation.ts      # バリデーション
+│   │   └── plan-validation.ts # プランバリデーション
+│   └── types/                 # TypeScript型定義
+│       ├── subscription.ts    💰 # サブスク型定義（NEW）
+│       └── database.ts        # データベース型定義
+├── supabase/
+│   └── migrations/            # データベースマイグレーション
+│       ├── create_couple_invitations.sql
+│       ├── create_date_plans.sql
+│       └── create_subscription_system.sql 💰 # NEW
+├── Docs/                      # ドキュメント
+│   ├── 開発計画.md
+│   ├── ビジネス要件定義書.md
+│   ├── MONETIZATION_IMPLEMENTATION_GUIDE.md 💰 # NEW
+│   ├── GEMINI_API_SETUP.md
+│   ├── AI_DATE_PLAN_IMPLEMENTATION.md
+│   └── UC-001_AIデートプラン提案・生成_詳細ユースケース.md
+└── public/                    # 静的ファイル
+```
+
+## 🧪 テスト
 
 ```bash
-# テスト環境用のスキーマを適用
-npx prisma db push --schema=./prisma/schema.prisma
+# ユニットテスト
+npm run test
+
+# E2Eテスト
+npm run test:e2e
+
+# Linting
+npm run lint
 ```
 
-4. 環境変数が正しく設定されていることを確認するテストを実行：
+## 🤝 コントリビューション
 
-```bash
-# 環境変数設定テストのみ実行
-npx jest tests/unit/env.test.ts
+プルリクエストを歓迎します！大きな変更の場合は、まずIssueを開いて変更内容を議論してください。
 
-# または全てのテストを実行
-npm test
-```
+## 📄 ライセンス
 
-### テスト用ユーティリティ
+このプロジェクトはMITライセンスの下でライセンスされています。
 
-`tests/utils/` ディレクトリにはテストに便利なユーティリティが用意されています：
+## 📞 サポート
 
-- `test-constants.ts`: 環境変数から読み込んだテスト用の定数
-- `test-db.ts`: テスト用データベースを操作するためのヘルパー関数
-- `setup-env.js`: テスト実行前に環境変数を読み込むスクリプト
+問題が発生した場合は、GitHubのIssuesで報告してください。
 
-テスト内でデータベースを初期化するには、以下のように使用します：
+## 🎉 謝辞
 
-```typescript
-import { initializeTestDatabase, createTestUserProfile } from '@tests/utils/test-db';
-import { TEST_USER } from '@tests/utils/test-constants';
+このプロジェクトは以下の素晴らしいオープンソースプロジェクトを使用しています：
 
-// テスト前にデータベースを初期化
-beforeAll(async () => {
-  await initializeTestDatabase();
-});
+- Next.js
+- React
+- Supabase
+- Tailwind CSS
+- TypeScript
 
-// テスト用プロフィールを作成
-test('プロフィールの作成', async () => {
-  const profile = await createTestUserProfile(TEST_USER.ID);
-  expect(profile).toBeDefined();
-});
-```
+---
 
-### 安全なトークン管理
-
-テスト内でハードコードされたアクセストークン（例: `access_token: 'test-token'`）を使用すると、セキュリティ脆弱性としてフラグが立つ可能性があります。このプロジェクトでは、以下の方法でテスト用トークンを安全に管理しています：
-
-1. 環境変数経由でのトークン提供
-
-   - `.env.test.local` ファイルに `TEST_ACCESS_TOKEN` を設定
-   - 実際の本番環境では使用されないテスト専用のトークン
-
-2. 動的なトークン生成
-
-   - `test-constants.ts` ファイルで `randomUUID()` を使用して毎回異なるトークンを生成
-   - トークンの予測可能性を低減
-
-3. セッション生成ヘルパー
-   - `createMockSession()` 関数を使用して一貫したセッションオブジェクトを生成
-   - テスト間で一貫性を保ちながらもセキュリティを確保
-
-テストを書く際は、固定文字列のトークンを直接コードに書かず、常に定数ファイルから提供される値を使用してください：
-
-```typescript
-// 悪い例 ❌
-const mockSession = { access_token: 'test-token', user: mockUser };
-
-// 良い例 ✅
-import { createMockSession } from '@tests/utils/test-constants';
-const mockSession = createMockSession(mockUser.id);
-```
+**CouplePlan** - カップルの絆を深める、新しいデート体験を 💑

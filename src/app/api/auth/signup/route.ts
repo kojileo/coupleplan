@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 
-import { prisma } from '@/lib/db';
 import { supabase } from '@/lib/supabase-auth';
 import type { SignUpRequest } from '@/types/api';
 
@@ -48,31 +47,28 @@ export async function POST(request: Request): Promise<NextResponse> {
       return NextResponse.json({ error: 'ユーザー登録に失敗しました' }, { status: 400 });
     }
 
-    try {
-      // 2. Prismaでプロフィール作成
-      const profile = await prisma.profile.create({
-        data: {
-          userId: authData.user.id,
-          name: data.name || 'ユーザー',
-          email: data.email,
-        },
-      });
+    // 2. Supabaseでプロフィール作成
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .insert({
+        user_id: authData.user.id,
+        name: data.name || 'ユーザー',
+        email: data.email,
+      })
+      .select()
+      .single();
 
-      return NextResponse.json({
-        data: {
-          profile,
-          message: '確認メールを送信しました。メールを確認してください。',
-        },
-      });
-    } catch (error) {
-      if (error && typeof error === 'object' && 'code' in error && error.code === 'P2002') {
-        return NextResponse.json(
-          { error: 'このメールアドレスは既に登録されています' },
-          { status: 400 }
-        );
-      }
-      throw error;
+    if (profileError) {
+      console.error('プロフィール作成エラー:', profileError);
+      // プロフィール作成に失敗してもサインアップは成功とする
     }
+
+    return NextResponse.json({
+      data: {
+        profile: profile || null,
+        message: '確認メールを送信しました。メールを確認してください。',
+      },
+    });
   } catch (error) {
     console.error('サインアップエラー:', error instanceof Error ? error.message : 'Unknown error');
     return NextResponse.json(

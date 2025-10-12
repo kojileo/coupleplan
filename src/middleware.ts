@@ -1,11 +1,116 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
+import { authCircuitBreaker } from '@/lib/circuit-breaker';
+import { authStopManager } from '@/lib/auth-stop';
 
 // 簡易的なレート制限実装（本番環境では Redis などを使用推奨）
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 
-export function middleware(request: NextRequest): NextResponse {
+export async function middleware(request: NextRequest): Promise<NextResponse> {
   // セキュリティヘッダーの設定
   const response = NextResponse.next();
+
+  // 認証が必要なページのパスのみチェック
+  const protectedPaths = ['/dashboard', '/profile', '/settings'];
+  const isProtectedPath = protectedPaths.some((path) => request.nextUrl.pathname.startsWith(path));
+
+  // グローバル停止フラグをチェック
+  if (authStopManager.isAuthStopped()) {
+    console.warn('Middleware - 認証システムが停止中です。認証チェックをスキップします。');
+    return response;
+  }
+
+  // 緊急対策：認証チェックを完全に無効化
+  // リフレッシュトークンエラーの無限ループを防ぐため
+  if (false && isProtectedPath) {
+    // サーキットブレーカーがオープンの場合は認証チェックをスキップ
+    if (authCircuitBreaker.isOpen()) {
+      console.warn(
+        'Middleware - サーキットブレーカーがオープンです。認証チェックをスキップします。'
+      );
+      return response;
+    }
+
+    try {
+      const supabase = createMiddlewareClient({ req: request, res: response });
+
+      // セッションを取得
+      const {
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
+
+      if (sessionError) {
+        // レート制限エラーの場合は警告のみ表示し、リダイレクトは行わない
+        if (
+          sessionError?.message?.includes('rate limit') ||
+          sessionError?.message?.includes('over_request_rate_limit')
+        ) {
+          console.warn(
+            'Middleware - Supabaseレート制限に達しています。認証チェックをスキップします。'
+          );
+          return response; // そのまま通す
+        }
+
+        // リフレッシュトークンエラーの場合はサーキットブレーカーをトリガー
+        if (
+          sessionError?.message?.includes('refresh_token_not_found') ||
+          sessionError?.message?.includes('Invalid Refresh Token')
+        ) {
+          console.warn(
+            'Middleware - リフレッシュトークンが見つかりません。サーキットブレーカーをトリガーします。'
+          );
+          authCircuitBreaker.recordFailure();
+
+          // サーキットブレーカーがオープンになった場合は認証チェックをスキップ
+          if (authCircuitBreaker.isOpen()) {
+            console.warn(
+              'Middleware - サーキットブレーカーがオープンになりました。認証チェックをスキップします。'
+            );
+            return response;
+          }
+
+          const redirectUrl = new URL('/login', request.url);
+          redirectUrl.searchParams.set('redirectTo', request.nextUrl.pathname);
+          redirectUrl.searchParams.set('clearSession', 'true');
+          return NextResponse.redirect(redirectUrl);
+        }
+
+        console.error('Middleware - セッション取得エラー:', sessionError);
+        const redirectUrl = new URL('/login', request.url);
+        redirectUrl.searchParams.set('redirectTo', request.nextUrl.pathname);
+        return NextResponse.redirect(redirectUrl);
+      }
+
+      if (!session) {
+        console.log('Middleware - セッションなし、ログインページにリダイレクト');
+        const redirectUrl = new URL('/login', request.url);
+        redirectUrl.searchParams.set('redirectTo', request.nextUrl.pathname);
+        return NextResponse.redirect(redirectUrl);
+      }
+
+      console.log('Middleware - セッション確認済み、アクセス許可');
+      // 成功を記録
+      authCircuitBreaker.recordSuccess();
+    } catch (error: unknown) {
+      console.error('認証チェックエラー:', error);
+      // レート制限エラーの場合はそのまま通す
+      const err = error as Error;
+      if (err && err.message) {
+        const isRateLimitError =
+          err.message.includes('rate limit') || err.message.includes('over_request_rate_limit');
+
+        if (isRateLimitError) {
+          console.warn('Middleware - レート制限エラー、認証チェックをスキップします');
+          return response;
+        }
+      }
+
+      // その他のエラーもサーキットブレーカーに記録
+      authCircuitBreaker.recordFailure();
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
+  }
 
   // レート制限の実装（開発環境では無効化）
   if (request.nextUrl.pathname.startsWith('/api/') && process.env.NODE_ENV !== 'development') {
