@@ -13,17 +13,33 @@ import { supabase } from '@/lib/supabase-auth';
  * - NEXT_PUBLIC_プレフィックスを付けないこと
  * - ユーザー削除などの管理者操作でのみ使用
  */
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL as string,
-  process.env.SUPABASE_SERVICE_ROLE_KEY as string,
-  {
+function getSupabaseAdmin() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  // ビルド時のフォールバック（実際には使用されない）
+  if (!supabaseUrl || !supabaseKey) {
+    console.warn('Supabase credentials not available (build time)');
+    return createClient(
+      supabaseUrl || 'https://placeholder.supabase.co',
+      supabaseKey || 'placeholder-key',
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
+        },
+      }
+    );
+  }
+
+  return createClient(supabaseUrl, supabaseKey, {
     auth: {
       // Admin権限でのオートリフレッシュを無効化
       autoRefreshToken: false,
       persistSession: false,
     },
-  }
-);
+  });
+}
 
 export async function DELETE(request: NextRequest): Promise<NextResponse> {
   try {
@@ -56,6 +72,8 @@ export async function DELETE(request: NextRequest): Promise<NextResponse> {
     try {
       // Supabaseクライアントを使用して関連データを削除
       console.log('データベースからユーザー関連データを削除します');
+
+      const supabaseAdmin = getSupabaseAdmin();
 
       // プロフィールを削除
       const { error: profileError } = await supabaseAdmin
