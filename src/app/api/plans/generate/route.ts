@@ -36,16 +36,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // カップル情報の取得
-    const { data: couple, error: coupleError } = await supabase
+    // カップル情報の取得（オプショナル）
+    const { data: couple } = await supabase
       .from('couples')
       .select('*')
       .or(`user1_id.eq.${user.id},user2_id.eq.${user.id}`)
-      .single();
-
-    if (coupleError || !couple) {
-      return NextResponse.json({ error: 'カップル情報が見つかりません' }, { status: 404 });
-    }
+      .maybeSingle();
 
     // ユーザープロフィールの取得
     const { data: profile } = await supabase
@@ -55,17 +51,27 @@ export async function POST(request: NextRequest) {
       .single();
 
     // デート履歴の取得（最新3件）
-    const { data: dateHistory } = await supabase
+    // カップルの場合はカップルの履歴、個人の場合は個人の履歴
+    let dateHistoryQuery = supabase
       .from('date_plans')
       .select('created_at, location_city, preferences, budget')
-      .eq('couple_id', couple.id)
       .eq('status', 'completed')
       .order('created_at', { ascending: false })
       .limit(3);
 
+    if (couple) {
+      // カップル連携済みの場合：カップルのプラン履歴を取得
+      dateHistoryQuery = dateHistoryQuery.eq('couple_id', couple.id);
+    } else {
+      // 個人ユーザーの場合：自分が作成した個人プランの履歴を取得
+      dateHistoryQuery = dateHistoryQuery.eq('created_by', user.id).is('couple_id', null);
+    }
+
+    const { data: dateHistory } = await dateHistoryQuery;
+
     // AI生成リクエストの構築
     const aiRequest: AIGenerationRequest = {
-      couple_id: couple.id,
+      couple_id: couple?.id || null, // カップル情報がない場合はnull
       user_id: user.id,
       budget: body.budget,
       duration: body.duration,
@@ -98,7 +104,7 @@ export async function POST(request: NextRequest) {
         const { data: savedPlan, error: planError } = await supabase
           .from('date_plans')
           .insert({
-            couple_id: couple.id,
+            couple_id: couple?.id || null, // カップル情報がない場合はnull（個人プラン）
             created_by: user.id,
             title: plan.title,
             description: plan.description,
