@@ -34,15 +34,25 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ error: 'プランが見つかりません' }, { status: 404 });
     }
 
-    // アクセス権限の確認（カップルメンバーかチェック）
-    const { data: couple } = await supabase
-      .from('couples')
-      .select('*')
-      .eq('id', plan.couple_id)
-      .or(`user1_id.eq.${user.id},user2_id.eq.${user.id}`)
-      .single();
+    // アクセス権限の確認
+    let hasAccess = false;
 
-    if (!couple) {
+    if (plan.couple_id) {
+      // カップルプランの場合：カップルメンバーかチェック
+      const { data: couple } = await supabase
+        .from('couples')
+        .select('*')
+        .eq('id', plan.couple_id)
+        .or(`user1_id.eq.${user.id},user2_id.eq.${user.id}`)
+        .maybeSingle();
+
+      hasAccess = !!couple;
+    } else {
+      // 個人プランの場合：作成者かチェック
+      hasAccess = plan.created_by === user.id;
+    }
+
+    if (!hasAccess) {
       return NextResponse.json({ error: 'アクセス権限がありません' }, { status: 403 });
     }
 
@@ -111,14 +121,24 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     // アクセス権限の確認
-    const { data: couple } = await supabase
-      .from('couples')
-      .select('*')
-      .eq('id', plan.couple_id)
-      .or(`user1_id.eq.${user.id},user2_id.eq.${user.id}`)
-      .single();
+    let hasAccess = false;
 
-    if (!couple) {
+    if (plan.couple_id) {
+      // カップルプランの場合：カップルメンバーかチェック
+      const { data: couple } = await supabase
+        .from('couples')
+        .select('*')
+        .eq('id', plan.couple_id)
+        .or(`user1_id.eq.${user.id},user2_id.eq.${user.id}`)
+        .maybeSingle();
+
+      hasAccess = !!couple;
+    } else {
+      // 個人プランの場合：作成者かチェック
+      hasAccess = plan.created_by === user.id;
+    }
+
+    if (!hasAccess) {
       return NextResponse.json({ error: 'アクセス権限がありません' }, { status: 403 });
     }
 

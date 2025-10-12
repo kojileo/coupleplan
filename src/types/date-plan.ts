@@ -24,7 +24,7 @@ export type PlanItemType =
  */
 export interface DatePlan {
   id: string;
-  couple_id: string;
+  couple_id: string | null; // カップル連携オプショナル（nullの場合は個人プラン）
   created_by: string;
   title: string;
   description?: string;
@@ -133,7 +133,7 @@ export interface DatePlanCreateResponse {
  * AI生成リクエスト
  */
 export interface AIGenerationRequest {
-  couple_id: string;
+  couple_id?: string | null; // カップル連携オプショナル
   user_id: string;
   budget: number;
   duration: number; // hours
@@ -215,7 +215,8 @@ export interface DateHistoryContext {
  * プラン一覧取得パラメータ
  */
 export interface DatePlanListParams {
-  couple_id?: string;
+  couple_id?: string | null; // nullの場合は個人プランを取得
+  created_by?: string; // 作成者で絞り込み（個人プラン取得用）
   status?: DatePlanStatus;
   limit?: number;
   offset?: number;

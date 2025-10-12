@@ -29,22 +29,24 @@ export async function GET(request: NextRequest) {
     const sort_by = searchParams.get('sort_by') || 'created_at';
     const sort_order = searchParams.get('sort_order') || 'desc';
 
-    // カップル情報の取得
+    // カップル情報の取得（オプショナル）
     const { data: couple } = await supabase
       .from('couples')
       .select('id')
       .or(`user1_id.eq.${user.id},user2_id.eq.${user.id}`)
-      .single();
-
-    if (!couple) {
-      return NextResponse.json({ error: 'カップル情報が見つかりません' }, { status: 404 });
-    }
+      .maybeSingle();
 
     // プラン一覧の取得
-    let query = supabase
-      .from('date_plans')
-      .select('*', { count: 'exact' })
-      .eq('couple_id', couple.id);
+    // 個人プラン（couple_id is null）とカップルプランの両方を取得
+    let query = supabase.from('date_plans').select('*', { count: 'exact' });
+
+    if (couple) {
+      // カップル連携済み: 個人プラン OR カップルプラン
+      query = query.or(`couple_id.eq.${couple.id},and(couple_id.is.null,created_by.eq.${user.id})`);
+    } else {
+      // 個人ユーザー: 自分が作成した個人プランのみ
+      query = query.eq('created_by', user.id).is('couple_id', null);
+    }
 
     if (status) {
       query = query.eq('status', status);
