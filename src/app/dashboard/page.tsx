@@ -5,6 +5,7 @@ import type { ReactElement } from 'react';
 
 import { useAuth } from '@/contexts/AuthContext';
 import Button from '@/components/ui/button';
+import { UsageLimitDisplay } from '@/components/subscription/UsageLimitDisplay';
 
 export default function Dashboard(): ReactElement {
   const { session, isLoading, user, signOut } = useAuth();
@@ -48,12 +49,17 @@ export default function Dashboard(): ReactElement {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-rose-50">
       <main className="pt-8">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">ダッシュボード</h1>
             <p className="text-xl text-gray-600">
               カップルの絆を深める統合プラットフォームへようこそ
             </p>
             {user && <p className="text-lg text-gray-500 mt-2">こんにちは、{user.email} さん！</p>}
+          </div>
+
+          {/* 使用状況表示 */}
+          <div className="max-w-6xl mx-auto mb-8">
+            <UsageLimitDisplay />
           </div>
 
           {/* 主要機能カード */}
@@ -191,6 +197,26 @@ export default function Dashboard(): ReactElement {
                   <Link href="/dashboard/partner-linkage">
                     <Button className="w-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white">
                       パートナー連携
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* サブスクリプション管理 */}
+            <div className="group hover:scale-105 transition-all duration-500">
+              <div className="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100 h-full">
+                <div className="text-center">
+                  <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
+                    <span className="text-3xl">💎</span>
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4">サブスクリプション</h3>
+                  <p className="text-gray-600 mb-6 leading-relaxed">
+                    現在のプラン情報、使用状況の確認、Premiumプランの詳細をご覧いただけます。
+                  </p>
+                  <Link href="/dashboard/subscription">
+                    <Button className="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white">
+                      プラン管理
                     </Button>
                   </Link>
                 </div>

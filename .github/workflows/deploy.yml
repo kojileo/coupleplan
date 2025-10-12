@@ -1,0 +1,227 @@
+name: Deploy to Cloud Run
+
+on:
+  push:
+    branches:
+      - main # 本番環境
+      - develop # Staging環境
+
+env:
+  PROJECT_ID: serious-bearing-460203-r6
+  REGION: asia-northeast1
+  REPOSITORY: coupleplan-repo
+
+jobs:
+  # ========================================
+  # Staging環境へのデプロイ（developブランチ）
+  # Note: テストはpr-test.ymlで実行済みのためスキップ
+  # ========================================
+  deploy-staging:
+    name: Deploy to Staging
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    environment:
+      name: staging
+      url: https://staging-coupleplan-xxx.a.run.app
+
+    env:
+      SERVICE_NAME: coupleplan-staging
+      ENV_NAME: staging
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Google Auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Authorize Docker push
+        run: gcloud auth configure-docker asia-northeast1-docker.pkg.dev
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            --build-arg NEXT_PUBLIC_SUPABASE_URL="${{ secrets.STAGING_SUPABASE_URL }}" \
+            --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY="${{ secrets.STAGING_SUPABASE_ANON_KEY }}" \
+            -t asia-northeast1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
+            -t asia-northeast1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest \
+            .
+
+      - name: Push to Artifact Registry
+        run: |
+          docker push asia-northeast1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          docker push asia-northeast1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest
+
+      - name: Deploy to Cloud Run (Staging)
+        id: deploy
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: ${{ env.SERVICE_NAME }}
+          region: ${{ env.REGION }}
+          image: asia-northeast1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          flags: |
+            --allow-unauthenticated
+            --min-instances=0
+            --max-instances=3
+            --memory=512Mi
+            --cpu=1
+            --timeout=300s
+            --concurrency=80
+          env_vars: |
+            NODE_ENV=staging
+            NEXT_PUBLIC_SUPABASE_URL=${{ secrets.STAGING_SUPABASE_URL }}
+            NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.STAGING_SUPABASE_ANON_KEY }}
+            SUPABASE_SERVICE_ROLE_KEY=${{ secrets.STAGING_SUPABASE_SERVICE_ROLE_KEY }}
+            GEMINI_API_KEY=${{ secrets.STAGING_GEMINI_API_KEY }}
+            AI_PROVIDER=${{ secrets.STAGING_AI_PROVIDER }}
+            AI_MODEL=${{ secrets.STAGING_AI_MODEL }}
+            AI_MAX_TOKENS=${{ secrets.STAGING_AI_MAX_TOKENS }}
+            AI_TEMPERATURE=${{ secrets.STAGING_AI_TEMPERATURE }}
+            RESEND_API_KEY=${{ secrets.STAGING_RESEND_API_KEY }}
+            ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}
+            FROM_EMAIL=${{ secrets.FROM_EMAIL }}
+
+      - name: Test deployment
+        run: |
+          echo "🔍 Testing Staging deployment..."
+          sleep 10
+
+          SERVICE_URL="${{ steps.deploy.outputs.url }}"
+          if curl -f "$SERVICE_URL/api/health"; then
+            echo "✅ Staging health check passed"
+          else
+            echo "❌ Staging health check failed"
+            exit 1
+          fi
+
+      - name: Deployment summary
+        run: |
+          echo "## 🚀 Staging Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment**: Staging" >> $GITHUB_STEP_SUMMARY
+          echo "- **Service**: ${{ env.SERVICE_NAME }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Region**: ${{ env.REGION }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **URL**: ${{ steps.deploy.outputs.url }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Image**: asia-northeast1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "💰 **Cost Optimization**:" >> $GITHUB_STEP_SUMMARY
+          echo "- Min instances: 0 (no idle cost)" >> $GITHUB_STEP_SUMMARY
+          echo "- Max instances: 3 (cost control)" >> $GITHUB_STEP_SUMMARY
+          echo "- Memory: 512Mi (low cost tier)" >> $GITHUB_STEP_SUMMARY
+
+  # ========================================
+  # 本番環境へのデプロイ（mainブランチ）
+  # Note: テストはpr-test.ymlで実行済みのためスキップ
+  # ========================================
+  deploy-production:
+    name: Deploy to Production
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    environment:
+      name: production
+      url: https://coupleplan-xxx.a.run.app
+
+    env:
+      SERVICE_NAME: coupleplan
+      ENV_NAME: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Google Auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Authorize Docker push
+        run: gcloud auth configure-docker asia-northeast1-docker.pkg.dev
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            --build-arg NEXT_PUBLIC_SUPABASE_URL="${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}" \
+            --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY="${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}" \
+            -t asia-northeast1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }} \
+            -t asia-northeast1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest \
+            .
+
+      - name: Push to Artifact Registry
+        run: |
+          docker push asia-northeast1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          docker push asia-northeast1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest
+
+      - name: Deploy to Cloud Run (Production)
+        id: deploy
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: ${{ env.SERVICE_NAME }}
+          region: ${{ env.REGION }}
+          image: asia-northeast1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+          flags: |
+            --allow-unauthenticated
+            --min-instances=0
+            --max-instances=10
+            --memory=1Gi
+            --cpu=1
+            --timeout=300s
+            --concurrency=80
+          env_vars: |
+            NODE_ENV=production
+            NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+            NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+            SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+            GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}
+            AI_PROVIDER=${{ secrets.AI_PROVIDER }}
+            AI_MODEL=${{ secrets.AI_MODEL }}
+            AI_MAX_TOKENS=${{ secrets.AI_MAX_TOKENS }}
+            AI_TEMPERATURE=${{ secrets.AI_TEMPERATURE }}
+            RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}
+            ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}
+            FROM_EMAIL=${{ secrets.FROM_EMAIL }}
+
+      - name: Test deployment
+        run: |
+          echo "🔍 Testing Production deployment..."
+          sleep 10
+
+          SERVICE_URL="${{ steps.deploy.outputs.url }}"
+          if curl -f "$SERVICE_URL/api/health"; then
+            echo "✅ Production health check passed"
+          else
+            echo "❌ Production health check failed"
+            exit 1
+          fi
+
+      - name: Deployment summary
+        run: |
+          echo "## 🚀 Production Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment**: Production" >> $GITHUB_STEP_SUMMARY
+          echo "- **Service**: ${{ env.SERVICE_NAME }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Region**: ${{ env.REGION }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **URL**: ${{ steps.deploy.outputs.url }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Image**: asia-northeast1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "💰 **Cost Optimization**:" >> $GITHUB_STEP_SUMMARY
+          echo "- Min instances: 0 (no idle cost)" >> $GITHUB_STEP_SUMMARY
+          echo "- Max instances: 10 (scale for traffic)" >> $GITHUB_STEP_SUMMARY
+          echo "- Memory: 1Gi (optimized for AI workload)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Deployment successful!"
