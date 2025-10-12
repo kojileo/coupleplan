@@ -82,13 +82,24 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 ```
 
-### 3.3 データベースマイグレーション
+### 3.3 データベースセットアップ
 
-Supabase SQL Editorで以下を実行：
+Supabase SQL Editorで統合ファイルを実行：
 
-1. `supabase/migrations/create_couple_invitations.sql`
-2. `supabase/migrations/create_date_plans.sql`
-3. `supabase/rls-policies.sql`（Row Level Security）
+```sql
+-- 統合ファイル1つで完全セットアップ
+supabase/database_setup_complete.sql
+
+-- 実行後、完了メッセージが表示されます
+-- "CouplePlan データベースセットアップ完了"
+```
+
+**含まれる内容**:
+
+- ✅ 全テーブル作成（10テーブル）
+- ✅ インデックス・トリガー設定
+- ✅ RLSポリシー設定
+- ✅ 初期データ投入
 
 ---
 

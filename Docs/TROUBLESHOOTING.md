@@ -116,7 +116,7 @@ new row violates row-level security policy
 
 **解決策**:
 
-1. Supabase SQL Editorで `supabase/rls-policies.sql` を実行
+1. Supabase SQL Editorで `supabase/database_setup_complete.sql` を実行
 2. 認証状態を確認（ログイン済みか）
 3. カップル関係が正しく設定されているか確認
 
@@ -310,7 +310,7 @@ npm install
 3. [ ] ブラウザのキャッシュをクリアしたか
 4. [ ] APIキーが有効か（期限切れでないか）
 5. [ ] Supabaseプロジェクトが起動しているか
-6. [ ] データベースマイグレーションが完了しているか
+6. [ ] データベースセットアップが完了しているか（`database_setup_complete.sql`実行済み）
 7. [ ] エラーログを確認したか
 8. [ ] 最新のコードをpullしたか
 
