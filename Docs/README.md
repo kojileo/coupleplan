@@ -51,9 +51,12 @@ AI_MAX_TOKENS=2000
 
 ### 3. データベース設定
 
-```bash
-# Supabaseマイグレーション実行
-# 詳細は SETUP_GUIDE.md を参照
+```sql
+-- Supabase SQL Editorで実行
+-- 統合ファイル1つで完全セットアップ
+supabase/database_setup_complete.sql
+
+-- 詳細は SETUP_GUIDE.md を参照
 ```
 
 ### 4. 開発サーバー起動
@@ -71,7 +74,7 @@ npm run dev
 ### 主な問題
 
 1. **AIレスポンスエラー** → トークン設定を確認
-2. **データベースエラー** → マイグレーションを再実行
+2. **データベースエラー** → `database_setup_complete.sql`を再実行
 3. **認証エラー** → Supabase設定を確認
 
 ---
@@ -88,7 +91,7 @@ coupleplan/
 ├── Docs/                  # ドキュメント（このフォルダ）
 │   ├── design/           # 設計書
 │   └── archives/         # 古いドキュメント
-├── supabase/             # データベースマイグレーション
+├── supabase/             # データベースセットアップ（統合ファイル）
 └── public/               # 静的ファイル
 ```
 
@@ -106,5 +109,5 @@ coupleplan/
 
 ---
 
-**最終更新**: 2025年10月10日  
-**バージョン**: v1.0.0
+**最終更新**: 2025年1月27日  
+**バージョン**: v2.0.0（データベース統合版）

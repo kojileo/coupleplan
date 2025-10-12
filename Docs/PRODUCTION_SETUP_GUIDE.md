@@ -32,6 +32,7 @@
 ### 1.1 新規プロジェクト作成
 
 1. **Supabase ダッシュボードにアクセス**
+
    ```
    https://supabase.com/dashboard
    ```
@@ -39,6 +40,7 @@
 2. **「New project」をクリック**
 
 3. **プロジェクト情報を入力**
+
    ```
    Name: coupleplan-production
    Database Password: （強力なパスワードを生成・保存）
@@ -56,6 +58,7 @@
 1. **Settings → API** に移動
 
 2. **以下の情報をコピー・保存**
+
    ```
    Project URL: https://xxxxx.supabase.co
    anon public key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -69,6 +72,7 @@
 1. **Authentication → Providers** に移動
 
 2. **Email Provider を有効化**
+
    ```
    Enable Email Provider: ON
    Confirm email: ON (推奨)
@@ -82,58 +86,54 @@
 
 ## ステップ 2: データベーススキーマ設定
 
-### 2.1 マイグレーションの実行
+### 2.1 データベースセットアップ（統合版）
 
-Supabase SQL Editor で以下のファイルを順番に実行：
+**ファイル**: `supabase/database_setup_complete.sql`
 
-#### 2.1.1 基本テーブル作成
-
-**ファイル**: `supabase/migrations/20240101000000_create_couples_and_invitations.sql`
+この1つのファイルで完全なデータベースセットアップが可能です：
 
 ```sql
--- SQL Editorを開く
+-- Supabase SQL Editorを開く
 -- 左サイドバー → SQL Editor → New query
 
--- ファイルの内容をコピー&ペースト
+-- 統合ファイルの内容をコピー&ペースト
 -- 実行: Ctrl+Enter または Run ボタン
+
+-- 完了メッセージが表示されます：
+-- "CouplePlan データベースセットアップ完了"
 ```
 
-#### 2.1.2 デートプランテーブル作成
+**含まれる内容**:
 
-**ファイル**: `supabase/migrations/20240102000000_create_date_plans.sql`
+- ✅ 全テーブル作成（10テーブル）
+- ✅ インデックス作成
+- ✅ トリガー設定
+- ✅ RLSポリシー設定
+- ✅ 初期データ投入
+- ✅ ヘルパー関数
 
-同様に実行
-
-#### 2.1.3 サブスクリプションテーブル作成
-
-**ファイル**: `supabase/migrations/20240103000000_create_subscriptions.sql`
-
-同様に実行
-
-### 2.2 Row Level Security (RLS) ポリシーの設定
-
-**ファイル**: `supabase/rls-policies.sql`
-
-```sql
--- 全てのテーブルに対するRLSポリシーを設定
--- これにより、ユーザーは自分のデータのみアクセス可能になる
-```
-
-### 2.3 動作確認
+### 2.2 動作確認
 
 1. **Table Editor** で作成されたテーブルを確認
+
    ```
-   ✓ profiles
-   ✓ couples
-   ✓ couple_invitations
-   ✓ date_plans
-   ✓ subscription_plans
-   ✓ user_subscriptions
-   ✓ plan_generation_usage
+   ✓ profiles (ユーザープロフィール)
+   ✓ couples (カップル関係)
+   ✓ couple_invitations (パートナー招待)
+   ✓ date_plans (デートプラン)
+   ✓ plan_items (プランアイテム)
+   ✓ plan_templates (プランテンプレート)
+   ✓ plan_feedback (プランフィードバック)
+   ✓ subscription_plans (サブスクリプションプラン)
+   ✓ user_subscriptions (ユーザーサブスクリプション)
+   ✓ plan_generation_usage (使用履歴)
    ```
 
 2. **RLS の確認**
    - 各テーブルで「RLS enabled」が表示されていることを確認
+
+3. **初期データの確認**
+   - `subscription_plans`テーブルにFree/Premiumプランが登録されているか確認
 
 ---
 
@@ -153,6 +153,7 @@ Repository: coupleplan-repo
 ### 3.2 Artifact Registry の確認
 
 1. **Google Cloud Console にアクセス**
+
    ```
    https://console.cloud.google.com/
    ```
@@ -160,6 +161,7 @@ Repository: coupleplan-repo
 2. **Artifact Registry** に移動
 
 3. **リポジトリの確認**
+
    ```
    名前: coupleplan-repo
    場所: asia-northeast1
@@ -167,6 +169,7 @@ Repository: coupleplan-repo
    ```
 
    作成されていない場合:
+
    ```bash
    gcloud artifacts repositories create coupleplan-repo \
      --repository-format=docker \
@@ -190,23 +193,24 @@ GitHub リポジトリの **Settings → Secrets and variables → Actions** で
 
 #### Supabase 関連（3個）
 
-| Secret 名 | 値 | 取得元 |
-|----------|-----|--------|
-| `NEXT_PUBLIC_SUPABASE_URL` | `https://xxxxx.supabase.co` | Supabase → Settings → API |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `eyJhbGc...` | Supabase → Settings → API (anon public) |
-| `SUPABASE_SERVICE_ROLE_KEY` | `eyJhbGc...` | Supabase → Settings → API (service_role) |
+| Secret 名                       | 値                          | 取得元                                   |
+| ------------------------------- | --------------------------- | ---------------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`      | `https://xxxxx.supabase.co` | Supabase → Settings → API                |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `eyJhbGc...`                | Supabase → Settings → API (anon public)  |
+| `SUPABASE_SERVICE_ROLE_KEY`     | `eyJhbGc...`                | Supabase → Settings → API (service_role) |
 
 #### AI 関連（5個）
 
-| Secret 名 | 値 | 説明 |
-|----------|-----|------|
-| `GEMINI_API_KEY` | `AIzaSy...` | Google AI Studio で取得 |
-| `AI_PROVIDER` | `gemini` | 固定値 |
-| `AI_MODEL` | `gemini-2.0-flash-exp` | 本番推奨モデル |
-| `AI_MAX_TOKENS` | `4000` | トークン上限 |
-| `AI_TEMPERATURE` | `0.7` | 生成の多様性 |
+| Secret 名        | 値                     | 説明                    |
+| ---------------- | ---------------------- | ----------------------- |
+| `GEMINI_API_KEY` | `AIzaSy...`            | Google AI Studio で取得 |
+| `AI_PROVIDER`    | `gemini`               | 固定値                  |
+| `AI_MODEL`       | `gemini-2.0-flash-exp` | 本番推奨モデル          |
+| `AI_MAX_TOKENS`  | `4000`                 | トークン上限            |
+| `AI_TEMPERATURE` | `0.7`                  | 生成の多様性            |
 
 **AI API キーの取得方法**:
+
 1. https://aistudio.google.com/ にアクセス
 2. 「Get API Key」をクリック
 3. 新しいキーを作成（本番用として命名）
@@ -214,11 +218,12 @@ GitHub リポジトリの **Settings → Secrets and variables → Actions** で
 
 #### メール関連（1個）
 
-| Secret 名 | 値 | 取得元 |
-|----------|-----|--------|
+| Secret 名        | 値       | 取得元                      |
+| ---------------- | -------- | --------------------------- |
 | `RESEND_API_KEY` | `re_...` | https://resend.com/api-keys |
 
 **Resend API キーの取得方法**:
+
 1. https://resend.com/ にログイン
 2. API Keys → Create API Key
 3. Name: `CouplePlan Production`
@@ -227,21 +232,23 @@ GitHub リポジトリの **Settings → Secrets and variables → Actions** で
 
 ### 4.2 共通 Secrets（4個）※既に設定済みの場合はスキップ
 
-| Secret 名 | 値 | 説明 |
-|----------|-----|------|
-| `WIF_PROVIDER` | `projects/.../providers/...` | Workload Identity Provider |
-| `WIF_SERVICE_ACCOUNT` | `github-actions@...iam.gserviceaccount.com` | Service Account |
-| `ADMIN_EMAIL` | `admin@yourdomain.com` | 管理者メール |
-| `FROM_EMAIL` | `noreply@yourdomain.com` | 送信元メール |
+| Secret 名             | 値                                          | 説明                       |
+| --------------------- | ------------------------------------------- | -------------------------- |
+| `WIF_PROVIDER`        | `projects/.../providers/...`                | Workload Identity Provider |
+| `WIF_SERVICE_ACCOUNT` | `github-actions@...iam.gserviceaccount.com` | Service Account            |
+| `ADMIN_EMAIL`         | `admin@yourdomain.com`                      | 管理者メール               |
+| `FROM_EMAIL`          | `noreply@yourdomain.com`                    | 送信元メール               |
 
 ### 4.3 設定の確認
 
 **GitHub CLI で確認**:
+
 ```bash
 gh secret list
 ```
 
 **必要な Secrets（本番環境分）**:
+
 - ✅ NEXT_PUBLIC_SUPABASE_URL
 - ✅ NEXT_PUBLIC_SUPABASE_ANON_KEY
 - ✅ SUPABASE_SERVICE_ROLE_KEY
@@ -253,6 +260,7 @@ gh secret list
 - ✅ RESEND_API_KEY
 
 **共通 Secrets**:
+
 - ✅ WIF_PROVIDER
 - ✅ WIF_SERVICE_ACCOUNT
 - ✅ ADMIN_EMAIL
@@ -284,6 +292,7 @@ git log main --oneline -5
 **オプション A: PR経由でマージ（推奨）**
 
 1. **GitHub で PR 作成**
+
    ```
    Base: main
    Compare: kojima/2025/1011（または現在の開発ブランチ）
@@ -317,6 +326,7 @@ git push origin main
 ### 5.3 デプロイ進行状況の確認
 
 1. **GitHub Actions タブを開く**
+
    ```
    https://github.com/your-org/coupleplan/actions
    ```
@@ -340,6 +350,7 @@ git push origin main
 ### 5.4 デプロイ完了の確認
 
 **成功時の出力例**:
+
 ```
 ## 🚀 Production Deployment
 
@@ -365,11 +376,13 @@ git push origin main
 ### 6.1 基本動作確認
 
 1. **ヘルスチェック**
+
    ```bash
    curl https://coupleplan-xxxxx-an.a.run.app/api/health
    ```
-   
+
    期待される応答:
+
    ```json
    {
      "status": "ok",
@@ -385,6 +398,7 @@ git push origin main
 ### 6.2 認証機能のテスト
 
 1. **新規アカウント作成**
+
    ```
    /signup にアクセス
    テストユーザーを作成
@@ -403,14 +417,16 @@ git push origin main
 ### 6.3 AI 機能のテスト
 
 1. **ダッシュボードにアクセス**
+
    ```
    /dashboard
    ```
 
 2. **AIプラン生成を試す**
+
    ```
    /dashboard/plans/create
-   
+
    入力例:
    - 予算: 10,000円
    - 時間: 3時間
@@ -419,6 +435,7 @@ git push origin main
    ```
 
 3. **コンソールログ確認**
+
    ```bash
    # Cloud Run のログを確認
    gcloud run services logs read coupleplan \
@@ -427,6 +444,7 @@ git push origin main
    ```
 
    期待されるログ:
+
    ```
    [Gemini API] リクエスト送信: gemini-2.0-flash-exp
    [Gemini API] レスポンス受信: 200
@@ -436,15 +454,19 @@ git push origin main
 ### 6.4 パフォーマンステスト
 
 **コールドスタート（初回アクセス）**:
+
 ```bash
 time curl https://coupleplan-xxxxx-an.a.run.app/api/health
 ```
+
 期待: 5秒以内
 
 **ウォームアクセス（2回目以降）**:
+
 ```bash
 time curl https://coupleplan-xxxxx-an.a.run.app/api/health
 ```
+
 期待: 1秒以内
 
 ---
@@ -458,6 +480,7 @@ time curl https://coupleplan-xxxxx-an.a.run.app/api/health
 ### 7.2 Cloud Run でドメインをマッピング
 
 1. **Cloud Run コンソール**
+
    ```
    https://console.cloud.google.com/run
    ```
@@ -467,19 +490,21 @@ time curl https://coupleplan-xxxxx-an.a.run.app/api/health
 3. **「MANAGE CUSTOM DOMAINS」をクリック**
 
 4. **「ADD MAPPING」**
+
    ```
    Service: coupleplan
    Domain: coupleplan.app または app.coupleplan.com
    ```
 
 5. **DNS レコードの設定**
-   
+
    表示された値を DNS プロバイダーで設定:
+
    ```
    Type: A
    Name: @ (または app)
    Value: xxx.xxx.xxx.xxx (Cloud Runから提供)
-   
+
    Type: AAAA
    Name: @ (または app)
    Value: xxxx:xxxx:... (Cloud Runから提供)
@@ -493,6 +518,7 @@ time curl https://coupleplan-xxxxx-an.a.run.app/api/health
 1. **Supabase Dashboard → Authentication → URL Configuration**
 
 2. **Site URL を更新**
+
    ```
    https://coupleplan.app (または https://app.coupleplan.com)
    ```
@@ -508,11 +534,13 @@ time curl https://coupleplan-xxxxx-an.a.run.app/api/health
 ## 🎯 チェックリスト
 
 ### 事前準備
+
 - [ ] Staging 環境が正常に動作している
 - [ ] Google Cloud Project ID を確認済み
 - [ ] GitHub リポジトリへのアクセス権限がある
 
 ### Supabase 設定
+
 - [ ] 本番プロジェクト作成完了
 - [ ] API キー取得・保存完了
 - [ ] データベーススキーマ設定完了
@@ -520,6 +548,7 @@ time curl https://coupleplan-xxxxx-an.a.run.app/api/health
 - [ ] 認証設定完了
 
 ### GitHub Secrets 設定
+
 - [ ] NEXT_PUBLIC_SUPABASE_URL
 - [ ] NEXT_PUBLIC_SUPABASE_ANON_KEY
 - [ ] SUPABASE_SERVICE_ROLE_KEY
@@ -530,12 +559,14 @@ time curl https://coupleplan-xxxxx-an.a.run.app/api/health
 - [ ] ADMIN_EMAIL / FROM_EMAIL (既存確認)
 
 ### デプロイ
+
 - [ ] main ブランチへマージ完了
 - [ ] deploy.yml ワークフロー成功
 - [ ] Cloud Run にデプロイ完了
 - [ ] デプロイ URL 取得
 
 ### 動作確認
+
 - [ ] ヘルスチェック成功
 - [ ] トップページ表示
 - [ ] 新規ユーザー登録
@@ -544,6 +575,7 @@ time curl https://coupleplan-xxxxx-an.a.run.app/api/health
 - [ ] メール送信テスト
 
 ### オプション
+
 - [ ] カスタムドメイン設定
 - [ ] SSL 証明書発行
 - [ ] 監視・アラート設定
@@ -555,19 +587,23 @@ time curl https://coupleplan-xxxxx-an.a.run.app/api/health
 ### 本番環境（月間）
 
 **Cloud Run**:
+
 - アイドル時: $0/月 (min-instances=0)
 - 月 10,000 リクエスト: $5-10/月
 - 月 100,000 リクエスト: $50-100/月
 
 **Supabase**:
+
 - Free プラン: $0/月 (500MB DB, 無制限認証)
 - Pro プラン: $25/月 (8GB DB, 優先サポート)
 
 **Gemini API**:
+
 - 無料枠: 月45,000リクエスト
 - 超過時: 約$0.001/リクエスト
 
 **Resend**:
+
 - 無料枠: 月3,000通
 - 超過時: $0.001/通
 
@@ -585,15 +621,17 @@ time curl https://coupleplan-xxxxx-an.a.run.app/api/health
 **原因と対策**:
 
 1. **Secrets 未設定**
+
    ```bash
    # GitHub CLI で確認
    gh secret list
-   
+
    # 不足している Secret を追加
    gh secret set GEMINI_API_KEY
    ```
 
 2. **Docker ビルドエラー**
+
    ```
    エラーログを確認:
    - Module not found → .dockerignore を確認
@@ -610,6 +648,7 @@ time curl https://coupleplan-xxxxx-an.a.run.app/api/health
 **症状**: `/api/health` が 500 エラー
 
 **対策**:
+
 ```bash
 # Cloud Run ログを確認
 gcloud run services logs read coupleplan \
@@ -622,6 +661,7 @@ gcloud run services logs read coupleplan \
 **症状**: プラン生成でエラー
 
 **確認項目**:
+
 1. `GEMINI_API_KEY` が正しく設定されているか
 2. API キーのクォータが残っているか
 3. Cloud Run のログでエラー詳細を確認
@@ -642,6 +682,7 @@ gcloud run services logs read coupleplan \
 本番環境の構築が完了しました！
 
 **次のステップ**:
+
 1. 本番 URL をチームに共有
 2. 監視・アラート設定（Google Cloud Monitoring）
 3. バックアップ戦略の確立（Supabase 自動バックアップ確認）
@@ -653,4 +694,3 @@ gcloud run services logs read coupleplan \
 
 **最終更新**: 2025年10月12日  
 **バージョン**: 1.0.0
-

@@ -21,16 +21,16 @@ Database Password: [強力なパスワード]
 - service_role key
 ```
 
-### ステップ 2: データベースセットアップ（10分）
+### ステップ 2: データベースセットアップ（5分）
 
 ```sql
 -- Supabase SQL Editor で実行
--- 以下のファイルを順番に実行:
+-- 統合ファイル1つで完了:
 
-1. supabase/migrations/20240101000000_create_couples_and_invitations.sql
-2. supabase/migrations/20240102000000_create_date_plans.sql  
-3. supabase/migrations/20240103000000_create_subscriptions.sql
-4. supabase/rls-policies.sql
+supabase/database_setup_complete.sql
+
+-- 実行後、完了メッセージが表示されます
+-- "CouplePlan データベースセットアップ完了"
 ```
 
 ### ステップ 3: GitHub Secrets 設定（20分）
@@ -103,36 +103,42 @@ gcloud run services logs read coupleplan \
 ## 📊 必要なリソース一覧
 
 ### Supabase
+
 - [ ] 本番プロジェクト（1個）
 - [ ] API キー（3種類）
 
 ### Google AI Studio
+
 - [ ] Gemini API キー（1個、本番用）
 
 ### Resend
+
 - [ ] API キー（1個、本番用）
 
 ### Google Cloud
+
 - [ ] Project ID: `serious-bearing-460203-r6`（既存）
 - [ ] Artifact Registry: `coupleplan-repo`（既存）
 - [ ] WIF設定（既存）
 
 ### GitHub
+
 - [ ] Secrets（13個: 本番9個 + 共通4個）
 
 ---
 
 ## 💰 月間コスト見積もり
 
-| サービス | 無料枠 | 小規模 | 中規模 |
-|---------|--------|--------|--------|
-| Cloud Run | $0 | $5-10 | $50-100 |
-| Supabase | $0 | $0 | $25 |
-| Gemini API | $0 | $0 | $10-20 |
-| Resend | $0 | $0 | $5-10 |
-| **合計** | **$0** | **$5-10** | **$90-155** |
+| サービス   | 無料枠 | 小規模    | 中規模      |
+| ---------- | ------ | --------- | ----------- |
+| Cloud Run  | $0     | $5-10     | $50-100     |
+| Supabase   | $0     | $0        | $25         |
+| Gemini API | $0     | $0        | $10-20      |
+| Resend     | $0     | $0        | $5-10       |
+| **合計**   | **$0** | **$5-10** | **$90-155** |
 
 **想定**:
+
 - 小規模: 月1万リクエスト、100ユーザー
 - 中規模: 月10万リクエスト、1000ユーザー
 
@@ -188,24 +194,30 @@ gh run view --log
 ## ⚠️ よくあるエラーと対処
 
 ### エラー: "supabaseKey is required"
+
 **原因**: Secrets未設定  
 **対処**: `NEXT_PUBLIC_SUPABASE_ANON_KEY` を設定
 
 ### エラー: "403 Forbidden" (Google Cloud)
+
 **原因**: WIF認証失敗  
 **対処**: `WIF_PROVIDER`と`WIF_SERVICE_ACCOUNT`を再確認
 
 ### エラー: "500 Internal Server Error"
+
 **原因**: 環境変数不足 or DB接続失敗  
-**対処**: 
+**対処**:
+
 ```bash
 gcloud run services logs read coupleplan \
   --region=asia-northeast1 --limit=100
 ```
 
 ### AI生成が動作しない
+
 **原因**: API キークォータ超過 or 設定ミス  
 **対処**:
+
 1. Google AI Studio でクォータ確認
 2. `GEMINI_API_KEY`を再生成
 3. `AI_MODEL`名が正しいか確認
@@ -229,14 +241,14 @@ gcloud run services logs read coupleplan \
 
 ## 🔗 関連リンク
 
-| リソース | URL |
-|---------|-----|
-| Supabase Dashboard | https://supabase.com/dashboard |
-| Google Cloud Console | https://console.cloud.google.com/ |
-| Google AI Studio | https://aistudio.google.com/ |
-| Resend Dashboard | https://resend.com/ |
-| GitHub Actions | https://github.com/[your-org]/coupleplan/actions |
-| Cloud Run サービス | https://console.cloud.google.com/run |
+| リソース             | URL                                              |
+| -------------------- | ------------------------------------------------ |
+| Supabase Dashboard   | https://supabase.com/dashboard                   |
+| Google Cloud Console | https://console.cloud.google.com/                |
+| Google AI Studio     | https://aistudio.google.com/                     |
+| Resend Dashboard     | https://resend.com/                              |
+| GitHub Actions       | https://github.com/[your-org]/coupleplan/actions |
+| Cloud Run サービス   | https://console.cloud.google.com/run             |
 
 ---
 
@@ -247,6 +259,7 @@ gcloud run services logs read coupleplan \
 **Secrets一覧**: [tests/REQUIRED_SECRETS.md](./tests/REQUIRED_SECRETS.md)
 
 **問題が発生した場合**:
+
 1. ログを確認
 2. ドキュメントを参照
 3. GitHub Issue を作成
@@ -254,4 +267,3 @@ gcloud run services logs read coupleplan \
 ---
 
 **最終更新**: 2025年10月12日
-
