@@ -4,6 +4,7 @@ import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { DatePlanDetail } from '@/types/date-plan';
+import CoupleInviteBanner from '@/components/couple/CoupleInviteBanner';
 
 function PlanResultsContent() {
   const router = useRouter();
@@ -238,6 +239,13 @@ function PlanResultsContent() {
             >
               新しいプランを作成
             </button>
+          </div>
+        )}
+
+        {/* カップル招待バナー */}
+        {plans.length > 0 && (
+          <div className="mb-8">
+            <CoupleInviteBanner context="plan-created" />
           </div>
         )}
 

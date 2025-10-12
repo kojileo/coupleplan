@@ -6,6 +6,8 @@ import type { ReactElement } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import Button from '@/components/ui/button';
 import { UsageLimitDisplay } from '@/components/subscription/UsageLimitDisplay';
+import CoupleStatusCard from '@/components/couple/CoupleStatusCard';
+import CoupleInviteBanner from '@/components/couple/CoupleInviteBanner';
 
 export default function Dashboard(): ReactElement {
   const { session, isLoading, user, signOut } = useAuth();
@@ -60,6 +62,16 @@ export default function Dashboard(): ReactElement {
           {/* 使用状況表示 */}
           <div className="max-w-6xl mx-auto mb-8">
             <UsageLimitDisplay />
+          </div>
+
+          {/* カップル連携状態 */}
+          <div className="max-w-6xl mx-auto mb-8">
+            <CoupleStatusCard />
+          </div>
+
+          {/* カップル招待バナー */}
+          <div className="max-w-6xl mx-auto mb-8">
+            <CoupleInviteBanner context="dashboard" />
           </div>
 
           {/* 主要機能カード */}

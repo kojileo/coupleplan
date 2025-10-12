@@ -28,9 +28,9 @@ DROP TABLE IF EXISTS profiles CASCADE;
 -- 2.1 profiles テーブル（ユーザープロフィール）
 CREATE TABLE profiles (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE UNIQUE,
-  name TEXT NOT NULL,
-  email TEXT NOT NULL,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE UNIQUE,
+  name TEXT,
+  email TEXT,
   avatar_url TEXT,
   bio TEXT,
   location TEXT,
@@ -507,23 +507,42 @@ ON CONFLICT (name) DO UPDATE SET
 -- 10. トリガー関数とヘルパー関数
 -- =========================================
 
--- 10.1 新規ユーザーに自動的にFreeプランを割り当てる関数
-CREATE OR REPLACE FUNCTION create_user_subscription()
+-- 10.1 新規ユーザーに自動的にプロフィールとFreeプランを作成する関数
+CREATE OR REPLACE FUNCTION handle_new_user()
 RETURNS TRIGGER AS $$
 DECLARE
   free_plan_id UUID;
 BEGIN
-  -- Freeプランのidを取得
+  -- 1. プロフィールを作成
+  BEGIN
+    INSERT INTO public.profiles (user_id, name, email)
+    VALUES (
+      NEW.id, 
+      COALESCE(NEW.raw_user_meta_data->>'name', 'ユーザー'),
+      NEW.email
+    )
+    ON CONFLICT (user_id) DO NOTHING;
+  EXCEPTION WHEN OTHERS THEN
+    RAISE WARNING 'Failed to create profile for user %: %', NEW.id, SQLERRM;
+  END;
+
+  -- 2. Freeプランのidを取得
   SELECT id INTO free_plan_id 
-  FROM subscription_plans 
+  FROM public.subscription_plans 
   WHERE name = 'free' AND is_active = true 
   LIMIT 1;
   
-  -- プランが見つかった場合のみサブスクを作成
+  -- 3. プランが見つかった場合のみサブスクを作成
   IF free_plan_id IS NOT NULL THEN
-    INSERT INTO user_subscriptions (user_id, plan_id, status)
-    VALUES (NEW.id, free_plan_id, 'active')
-    ON CONFLICT (user_id) DO NOTHING;
+    BEGIN
+      INSERT INTO public.user_subscriptions (user_id, plan_id, status)
+      VALUES (NEW.id, free_plan_id, 'active')
+      ON CONFLICT (user_id) DO NOTHING;
+    EXCEPTION WHEN OTHERS THEN
+      RAISE WARNING 'Failed to create subscription for user %: %', NEW.id, SQLERRM;
+    END;
+  ELSE
+    RAISE WARNING 'Free plan not found when creating user %', NEW.id;
   END IF;
   
   RETURN NEW;
@@ -609,13 +628,13 @@ DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW
-  EXECUTE FUNCTION create_user_subscription();
+  EXECUTE FUNCTION handle_new_user();
 
 -- =========================================
--- 12. 既存ユーザーへのFreeプラン割り当て
+-- 12. 既存ユーザーへのプロフィールとFreeプラン割り当て
 -- =========================================
 
--- 既存ユーザーでサブスクが未設定の場合、Freeプランを割り当て
+-- 既存ユーザーでプロフィールやサブスクが未設定の場合、作成する
 DO $$
 DECLARE
   free_plan_id UUID;
@@ -628,7 +647,18 @@ BEGIN
   
   -- プランが見つかった場合のみ処理
   IF free_plan_id IS NOT NULL THEN
-    -- サブスクが未設定のユーザーにFreeプランを割り当て
+    -- 1. プロフィールが未作成のユーザーにプロフィールを作成
+    INSERT INTO profiles (user_id, name, email)
+    SELECT 
+      u.id, 
+      COALESCE(u.raw_user_meta_data->>'name', 'ユーザー'),
+      u.email
+    FROM auth.users u
+    LEFT JOIN profiles p ON u.id = p.user_id
+    WHERE p.id IS NULL
+    ON CONFLICT (user_id) DO NOTHING;
+
+    -- 2. サブスクが未設定のユーザーにFreeプランを割り当て
     INSERT INTO user_subscriptions (user_id, plan_id, status)
     SELECT u.id, free_plan_id, 'active'
     FROM auth.users u
