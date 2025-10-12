@@ -229,7 +229,28 @@ npm run dev
 
 ## 🚀 デプロイ
 
-### Vercel（推奨）
+### Google Cloud Run（本番環境）🎯
+
+**自動デプロイ設定済み！**
+
+- **Staging**: `develop` ブランチへのプッシュで自動デプロイ
+- **Production**: `main` ブランチへのプッシュで自動デプロイ
+
+**詳細な構築手順**:
+- 📘 [本番環境構築ガイド（完全版）](./Docs/PRODUCTION_SETUP_GUIDE.md) - 60-90分で完了
+- ⚡ [クイックリファレンス](./Docs/PRODUCTION_QUICK_REFERENCE.md) - 1ページで要点確認
+
+**必要なリソース**:
+- Supabase 本番プロジェクト
+- Google Gemini API キー
+- Resend API キー（メール送信）
+- GitHub Secrets 設定（13個）
+
+**コスト見積もり**:
+- 小規模運用: $0-10/月
+- 中規模運用: $30-100/月
+
+### Vercel（代替オプション）
 
 ```bash
 npm run build
@@ -237,8 +258,6 @@ vercel deploy
 ```
 
 ### 環境変数の設定
-
-Vercelダッシュボードで以下を設定：
 
 **必須:**
 
