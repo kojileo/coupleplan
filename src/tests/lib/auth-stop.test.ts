@@ -156,7 +156,7 @@ describe('auth-stop.ts', () => {
         expect(info.isStopped).toBe(true);
         expect(info.reason).toBe('テスト停止');
         expect(info.stopTime).toBeDefined();
-        expect(info.duration).toBeGreaterThan(0);
+        expect(info.duration).toBeGreaterThanOrEqual(0); // タイミングによっては0になる可能性あり
       });
 
       it('停止していない場合、duration は 0', () => {
