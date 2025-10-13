@@ -1,8 +1,8 @@
-name: Nightly Full Test
+name: Weekly E2E Test
 
 on:
   schedule:
-    - cron: '0 15 * * *' # 毎日0時JST（15時UTC）
+    - cron: '0 15 * * 0' # 毎週日曜日0時JST（15時UTC）
   workflow_dispatch:
 
 env:
@@ -23,8 +23,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [chromium, firefox, webkit]
-        shard: [1, 2, 3]
+        browser: [chromium] # Chromiumのみに限定してコスト削減
+        shard: [1, 2] # シャード数を削減
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -42,7 +42,7 @@ jobs:
         run: npx playwright install --with-deps ${{ matrix.browser }}
 
       - name: Run E2E tests
-        run: npm run test:e2e -- --project=${{ matrix.browser }} --shard=${{ matrix.shard }}/3
+        run: npm run test:e2e -- --project=${{ matrix.browser }} --shard=${{ matrix.shard }}/2
 
       - name: Upload test results
         if: always()
@@ -116,18 +116,18 @@ jobs:
             echo "⚠️ GCP credentials not configured. Skipping Cloud Run health check."
           fi
 
-  nightly-summary:
-    name: Nightly Test Summary
+  weekly-summary:
+    name: Weekly Test Summary
     runs-on: ubuntu-latest
     needs: [e2e-cross-browser, performance-test, cloud-run-health-check]
     if: always()
     steps:
       - name: Summary
         run: |
-          echo "## 🌙 Nightly Test Summary" >> $GITHUB_STEP_SUMMARY
+          echo "## 📅 Weekly E2E Test Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- **E2E Cross Browser**: ${{ needs.e2e-cross-browser.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **E2E Tests (Chromium)**: ${{ needs.e2e-cross-browser.result }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Performance Test**: ${{ needs.performance-test.result }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Cloud Run Health**: ${{ needs.cloud-run-health-check.result }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Test completed at: $(date -u)" >> $GITHUB_STEP_SUMMARY
+          echo "Weekly test completed at: $(date -u)" >> $GITHUB_STEP_SUMMARY
