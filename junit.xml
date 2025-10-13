@@ -1,3 +1,673 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="jest tests" tests="0" failures="0" errors="0" time="0.003">
+<testsuites name="jest tests" tests="315" failures="0" errors="0" time="2.912">
+  <testsuite name="src\tests\lib\rate-limiter.test.ts" errors="0" failures="0" skipped="0" timestamp="2025-10-13T01:19:44" time="0.811" tests="13">
+    <testcase classname="RateLimiter › TC-RL-001: 基本的なリクエスト実行" name="正常なリクエストを実行できる" time="0.016">
+    </testcase>
+    <testcase classname="RateLimiter › TC-RL-001: 基本的なリクエスト実行" name="複数のリクエストを順次実行できる" time="0.01">
+    </testcase>
+    <testcase classname="RateLimiter › TC-RL-002: レート制限（1分間）" name="統計情報で制限値を確認できる" time="0.002">
+    </testcase>
+    <testcase classname="RateLimiter › TC-RL-003: 重複リクエスト防止" name="同じIDのリクエストは拒否される" time="0.028">
+    </testcase>
+    <testcase classname="RateLimiter › TC-RL-003: 重複リクエスト防止" name="異なるIDのリクエストは並行実行できる" time="0.01">
+    </testcase>
+    <testcase classname="RateLimiter › TC-RL-004: リトライロジック" name="リトライ可能なエラーの場合、自動的にリトライする" time="0.012">
+    </testcase>
+    <testcase classname="RateLimiter › TC-RL-004: リトライロジック" name="設定されたmaxRetriesの値を確認できる" time="0.003">
+    </testcase>
+    <testcase classname="RateLimiter › TC-RL-005: タイムアウト処理" name="requestTimeoutの設定値を確認できる" time="0.001">
+    </testcase>
+    <testcase classname="RateLimiter › TC-RL-006: 統計情報" name="統計情報を取得できる" time="0.001">
+    </testcase>
+    <testcase classname="RateLimiter › TC-RL-007: clearQueue 関数" name="clearQueue()メソッドが存在する" time="0.002">
+    </testcase>
+    <testcase classname="RateLimiter › TC-RL-007: clearQueue 関数" name="clearQueue()を呼び出してもエラーにならない" time="0.001">
+    </testcase>
+    <testcase classname="RateLimiter › TC-RL-008: グローバルインスタンス" name="getRateLimiter()でシングルトンインスタンスを取得できる" time="0.001">
+    </testcase>
+    <testcase classname="RateLimiter › TC-RL-008: グローバルインスタンス" name="resetRateLimiter()で新しいインスタンスが作成される" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="src\tests\api\partner\connect.test.ts" errors="0" failures="0" skipped="0" timestamp="2025-10-13T01:19:44" time="0.923" tests="10">
+    <testcase classname="/api/partner/connect › TC-PARTNER-CONNECT-001: 正常なカップル連携" name="有効な招待でカップル連携が確立される" time="0.014">
+    </testcase>
+    <testcase classname="/api/partner/connect › TC-PARTNER-CONNECT-002: 認証エラー" name="認証ヘッダーがない場合、401エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="/api/partner/connect › TC-PARTNER-CONNECT-002: 認証エラー" name="無効なトークンの場合、401エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="/api/partner/connect › TC-PARTNER-CONNECT-003: 無効なリクエストデータ" name="invitationIdが欠けている場合、400エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="/api/partner/connect › TC-PARTNER-CONNECT-003: 無効なリクエストデータ" name="fromUserIdが欠けている場合、400エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="/api/partner/connect › TC-PARTNER-CONNECT-003: 無効なリクエストデータ" name="両方のIDが欠けている場合、400エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="/api/partner/connect › TC-PARTNER-CONNECT-004: 連携確立エラー" name="既に連携済みの場合、エラーを返す" time="0.003">
+    </testcase>
+    <testcase classname="/api/partner/connect › TC-PARTNER-CONNECT-004: 連携確立エラー" name="招待が存在しない場合、エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="/api/partner/connect › TC-PARTNER-CONNECT-004: 連携確立エラー" name="招待が既に使用されている場合、エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="/api/partner/connect › TC-PARTNER-CONNECT-005: サーバーエラー処理" name="予期しないエラーの場合、500エラーを返す" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="src\tests\lib\auth-stop.test.ts" errors="0" failures="0" skipped="0" timestamp="2025-10-13T01:19:44" time="0.981" tests="28">
+    <testcase classname="auth-stop.ts › AuthStopManager › stop()" name="認証システムを停止できる" time="0.092">
+    </testcase>
+    <testcase classname="auth-stop.ts › AuthStopManager › stop()" name="停止時に理由を設定できる" time="0.003">
+    </testcase>
+    <testcase classname="auth-stop.ts › AuthStopManager › stop()" name="理由を指定しない場合、デフォルト理由が設定される" time="0.003">
+    </testcase>
+    <testcase classname="auth-stop.ts › AuthStopManager › stop()" name="停止時刻が記録される" time="0.003">
+    </testcase>
+    <testcase classname="auth-stop.ts › AuthStopManager › stop()" name="停止時に警告メッセージがログ出力される" time="0.004">
+    </testcase>
+    <testcase classname="auth-stop.ts › AuthStopManager › resume()" name="認証システムを再開できる" time="0.002">
+    </testcase>
+    <testcase classname="auth-stop.ts › AuthStopManager › resume()" name="再開時に停止情報がクリアされる" time="0.003">
+    </testcase>
+    <testcase classname="auth-stop.ts › AuthStopManager › resume()" name="再開時に成功メッセージがログ出力される" time="0.002">
+    </testcase>
+    <testcase classname="auth-stop.ts › AuthStopManager › isAuthStopped()" name="停止前はfalseを返す" time="0.003">
+    </testcase>
+    <testcase classname="auth-stop.ts › AuthStopManager › isAuthStopped()" name="停止後はtrueを返す" time="0.005">
+    </testcase>
+    <testcase classname="auth-stop.ts › AuthStopManager › isAuthStopped()" name="再開後はfalseを返す" time="0.002">
+    </testcase>
+    <testcase classname="auth-stop.ts › AuthStopManager › getStopInfo()" name="停止情報を取得できる" time="0.003">
+    </testcase>
+    <testcase classname="auth-stop.ts › AuthStopManager › getStopInfo()" name="停止していない場合、duration は 0" time="0.001">
+    </testcase>
+    <testcase classname="auth-stop.ts › AuthStopManager › getStopInfo()" name="停止時間の経過がdurationに反映される" time="0.11">
+    </testcase>
+    <testcase classname="auth-stop.ts › AuthStopManager › getStopInfo()" name="stopTimeがISO形式で返される" time="0.002">
+    </testcase>
+    <testcase classname="auth-stop.ts › AuthStopManager › autoStopOnRefreshTokenError()" name="リフレッシュトークンエラーで自動停止する" time="0.002">
+    </testcase>
+    <testcase classname="auth-stop.ts › AuthStopManager › autoStopOnRefreshTokenError()" name="停止理由が適切に設定される" time="0.002">
+    </testcase>
+    <testcase classname="auth-stop.ts › AuthStopManager › autoStopOnRefreshTokenError()" name="警告メッセージが出力される" time="0.001">
+    </testcase>
+    <testcase classname="auth-stop.ts › emergencyAuthStop()" name="認証システムを緊急停止できる" time="0.001">
+    </testcase>
+    <testcase classname="auth-stop.ts › emergencyAuthStop()" name="停止理由が設定される" time="0.001">
+    </testcase>
+    <testcase classname="auth-stop.ts › emergencyAuthStop()" name="緊急停止の警告メッセージが出力される" time="0.002">
+    </testcase>
+    <testcase classname="auth-stop.ts › emergencyAuthStop()" name="複数回呼び出しても安全" time="0.001">
+    </testcase>
+    <testcase classname="auth-stop.ts › resumeAuth()" name="認証システムを再開できる" time="0.002">
+    </testcase>
+    <testcase classname="auth-stop.ts › resumeAuth()" name="再開の成功メッセージが出力される" time="0.001">
+    </testcase>
+    <testcase classname="auth-stop.ts › resumeAuth()" name="停止していない状態で呼び出しても安全" time="0.001">
+    </testcase>
+    <testcase classname="auth-stop.ts › 状態遷移" name="停止 → 再開 → 停止 のサイクルが正しく動作する" time="0.002">
+    </testcase>
+    <testcase classname="auth-stop.ts › 状態遷移" name="複数回停止しても最新の理由が保持される" time="0.002">
+    </testcase>
+    <testcase classname="auth-stop.ts › グローバル公開（ブラウザ環境）" name="window オブジェクトに関数が公開される" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="src\tests\components\ui\button.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-10-13T01:19:44" time="1.096" tests="23">
+    <testcase classname="Button Component › TC-UI-BTN-001: 基本的なレンダリング" name="テキストを表示する" time="0.046">
+    </testcase>
+    <testcase classname="Button Component › TC-UI-BTN-001: 基本的なレンダリング" name="デフォルトでtype=&quot;button&quot;を持つ" time="0.05">
+    </testcase>
+    <testcase classname="Button Component › TC-UI-BTN-001: 基本的なレンダリング" name="type属性を指定できる" time="0.008">
+    </testcase>
+    <testcase classname="Button Component › TC-UI-BTN-002: バリアント" name="primary variant を適用できる" time="0.006">
+    </testcase>
+    <testcase classname="Button Component › TC-UI-BTN-002: バリアント" name="secondary variant を適用できる" time="0.006">
+    </testcase>
+    <testcase classname="Button Component › TC-UI-BTN-002: バリアント" name="outline variant を適用できる" time="0.006">
+    </testcase>
+    <testcase classname="Button Component › TC-UI-BTN-002: バリアント" name="デフォルトでprimary variantになる" time="0.005">
+    </testcase>
+    <testcase classname="Button Component › TC-UI-BTN-003: サイズ" name="small サイズを適用できる" time="0.005">
+    </testcase>
+    <testcase classname="Button Component › TC-UI-BTN-003: サイズ" name="medium サイズを適用できる" time="0.009">
+    </testcase>
+    <testcase classname="Button Component › TC-UI-BTN-003: サイズ" name="large サイズを適用できる" time="0.007">
+    </testcase>
+    <testcase classname="Button Component › TC-UI-BTN-003: サイズ" name="デフォルトでmedium サイズになる" time="0.007">
+    </testcase>
+    <testcase classname="Button Component › TC-UI-BTN-004: 無効化" name="disabled属性を持つ" time="0.007">
+    </testcase>
+    <testcase classname="Button Component › TC-UI-BTN-004: 無効化" name="disabledの場合、opacity-50が適用される" time="0.008">
+    </testcase>
+    <testcase classname="Button Component › TC-UI-BTN-004: 無効化" name="disabledの場合、クリックイベントが発火しない" time="0.009">
+    </testcase>
+    <testcase classname="Button Component › TC-UI-BTN-005: クリックイベント" name="クリック時にonClickハンドラーが呼ばれる" time="0.006">
+    </testcase>
+    <testcase classname="Button Component › TC-UI-BTN-005: クリックイベント" name="複数回クリックでonClickハンドラーが複数回呼ばれる" time="0.005">
+    </testcase>
+    <testcase classname="Button Component › TC-UI-BTN-006: カスタムクラス名" name="カスタムクラス名を追加できる" time="0.003">
+    </testcase>
+    <testcase classname="Button Component › TC-UI-BTN-006: カスタムクラス名" name="カスタムクラス名がデフォルトクラスと共存する" time="0.003">
+    </testcase>
+    <testcase classname="Button Component › TC-UI-BTN-007: ref転送" name="refを転送できる" time="0.003">
+    </testcase>
+    <testcase classname="Button Component › TC-UI-BTN-007: ref転送" name="refを使ってフォーカスできる" time="0.003">
+    </testcase>
+    <testcase classname="Button Component › TC-UI-BTN-008: HTML属性の継承" name="aria-label属性を設定できる" time="0.002">
+    </testcase>
+    <testcase classname="Button Component › TC-UI-BTN-008: HTML属性の継承" name="data属性を設定できる" time="0.001">
+    </testcase>
+    <testcase classname="Button Component › TC-UI-BTN-008: HTML属性の継承" name="title属性を設定できる" time="0.005">
+    </testcase>
+  </testsuite>
+  <testsuite name="src\tests\api\health\route.test.ts" errors="0" failures="0" skipped="0" timestamp="2025-10-13T01:19:45" time="0.262" tests="8">
+    <testcase classname="GET /api/health" name="正常なヘルスチェックレスポンスを返す" time="0.002">
+    </testcase>
+    <testcase classname="GET /api/health" name="uptimeが含まれている" time="0.001">
+    </testcase>
+    <testcase classname="GET /api/health" name="メモリ使用量が含まれている" time="0">
+    </testcase>
+    <testcase classname="GET /api/health" name="環境変数が正しく反映される" time="0.001">
+    </testcase>
+    <testcase classname="GET /api/health" name="バージョン情報が含まれている" time="0">
+    </testcase>
+    <testcase classname="GET /api/health" name="タイムスタンプがISO形式である" time="0.001">
+    </testcase>
+    <testcase classname="GET /api/health" name="ステータスコード200を返す" time="0">
+    </testcase>
+    <testcase classname="GET /api/health" name="Content-Typeがapplication/jsonである" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="src\tests\api\partner\verify.test.ts" errors="0" failures="0" skipped="0" timestamp="2025-10-13T01:19:45" time="0.196" tests="9">
+    <testcase classname="/api/partner/verify › TC-PARTNER-VERIFY-001: 正常な招待コード検証" name="有効な招待コードを検証できる" time="0.003">
+    </testcase>
+    <testcase classname="/api/partner/verify › TC-PARTNER-VERIFY-002: 認証エラー" name="認証ヘッダーがない場合、401エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="/api/partner/verify › TC-PARTNER-VERIFY-002: 認証エラー" name="無効なトークンの場合、401エラーを返す" time="0">
+    </testcase>
+    <testcase classname="/api/partner/verify › TC-PARTNER-VERIFY-003: 無効なリクエストデータ" name="招待コードが欠けている場合、400エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="/api/partner/verify › TC-PARTNER-VERIFY-003: 無効なリクエストデータ" name="空の招待コードの場合、400エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="/api/partner/verify › TC-PARTNER-VERIFY-004: 検証エラー" name="無効な招待コードの場合、エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="/api/partner/verify › TC-PARTNER-VERIFY-004: 検証エラー" name="期限切れの招待コードの場合、エラーを返す" time="0">
+    </testcase>
+    <testcase classname="/api/partner/verify › TC-PARTNER-VERIFY-004: 検証エラー" name="自分自身の招待コードの場合、エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="/api/partner/verify › TC-PARTNER-VERIFY-005: サーバーエラー処理" name="予期しないエラーの場合、500エラーを返す" time="0.005">
+    </testcase>
+  </testsuite>
+  <testsuite name="src\tests\components\ui\select.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-10-13T01:19:44" time="1.21" tests="17">
+    <testcase classname="Select Component › TC-UI-SELECT-001: 基本的なレンダリング" name="セレクトボックスが表示される" time="0.038">
+    </testcase>
+    <testcase classname="Select Component › TC-UI-SELECT-001: 基本的なレンダリング" name="複数のオプションを表示できる" time="0.009">
+    </testcase>
+    <testcase classname="Select Component › TC-UI-SELECT-002: 値の選択" name="ユーザーが値を選択できる" time="0.113">
+    </testcase>
+    <testcase classname="Select Component › TC-UI-SELECT-002: 値の選択" name="onChange イベントが発火する" time="0.003">
+    </testcase>
+    <testcase classname="Select Component › TC-UI-SELECT-003: value プロパティ" name="value プロパティで初期値を設定できる" time="0.004">
+    </testcase>
+    <testcase classname="Select Component › TC-UI-SELECT-003: value プロパティ" name="value が変更されると選択が更新される" time="0.004">
+    </testcase>
+    <testcase classname="Select Component › TC-UI-SELECT-004: disabled 状態" name="disabled属性を持つ" time="0.002">
+    </testcase>
+    <testcase classname="Select Component › TC-UI-SELECT-004: disabled 状態" name="disabledの場合、値を変更できない" time="0.028">
+    </testcase>
+    <testcase classname="Select Component › TC-UI-SELECT-005: カスタムクラス名" name="カスタムクラス名を追加できる" time="0.003">
+    </testcase>
+    <testcase classname="Select Component › TC-UI-SELECT-005: カスタムクラス名" name="カスタムクラス名がデフォルトクラスと共存する" time="0.003">
+    </testcase>
+    <testcase classname="Select Component › TC-UI-SELECT-006: ref転送" name="refを転送できる" time="0.003">
+    </testcase>
+    <testcase classname="Select Component › TC-UI-SELECT-006: ref転送" name="refを使ってフォーカスできる" time="0.003">
+    </testcase>
+    <testcase classname="Select Component › TC-UI-SELECT-007: HTML属性の継承" name="name属性を設定できる" time="0.002">
+    </testcase>
+    <testcase classname="Select Component › TC-UI-SELECT-007: HTML属性の継承" name="required属性を設定できる" time="0.003">
+    </testcase>
+    <testcase classname="Select Component › TC-UI-SELECT-007: HTML属性の継承" name="multiple属性を設定できる" time="0.003">
+    </testcase>
+    <testcase classname="Select Component › TC-UI-SELECT-007: HTML属性の継承" name="aria-label属性を設定できる" time="0.002">
+    </testcase>
+    <testcase classname="Select Component › TC-UI-SELECT-008: defaultValue" name="defaultValueで初期選択値を設定できる" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="src\tests\lib\utils.test.ts" errors="0" failures="0" skipped="0" timestamp="2025-10-13T01:19:45" time="0.161" tests="19">
+    <testcase classname="utils › TC-UTILS-001: cn 関数" name="単一のクラス名を返す" time="0.006">
+    </testcase>
+    <testcase classname="utils › TC-UTILS-001: cn 関数" name="複数のクラス名をマージする" time="0.001">
+    </testcase>
+    <testcase classname="utils › TC-UTILS-001: cn 関数" name="条件付きクラス名を処理する" time="0">
+    </testcase>
+    <testcase classname="utils › TC-UTILS-001: cn 関数" name="falsy値を除外する" time="0.001">
+    </testcase>
+    <testcase classname="utils › TC-UTILS-001: cn 関数" name="Tailwindの競合を解決する" time="0">
+    </testcase>
+    <testcase classname="utils › TC-UTILS-001: cn 関数" name="空の引数で空文字列を返す" time="0.003">
+    </testcase>
+    <testcase classname="utils › TC-UTILS-002: formatDate 関数" name="Date オブジェクトを日本語形式でフォーマットする" time="0.001">
+    </testcase>
+    <testcase classname="utils › TC-UTILS-002: formatDate 関数" name="ISO文字列を日本語形式でフォーマットする" time="0">
+    </testcase>
+    <testcase classname="utils › TC-UTILS-002: formatDate 関数" name="nullの場合、空文字列を返す" time="0">
+    </testcase>
+    <testcase classname="utils › TC-UTILS-002: formatDate 関数" name="undefinedの場合、空文字列を返す" time="0.001">
+    </testcase>
+    <testcase classname="utils › TC-UTILS-002: formatDate 関数" name="空文字列の場合、空文字列を返す" time="0">
+    </testcase>
+    <testcase classname="utils › TC-UTILS-002: formatDate 関数" name="無効な日付文字列の場合、空文字列を返す" time="0">
+    </testcase>
+    <testcase classname="utils › TC-UTILS-002: formatDate 関数" name="無効なDateオブジェクトの場合、空文字列を返す" time="0">
+    </testcase>
+    <testcase classname="utils › TC-UTILS-003: auth 関数" name="有効なトークンの場合、トークンを返す" time="0.003">
+    </testcase>
+    <testcase classname="utils › TC-UTILS-003: auth 関数" name="Authorizationヘッダーがない場合、nullを返す" time="0.001">
+    </testcase>
+    <testcase classname="utils › TC-UTILS-003: auth 関数" name="無効なトークンの場合、nullを返す" time="0.001">
+    </testcase>
+    <testcase classname="utils › TC-UTILS-003: auth 関数" name="ユーザーが存在しない場合、nullを返す" time="0">
+    </testcase>
+    <testcase classname="utils › TC-UTILS-003: auth 関数" name="エラーが発生した場合、nullを返す" time="0.001">
+    </testcase>
+    <testcase classname="utils › TC-UTILS-003: auth 関数" name="Bearer プレフィックスを正しく削除する" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="src\tests\api\partner\invite.test.ts" errors="0" failures="0" skipped="0" timestamp="2025-10-13T01:19:45" time="0.287" tests="8">
+    <testcase classname="/api/partner/invite › TC-PARTNER-INVITE-001: 正常な招待コード生成" name="認証済みユーザーが招待コードを生成できる" time="0.006">
+    </testcase>
+    <testcase classname="/api/partner/invite › TC-PARTNER-INVITE-002: 認証エラー" name="認証ヘッダーがない場合、401エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="/api/partner/invite › TC-PARTNER-INVITE-002: 認証エラー" name="無効なトークンの場合、401エラーを返す" time="0">
+    </testcase>
+    <testcase classname="/api/partner/invite › TC-PARTNER-INVITE-002: 認証エラー" name="ユーザーが存在しない場合、401エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="/api/partner/invite › TC-PARTNER-INVITE-003: 招待作成エラー" name="既に連携済みの場合、エラーを返す" time="0">
+    </testcase>
+    <testcase classname="/api/partner/invite › TC-PARTNER-INVITE-003: 招待作成エラー" name="既存の招待が存在する場合、エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="/api/partner/invite › TC-PARTNER-INVITE-004: サーバーエラー処理" name="予期しないエラーの場合、500エラーを返す" time="0.002">
+    </testcase>
+    <testcase classname="/api/partner/invite › TC-PARTNER-INVITE-005: トークン形式" name="Bearer形式のトークンを正しく処理する" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="src\tests\api\plans\route.test.ts" errors="0" failures="0" skipped="0" timestamp="2025-10-13T01:19:45" time="0.143" tests="8">
+    <testcase classname="/api/plans › TC-PLANS-LIST-001: 正常なプラン一覧取得" name="認証済みユーザーがプラン一覧を取得できる" time="0.003">
+    </testcase>
+    <testcase classname="/api/plans › TC-PLANS-LIST-001: 正常なプラン一覧取得" name="カップル連携済みユーザーが個人プランとカップルプランを取得できる" time="0">
+    </testcase>
+    <testcase classname="/api/plans › TC-PLANS-LIST-002: 認証エラー" name="未認証ユーザーは401エラーを返す" time="0">
+    </testcase>
+    <testcase classname="/api/plans › TC-PLANS-LIST-003: クエリパラメータ" name="ステータスフィルターが正しく適用される" time="0.001">
+    </testcase>
+    <testcase classname="/api/plans › TC-PLANS-LIST-003: クエリパラメータ" name="ページネーションパラメータが正しく適用される" time="0.001">
+    </testcase>
+    <testcase classname="/api/plans › TC-PLANS-LIST-003: クエリパラメータ" name="ソートパラメータが正しく適用される" time="0">
+    </testcase>
+    <testcase classname="/api/plans › TC-PLANS-LIST-004: データベースエラー" name="プラン取得エラーの場合、500エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="/api/plans › TC-PLANS-LIST-005: 空のプラン一覧" name="プランが存在しない場合、空の配列を返す" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="src\tests\api\auth\login.test.ts" errors="0" failures="0" skipped="0" timestamp="2025-10-13T01:19:45" time="0.244" tests="10">
+    <testcase classname="/api/auth/login › TC-AUTH-API-001: 正常なログイン" name="正しい認証情報でログインが成功する" time="0.056">
+    </testcase>
+    <testcase classname="/api/auth/login › TC-AUTH-API-002: 誤ったパスワードでのログイン" name="誤った認証情報でログインが失敗する" time="0.001">
+    </testcase>
+    <testcase classname="/api/auth/login › TC-AUTH-API-003: 未確認メールアドレスでのログイン" name="メール未確認アカウントでログインが失敗する" time="0.001">
+    </testcase>
+    <testcase classname="/api/auth/login › TC-AUTH-API-004: レート制限エラー" name="レート制限に達した場合、適切なエラーメッセージを返す" time="0.001">
+    </testcase>
+    <testcase classname="/api/auth/login › TC-AUTH-API-005: 無効なリクエストデータ" name="メールアドレスが欠けている場合、400エラーを返す" time="0">
+    </testcase>
+    <testcase classname="/api/auth/login › TC-AUTH-API-005: 無効なリクエストデータ" name="パスワードが欠けている場合、400エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="/api/auth/login › TC-AUTH-API-005: 無効なリクエストデータ" name="空のリクエストボディの場合、400エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="/api/auth/login › TC-AUTH-API-005: 無効なリクエストデータ" name="nullリクエストボディの場合、400エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="/api/auth/login › TC-AUTH-API-006: サーバーエラー処理" name="予期しないエラーの場合、500エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="/api/auth/login › TC-AUTH-API-007: セッション確認エラー" name="セッション確認失敗時でもログイン成功を返す" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="src\tests\api\plans\[id].test.ts" errors="0" failures="0" skipped="0" timestamp="2025-10-13T01:19:45" time="0.201" tests="7">
+    <testcase classname="/api/plans/[id] › GET - TC-PLANS-DETAIL-001: 正常なプラン詳細取得" name="個人プランの詳細を取得できる" time="0.005">
+    </testcase>
+    <testcase classname="/api/plans/[id] › GET - TC-PLANS-DETAIL-001: 正常なプラン詳細取得" name="カップルプランの詳細を取得できる" time="0.002">
+    </testcase>
+    <testcase classname="/api/plans/[id] › GET - TC-PLANS-DETAIL-002: アクセス権限エラー" name="他人の個人プランにアクセスできない" time="0">
+    </testcase>
+    <testcase classname="/api/plans/[id] › GET - TC-PLANS-DETAIL-002: アクセス権限エラー" name="カップルメンバーでない場合、カップルプランにアクセスできない" time="0.001">
+    </testcase>
+    <testcase classname="/api/plans/[id] › GET - TC-PLANS-DETAIL-003: プランが見つからない" name="存在しないプランIDの場合、404エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="/api/plans/[id] › PUT - TC-PLANS-DETAIL-004: プラン更新" name="個人プランを更新できる" time="0.001">
+    </testcase>
+    <testcase classname="/api/plans/[id] › DELETE - TC-PLANS-DETAIL-005: プラン削除" name="自分が作成したプランを削除できる" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="src\tests\components\ui\textarea.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-10-13T01:19:44" time="1.467" tests="18">
+    <testcase classname="Textarea Component › TC-UI-TEXTAREA-001: 基本的なレンダリング" name="テキストエリアが表示される" time="0.035">
+    </testcase>
+    <testcase classname="Textarea Component › TC-UI-TEXTAREA-001: 基本的なレンダリング" name="textareaロールを持つ" time="0.046">
+    </testcase>
+    <testcase classname="Textarea Component › TC-UI-TEXTAREA-002: 値の入力" name="ユーザー入力を受け付ける" time="0.146">
+    </testcase>
+    <testcase classname="Textarea Component › TC-UI-TEXTAREA-002: 値の入力" name="複数行の入力を受け付ける" time="0.19">
+    </testcase>
+    <testcase classname="Textarea Component › TC-UI-TEXTAREA-002: 値の入力" name="onChange イベントが発火する" time="0.006">
+    </testcase>
+    <testcase classname="Textarea Component › TC-UI-TEXTAREA-003: value プロパティ" name="value プロパティで初期値を設定できる" time="0.003">
+    </testcase>
+    <testcase classname="Textarea Component › TC-UI-TEXTAREA-003: value プロパティ" name="value が変更されると表示が更新される" time="0.005">
+    </testcase>
+    <testcase classname="Textarea Component › TC-UI-TEXTAREA-004: disabled 状態" name="disabled属性を持つ" time="0.003">
+    </testcase>
+    <testcase classname="Textarea Component › TC-UI-TEXTAREA-004: disabled 状態" name="disabledの場合、入力を受け付けない" time="0.03">
+    </testcase>
+    <testcase classname="Textarea Component › TC-UI-TEXTAREA-005: rows 属性" name="rows属性を設定できる" time="0.002">
+    </testcase>
+    <testcase classname="Textarea Component › TC-UI-TEXTAREA-005: rows 属性" name="異なるrows値を設定できる" time="0.002">
+    </testcase>
+    <testcase classname="Textarea Component › TC-UI-TEXTAREA-006: カスタムクラス名" name="カスタムクラス名を追加できる" time="0.003">
+    </testcase>
+    <testcase classname="Textarea Component › TC-UI-TEXTAREA-006: カスタムクラス名" name="カスタムクラス名がデフォルトクラスと共存する" time="0.003">
+    </testcase>
+    <testcase classname="Textarea Component › TC-UI-TEXTAREA-007: ref転送" name="refを転送できる" time="0.002">
+    </testcase>
+    <testcase classname="Textarea Component › TC-UI-TEXTAREA-007: ref転送" name="refを使ってフォーカスできる" time="0.002">
+    </testcase>
+    <testcase classname="Textarea Component › TC-UI-TEXTAREA-008: HTML属性の継承" name="name属性を設定できる" time="0.002">
+    </testcase>
+    <testcase classname="Textarea Component › TC-UI-TEXTAREA-008: HTML属性の継承" name="required属性を設定できる" time="0.001">
+    </testcase>
+    <testcase classname="Textarea Component › TC-UI-TEXTAREA-008: HTML属性の継承" name="maxLength属性を設定できる" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="src\tests\lib\validation.test.ts" errors="0" failures="0" skipped="0" timestamp="2025-10-13T01:19:45" time="0.145" tests="47">
+    <testcase classname="validation › TC-VALID-001: validateName" name="有効な名前の場合、validがtrueになる" time="0.001">
+    </testcase>
+    <testcase classname="validation › TC-VALID-001: validateName" name="空の名前の場合、エラーを返す" time="0">
+    </testcase>
+    <testcase classname="validation › TC-VALID-001: validateName" name="スペースのみの名前の場合、エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="validation › TC-VALID-001: validateName" name="51文字以上の名前の場合、エラーを返す" time="0">
+    </testcase>
+    <testcase classname="validation › TC-VALID-001: validateName" name="50文字の名前は有効" time="0">
+    </testcase>
+    <testcase classname="validation › TC-VALID-001: validateName" name="1文字の名前は有効" time="0">
+    </testcase>
+    <testcase classname="validation › TC-VALID-002: validateEmail" name="有効なメールアドレスの場合、validがtrueになる" time="0.002">
+    </testcase>
+    <testcase classname="validation › TC-VALID-002: validateEmail" name="空のメールアドレスの場合、エラーを返す" time="0">
+    </testcase>
+    <testcase classname="validation › TC-VALID-002: validateEmail" name="スペースのみの場合、エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="validation › TC-VALID-002: validateEmail" name="@を含まないメールアドレスの場合、エラーを返す" time="0">
+    </testcase>
+    <testcase classname="validation › TC-VALID-002: validateEmail" name="ドメインがないメールアドレスの場合、エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="validation › TC-VALID-002: validateEmail" name="ローカル部がないメールアドレスの場合、エラーを返す" time="0">
+    </testcase>
+    <testcase classname="validation › TC-VALID-003: validatePassword" name="有効なパスワードの場合、validがtrueになる" time="0.002">
+    </testcase>
+    <testcase classname="validation › TC-VALID-003: validatePassword" name="空のパスワードの場合、エラーを返す" time="0">
+    </testcase>
+    <testcase classname="validation › TC-VALID-003: validatePassword" name="8文字未満のパスワードの場合、エラーを返す" time="0">
+    </testcase>
+    <testcase classname="validation › TC-VALID-003: validatePassword" name="101文字以上のパスワードの場合、エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="validation › TC-VALID-003: validatePassword" name="英字を含まないパスワードの場合、エラーを返す" time="0">
+    </testcase>
+    <testcase classname="validation › TC-VALID-003: validatePassword" name="数字を含まないパスワードの場合、エラーを返す" time="0">
+    </testcase>
+    <testcase classname="validation › TC-VALID-003: validatePassword" name="8文字のパスワードは有効" time="0">
+    </testcase>
+    <testcase classname="validation › TC-VALID-003: validatePassword" name="100文字のパスワードは有効" time="0.001">
+    </testcase>
+    <testcase classname="validation › TC-VALID-004: validateBio" name="有効な自己紹介の場合、validがtrueになる" time="0">
+    </testcase>
+    <testcase classname="validation › TC-VALID-004: validateBio" name="空の自己紹介は有効" time="0">
+    </testcase>
+    <testcase classname="validation › TC-VALID-004: validateBio" name="501文字以上の自己紹介の場合、エラーを返す" time="0">
+    </testcase>
+    <testcase classname="validation › TC-VALID-004: validateBio" name="500文字の自己紹介は有効" time="0">
+    </testcase>
+    <testcase classname="validation › TC-VALID-005: validateLocation" name="有効な居住地の場合、validがtrueになる" time="0.001">
+    </testcase>
+    <testcase classname="validation › TC-VALID-005: validateLocation" name="空の居住地は有効" time="0">
+    </testcase>
+    <testcase classname="validation › TC-VALID-005: validateLocation" name="101文字以上の居住地の場合、エラーを返す" time="0">
+    </testcase>
+    <testcase classname="validation › TC-VALID-005: validateLocation" name="100文字の居住地は有効" time="0">
+    </testcase>
+    <testcase classname="validation › TC-VALID-006: validateDate" name="有効な日付の場合、validがtrueになる" time="0.001">
+    </testcase>
+    <testcase classname="validation › TC-VALID-006: validateDate" name="空の日付は有効（任意フィールド）" time="0">
+    </testcase>
+    <testcase classname="validation › TC-VALID-006: validateDate" name="無効な日付形式の場合、エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="validation › TC-VALID-006: validateDate" name="存在しない月の場合、エラーを返す" time="0">
+    </testcase>
+    <testcase classname="validation › TC-VALID-006: validateDate" name="無効な日（32日）の場合、エラーを返す" time="0">
+    </testcase>
+    <testcase classname="validation › TC-VALID-007: validateProfileForm" name="全てのフィールドが有効な場合、validがtrueになる" time="0.002">
+    </testcase>
+    <testcase classname="validation › TC-VALID-007: validateProfileForm" name="複数のフィールドにエラーがある場合、全てのエラーを返す" time="0">
+    </testcase>
+    <testcase classname="validation › TC-VALID-007: validateProfileForm" name="必須フィールドのみでバリデーションが通る" time="0.001">
+    </testcase>
+    <testcase classname="validation › TC-VALID-007: validateProfileForm" name="オプショナルフィールドのエラーも検出する" time="0">
+    </testcase>
+    <testcase classname="validation › TC-VALID-008: エッジケース" name="境界値テスト: 名前が正確に50文字" time="0">
+    </testcase>
+    <testcase classname="validation › TC-VALID-008: エッジケース" name="境界値テスト: パスワードが正確に8文字" time="0">
+    </testcase>
+    <testcase classname="validation › TC-VALID-008: エッジケース" name="境界値テスト: パスワードが正確に100文字" time="0.001">
+    </testcase>
+    <testcase classname="validation › TC-VALID-008: エッジケース" name="境界値テスト: 自己紹介が正確に500文字" time="0">
+    </testcase>
+    <testcase classname="validation › TC-VALID-008: エッジケース" name="境界値テスト: 居住地が正確に100文字" time="0">
+    </testcase>
+    <testcase classname="validation › TC-VALID-008: エッジケース" name="特殊文字を含むメールアドレス" time="0">
+    </testcase>
+    <testcase classname="validation › TC-VALID-008: エッジケース" name="特殊文字を含むパスワード" time="0">
+    </testcase>
+    <testcase classname="validation › TC-VALID-008: エッジケース" name="うるう年の日付" time="0.001">
+    </testcase>
+    <testcase classname="validation › TC-VALID-008: エッジケース" name="月末の日付（31日がある月）" time="0">
+    </testcase>
+    <testcase classname="validation › TC-VALID-008: エッジケース" name="月末の日付（30日がある月）" time="0">
+    </testcase>
+  </testsuite>
+  <testsuite name="src\tests\api\auth\reset-password.test.ts" errors="0" failures="0" skipped="0" timestamp="2025-10-13T01:19:45" time="0.153" tests="8">
+    <testcase classname="/api/auth/reset-password › TC-AUTH-RESET-001: 正常なパスワードリセット" name="正しいメールアドレスでリセットメールが送信される" time="0.002">
+    </testcase>
+    <testcase classname="/api/auth/reset-password › TC-AUTH-RESET-002: 無効なメールアドレス" name="メールアドレスが欠けている場合、400エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="/api/auth/reset-password › TC-AUTH-RESET-002: 無効なメールアドレス" name="空のメールアドレスの場合、400エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="/api/auth/reset-password › TC-AUTH-RESET-002: 無効なメールアドレス" name="nullのリクエストボディの場合、400エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="/api/auth/reset-password › TC-AUTH-RESET-003: 環境変数未設定" name="NEXT_PUBLIC_APP_URLが未設定の場合、500エラーを返す" time="0.006">
+    </testcase>
+    <testcase classname="/api/auth/reset-password › TC-AUTH-RESET-004: Supabaseエラー" name="Supabaseエラーの場合、400エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="/api/auth/reset-password › TC-AUTH-RESET-005: サーバーエラー処理" name="予期しないエラーの場合、500エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="/api/auth/reset-password › TC-AUTH-RESET-006: リダイレクトURL生成" name="正しいリダイレクトURLが生成される" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="src\tests\api\auth\signup.test.ts" errors="0" failures="0" skipped="0" timestamp="2025-10-13T01:19:45" time="0.162" tests="13">
+    <testcase classname="/api/auth/signup › TC-AUTH-SIGNUP-001: 正常な新規登録" name="正しい情報で登録が成功する" time="0.002">
+    </testcase>
+    <testcase classname="/api/auth/signup › TC-AUTH-SIGNUP-001: 正常な新規登録" name="名前なしで登録が成功する（デフォルト名が設定される）" time="0">
+    </testcase>
+    <testcase classname="/api/auth/signup › TC-AUTH-SIGNUP-002: 既存メールアドレスでの登録" name="既に使用されているメールアドレスでエラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="/api/auth/signup › TC-AUTH-SIGNUP-003: パスワード強度不足" name="6文字未満のパスワードでエラーを返す" time="0">
+    </testcase>
+    <testcase classname="/api/auth/signup › TC-AUTH-SIGNUP-003: パスワード強度不足" name="空のパスワードでエラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="/api/auth/signup › TC-AUTH-SIGNUP-004: 無効なメールアドレス" name="@を含まないメールアドレスでエラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="/api/auth/signup › TC-AUTH-SIGNUP-004: 無効なメールアドレス" name="空のメールアドレスでエラーを返す" time="0.009">
+    </testcase>
+    <testcase classname="/api/auth/signup › TC-AUTH-SIGNUP-005: 無効なリクエストデータ" name="メールアドレスが欠けている場合、400エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="/api/auth/signup › TC-AUTH-SIGNUP-005: 無効なリクエストデータ" name="パスワードが欠けている場合、400エラーを返す" time="0">
+    </testcase>
+    <testcase classname="/api/auth/signup › TC-AUTH-SIGNUP-005: 無効なリクエストデータ" name="空のリクエストボディの場合、400エラーを返す" time="0">
+    </testcase>
+    <testcase classname="/api/auth/signup › TC-AUTH-SIGNUP-006: プロフィール作成エラー" name="プロフィール作成失敗時でもサインアップは成功する" time="0.001">
+    </testcase>
+    <testcase classname="/api/auth/signup › TC-AUTH-SIGNUP-007: サーバーエラー処理" name="予期しないエラーの場合、500エラーを返す" time="0.006">
+    </testcase>
+    <testcase classname="/api/auth/signup › TC-AUTH-SIGNUP-008: ユーザー作成失敗" name="ユーザーオブジェクトがnullの場合、エラーを返す" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="src\tests\lib\manual-auth.test.ts" errors="0" failures="0" skipped="0" timestamp="2025-10-13T01:19:45" time="0.185" tests="21">
+    <testcase classname="manual-auth › TC-AUTH-MANUAL-001: checkAuthStatus - 正常な認証状態" name="認証されている場合、isAuthenticatedがtrueになる" time="0.001">
+    </testcase>
+    <testcase classname="manual-auth › TC-AUTH-MANUAL-001: checkAuthStatus - 正常な認証状態" name="認証されていない場合、isAuthenticatedがfalseになる" time="0.001">
+    </testcase>
+    <testcase classname="manual-auth › TC-AUTH-MANUAL-001: checkAuthStatus - 正常な認証状態" name="トークンの有効期限が5分以内の場合、needsRefreshがtrueになる" time="0">
+    </testcase>
+    <testcase classname="manual-auth › TC-AUTH-MANUAL-002: checkAuthStatus - グローバル停止フラグ" name="認証システムが停止中の場合、エラーを返す" time="0">
+    </testcase>
+    <testcase classname="manual-auth › TC-AUTH-MANUAL-003: checkAuthStatus - サーキットブレーカー" name="サーキットブレーカーがオープンの場合、エラーを返す" time="0.001">
+    </testcase>
+    <testcase classname="manual-auth › TC-AUTH-MANUAL-004: checkAuthStatus - リフレッシュトークンエラー" name="refresh_token_not_foundエラーの場合、グローバル停止をトリガー" time="0.038">
+    </testcase>
+    <testcase classname="manual-auth › TC-AUTH-MANUAL-004: checkAuthStatus - リフレッシュトークンエラー" name="Invalid Refresh Tokenエラーの場合、グローバル停止をトリガー" time="0.001">
+    </testcase>
+    <testcase classname="manual-auth › TC-AUTH-MANUAL-005: refreshToken - 正常なリフレッシュ" name="トークンリフレッシュが成功する" time="0.001">
+    </testcase>
+    <testcase classname="manual-auth › TC-AUTH-MANUAL-005: refreshToken - 正常なリフレッシュ" name="リフレッシュエラーの場合、falseを返す" time="0.006">
+    </testcase>
+    <testcase classname="manual-auth › TC-AUTH-MANUAL-005: refreshToken - 正常なリフレッシュ" name="レート制限エラーの場合、falseを返す" time="0.001">
+    </testcase>
+    <testcase classname="manual-auth › TC-AUTH-MANUAL-006: safeAuthCheck - 安全な認証チェック" name="リフレッシュが不要な場合、そのまま返す" time="0.001">
+    </testcase>
+    <testcase classname="manual-auth › TC-AUTH-MANUAL-006: safeAuthCheck - 安全な認証チェック" name="リフレッシュが必要な場合、自動的にリフレッシュする" time="0.001">
+    </testcase>
+    <testcase classname="manual-auth › TC-AUTH-MANUAL-006: safeAuthCheck - 安全な認証チェック" name="リフレッシュ失敗時でもセッションを維持する" time="0.002">
+    </testcase>
+    <testcase classname="manual-auth › TC-AUTH-MANUAL-007: clearSession - セッションクリア" name="セッションが正常にクリアされる" time="0">
+    </testcase>
+    <testcase classname="manual-auth › TC-AUTH-MANUAL-007: clearSession - セッションクリア" name="windowオブジェクトが存在する場合、localStorageとsessionStorageをクリアする" time="0.001">
+    </testcase>
+    <testcase classname="manual-auth › TC-AUTH-MANUAL-008: detectAndClearCorruptedSession - 破損検知" name="破損したセッションを検出してクリアする" time="0.002">
+    </testcase>
+    <testcase classname="manual-auth › TC-AUTH-MANUAL-008: detectAndClearCorruptedSession - 破損検知" name="正常なセッションの場合、falseを返す" time="0">
+    </testcase>
+    <testcase classname="manual-auth › TC-AUTH-MANUAL-009: AuthMonitor - 監視クラス" name="監視を開始できる" time="0.002">
+    </testcase>
+    <testcase classname="manual-auth › TC-AUTH-MANUAL-009: AuthMonitor - 監視クラス" name="監視を停止できる" time="0.001">
+    </testcase>
+    <testcase classname="manual-auth › TC-AUTH-MANUAL-009: AuthMonitor - 監視クラス" name="定期的に認証状態をチェックする" time="0.001">
+    </testcase>
+    <testcase classname="manual-auth › TC-AUTH-MANUAL-009: AuthMonitor - 監視クラス" name="既に実行中の場合、再度開始しない" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="src\tests\components\ui\input.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-10-13T01:19:44" time="1.628" tests="22">
+    <testcase classname="Input Component › TC-UI-INPUT-001: 基本的なレンダリング" name="入力フィールドが表示される" time="0.041">
+    </testcase>
+    <testcase classname="Input Component › TC-UI-INPUT-001: 基本的なレンダリング" name="inputロールを持つ" time="0.004">
+    </testcase>
+    <testcase classname="Input Component › TC-UI-INPUT-001: 基本的なレンダリング" name="type属性を指定できる" time="0.004">
+    </testcase>
+    <testcase classname="Input Component › TC-UI-INPUT-002: 値の入力" name="ユーザー入力を受け付ける" time="0.146">
+    </testcase>
+    <testcase classname="Input Component › TC-UI-INPUT-002: 値の入力" name="onChange イベントが発火する" time="0.004">
+    </testcase>
+    <testcase classname="Input Component › TC-UI-INPUT-002: 値の入力" name="複数文字の入力でonChangeが複数回呼ばれる" time="0.099">
+    </testcase>
+    <testcase classname="Input Component › TC-UI-INPUT-003: value プロパティ" name="value プロパティで初期値を設定できる" time="0.002">
+    </testcase>
+    <testcase classname="Input Component › TC-UI-INPUT-003: value プロパティ" name="value が変更されると表示が更新される" time="0.007">
+    </testcase>
+    <testcase classname="Input Component › TC-UI-INPUT-004: placeholder" name="placeholderテキストを表示する" time="0.004">
+    </testcase>
+    <testcase classname="Input Component › TC-UI-INPUT-004: placeholder" name="値が入力されるとplaceholderが非表示になる" time="0.106">
+    </testcase>
+    <testcase classname="Input Component › TC-UI-INPUT-005: disabled 状態" name="disabled属性を持つ" time="0.002">
+    </testcase>
+    <testcase classname="Input Component › TC-UI-INPUT-005: disabled 状態" name="disabledの場合、入力を受け付けない" time="0.028">
+    </testcase>
+    <testcase classname="Input Component › TC-UI-INPUT-006: カスタムクラス名" name="カスタムクラス名を追加できる" time="0.002">
+    </testcase>
+    <testcase classname="Input Component › TC-UI-INPUT-006: カスタムクラス名" name="カスタムクラス名がデフォルトクラスと共存する" time="0.001">
+    </testcase>
+    <testcase classname="Input Component › TC-UI-INPUT-007: ref転送" name="refを転送できる" time="0.002">
+    </testcase>
+    <testcase classname="Input Component › TC-UI-INPUT-007: ref転送" name="refを使ってフォーカスできる" time="0.002">
+    </testcase>
+    <testcase classname="Input Component › TC-UI-INPUT-007: ref転送" name="refを使って値を取得できる" time="0.193">
+    </testcase>
+    <testcase classname="Input Component › TC-UI-INPUT-008: HTML属性の継承" name="name属性を設定できる" time="0.001">
+    </testcase>
+    <testcase classname="Input Component › TC-UI-INPUT-008: HTML属性の継承" name="required属性を設定できる" time="0.003">
+    </testcase>
+    <testcase classname="Input Component › TC-UI-INPUT-008: HTML属性の継承" name="maxLength属性を設定できる" time="0.001">
+    </testcase>
+    <testcase classname="Input Component › TC-UI-INPUT-008: HTML属性の継承" name="pattern属性を設定できる" time="0.003">
+    </testcase>
+    <testcase classname="Input Component › TC-UI-INPUT-008: HTML属性の継承" name="autoComplete属性を設定できる" time="0.001">
+    </testcase>
+  </testsuite>
+  <testsuite name="src\tests\lib\circuit-breaker.test.ts" errors="0" failures="0" skipped="0" timestamp="2025-10-13T01:19:45" time="0.164" tests="15">
+    <testcase classname="AuthCircuitBreaker › TC-CB-001: 初期状態" name="初期状態ではクローズドである" time="0.033">
+    </testcase>
+    <testcase classname="AuthCircuitBreaker › TC-CB-001: 初期状態" name="初期状態の統計情報が正しい" time="0.001">
+    </testcase>
+    <testcase classname="AuthCircuitBreaker › TC-CB-002: 失敗の記録" name="失敗を記録できる" time="0.001">
+    </testcase>
+    <testcase classname="AuthCircuitBreaker › TC-CB-002: 失敗の記録" name="複数の失敗を記録できる" time="0.001">
+    </testcase>
+    <testcase classname="AuthCircuitBreaker › TC-CB-002: 失敗の記録" name="3回連続失敗でサーキットがオープンになる" time="0.002">
+    </testcase>
+    <testcase classname="AuthCircuitBreaker › TC-CB-003: 成功の記録" name="成功を記録できる" time="0.001">
+    </testcase>
+    <testcase classname="AuthCircuitBreaker › TC-CB-003: 成功の記録" name="成功を記録すると失敗カウントがリセットされる" time="0.001">
+    </testcase>
+    <testcase classname="AuthCircuitBreaker › TC-CB-003: 成功の記録" name="2回連続成功でサーキットがクローズになる" time="0.004">
+    </testcase>
+    <testcase classname="AuthCircuitBreaker › TC-CB-004: タイムアウトによるリセット" name="1分後にサーキットが自動的にリセットされる" time="0.004">
+    </testcase>
+    <testcase classname="AuthCircuitBreaker › TC-CB-004: タイムアウトによるリセット" name="1分未満ではリセットされない" time="0.004">
+    </testcase>
+    <testcase classname="AuthCircuitBreaker › TC-CB-005: reset 関数" name="reset()で状態が初期化される" time="0.002">
+    </testcase>
+    <testcase classname="AuthCircuitBreaker › TC-CB-006: getState 関数" name="現在の状態を取得できる" time="0.002">
+    </testcase>
+    <testcase classname="AuthCircuitBreaker › TC-CB-006: getState 関数" name="getState()は状態のコピーを返す（元の状態を変更しない）" time="0">
+    </testcase>
+    <testcase classname="AuthCircuitBreaker › TC-CB-007: シナリオテスト" name="失敗→成功→失敗のサイクル" time="0.001">
+    </testcase>
+    <testcase classname="AuthCircuitBreaker › TC-CB-007: シナリオテスト" name="オープン→成功2回→クローズのサイクル" time="0.002">
+    </testcase>
+  </testsuite>
+  <testsuite name="src\tests\contexts\AuthContext.test.tsx" errors="0" failures="0" skipped="0" timestamp="2025-10-13T01:19:44" time="1.717" tests="11">
+    <testcase classname="AuthContext › TC-AUTH-CTX-001: AuthProvider初期化" name="初期状態でローディング中である" time="0.092">
+    </testcase>
+    <testcase classname="AuthContext › TC-AUTH-CTX-001: AuthProvider初期化" name="認証されていない場合、userとsessionがnullになる" time="0.083">
+    </testcase>
+    <testcase classname="AuthContext › TC-AUTH-CTX-001: AuthProvider初期化" name="認証されている場合、userとsessionが設定される" time="0.08">
+    </testcase>
+    <testcase classname="AuthContext › TC-AUTH-CTX-002: セッション破損検知" name="破損したセッションが検出された場合、セッションをクリアする" time="0.073">
+    </testcase>
+    <testcase classname="AuthContext › TC-AUTH-CTX-003: signOut機能" name="signOutが正常に実行される" time="0.084">
+    </testcase>
+    <testcase classname="AuthContext › TC-AUTH-CTX-003: signOut機能" name="signOutエラー時でもエラーをキャッチする" time="0.081">
+    </testcase>
+    <testcase classname="AuthContext › TC-AUTH-CTX-004: refreshAuth機能" name="refreshAuthが正常に実行される" time="0.072">
+    </testcase>
+    <testcase classname="AuthContext › TC-AUTH-CTX-005: clearCorruptedSession機能" name="破損したセッションを手動でクリアできる" time="0.077">
+    </testcase>
+    <testcase classname="AuthContext › TC-AUTH-CTX-006: 認証状態変更の監視" name="onAuthStateChangeコールバックが登録される" time="0.068">
+    </testcase>
+    <testcase classname="AuthContext › TC-AUTH-CTX-006: 認証状態変更の監視" name="認証状態変更時にuserとsessionが更新される" time="0.087">
+    </testcase>
+    <testcase classname="AuthContext › TC-AUTH-CTX-007: useAuthフック使用" name="AuthProvider内でuseAuthが使用できる" time="0.016">
+    </testcase>
+  </testsuite>
 </testsuites>
