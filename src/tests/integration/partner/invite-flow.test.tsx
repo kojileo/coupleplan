@@ -191,10 +191,12 @@ describe('統合テスト: 招待コード生成フロー', () => {
     it('コピーボタンをクリックすると、招待コードがクリップボードにコピーされる', async () => {
       // Arrange: Clipboard APIのモック
       const mockWriteText = jest.fn().mockResolvedValue(undefined);
-      Object.assign(navigator, {
-        clipboard: {
+      Object.defineProperty(navigator, 'clipboard', {
+        value: {
           writeText: mockWriteText,
         },
+        writable: true,
+        configurable: true,
       });
 
       const inviteCode = 'ABC123';
@@ -477,10 +479,6 @@ describe('統合テスト: 招待コード生成フロー', () => {
 
     it('招待コードの総当たり攻撃を防ぐレート制限が機能する', async () => {
       // Arrange: 短時間に大量のリクエスト
-      const requests = Array(10)
-        .fill(null)
-        .map(() => fetch(`/api/partner/verify?code=TEST${Math.random()}`));
-
       global.fetch = jest.fn();
       for (let i = 0; i < 10; i++) {
         if (i < 5) {
@@ -497,7 +495,11 @@ describe('統合テスト: 招待コード生成フロー', () => {
         }
       }
 
-      // Act
+      // Act: リクエスト実行
+      const requests = Array(10)
+        .fill(null)
+        .map(() => fetch(`/api/partner/verify?code=TEST${Math.random()}`));
+
       const responses = await Promise.all(requests);
       const lastResponse = responses[responses.length - 1];
       const data = await lastResponse.json();
