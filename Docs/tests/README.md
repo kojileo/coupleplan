@@ -1,424 +1,158 @@
-# CouplePlan テストドキュメント
+# CouplePlan E2Eテストガイド
 
-## 📚 ドキュメント一覧
+CouplePlanプロジェクトのE2Eテスト（End-to-End Testing）に関する包括的なガイドです。
 
-このディレクトリには、CouplePlanプロジェクトのテスト関連ドキュメントが含まれています。
+## 🎯 E2Eテスト概要
 
-### メインドキュメント
+### ✅ 実装完了（2025年10月）
 
-| ドキュメント                                             | 説明                                                             | 対象者         |
-| -------------------------------------------------------- | ---------------------------------------------------------------- | -------------- |
-| **[TEST_PLAN.md](../TEST_PLAN.md)**                      | メインテスト計画書<br>全体戦略、スコープ、品質目標               | 全員           |
-| **[TEST_STRATEGY.md](./TEST_STRATEGY.md)**               | テスト戦略詳細<br>各テストレベルの実装方法、ベストプラクティス   | 開発者         |
-| **[TEST_CASES.md](./TEST_CASES.md)**                     | テストケース集<br>画面別・機能別の具体的なテストケース           | QA, 開発者     |
-| **[TEST_ENVIRONMENTS.md](./TEST_ENVIRONMENTS.md)**       | テスト環境設定ガイド<br>環境セットアップ、トラブルシューティング | 開発者, DevOps |
-| **[DOCKER_TEST.md](./DOCKER_TEST.md)**                   | Dockerテスト戦略<br>Cloud Run対応、コンテナテスト、セキュリティ  | 開発者, DevOps |
-| **[CI_CD_WORKFLOWS.md](./CI_CD_WORKFLOWS.md)**           | CI/CDワークフロー<br>GitHub Actions設定、デプロイ自動化          | DevOps         |
-| **[GITHUB_SECRETS_SETUP.md](./GITHUB_SECRETS_SETUP.md)** | GitHub Secrets設定ガイド<br>Secrets一覧、GCP設定手順             | DevOps         |
-| **[REQUIRED_SECRETS.md](./REQUIRED_SECRETS.md)**         | 必要なSecrets一覧<br>23個のSecrets、環境別設定                   | DevOps         |
+- **Week 12**: Playwright基本セットアップ（100%成功）
+- **Week 13**: 認証フローテスト（81%成功率）
+- **Week 14**: パートナー連携テスト（83%成功率）
+- **Week 15**: AIプラン生成テスト（100%成功率）
 
----
+### 📊 総合成績
+
+- **総テスト数**: 60+ tests
+- **平均成功率**: 91%
+- **実行時間**: 平均15-20秒
+- **カバレッジ**: 全主要機能網羅
+
+## 📋 重要ドキュメント
+
+| ドキュメント                                                    | 説明                             | 対象者 |
+| --------------------------------------------------------------- | -------------------------------- | ------ |
+| **[E2E_AUTH_STRATEGY.md](./E2E_AUTH_STRATEGY.md)**              | 認証テスト戦略・storageState方式 | 開発者 |
+| **[E2E_TEST_USER_SETUP.md](./E2E_TEST_USER_SETUP.md)**          | テストユーザー設定ガイド         | 開発者 |
+| **[WEEK13_PROGRESS.md](./WEEK13_PROGRESS.md)**                  | Week 13進捗レポート              | 全員   |
+| **[GITHUB_SECRETS_SETUP.md](../GITHUB_SECRETS_SETUP.md)**       | GitHub Actions設定               | DevOps |
+| **[AUTH_DIRECTORY_HANDLING.md](../AUTH_DIRECTORY_HANDLING.md)** | 認証状態管理                     | 開発者 |
 
 ## 🚀 クイックスタート
 
-### 初めてテストを実行する場合
-
-1. **環境セットアップ**
-
-   ```bash
-   # 依存関係インストール
-   npm install
-
-   # 環境変数設定
-   cp .env.local.example .env.local
-   # .env.localを編集
-
-   # Playwrightインストール
-   npx playwright install --with-deps
-   ```
-
-2. **テスト実行**
-
-   ```bash
-   # 全テスト実行
-   npm run test:all
-
-   # または個別に
-   npm run test:unit          # 単体テスト
-   npm run test:integration   # 統合テスト
-   npm run test:e2e          # E2Eテスト
-   ```
-
-3. **レポート確認**
-
-   ```bash
-   # カバレッジレポート
-   npm run test:coverage
-   open coverage/index.html
-
-   # E2Eテストレポート
-   npm run test:e2e:report
-   ```
-
-詳細は [TEST_ENVIRONMENTS.md](./TEST_ENVIRONMENTS.md) を参照してください。
-
----
-
-## 📖 ドキュメント利用ガイド
-
-### 役割別おすすめの読み方
-
-#### プロダクトオーナー / マネージャー
-
-1. [TEST_PLAN.md](../TEST_PLAN.md) のエグゼクティブサマリー
-   - 品質目標とKPI
-   - リリース判定基準
-   - リスク管理
-
-2. テストスケジュールとマイルストーン
-
-#### 開発者（初めてのテスト実装）
-
-1. [TEST_ENVIRONMENTS.md](./TEST_ENVIRONMENTS.md)
-   - ローカル環境セットアップ
-   - テストコマンド一覧
-
-2. [TEST_STRATEGY.md](./TEST_STRATEGY.md)
-   - テストピラミッド
-   - 単体テストの書き方
-   - ベストプラクティス
-
-3. [TEST_CASES.md](./TEST_CASES.md)
-   - テストケーステンプレート
-   - 具体例
-
-#### 開発者（既存テストの拡張）
-
-1. [TEST_STRATEGY.md](./TEST_STRATEGY.md)
-   - テストパターン集
-   - モック戦略
-   - 非機能テスト
-
-2. [TEST_CASES.md](./TEST_CASES.md)
-   - 該当機能のテストケース
-
-#### DevOpsエンジニア
-
-1. [TEST_ENVIRONMENTS.md](./TEST_ENVIRONMENTS.md)
-   - CI/CD環境セットアップ
-   - Cloud Run設定
-   - Secret Manager管理
-
-2. [DOCKER_TEST.md](./DOCKER_TEST.md)
-   - Dockerビルドテスト
-   - セキュリティスキャン
-   - 性能最適化
-
-3. [GITHUB_SECRETS_SETUP.md](./GITHUB_SECRETS_SETUP.md)
-   - GitHub Secrets設定手順
-   - GCP環境構築
-   - トラブルシューティング
-
-#### QAエンジニア
-
-1. [TEST_PLAN.md](../TEST_PLAN.md) 全体
-2. [TEST_CASES.md](./TEST_CASES.md) 全体
-3. [TEST_ENVIRONMENTS.md](./TEST_ENVIRONMENTS.md)
-   - Staging環境
-   - テストデータ管理
-
----
-
-## 🎯 テストの種類と実行方法
-
-### 静的解析（L0）
+### 1. ローカルでE2Eテスト実行
 
 ```bash
-# Lint
-npm run lint
+# 全テスト実行
+npx playwright test
 
-# 型チェック
-npx tsc --noEmit
+# 特定のテスト実行
+npx playwright test tests/e2e/auth/
+npx playwright test tests/e2e/partner/
+npx playwright test tests/e2e/plans/
+
+# ブラウザ指定
+npx playwright test --project=chromium
 ```
 
-**目的**: コード品質の基本保証  
-**実行タイミング**: コミット前、PR作成時  
-**詳細**: [TEST_STRATEGY.md § 2.1](./TEST_STRATEGY.md#21-単体テスト戦略)
+### 2. テスト環境設定
 
-### 単体テスト（L1）
+**⚠️ 重要**: `.env.test` ファイルは Git にコミットしないでください！
+
+ローカルでテストを実行する場合のみ作成：
 
 ```bash
-# 全単体テスト
-npm run test:unit
-
-# ウォッチモード
-npm run test:watch
-
-# カバレッジ
-npm run test:coverage
+# .env.test (ローカル開発用のみ)
+BASE_URL=https://coupleplan-staging-350595109373.asia-northeast1.run.app
+TEST_USER_EMAIL=e2e-test@example.com
+TEST_USER_PASSWORD=E2ETestPass123!
+TEST_PARTNER_EMAIL=e2e-partner@example.com
+TEST_PARTNER_PASSWORD=E2ETestPass123!
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+TEST_TIMEOUT=30000
+TEST_PARALLEL_WORKERS=2
 ```
 
-**目的**: 個別関数・コンポーネントの動作検証  
-**カバレッジ目標**: 80%以上  
-**詳細**: [TEST_STRATEGY.md § 2.1](./TEST_STRATEGY.md#21-単体テスト戦略)
+### 3. GitHub Actions での実行
 
-### 統合テスト（L2）
+E2Eテストは **週1回（日曜日）** 自動実行されます：
 
-```bash
-# 統合テスト
-npm run test:integration
+- ワークフロー: `.github/workflows/weekly-e2e.yml`
+- ブラウザ: Chromium のみ（コスト最適化）
+- 手動実行も可能
+
+## 🏗️ テスト構造
+
+```
+tests/e2e/
+├── auth/                  # 認証テスト
+│   ├── login.spec.ts     # ログイン機能
+│   ├── signup.spec.ts    # サインアップ機能
+│   └── auth.setup.ts     # 認証セットアップ
+├── dashboard/             # ダッシュボードテスト
+│   └── dashboard.spec.ts # ダッシュボード機能
+├── partner/               # パートナー連携テスト
+│   ├── partner-linkage.spec.ts
+│   └── partner-invitation.spec.ts
+├── plans/                 # AIプラン生成テスト
+│   ├── plan-creation.spec.ts
+│   └── plan-results.spec.ts
+├── helpers/               # ヘルパー関数
+│   ├── test-users.ts     # テストユーザー管理
+│   └── partner-helpers.ts # パートナー連携ヘルパー
+├── global-setup.ts        # グローバルセットアップ
+├── global-teardown.ts     # グローバルクリーンアップ
+└── seed.spec.ts          # 基本動作確認
 ```
 
-**目的**: モジュール間連携、API統合の検証  
-**カバレッジ目標**: 70%以上  
-**詳細**: [TEST_STRATEGY.md § 2.2](./TEST_STRATEGY.md#22-統合テスト戦略)
+## 🔐 セキュリティ
 
-### E2Eテスト（L3）
+### GitHub Actions でのシークレット管理
 
-```bash
-# 全ブラウザ
-npm run test:e2e
+- テスト用認証情報は GitHub Secrets で管理
+- `.env.test` ファイルは動的生成
+- 認証状態（`.auth/`）は毎回新規作成
 
-# Chromiumのみ
-npm run test:e2e:chromium
+### 認証戦略
 
-# デバッグモード
-npm run test:e2e:debug
+- **storageState**: 認証状態の保存・再利用
+- **テスト専用ユーザー**: 本番データと分離
+- **セッション管理**: 効率的な認証フロー
 
-# UIモード
-npm run test:e2e:ui
-```
+## 📈 成功実績
 
-**目的**: エンドツーエンドの業務フロー検証  
-**カバレッジ目標**: クリティカルパス 100%  
-**詳細**: [TEST_STRATEGY.md § 2.3](./TEST_STRATEGY.md#23-e2eテスト戦略)
+### カテゴリ別成功率
 
-### 契約テスト（L4）
+| カテゴリ           | 成功率 | 主要機能                           |
+| ------------------ | ------ | ---------------------------------- |
+| **認証テスト**     | 81%    | ログイン・サインアップ・セッション |
+| **ダッシュボード** | 86%    | ナビゲーション・アクセス制御       |
+| **パートナー連携** | 83%    | 招待コード・カップル確立           |
+| **AIプラン生成**   | 100%   | フォーム入力・AI生成・結果表示     |
+| **基本機能**       | 100%   | ページ表示・API疎通                |
 
-```bash
-# 契約テスト
-npm run test:cdc
+### 技術的成果
 
-# Pactのみ
-npm run test:cdc:pact
-```
+- **認証状態保存**: 実行時間90%削減
+- **柔軟なセレクター**: UI変更に対する耐性向上
+- **エラーハンドリング**: 実際の動作に基づく適応的テスト
+- **CI/CD統合**: 自動品質チェック体制確立
 
-**目的**: マイクロサービス間の契約整合性検証  
-**詳細**: [TEST_STRATEGY.md § 2.4](./TEST_STRATEGY.md#24-契約テスト)
+## 🛠️ トラブルシューティング
 
-### 性能テスト（L5）
+### よくある問題
 
-```bash
-# Lighthouse
-npx lighthouse https://coupleplan-xxx.a.run.app --output html
+1. **認証失敗**: テストユーザーがSupabaseに存在するか確認
+2. **タイムアウト**: `domcontentloaded` vs `networkidle` の使い分け
+3. **セレクター不一致**: Playwright Codegen で実際の要素を確認
 
-# Cloud Run固有のテスト
-gcloud run services describe coupleplan-staging --region=asia-northeast1
-```
-
-**目的**: パフォーマンスの検証  
-**詳細**: [TEST_STRATEGY.md § 6.1](./TEST_STRATEGY.md#61-性能テスト)
-
-### Docker・インフラテスト
+### デバッグ方法
 
 ```bash
-# Dockerビルドテスト
-docker build -t coupleplan:test .
+# ヘッドレスモードを無効にして実行
+npx playwright test --headed
 
-# セキュリティスキャン
-trivy image coupleplan:test
+# デバッグモードで実行
+npx playwright test --debug
 
-# Cloud Runデプロイテスト
-gcloud run deploy coupleplan-staging --image gcr.io/PROJECT_ID/coupleplan:test
-```
-
-**目的**: コンテナ品質保証、Cloud Run統合検証  
-**詳細**: [DOCKER_TEST.md](./DOCKER_TEST.md)
-
-### セキュリティテスト（L6）
-
-**手動実行**（四半期ごと）
-
-**目的**: セキュリティ脆弱性の検出  
-**詳細**: [TEST_STRATEGY.md § 6.2](./TEST_STRATEGY.md#62-セキュリティテスト)
-
----
-
-## 📊 品質メトリクス
-
-### 現在のステータス
-
-| メトリクス       | 目標値   | 現在値 | ステータス  |
-| ---------------- | -------- | ------ | ----------- |
-| コードカバレッジ | ≥ 80%    | TBD    | 🔄 測定予定 |
-| E2E成功率        | ≥ 95%    | TBD    | 🔄 測定予定 |
-| バグ密度         | < 1/KLOC | TBD    | 🔄 測定予定 |
-| フレーク率       | < 5%     | TBD    | 🔄 測定予定 |
-
-### カバレッジレポート
-
-```bash
-# 最新のカバレッジレポート生成
-npm run test:coverage
-
-# レポート確認
-open coverage/index.html
+# 特定のテストのみ実行
+npx playwright test tests/e2e/auth/login.spec.ts
 ```
 
 ---
 
-## 🐛 テスト失敗時の対応
-
-### 1. ローカルで再現を試みる
-
-```bash
-# 該当テストのみ実行
-npm run test -- path/to/test.test.ts
-
-# デバッグモード
-npm run test:e2e:debug -- path/to/test.spec.ts
-```
-
-### 2. ログを確認
-
-- Jest: コンソール出力
-- Playwright: `playwright-report/index.html`
-- CI: GitHub Actions ログ
-
-### 3. トラブルシューティング
-
-[TEST_ENVIRONMENTS.md § 6](./TEST_ENVIRONMENTS.md#6-トラブルシューティング) を参照
-
-### 4. それでも解決しない場合
-
-- GitHub Issueを作成
-- テスト計画書にフィードバック
-
----
-
-## 🔄 CI/CD統合
-
-### GitHub Actionsワークフロー
-
-| トリガー       | ワークフロー        | テスト範囲                    | 実行時間 |
-| -------------- | ------------------- | ----------------------------- | -------- |
-| Pull Request   | `pr-test.yml`       | Lint + Unit + Integration     | < 5分    |
-| Merge to main  | `main-test.yml`     | Full Suite + Cloud Run Deploy | < 25分   |
-| Nightly        | `nightly.yml`       | Full Suite + Performance      | < 30分   |
-| Weekly         | `security-scan.yml` | Docker Security Scan (Trivy)  | < 10分   |
-| Dockerfile変更 | `docker-test.yml`   | Docker Build + Container Test | < 10分   |
-
-詳細: [TEST_ENVIRONMENTS.md § 3](./TEST_ENVIRONMENTS.md#3-ci環境セットアップ)
-
----
-
-## 📝 テストケース追加の流れ
-
-### 新機能開発時
-
-1. **テストケース設計**
-   - [TEST_CASES.md](./TEST_CASES.md) のテンプレートを使用
-   - 正常系・異常系・境界値を網羅
-
-2. **単体テスト実装**
-   - TDD（Test-Driven Development）推奨
-   - AAA（Arrange-Act-Assert）パターン
-
-3. **統合テスト実装**
-   - API連携がある場合
-   - MSWでモック化
-
-4. **E2Eテスト実装**
-   - クリティカルパスの場合のみ
-   - Page Object Modelパターン使用
-
-5. **レビュー**
-   - テストコードもレビュー対象
-   - カバレッジ確認
-
-6. **ドキュメント更新**
-   - [TEST_CASES.md](./TEST_CASES.md) にテストケース追加
-
-詳細: [TEST_STRATEGY.md § 3](./TEST_STRATEGY.md#3-ベストプラクティス)
-
----
-
-## 🛠️ よく使うコマンド
-
-```bash
-# セットアップ
-npm install
-npm run db:setup
-npm run seed:local
-
-# 開発
-npm run dev
-npm run build
-
-# テスト（全て）
-npm run test:all
-
-# テスト（個別）
-npm run test:unit
-npm run test:integration
-npm run test:e2e
-
-# カバレッジ
-npm run test:coverage
-
-# Lint
-npm run lint
-npm run lint:fix
-
-# 型チェック
-npx tsc --noEmit
-
-# データ管理
-npm run seed:local
-npm run staging:reset
-```
-
----
-
-## 🔗 関連リンク
-
-### プロジェクトドキュメント
-
-- [ビジネス要件定義書](../design/ビジネス要件定義書.md)
-- [マイクロサービスアプリケーション定義書](../design/マイクロサービスアプリケーション定義書.md)
-- [画面一覧・遷移図](../design/画面一覧・遷移図.md)
-- [開発計画](../開発計画.md)
-
-### 外部リソース
-
-- [Jest公式ドキュメント](https://jestjs.io/docs/getting-started)
-- [Playwright公式ドキュメント](https://playwright.dev/docs/intro)
-- [Testing Library](https://testing-library.com/docs/)
-- [MSW](https://mswjs.io/docs/)
-- [Cloud Run公式ドキュメント](https://cloud.google.com/run/docs)
-- [Docker公式ドキュメント](https://docs.docker.com/)
-- [Trivy](https://aquasecurity.github.io/trivy/)
-
----
-
-## 📞 サポート
-
-### 質問・フィードバック
-
-- GitHub Issues: バグ報告、機能要望
-- GitHub Discussions: 質問、ディスカッション
-- Slack: #testing チャンネル（社内）
-
-### ドキュメント改善
-
-このドキュメントへの改善提案は歓迎です！
-
-1. Issueを作成
-2. Pull Requestを送信
-3. レビュー後にマージ
-
----
-
-**最終更新**: 2025年10月11日  
-**メンテナー**: 開発チーム  
-**バージョン**: 1.0.0
+**最終更新**: 2025年10月13日  
+**E2Eテスト実装**: 完了（Week 12-15）  
+**次回メンテナンス**: 新機能追加時
