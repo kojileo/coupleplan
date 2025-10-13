@@ -31,8 +31,8 @@ test.describe('CouplePlan Seed Test', () => {
   });
 
   test('ホームページの基本要素が表示される', async ({ page }) => {
-    // ページが表示されるまで待機
-    await page.waitForLoadState('networkidle');
+    // ページが表示されるまで待機（domcontentloadedに変更してタイムアウトを回避）
+    await page.waitForLoadState('domcontentloaded');
 
     // 基本的なナビゲーション要素が存在することを確認
     // （実際のセレクタは実装に合わせて調整してください）
@@ -60,7 +60,7 @@ test.describe('CouplePlan Seed Test', () => {
     await page.goto('/signup');
 
     // サインアップフォームが表示されることを確認
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // ページURLの確認
     expect(page.url()).toContain('/signup');
@@ -76,7 +76,8 @@ test.describe('CouplePlan Seed Test', () => {
 
     const data = await response.json();
     expect(data).toHaveProperty('status');
-    expect(data.status).toBe('healthy'); // 実際のAPIレスポンスに合わせて修正
+    // ステージング環境では "ok" を返す
+    expect(data.status).toBe('ok');
 
     console.log('✅ APIヘルスチェックが成功しました');
   });

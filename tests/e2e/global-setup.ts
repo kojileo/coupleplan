@@ -28,30 +28,33 @@ async function globalSetup(config: FullConfig) {
   }
 
   // ベースURLの検証
-  const baseURL = config.use?.baseURL || 'http://localhost:3000';
+  const baseURL =
+    config.use?.baseURL || 'https://coupleplan-staging-350595109373.asia-northeast1.run.app';
   console.log(`🌐 Base URL: ${baseURL}`);
+  console.log(
+    `📝 Environment: ${baseURL.includes('staging') ? 'Staging (Cloud Run)' : baseURL.includes('localhost') ? 'Local' : 'Production'}`
+  );
 
-  // サーバーが起動するまで待機（webServerが起動する）
-  console.log('⏳ Waiting for development server...');
+  // ステージング環境の確認
+  console.log('⏳ Verifying staging environment...');
 
-  // 開発サーバーの起動確認
   const browser = await chromium.launch();
   const page = await browser.newPage();
 
   try {
-    // ヘルスチェックエンドポイントで確認
-    const response = await page.goto(`${baseURL}/api/health`, {
-      waitUntil: 'networkidle',
-      timeout: 60000,
+    // ヘルスチェックまたはトップページで確認
+    const response = await page.goto(baseURL, {
+      waitUntil: 'domcontentloaded',
+      timeout: 15000,
     });
 
     if (response?.ok()) {
-      console.log('✅ Development server is ready');
+      console.log('✅ Staging environment is ready');
     } else {
-      console.warn('⚠️ Health check returned non-OK status, but continuing...');
+      console.warn('⚠️ Environment check returned non-OK status, but continuing...');
     }
   } catch (error) {
-    console.warn('⚠️ Could not verify health endpoint, but continuing...', error);
+    console.warn('⚠️ Could not verify environment, but continuing...');
   } finally {
     await page.close();
     await browser.close();
