@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { Page, expect } from '@playwright/test';
 
 /**
  * パートナー連携テスト用ヘルパー関数
@@ -37,7 +37,8 @@ export async function generateInvitationCode(page: Page): Promise<string> {
 
   // 生成されたコードを取得
   const codeElement = page.locator('text=/^\\d{6}$/');
-  await expect(codeElement).toBeVisible({ timeout: 10000 });
+  await codeElement.waitFor({ state: 'visible', timeout: 10000 });
+  await expect(codeElement).toBeVisible();
 
   const generatedCode = await codeElement.textContent();
   if (!generatedCode) {
@@ -132,7 +133,8 @@ export async function cancelPartnerConnection(page: Page): Promise<void> {
  */
 export async function getInvitationExpiry(page: Page): Promise<string> {
   const expiryElement = page.getByText(/有効期限:/i);
-  await expect(expiryElement).toBeVisible({ timeout: 10000 });
+  await expiryElement.waitFor({ state: 'visible', timeout: 10000 });
+  await expect(expiryElement).toBeVisible();
 
   const expiryText = await expiryElement.textContent();
   return expiryText || '';

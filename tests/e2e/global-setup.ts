@@ -29,7 +29,7 @@ async function globalSetup(config: FullConfig) {
 
   // ベースURLの検証
   const baseURL =
-    config.use?.baseURL || 'https://coupleplan-staging-350595109373.asia-northeast1.run.app';
+    config.projects[0]?.use?.baseURL || 'https://coupleplan-staging-350595109373.asia-northeast1.run.app';
   console.log(`🌐 Base URL: ${baseURL}`);
   console.log(
     `📝 Environment: ${baseURL.includes('staging') ? 'Staging (Cloud Run)' : baseURL.includes('localhost') ? 'Local' : 'Production'}`

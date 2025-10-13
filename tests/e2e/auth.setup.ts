@@ -58,7 +58,6 @@ setup('authenticate as test user', async ({ page }) => {
   // ダッシュボードまたはホームページにいることを確認
   const isAuthenticated =
     currentURL.includes('/dashboard') ||
-    currentURL === page.context().request.storageState ||
     !currentURL.includes('/login');
 
   if (!isAuthenticated) {
