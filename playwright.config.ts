@@ -1,5 +1,10 @@
 import { defineConfig, devices } from '@playwright/test';
 import path from 'path';
+import dotenv from 'dotenv';
+
+// Load environment variables from .env.local and .env
+dotenv.config({ path: '.env.local' });
+dotenv.config({ path: '.env' });
 
 /**
  * @see https://playwright.dev/docs/test-configuration
@@ -81,8 +86,9 @@ export default defineConfig({
     timeout: 120 * 1000,
   },
 
-  /* Global setup */
+  /* Global setup and teardown */
   globalSetup: path.resolve('./tests/e2e/global-setup.ts'),
+  globalTeardown: path.resolve('./tests/e2e/global-teardown.ts'),
 
   /* Output directories */
   outputDir: 'test-results/',
