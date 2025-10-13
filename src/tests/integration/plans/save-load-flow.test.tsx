@@ -235,7 +235,7 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
 
       // Assert
       expect(data.count).toBe(2);
-      data.plans.forEach((plan) => {
+      data.plans.forEach((plan: { title: string }) => {
         expect(plan.title).toContain('ロマンチック');
       });
     });
@@ -259,7 +259,7 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
       const data = await response.json();
 
       // Assert
-      data.plans.forEach((plan) => {
+      data.plans.forEach((plan: { status: string }) => {
         expect(plan.status).toBe('confirmed');
       });
     });
@@ -307,7 +307,7 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
       const data = await response.json();
 
       // Assert
-      data.plans.forEach((plan) => {
+      data.plans.forEach((plan: { total_budget: number }) => {
         expect(plan.total_budget).toBeGreaterThanOrEqual(minBudget);
         expect(plan.total_budget).toBeLessThanOrEqual(maxBudget);
       });

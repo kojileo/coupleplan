@@ -92,7 +92,7 @@ describe('統合テスト: 招待コード生成フロー', () => {
 
       global.fetch = jest.fn().mockResolvedValueOnce({
         ok: true,
-        json: async () => ({ code: mockInviteCode, ...mockInviteData }),
+        json: async () => mockInviteData,
       });
 
       // Act: APIを呼び出し

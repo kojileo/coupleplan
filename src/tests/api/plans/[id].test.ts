@@ -54,7 +54,7 @@ describe('/api/plans/[id]', () => {
         { id: 'item-2', plan_id: mockPlanId, order_index: 1 },
       ];
 
-      const mockFeedback = [];
+      const mockFeedback: unknown[] = [];
 
       mockSupabase.auth.getUser.mockResolvedValue({
         data: { user: { id: mockUserId } },

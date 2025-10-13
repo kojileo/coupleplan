@@ -52,7 +52,7 @@ describe('GET /api/health', () => {
   it('環境変数が正しく反映される', async () => {
     // Arrange
     const originalEnv = process.env.NODE_ENV;
-    process.env.NODE_ENV = 'test';
+    (process.env as { NODE_ENV?: string }).NODE_ENV = 'test';
 
     // Act
     const response = await GET();
@@ -62,7 +62,7 @@ describe('GET /api/health', () => {
     expect(data.environment).toBe('test');
 
     // Cleanup
-    process.env.NODE_ENV = originalEnv;
+    (process.env as { NODE_ENV?: string }).NODE_ENV = originalEnv;
   });
 
   it('バージョン情報が含まれている', async () => {
