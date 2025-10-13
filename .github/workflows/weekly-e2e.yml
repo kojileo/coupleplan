@@ -7,9 +7,17 @@ on:
 
 env:
   NODE_ENV: test
+  # Supabase設定
   NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.STAGING_SUPABASE_URL }}
   NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.STAGING_SUPABASE_ANON_KEY }}
   SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.STAGING_SUPABASE_SERVICE_ROLE_KEY }}
+  # E2Eテスト設定
+  BASE_URL: ${{ secrets.E2E_BASE_URL || 'https://coupleplan-staging-350595109373.asia-northeast1.run.app' }}
+  TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+  TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+  TEST_PARTNER_EMAIL: ${{ secrets.TEST_PARTNER_EMAIL }}
+  TEST_PARTNER_PASSWORD: ${{ secrets.TEST_PARTNER_PASSWORD }}
+  # AI設定
   GEMINI_API_KEY: ${{ secrets.STAGING_GEMINI_API_KEY }}
   AI_PROVIDER: ${{ secrets.STAGING_AI_PROVIDER }}
   AI_MODEL: ${{ secrets.STAGING_AI_MODEL }}
@@ -40,6 +48,20 @@ jobs:
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps ${{ matrix.browser }}
+
+      - name: Create .env.test file
+        run: |
+          echo "# E2E Test Environment Variables" > .env.test
+          echo "BASE_URL=${{ env.BASE_URL }}" >> .env.test
+          echo "TEST_USER_EMAIL=${{ env.TEST_USER_EMAIL }}" >> .env.test
+          echo "TEST_USER_PASSWORD=${{ env.TEST_USER_PASSWORD }}" >> .env.test
+          echo "TEST_PARTNER_EMAIL=${{ env.TEST_PARTNER_EMAIL }}" >> .env.test
+          echo "TEST_PARTNER_PASSWORD=${{ env.TEST_PARTNER_PASSWORD }}" >> .env.test
+          echo "NEXT_PUBLIC_SUPABASE_URL=${{ env.NEXT_PUBLIC_SUPABASE_URL }}" >> .env.test
+          echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ env.NEXT_PUBLIC_SUPABASE_ANON_KEY }}" >> .env.test
+          echo "SUPABASE_SERVICE_ROLE_KEY=${{ env.SUPABASE_SERVICE_ROLE_KEY }}" >> .env.test
+          echo "TEST_TIMEOUT=30000" >> .env.test
+          echo "TEST_PARALLEL_WORKERS=1" >> .env.test
 
       - name: Run E2E tests
         run: npm run test:e2e -- --project=${{ matrix.browser }} --shard=${{ matrix.shard }}/2
