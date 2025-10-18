@@ -99,7 +99,7 @@ export default function AIPlanPage(): ReactElement {
                 <label className="block text-sm font-medium text-gray-700 mb-3">予算</label>
                 <div className="grid grid-cols-1 gap-2">
                   {budgetOptions.map((option) => (
-                    <label key={option.value} className="flex items-center">
+                    <label key={option.value} className="flex items-center cursor-pointer">
                       <input
                         type="radio"
                         name="budget"
@@ -108,7 +108,7 @@ export default function AIPlanPage(): ReactElement {
                         onChange={(e) => handleInputChange('budget', e.target.value)}
                         className="h-4 w-4 text-rose-600 focus:ring-rose-500 border-gray-300"
                       />
-                      <span className="ml-3 text-sm text-gray-700">{option.label}</span>
+                      <span className="ml-3 text-sm text-gray-900 font-medium">{option.label}</span>
                     </label>
                   ))}
                 </div>
@@ -119,7 +119,7 @@ export default function AIPlanPage(): ReactElement {
                 <label className="block text-sm font-medium text-gray-700 mb-3">デート時間</label>
                 <div className="grid grid-cols-1 gap-2">
                   {durationOptions.map((option) => (
-                    <label key={option.value} className="flex items-center">
+                    <label key={option.value} className="flex items-center cursor-pointer">
                       <input
                         type="radio"
                         name="duration"
@@ -128,7 +128,7 @@ export default function AIPlanPage(): ReactElement {
                         onChange={(e) => handleInputChange('duration', e.target.value)}
                         className="h-4 w-4 text-rose-600 focus:ring-rose-500 border-gray-300"
                       />
-                      <span className="ml-3 text-sm text-gray-700">{option.label}</span>
+                      <span className="ml-3 text-sm text-gray-900 font-medium">{option.label}</span>
                     </label>
                   ))}
                 </div>
@@ -142,7 +142,7 @@ export default function AIPlanPage(): ReactElement {
                   value={formData.location}
                   onChange={(e) => handleInputChange('location', e.target.value)}
                   placeholder="例: 渋谷、新宿、横浜など"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 text-gray-900 placeholder:text-gray-500"
                 />
               </div>
             </div>
@@ -158,14 +158,14 @@ export default function AIPlanPage(): ReactElement {
                 </label>
                 <div className="grid grid-cols-2 gap-3">
                   {preferenceOptions.map((option) => (
-                    <label key={option.value} className="flex items-center">
+                    <label key={option.value} className="flex items-center cursor-pointer">
                       <input
                         type="checkbox"
                         checked={formData.preferences.includes(option.value)}
                         onChange={() => handlePreferenceToggle(option.value)}
                         className="h-4 w-4 text-rose-600 focus:ring-rose-500 border-gray-300 rounded"
                       />
-                      <span className="ml-3 text-sm text-gray-700">{option.label}</span>
+                      <span className="ml-3 text-sm text-gray-900 font-medium">{option.label}</span>
                     </label>
                   ))}
                 </div>
@@ -179,7 +179,7 @@ export default function AIPlanPage(): ReactElement {
                   onChange={(e) => handleInputChange('specialRequests', e.target.value)}
                   placeholder="例: アニバーサリー記念日、初デート、雨の日でも楽しめる場所など"
                   rows={4}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500 text-gray-900 placeholder:text-gray-500"
                 />
               </div>
             </div>

@@ -232,7 +232,7 @@ export default function CreateDatePlanPage() {
                   type="number"
                   value={formData.budget}
                   onChange={(e) => handleInputChange('budget', parseInt(e.target.value))}
-                  className={`flex-1 px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none ${
+                  className={`flex-1 px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-900 ${
                     hasError('budget') ? 'border-red-500' : 'border-gray-300'
                   }`}
                   min="1000"
@@ -270,7 +270,7 @@ export default function CreateDatePlanPage() {
                   type="number"
                   value={formData.duration}
                   onChange={(e) => handleInputChange('duration', parseInt(e.target.value))}
-                  className={`flex-1 px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none ${
+                  className={`flex-1 px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-900 ${
                     hasError('duration') ? 'border-red-500' : 'border-gray-300'
                   }`}
                   min="1"
@@ -308,7 +308,7 @@ export default function CreateDatePlanPage() {
                 <select
                   value={formData.location.prefecture}
                   onChange={(e) => handleInputChange('location.prefecture', e.target.value)}
-                  className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none ${
+                  className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-900 ${
                     hasError('location.prefecture') ? 'border-red-500' : 'border-gray-300'
                   }`}
                 >
@@ -331,7 +331,7 @@ export default function CreateDatePlanPage() {
                   <select
                     value={formData.location.city}
                     onChange={(e) => handleInputChange('location.city', e.target.value)}
-                    className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none ${
+                    className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-900 ${
                       hasError('location.city') ? 'border-red-500' : 'border-gray-300'
                     }`}
                   >
@@ -358,7 +358,7 @@ export default function CreateDatePlanPage() {
                     type="text"
                     value={formData.location.station || ''}
                     onChange={(e) => handleInputChange('location.station', e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-900 placeholder:text-gray-500"
                     placeholder="例: 渋谷駅"
                   />
                 </div>
@@ -435,7 +435,7 @@ export default function CreateDatePlanPage() {
               <textarea
                 value={formData.special_requests || ''}
                 onChange={(e) => handleInputChange('special_requests', e.target.value)}
-                className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none ${
+                className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-900 placeholder:text-gray-500 ${
                   hasError('special_requests') ? 'border-red-500' : 'border-gray-300'
                 }`}
                 rows={4}

@@ -114,7 +114,7 @@ function LoginForm(): ReactElement {
                   id="email"
                   type="email"
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-colors text-gray-900 placeholder:text-gray-500"
                   placeholder="example@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -130,7 +130,7 @@ function LoginForm(): ReactElement {
                     id="password"
                     type={showPassword ? 'text' : 'password'}
                     required
-                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-colors"
+                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-colors text-gray-900 placeholder:text-gray-500"
                     placeholder="パスワードを入力"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
