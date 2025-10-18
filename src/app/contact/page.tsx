@@ -152,7 +152,7 @@ export default function Contact(): ReactElement {
                         required
                         value={formData.name}
                         onChange={handleChange}
-                        className="w-full px-6 py-4 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-green-500/20 focus:border-green-500 transition-all duration-300 text-lg"
+                        className="w-full px-6 py-4 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-green-500/20 focus:border-green-500 transition-all duration-300 text-lg text-gray-900 placeholder:text-gray-500"
                         placeholder="山田太郎"
                       />
                     </div>
@@ -171,7 +171,7 @@ export default function Contact(): ReactElement {
                         required
                         value={formData.email}
                         onChange={handleChange}
-                        className="w-full px-6 py-4 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-green-500/20 focus:border-green-500 transition-all duration-300 text-lg"
+                        className="w-full px-6 py-4 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-green-500/20 focus:border-green-500 transition-all duration-300 text-lg text-gray-900 placeholder:text-gray-500"
                         placeholder="example@email.com"
                       />
                     </div>
@@ -189,7 +189,7 @@ export default function Contact(): ReactElement {
                         required
                         value={formData.subject}
                         onChange={handleChange}
-                        className="w-full px-6 py-4 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-green-500/20 focus:border-green-500 transition-all duration-300 text-lg"
+                        className="w-full px-6 py-4 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-green-500/20 focus:border-green-500 transition-all duration-300 text-lg text-gray-900"
                       >
                         <option value="">選択してください</option>
                         <option value="general">一般的なお問い合わせ</option>
@@ -218,7 +218,7 @@ export default function Contact(): ReactElement {
                         rows={6}
                         value={formData.message}
                         onChange={handleChange}
-                        className="w-full px-6 py-4 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-green-500/20 focus:border-green-500 transition-all duration-300 text-lg resize-none"
+                        className="w-full px-6 py-4 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-green-500/20 focus:border-green-500 transition-all duration-300 text-lg resize-none text-gray-900 placeholder:text-gray-500"
                         placeholder="お問い合わせ内容を詳しくお書きください"
                       />
                     </div>

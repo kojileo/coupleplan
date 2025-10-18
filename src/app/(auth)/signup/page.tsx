@@ -125,7 +125,7 @@ function SignUpForm(): ReactElement {
                   id="name"
                   type="text"
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-colors text-gray-900 placeholder:text-gray-500"
                   placeholder="山田太郎"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -140,7 +140,7 @@ function SignUpForm(): ReactElement {
                   id="email"
                   type="email"
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-colors text-gray-900 placeholder:text-gray-500"
                   placeholder="example@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -156,7 +156,7 @@ function SignUpForm(): ReactElement {
                     id="password"
                     type={showPassword ? 'text' : 'password'}
                     required
-                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-colors"
+                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-colors text-gray-900 placeholder:text-gray-500"
                     placeholder="8文字以上のパスワード"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -184,7 +184,7 @@ function SignUpForm(): ReactElement {
                     id="confirmPassword"
                     type={showConfirmPassword ? 'text' : 'password'}
                     required
-                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-colors"
+                    className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-colors text-gray-900 placeholder:text-gray-500"
                     placeholder="パスワードを再入力"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}

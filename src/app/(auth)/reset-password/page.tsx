@@ -140,7 +140,7 @@ export default function ResetPasswordPage(): ReactElement {
                   name="password"
                   type="password"
                   required
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-rose-200 placeholder-rose-400 text-rose-900 rounded-t-md focus:outline-none focus:ring-rose-500 focus:border-rose-500 focus:z-10 sm:text-sm"
+                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-rose-200 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-rose-500 focus:border-rose-500 focus:z-10 sm:text-sm"
                   placeholder="新しいパスワード（8文字以上）"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -156,7 +156,7 @@ export default function ResetPasswordPage(): ReactElement {
                   name="confirmPassword"
                   type="password"
                   required
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-rose-200 placeholder-rose-400 text-rose-900 rounded-b-md focus:outline-none focus:ring-rose-500 focus:border-rose-500 focus:z-10 sm:text-sm"
+                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-rose-200 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-rose-500 focus:border-rose-500 focus:z-10 sm:text-sm"
                   placeholder="パスワード（確認）"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}

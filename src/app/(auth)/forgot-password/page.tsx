@@ -86,7 +86,7 @@ export default function ForgotPasswordPage(): ReactElement {
               name="email"
               type="email"
               required
-              className="appearance-none rounded relative block w-full px-3 py-2 border border-rose-200 placeholder-rose-400 text-rose-900 focus:outline-none focus:ring-rose-500 focus:border-rose-500 focus:z-10 sm:text-sm"
+              className="appearance-none rounded relative block w-full px-3 py-2 border border-rose-200 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-rose-500 focus:border-rose-500 focus:z-10 sm:text-sm"
               placeholder="メールアドレス"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
