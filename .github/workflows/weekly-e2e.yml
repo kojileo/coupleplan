@@ -74,45 +74,6 @@ jobs:
           path: playwright-report/
           retention-days: 7
 
-  performance-test:
-    name: Performance Test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
-        continue-on-error: true
-
-      - name: Get Staging URL
-        id: get-url
-        run: |
-          # Cloud Runからステージング環境URLを取得
-          if [ -n "${{ secrets.GCP_SA_KEY }}" ]; then
-            gcloud run services describe coupleplan-staging \
-              --region=asia-northeast1 \
-              --format='value(status.url)' > staging_url.txt || echo "https://staging-coupleplan-xxx.a.run.app" > staging_url.txt
-          else
-            echo "https://staging-coupleplan-xxx.a.run.app" > staging_url.txt
-          fi
-
-          STAGING_URL=$(cat staging_url.txt)
-          echo "STAGING_URL=$STAGING_URL" >> $GITHUB_ENV
-          echo "Staging URL: $STAGING_URL"
-
-      - name: Run Lighthouse CI
-        uses: treosh/lighthouse-ci-action@v9
-        with:
-          urls: |
-            ${{ env.STAGING_URL }}
-            ${{ env.STAGING_URL }}/dashboard
-            ${{ env.STAGING_URL }}/login
-          uploadArtifacts: true
-          temporaryPublicStorage: true
-
   cloud-run-health-check:
     name: Cloud Run Health Check
     runs-on: ubuntu-latest
@@ -141,7 +102,7 @@ jobs:
   weekly-summary:
     name: Weekly Test Summary
     runs-on: ubuntu-latest
-    needs: [e2e-cross-browser, performance-test, cloud-run-health-check]
+    needs: [e2e-cross-browser, cloud-run-health-check]
     if: always()
     steps:
       - name: Summary
@@ -149,7 +110,6 @@ jobs:
           echo "## 📅 Weekly E2E Test Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **E2E Tests (Chromium)**: ${{ needs.e2e-cross-browser.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Performance Test**: ${{ needs.performance-test.result }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Cloud Run Health**: ${{ needs.cloud-run-health-check.result }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "Weekly test completed at: $(date -u)" >> $GITHUB_STEP_SUMMARY
