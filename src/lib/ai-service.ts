@@ -572,8 +572,10 @@ async function generateWithMock(request: AIGenerationRequest): Promise<Generated
 function buildPrompt(request: AIGenerationRequest): string {
   const { budget, duration, location, preferences, special_requests } = request;
 
-  // 簡潔なプロンプト（トークン数削減）
-  let prompt = `予算${budget.toLocaleString()}円、${duration}時間、${location.prefecture}${location.city}`;
+  // aumo参考指示を追加
+  let prompt = `https://leisure.aumo.jp/scenes/3 のようなデートスポット情報を参考に、`;
+  prompt += `予算${budget.toLocaleString()}円、${duration}時間、${location.prefecture}${location.city}`;
+
   if (location.station) {
     prompt += `（${location.station}駅）`;
   }
@@ -587,7 +589,7 @@ function buildPrompt(request: AIGenerationRequest): string {
     prompt += `要望: ${special_requests.substring(0, 100)}。`;
   }
 
-  prompt += `\n\n実際の店舗名または場所名、住所、緯度経度を含むJSON形式で出力。店舗名は実在するか、それらしい具体的な名前を使用:\n`;
+  prompt += `\n\n実在する店舗名・施設名、住所、緯度経度を含むJSON形式で出力:\n`;
   prompt += `{"plans":[{"title":"","description":"","budget":0,"duration":0,"score":0.9,"reason":"","items":[{"type":"restaurant","name":"炭火焼鳥 とりや（横浜駅西口店）","description":"","location":"〒220-0005 神奈川県横浜市西区南幸1-1-1 横浜駅西口ビル2階","latitude":35.6812,"longitude":139.7671,"start_time":"14:00","duration":1.5,"cost":0,"order_index":1}]}]}`;
 
   return prompt;
