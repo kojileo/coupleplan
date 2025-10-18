@@ -69,7 +69,7 @@ CREATE TABLE couple_invitations (
 -- 3.1 date_plans テーブル（デートプラン）
 CREATE TABLE date_plans (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  couple_id UUID NOT NULL REFERENCES couples(id) ON DELETE CASCADE,
+  couple_id UUID REFERENCES couples(id) ON DELETE CASCADE, -- NULLABLE for individual plans
   created_by UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   title VARCHAR(200) NOT NULL,
   description TEXT,
@@ -343,30 +343,27 @@ CREATE POLICY "Users can update own invitations" ON couple_invitations
 CREATE POLICY "Users can verify invitation codes" ON couple_invitations
   FOR SELECT USING (status = 'active' AND expires_at > NOW());
 
--- 8.4 date_plans テーブルのポリシー
-CREATE POLICY "Users can view their couple's plans" ON date_plans
+-- 8.4 date_plans テーブルのポリシー（個人プランとカップルプランの両方に対応）
+-- 閲覧権限: 自分が作成したプラン OR 自分のカップルのプラン
+CREATE POLICY "Users can view their plans" ON date_plans
   FOR SELECT USING (
     auth.uid() IS NOT NULL AND (
-      couple_id IN (
+      created_by = auth.uid() OR
+      (couple_id IS NOT NULL AND couple_id IN (
         SELECT id FROM couples 
         WHERE user1_id = auth.uid() OR user2_id = auth.uid()
-      )
+      ))
     )
   );
 
-CREATE POLICY "Users can create plans for their couple" ON date_plans
+-- 作成権限: 認証済みユーザーは誰でもプラン作成可能
+CREATE POLICY "Authenticated users can create plans" ON date_plans
   FOR INSERT WITH CHECK (
     auth.uid() IS NOT NULL AND 
-    created_by = auth.uid() AND
-    couple_id IN (
-      SELECT id FROM couples 
-      WHERE user1_id = auth.uid() OR user2_id = auth.uid()
-    )
-  );
-
-CREATE POLICY "Users can update their couple's plans" ON date_plans
-  FOR UPDATE USING (
-    auth.uid() IS NOT NULL AND (
+    created_by = auth.uid() AND (
+      -- 個人プランの場合（couple_idがnull）
+      couple_id IS NULL OR
+      -- カップルプランの場合は自分のカップルのみ
       couple_id IN (
         SELECT id FROM couples 
         WHERE user1_id = auth.uid() OR user2_id = auth.uid()
@@ -374,34 +371,63 @@ CREATE POLICY "Users can update their couple's plans" ON date_plans
     )
   );
 
+-- 更新権限: 自分が作成したプラン OR 自分のカップルのプラン
+CREATE POLICY "Users can update their plans" ON date_plans
+  FOR UPDATE USING (
+    auth.uid() IS NOT NULL AND (
+      created_by = auth.uid() OR
+      (couple_id IS NOT NULL AND couple_id IN (
+        SELECT id FROM couples 
+        WHERE user1_id = auth.uid() OR user2_id = auth.uid()
+      ))
+    )
+  );
+
+-- 削除権限: 自分が作成したプランのみ
 CREATE POLICY "Users can delete their own plans" ON date_plans
   FOR DELETE USING (
     auth.uid() IS NOT NULL AND created_by = auth.uid()
   );
 
--- 8.5 plan_items テーブルのポリシー
-CREATE POLICY "Users can view plan items of their couple's plans" ON plan_items
+-- 8.5 plan_items テーブルのポリシー（個人プランとカップルプランの両方に対応）
+-- 閲覧権限: 自分が作成したプランのアイテム OR 自分のカップルのプランのアイテム
+CREATE POLICY "Users can view their plan items" ON plan_items
   FOR SELECT USING (
     auth.uid() IS NOT NULL AND (
       plan_id IN (
         SELECT id FROM date_plans
-        WHERE couple_id IN (
+        WHERE created_by = auth.uid() OR
+        (couple_id IS NOT NULL AND couple_id IN (
           SELECT id FROM couples 
           WHERE user1_id = auth.uid() OR user2_id = auth.uid()
-        )
+        ))
       )
     )
   );
 
-CREATE POLICY "Users can manage plan items of their couple's plans" ON plan_items
+-- 管理権限: 自分が作成したプランのアイテム OR 自分のカップルのプランのアイテム
+CREATE POLICY "Users can manage their plan items" ON plan_items
   FOR ALL USING (
     auth.uid() IS NOT NULL AND (
       plan_id IN (
         SELECT id FROM date_plans
-        WHERE couple_id IN (
+        WHERE created_by = auth.uid() OR
+        (couple_id IS NOT NULL AND couple_id IN (
           SELECT id FROM couples 
           WHERE user1_id = auth.uid() OR user2_id = auth.uid()
-        )
+        ))
+      )
+    )
+  )
+  WITH CHECK (
+    auth.uid() IS NOT NULL AND (
+      plan_id IN (
+        SELECT id FROM date_plans
+        WHERE created_by = auth.uid() OR
+        (couple_id IS NOT NULL AND couple_id IN (
+          SELECT id FROM couples 
+          WHERE user1_id = auth.uid() OR user2_id = auth.uid()
+        ))
       )
     )
   );
@@ -415,30 +441,34 @@ CREATE POLICY "Anyone can view public templates" ON plan_templates
 CREATE POLICY "Users can manage their own templates" ON plan_templates
   FOR ALL USING (auth.uid() IS NOT NULL AND created_by = auth.uid());
 
--- 8.7 plan_feedback テーブルのポリシー
-CREATE POLICY "Users can view feedback for their couple's plans" ON plan_feedback
+-- 8.7 plan_feedback テーブルのポリシー（個人プランとカップルプランの両方に対応）
+-- 閲覧権限: 自分が作成したプランのフィードバック OR 自分のカップルのプランのフィードバック
+CREATE POLICY "Users can view feedback for their plans" ON plan_feedback
   FOR SELECT USING (
     auth.uid() IS NOT NULL AND (
       plan_id IN (
         SELECT id FROM date_plans
-        WHERE couple_id IN (
+        WHERE created_by = auth.uid() OR
+        (couple_id IS NOT NULL AND couple_id IN (
           SELECT id FROM couples 
           WHERE user1_id = auth.uid() OR user2_id = auth.uid()
-        )
+        ))
       )
     )
   );
 
-CREATE POLICY "Users can submit feedback for their couple's plans" ON plan_feedback
+-- 投稿権限: 自分が作成したプランのフィードバック OR 自分のカップルのプランのフィードバック
+CREATE POLICY "Users can submit feedback for their plans" ON plan_feedback
   FOR INSERT WITH CHECK (
     auth.uid() IS NOT NULL AND 
     user_id = auth.uid() AND
     plan_id IN (
       SELECT id FROM date_plans
-      WHERE couple_id IN (
+      WHERE created_by = auth.uid() OR
+      (couple_id IS NOT NULL AND couple_id IN (
         SELECT id FROM couples 
         WHERE user1_id = auth.uid() OR user2_id = auth.uid()
-      )
+      ))
     )
   );
 
