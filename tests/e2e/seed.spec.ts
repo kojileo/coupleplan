@@ -76,8 +76,8 @@ test.describe('CouplePlan Seed Test', () => {
 
     const data = await response.json();
     expect(data).toHaveProperty('status');
-    // ステージング環境では "ok" を返す
-    expect(data.status).toBe('ok');
+    // APIは "healthy" を返す
+    expect(data.status).toBe('healthy');
 
     console.log('✅ APIヘルスチェックが成功しました');
   });
