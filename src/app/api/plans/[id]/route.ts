@@ -2,6 +2,7 @@
 // UC-001: AIデートプラン提案・生成機能
 
 import { NextRequest, NextResponse } from 'next/server';
+
 import { createClient } from '@/lib/supabase/server';
 
 /**
@@ -83,7 +84,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       items: items || [],
       feedback: feedback || [],
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('プラン詳細取得エラー:', error);
     return NextResponse.json({ error: 'プランの取得に失敗しました' }, { status: 500 });
   }
@@ -167,7 +168,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     return NextResponse.json(updatedPlan);
-  } catch (error: any) {
+  } catch (error) {
     console.error('プラン更新エラー:', error);
     return NextResponse.json({ error: 'プランの更新に失敗しました' }, { status: 500 });
   }
@@ -220,7 +221,7 @@ export async function DELETE(
     }
 
     return NextResponse.json({ success: true });
-  } catch (error: any) {
+  } catch (error) {
     console.error('プラン削除エラー:', error);
     return NextResponse.json({ error: 'プランの削除に失敗しました' }, { status: 500 });
   }

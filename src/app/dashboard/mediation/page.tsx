@@ -61,7 +61,7 @@ export default function MediationRequestPage(): ReactElement {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    const loadData = async () => {
+    const loadData = () => {
       setIsLoading(true);
 
       // 関係性データのシミュレーション

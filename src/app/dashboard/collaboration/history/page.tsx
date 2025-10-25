@@ -180,14 +180,14 @@ export default function EditHistoryPage(): ReactElement {
     }
   });
 
-  const handleRestoreVersion = (versionId: string) => {
+  const handleRestoreVersion = () => {
     if (confirm('このバージョンに復元しますか？現在の編集内容は失われます。')) {
       alert('バージョンに復元しました');
       window.location.href = '/dashboard/collaboration';
     }
   };
 
-  const handleRestoreEdit = (editId: string) => {
+  const handleRestoreEdit = () => {
     if (confirm('この編集を元に戻しますか？')) {
       alert('編集を元に戻しました');
     }
@@ -313,7 +313,7 @@ export default function EditHistoryPage(): ReactElement {
                     <p className="text-xs text-gray-500">by {version.userName}</p>
                     {selectedVersion === version.id && (
                       <Button
-                        onClick={() => handleRestoreVersion(version.id)}
+                        onClick={() => handleRestoreVersion()}
                         size="sm"
                         className="w-full mt-3"
                       >
@@ -404,11 +404,7 @@ export default function EditHistoryPage(): ReactElement {
                       </div>
 
                       <div className="flex justify-end">
-                        <Button
-                          onClick={() => handleRestoreEdit(edit.id)}
-                          variant="outline"
-                          size="sm"
-                        >
+                        <Button onClick={() => handleRestoreEdit()} variant="outline" size="sm">
                           この編集を元に戻す
                         </Button>
                       </div>

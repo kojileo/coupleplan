@@ -84,9 +84,9 @@ function SignUpForm(): ReactElement {
       void router.push(
         `/verify-email?email=${encodeURIComponent(email)}&redirectTo=${encodeURIComponent(redirectUrl)}`
       );
-    } catch (error: any) {
+    } catch (error) {
       console.error('サインアップエラー:', error);
-      setError(error.message || 'サインアップに失敗しました');
+      setError(error instanceof Error ? error.message : 'サインアップに失敗しました');
     } finally {
       setLoading(false);
     }

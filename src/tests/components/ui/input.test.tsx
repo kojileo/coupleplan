@@ -6,9 +6,10 @@
  * 目標カバレッジ: 75%以上
  */
 
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import React from 'react';
+
 import Input from '@/components/ui/input';
 
 describe('Input Component', () => {
@@ -46,10 +47,10 @@ describe('Input Component', () => {
     it('ユーザー入力を受け付ける', async () => {
       const user = userEvent.setup();
       render(<Input data-testid="input" />);
-      const input = screen.getByTestId('input') as HTMLInputElement;
+      const input = screen.getByTestId('input');
 
       await user.type(input, 'テスト入力');
-      expect(input.value).toBe('テスト入力');
+      expect((input as HTMLInputElement).value).toBe('テスト入力');
     });
 
     it('onChange イベントが発火する', () => {
@@ -80,18 +81,18 @@ describe('Input Component', () => {
   describe('TC-UI-INPUT-003: value プロパティ', () => {
     it('value プロパティで初期値を設定できる', () => {
       render(<Input value="初期値" onChange={() => {}} data-testid="input" />);
-      const input = screen.getByTestId('input') as HTMLInputElement;
-      expect(input.value).toBe('初期値');
+      const input = screen.getByTestId('input');
+      expect((input as HTMLInputElement).value).toBe('初期値');
     });
 
     it('value が変更されると表示が更新される', () => {
       const { rerender } = render(<Input value="初期値" onChange={() => {}} data-testid="input" />);
-      let input = screen.getByTestId('input') as HTMLInputElement;
-      expect(input.value).toBe('初期値');
+      let input = screen.getByTestId('input');
+      expect((input as HTMLInputElement).value).toBe('初期値');
 
       rerender(<Input value="新しい値" onChange={() => {}} data-testid="input" />);
-      input = screen.getByTestId('input') as HTMLInputElement;
-      expect(input.value).toBe('新しい値');
+      input = screen.getByTestId('input');
+      expect((input as HTMLInputElement).value).toBe('新しい値');
     });
   });
 
@@ -109,11 +110,11 @@ describe('Input Component', () => {
     it('値が入力されるとplaceholderが非表示になる', async () => {
       const user = userEvent.setup();
       render(<Input placeholder="入力してください" data-testid="input" />);
-      const input = screen.getByTestId('input') as HTMLInputElement;
+      const input = screen.getByTestId('input');
 
       await user.type(input, 'test');
-      expect(input.placeholder).toBe('入力してください');
-      expect(input.value).toBe('test');
+      expect((input as HTMLInputElement).placeholder).toBe('入力してください');
+      expect((input as HTMLInputElement).value).toBe('test');
     });
   });
 
@@ -132,10 +133,10 @@ describe('Input Component', () => {
     it('disabledの場合、入力を受け付けない', async () => {
       const user = userEvent.setup();
       render(<Input disabled data-testid="input" />);
-      const input = screen.getByTestId('input') as HTMLInputElement;
+      const input = screen.getByTestId('input');
 
       await user.type(input, 'test');
-      expect(input.value).toBe('');
+      expect((input as HTMLInputElement).value).toBe('');
     });
   });
 

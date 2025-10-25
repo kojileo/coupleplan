@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+
 import type { LoginRequest } from '@/types/api';
 
 export async function POST(request: NextRequest): Promise<NextResponse> {

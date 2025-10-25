@@ -2,6 +2,7 @@
 // UC001-005: カスタマイズビュー機能
 
 import { NextRequest, NextResponse } from 'next/server';
+
 import { createClient } from '@/lib/supabase/server';
 
 /**
@@ -94,7 +95,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     return NextResponse.json({ items: updatedItems });
-  } catch (error: any) {
+  } catch (error) {
     console.error('並び替えエラー:', error);
     return NextResponse.json({ error: 'サーバーエラーが発生しました' }, { status: 500 });
   }

@@ -1,8 +1,7 @@
 'use client';
 
-import Link from 'next/link';
 import type { ReactElement } from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 interface ApiResponse {
   error?: string;
@@ -31,7 +30,7 @@ export default function Contact(): ReactElement {
   const [isFormValid, setIsFormValid] = useState(false);
 
   // バリデーション関数
-  const validateForm = (): boolean => {
+  const validateForm = useCallback((): boolean => {
     const errors: FormErrors = {};
 
     if (!formData.name.trim()) {
@@ -58,13 +57,13 @@ export default function Contact(): ReactElement {
 
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
-  };
+  }, [formData]);
 
   // フォームの有効性をチェック
   useEffect(() => {
     const isValid = validateForm();
     setIsFormValid(isValid);
-  }, [formData]);
+  }, [formData, validateForm]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>

@@ -6,8 +6,9 @@
  * 目標カバレッジ: 80%以上
  */
 
-import { POST } from '@/app/api/auth/signup/route';
 import { NextRequest } from 'next/server';
+
+import { POST } from '@/app/api/auth/signup/route';
 import * as supabaseAuth from '@/lib/supabase-auth';
 
 // Supabaseモックは既にjest.setupで設定済み

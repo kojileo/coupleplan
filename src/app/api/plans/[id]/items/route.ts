@@ -2,8 +2,8 @@
 // UC001-005: カスタマイズビュー機能
 
 import { NextRequest, NextResponse } from 'next/server';
+
 import { createClient } from '@/lib/supabase/server';
-import { PlanItem } from '@/types/date-plan';
 
 /**
  * プランアイテム一覧取得
@@ -69,7 +69,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     return NextResponse.json({ items: items || [] });
-  } catch (error: any) {
+  } catch (error) {
     console.error('アイテム一覧取得エラー:', error);
     return NextResponse.json({ error: 'サーバーエラーが発生しました' }, { status: 500 });
   }
@@ -164,7 +164,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     }
 
     return NextResponse.json({ item: newItem }, { status: 201 });
-  } catch (error: any) {
+  } catch (error) {
     console.error('アイテム追加エラー:', error);
     return NextResponse.json({ error: 'サーバーエラーが発生しました' }, { status: 500 });
   }

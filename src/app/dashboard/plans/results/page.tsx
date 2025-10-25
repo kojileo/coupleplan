@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState, Suspense } from 'react';
+
+import CoupleInviteBanner from '@/components/couple/CoupleInviteBanner';
 import { createClient } from '@/lib/supabase/client';
 import { DatePlanDetail } from '@/types/date-plan';
-import CoupleInviteBanner from '@/components/couple/CoupleInviteBanner';
 
 function PlanResultsContent() {
   const router = useRouter();

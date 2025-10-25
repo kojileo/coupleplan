@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getAuthSystemStatus, emergencyStop, resetAuthSystem } from '@/lib/emergency-stop';
+
 import { authCircuitBreaker } from '@/lib/circuit-breaker';
+import { getAuthSystemStatus, emergencyStop, resetAuthSystem } from '@/lib/emergency-stop';
 
 export default function AuthDebugPage() {
   const [status, setStatus] = useState<any>(null);
@@ -40,7 +41,7 @@ export default function AuthDebugPage() {
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold mb-8">認証システム デバッグ画面</h1>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* システム状態 */}
           <div className="bg-white p-6 rounded-lg shadow">
@@ -48,15 +49,17 @@ export default function AuthDebugPage() {
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span>サーキットブレーカー:</span>
-                <span className={`px-2 py-1 rounded text-sm ${
-                  status?.circuitBreakerOpen ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'
-                }`}>
+                <span
+                  className={`px-2 py-1 rounded text-sm ${
+                    status?.circuitBreakerOpen
+                      ? 'bg-red-100 text-red-800'
+                      : 'bg-green-100 text-green-800'
+                  }`}
+                >
                   {status?.circuitBreakerOpen ? 'オープン' : 'クローズ'}
                 </span>
               </div>
-              <div className="text-sm text-gray-600">
-                最終更新: {status?.timestamp}
-              </div>
+              <div className="text-sm text-gray-600">最終更新: {status?.timestamp}</div>
             </div>
           </div>
 
@@ -66,9 +69,12 @@ export default function AuthDebugPage() {
             <div className="space-y-2 text-sm">
               <div>失敗回数: {status?.circuitBreakerState?.failureCount || 0}</div>
               <div>成功回数: {status?.circuitBreakerState?.successCount || 0}</div>
-              <div>最終失敗時刻: {status?.circuitBreakerState?.lastFailureTime ? 
-                new Date(status.circuitBreakerState.lastFailureTime).toLocaleString() : 'なし'
-              }</div>
+              <div>
+                最終失敗時刻:{' '}
+                {status?.circuitBreakerState?.lastFailureTime
+                  ? new Date(status.circuitBreakerState.lastFailureTime).toLocaleString()
+                  : 'なし'}
+              </div>
             </div>
           </div>
         </div>
@@ -83,7 +89,7 @@ export default function AuthDebugPage() {
             >
               状態を更新
             </button>
-            
+
             <button
               onClick={handleReset}
               disabled={isLoading}
@@ -91,7 +97,7 @@ export default function AuthDebugPage() {
             >
               {isLoading ? 'リセット中...' : 'システムリセット'}
             </button>
-            
+
             <button
               onClick={handleEmergencyStop}
               disabled={isLoading}

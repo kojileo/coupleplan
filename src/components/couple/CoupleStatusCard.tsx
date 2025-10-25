@@ -3,9 +3,10 @@
 // カップル連携状態を表示するカードコンポーネント
 // ダッシュボードやプラン一覧で使用
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
 import { Heart, UserPlus, Check } from 'lucide-react';
+import Link from 'next/link';
+import { useState, useEffect } from 'react';
+
 import { getCoupleStatus, type CoupleStatus } from '@/lib/couple-utils';
 
 export default function CoupleStatusCard() {

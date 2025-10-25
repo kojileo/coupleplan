@@ -9,7 +9,6 @@
  * - プランの削除
  */
 
-import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 describe('統合テスト: プラン保存・読み込みフロー', () => {
@@ -31,7 +30,7 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
 
       global.fetch = jest.fn().mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
+        json: () => ({
           plan: {
             id: 'plan-123',
             ...planData,
@@ -59,7 +58,7 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
 
       global.fetch = jest.fn().mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
+        json: () => ({
           plan: {
             id: planId,
             status: 'confirmed',
@@ -86,7 +85,7 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
 
       global.fetch = jest.fn().mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
+        json: () => ({
           plan: {
             id: planId,
             notes,
@@ -111,7 +110,7 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
 
       global.fetch = jest.fn().mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
+        json: () => ({
           plan: {
             id: planId,
             status: 'completed',
@@ -148,7 +147,7 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
 
       global.fetch = jest.fn().mockResolvedValueOnce({
         ok: true,
-        json: async () => ({ plan: mockPlan }),
+        json: () => ({ plan: mockPlan }),
       });
 
       // Act
@@ -170,7 +169,7 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
 
       global.fetch = jest.fn().mockResolvedValueOnce({
         ok: true,
-        json: async () => ({ plans: mockPlans, count: 3 }),
+        json: () => ({ plans: mockPlans, count: 3 }),
       });
 
       // Act
@@ -189,7 +188,7 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
 
       global.fetch = jest.fn().mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
+        json: () => ({
           plans: [],
           page,
           limit,
@@ -207,7 +206,7 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
       expect(data.total).toBe(25);
     });
 
-    it('最新のプランから順に表示される', async () => {
+    it('最新のプランから順に表示される', () => {
       // created_at 降順
       expect(true).toBe(true);
     });
@@ -220,7 +219,7 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
 
       global.fetch = jest.fn().mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
+        json: () => ({
           plans: [
             { id: 'plan-1', title: 'ロマンチックな東京デート' },
             { id: 'plan-2', title: 'ロマンチックディナー' },
@@ -246,7 +245,7 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
 
       global.fetch = jest.fn().mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
+        json: () => ({
           plans: [
             { id: 'plan-1', status: 'confirmed' },
             { id: 'plan-2', status: 'confirmed' },
@@ -271,7 +270,7 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
 
       global.fetch = jest.fn().mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
+        json: () => ({
           plans: [
             { id: 'plan-1', date: '2024-02-14' },
             { id: 'plan-2', date: '2024-06-01' },
@@ -294,7 +293,7 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
 
       global.fetch = jest.fn().mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
+        json: () => ({
           plans: [
             { id: 'plan-1', total_budget: 10000 },
             { id: 'plan-2', total_budget: 12000 },
@@ -326,7 +325,7 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
 
       global.fetch = jest.fn().mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
+        json: () => ({
           success: true,
           deleted_id: planId,
         }),
@@ -343,12 +342,12 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
       expect(data.deleted_id).toBe(planId);
     });
 
-    it('削除確認モーダルが表示される', async () => {
+    it('削除確認モーダルが表示される', () => {
       // ユーザーに削除を確認
       expect(true).toBe(true);
     });
 
-    it('削除後、一覧から削除される', async () => {
+    it('削除後、一覧から削除される', () => {
       // UI更新
       expect(true).toBe(true);
     });
@@ -359,7 +358,7 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
 
       global.fetch = jest.fn().mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
+        json: () => ({
           success: true,
           deleted_ids: planIds,
           count: 3,
@@ -385,7 +384,7 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
       global.fetch = jest.fn().mockResolvedValueOnce({
         ok: false,
         status: 404,
-        json: async () => ({
+        json: () => ({
           error: 'プランが見つかりません',
         }),
       });
@@ -404,7 +403,7 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
       global.fetch = jest.fn().mockResolvedValueOnce({
         ok: false,
         status: 403,
-        json: async () => ({
+        json: () => ({
           error: 'このプランにアクセスする権限がありません',
         }),
       });
@@ -423,7 +422,7 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
       global.fetch = jest.fn().mockResolvedValueOnce({
         ok: false,
         status: 400,
-        json: async () => ({
+        json: () => ({
           error: 'プラン保存の上限（5件）に達しています。不要なプランを削除してください。',
           current_count: 5,
           max_count: 5,
@@ -447,7 +446,7 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
       global.fetch = jest.fn().mockResolvedValueOnce({
         ok: false,
         status: 400,
-        json: async () => ({
+        json: () => ({
           error: '無効なフィルタパラメータです',
           invalid_params: ['invalid_status'],
         }),
@@ -470,7 +469,7 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
 
       global.fetch = jest.fn().mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
+        json: () => ({
           plan: {
             id: planId,
             shared_with_partner: true,
@@ -493,7 +492,7 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
       // Arrange
       global.fetch = jest.fn().mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
+        json: () => ({
           plans: [{ id: 'plan-1', created_by: 'partner-456', title: 'パートナーのプラン' }],
         }),
       });
@@ -517,7 +516,7 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
 
       global.fetch = jest.fn().mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
+        json: () => ({
           plan: {
             id: planId,
             shared_with_partner: false,
@@ -543,7 +542,7 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
 
       global.fetch = jest.fn().mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
+        json: () => ({
           format: 'json',
           data: {
             id: planId,
@@ -562,7 +561,7 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
       expect(data.data.id).toBe(planId);
     });
 
-    it('プランをCSV形式でエクスポートできる', async () => {
+    it('プランをCSV形式でエクスポートできる', () => {
       // CSVダウンロード
       expect(true).toBe(true);
     });
@@ -576,7 +575,7 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
 
       global.fetch = jest.fn().mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
+        json: () => ({
           plan: {
             id: 'new-plan-456',
             ...importData,
@@ -601,7 +600,7 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
       // Arrange
       global.fetch = jest.fn().mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
+        json: () => ({
           stats: {
             total_plans: 10,
             confirmed_plans: 5,
@@ -621,19 +620,19 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
       expect(data.stats.average_budget).toBe(8500);
     });
 
-    it('月別のプラン数を取得できる', async () => {
+    it('月別のプラン数を取得できる', () => {
       // グラフ表示用
       expect(true).toBe(true);
     });
 
-    it('カテゴリ別の統計を取得できる', async () => {
+    it('カテゴリ別の統計を取得できる', () => {
       // テーマ別の集計
       expect(true).toBe(true);
     });
   });
 
   describe('パフォーマンス: 大量データの処理', () => {
-    it('100件のプランを効率的に読み込める', async () => {
+    it('100件のプランを効率的に読み込める', () => {
       // ページネーション、仮想スクロール
       expect(true).toBe(true);
     });
@@ -644,7 +643,7 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
 
       global.fetch = jest.fn().mockResolvedValueOnce({
         ok: true,
-        json: async () => ({ plans: [] }),
+        json: () => ({ plans: [] }),
       });
 
       await fetch('/api/plans?q=test');
@@ -653,7 +652,7 @@ describe('統合テスト: プラン保存・読み込みフロー', () => {
       expect(endTime - startTime).toBeLessThan(500);
     });
 
-    it('キャッシュで読み込みを高速化', async () => {
+    it('キャッシュで読み込みを高速化', () => {
       // 2回目のアクセスはキャッシュから
       expect(true).toBe(true);
     });

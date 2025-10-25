@@ -2,8 +2,8 @@
 // API Routes用のSupabaseクライアント作成
 
 import { createServerClient } from '@supabase/ssr';
-import { NextRequest } from 'next/server';
 import { cookies } from 'next/headers';
+import { NextRequest } from 'next/server';
 
 export async function createClient(request?: NextRequest) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;

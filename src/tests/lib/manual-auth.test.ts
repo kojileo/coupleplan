@@ -6,6 +6,8 @@
  * 目標カバレッジ: 85%以上
  */
 
+import * as authStop from '@/lib/auth-stop';
+import * as circuitBreaker from '@/lib/circuit-breaker';
 import {
   checkAuthStatus,
   refreshToken,
@@ -15,8 +17,6 @@ import {
   AuthMonitor,
 } from '@/lib/manual-auth';
 import * as supabaseAuth from '@/lib/supabase-auth';
-import * as circuitBreaker from '@/lib/circuit-breaker';
-import * as authStop from '@/lib/auth-stop';
 
 // モック
 jest.mock('@/lib/supabase-auth', () => ({

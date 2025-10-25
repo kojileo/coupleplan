@@ -6,9 +6,10 @@
  * 目標カバレッジ: 75%以上
  */
 
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import React from 'react';
+
 import Select from '@/components/ui/select';
 
 describe('Select Component', () => {
@@ -56,10 +57,10 @@ describe('Select Component', () => {
           <option value="option2">オプション2</option>
         </Select>
       );
-      const select = screen.getByTestId('select') as HTMLSelectElement;
+      const select = screen.getByTestId('select');
 
       await user.selectOptions(select, 'option1');
-      expect(select.value).toBe('option1');
+      expect((select as HTMLSelectElement).value).toBe('option1');
     });
 
     it('onChange イベントが発火する', () => {
@@ -90,8 +91,8 @@ describe('Select Component', () => {
           <option value="option2">オプション2</option>
         </Select>
       );
-      const select = screen.getByTestId('select') as HTMLSelectElement;
-      expect(select.value).toBe('option2');
+      const select = screen.getByTestId('select');
+      expect((select as HTMLSelectElement).value).toBe('option2');
     });
 
     it('value が変更されると選択が更新される', () => {
@@ -101,8 +102,8 @@ describe('Select Component', () => {
           <option value="option2">オプション2</option>
         </Select>
       );
-      let select = screen.getByTestId('select') as HTMLSelectElement;
-      expect(select.value).toBe('option1');
+      let select = screen.getByTestId('select');
+      expect((select as HTMLSelectElement).value).toBe('option1');
 
       rerender(
         <Select value="option2" onChange={() => {}} data-testid="select">
@@ -110,8 +111,8 @@ describe('Select Component', () => {
           <option value="option2">オプション2</option>
         </Select>
       );
-      select = screen.getByTestId('select') as HTMLSelectElement;
-      expect(select.value).toBe('option2');
+      select = screen.getByTestId('select');
+      expect((select as HTMLSelectElement).value).toBe('option2');
     });
   });
 
@@ -139,10 +140,10 @@ describe('Select Component', () => {
           <option value="option2">オプション2</option>
         </Select>
       );
-      const select = screen.getByTestId('select') as HTMLSelectElement;
+      const select = screen.getByTestId('select');
 
       await user.selectOptions(select, 'option2');
-      expect(select.value).toBe('option1'); // 変更されない
+      expect((select as HTMLSelectElement).value).toBe('option1'); // 変更されない
     });
   });
 
@@ -264,8 +265,8 @@ describe('Select Component', () => {
           <option value="option2">オプション2</option>
         </Select>
       );
-      const select = screen.getByTestId('select') as HTMLSelectElement;
-      expect(select.value).toBe('option2');
+      const select = screen.getByTestId('select');
+      expect((select as HTMLSelectElement).value).toBe('option2');
     });
   });
 });

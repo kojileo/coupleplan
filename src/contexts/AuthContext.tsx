@@ -4,13 +4,13 @@ import { User, Session } from '@supabase/supabase-js';
 import { createContext, useContext, useEffect, useState } from 'react';
 import type { ReactElement, ReactNode } from 'react';
 
-import { supabase } from '@/lib/supabase-auth';
 import {
   safeAuthCheck,
   clearSession,
   detectAndClearCorruptedSession,
   type AuthStatus,
 } from '@/lib/manual-auth';
+import { supabase } from '@/lib/supabase-auth';
 
 type AuthContextType = {
   user: User | null;
@@ -96,7 +96,7 @@ export function AuthProvider({ children }: { children: ReactNode }): ReactElemen
     // 認証状態変更の監視
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
       if (!mounted) return;
 
       console.log('認証状態変更:', event, 'session:', session ? 'exists' : 'null');
