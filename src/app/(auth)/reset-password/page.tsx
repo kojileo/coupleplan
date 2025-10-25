@@ -28,7 +28,6 @@ export default function ResetPasswordPage(): ReactElement {
         const type = urlParams.get('type');
         const code = urlParams.get('code');
 
-        // デバッグログを追加
         console.log('パスワードリセットページ - URL Parameters:', {
           accessToken: accessToken ? 'exists' : 'missing',
           refreshToken: refreshToken ? 'exists' : 'missing',
@@ -36,13 +35,13 @@ export default function ResetPasswordPage(): ReactElement {
           code: code ? 'exists' : 'missing',
           fullUrl: window.location.href,
           search: window.location.search,
+          hash: window.location.hash,
         });
 
-        // パスワードリセット用のトークンがある場合（従来の方式）
+        // 1. 従来方式（access_token + refresh_token）を優先
         if (type === 'recovery' && accessToken && refreshToken) {
           console.log('パスワードリセットトークンが検出されました（従来方式）');
           try {
-            // トークンを使用してセッションを確立
             const { data, error } = await supabase.auth.setSession({
               access_token: accessToken,
               refresh_token: refreshToken,
@@ -55,7 +54,10 @@ export default function ResetPasswordPage(): ReactElement {
 
             if (error) {
               console.error('セッション設定エラー:', error);
-              throw error;
+              setError(
+                'パスワードリセットリンクが無効です。再度リセットメールを送信してください。'
+              );
+              return;
             }
 
             if (data.session) {
@@ -73,26 +75,74 @@ export default function ResetPasswordPage(): ReactElement {
           }
         }
 
-        // PKCE方式（codeパラメータ）は使用しない
-        // この方式はPKCE設定が複雑なため、従来方式を優先
+        // 2. PKCE方式（codeパラメータ）
         if (code) {
-          console.log(
-            'codeパラメータが検出されましたが、PKCE設定が不完全なため従来方式を推奨します'
-          );
-          setError('パスワードリセットリンクが無効です。再度リセットメールを送信してください。');
-          return;
+          console.log('パスワードリセットコードが検出されました（PKCE方式）');
+          try {
+            const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+
+            console.log('コード交換結果:', {
+              hasSession: !!data.session,
+              error: error?.message,
+            });
+
+            if (error) {
+              console.error('コード交換エラー:', error);
+              setError(
+                'パスワードリセットリンクが無効です。再度リセットメールを送信してください。'
+              );
+              return;
+            }
+
+            if (data.session) {
+              setIsValidSession(true);
+              setMessage('新しいパスワードを設定してください');
+              return;
+            } else {
+              setError('セッションの確立に失敗しました。再度リセットメールを送信してください。');
+              return;
+            }
+          } catch (codeError) {
+            console.error('コード交換エラー:', codeError);
+            setError('パスワードリセットリンクが無効です。再度リセットメールを送信してください。');
+            return;
+          }
         }
 
-        // ホームページからリダイレクトされた場合の処理（codeパラメータは使用しない）
+        // 3. ホームページからリダイレクトされた場合の処理
         if (code && window.location.pathname === '/') {
-          console.log('ホームページからリダイレクトされましたが、codeパラメータは使用しません');
+          console.log(
+            'ホームページからリダイレクトされました。パスワードリセットページに移動します。'
+          );
+          window.location.href = `/reset-password?code=${code}`;
+          return;
+        }
+
+        // 4. Supabaseの自動セッション検出を試行
+        console.log('Supabaseの自動セッション検出を試行中...');
+        const {
+          data: { session },
+          error: sessionError,
+        } = await supabase.auth.getSession();
+
+        console.log('自動セッション検出結果:', {
+          hasSession: !!session,
+          error: sessionError?.message,
+        });
+
+        if (sessionError) {
+          console.error('セッション確認エラー:', sessionError);
           setError('パスワードリセットリンクが無効です。再度リセットメールを送信してください。');
           return;
         }
 
-        // パラメータがない場合はエラー
-        console.log('有効なパスワードリセットパラメータが見つかりません');
-        setError('無効なパスワードリセットリンクです。再度リセットメールを送信してください。');
+        if (session) {
+          setIsValidSession(true);
+          setMessage('新しいパスワードを設定してください');
+        } else {
+          console.log('有効なパスワードリセットパラメータが見つかりません');
+          setError('無効なパスワードリセットリンクです。再度リセットメールを送信してください。');
+        }
       } catch (err) {
         console.error('セッション確認エラー:', err);
         setError(
@@ -110,11 +160,13 @@ export default function ResetPasswordPage(): ReactElement {
 
     if (password !== confirmPassword) {
       setError('パスワードが一致しません');
+      setLoading(false);
       return;
     }
 
     if (password.length < 8) {
       setError('パスワードは8文字以上で設定してください');
+      setLoading(false);
       return;
     }
 
@@ -153,41 +205,33 @@ export default function ResetPasswordPage(): ReactElement {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-pink-50 to-white py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-rose-950">
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             新しいパスワードを設定
           </h2>
         </div>
 
-        {message && (
-          <div
-            className="bg-green-50 border border-green-400 text-green-700 px-4 py-3 rounded relative"
-            role="alert"
-          >
-            <span className="block sm:inline">{message}</span>
-          </div>
-        )}
-
         {error && (
-          <div
-            className="bg-red-50 border border-red-400 text-red-700 px-4 py-3 rounded relative"
-            role="alert"
-          >
-            <span className="block sm:inline">{error}</span>
-            {error.includes('無効なパスワードリセットリンク') && (
-              <div className="mt-2">
-                <Link href="/forgot-password" className="text-red-700 underline">
-                  パスワードリセットページへ
-                </Link>
-              </div>
-            )}
+          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md">
+            {error}
+            <div className="mt-2">
+              <Link href="/forgot-password" className="text-red-600 hover:text-red-500 underline">
+                パスワードリセットページへ
+              </Link>
+            </div>
           </div>
         )}
 
-        {isValidSession && !error && (
+        {message && (
+          <div className="bg-green-50 border border-green-200 text-green-600 px-4 py-3 rounded-md">
+            {message}
+          </div>
+        )}
+
+        {isValidSession ? (
           <form className="mt-8 space-y-6" onSubmit={onSubmit}>
-            <div className="rounded-md shadow-sm -space-y-px">
+            <div className="space-y-4">
               <div>
-                <label htmlFor="password" className="sr-only">
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                   新しいパスワード
                 </label>
                 <input
@@ -195,48 +239,46 @@ export default function ResetPasswordPage(): ReactElement {
                   name="password"
                   type="password"
                   required
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-rose-200 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-rose-500 focus:border-rose-500 focus:z-10 sm:text-sm"
-                  placeholder="新しいパスワード（8文字以上）"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  minLength={8}
+                  className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm"
+                  placeholder="8文字以上のパスワード"
                 />
               </div>
+
               <div>
-                <label htmlFor="confirmPassword" className="sr-only">
-                  パスワード（確認）
+                <label
+                  htmlFor="confirmPassword"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  パスワード確認
                 </label>
                 <input
                   id="confirmPassword"
                   name="confirmPassword"
                   type="password"
                   required
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-rose-200 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-rose-500 focus:border-rose-500 focus:z-10 sm:text-sm"
-                  placeholder="パスワード（確認）"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  minLength={8}
+                  className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-pink-500 focus:border-pink-500 focus:z-10 sm:text-sm"
+                  placeholder="パスワードを再入力"
                 />
               </div>
             </div>
 
             <div>
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? '更新中...' : 'パスワードを更新'}
+              <Button
+                type="submit"
+                disabled={loading}
+                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 disabled:opacity-50"
+              >
+                {loading ? '設定中...' : 'パスワードを設定'}
               </Button>
             </div>
-
-            <div className="text-center mt-4">
-              <Link href="/login" className="text-sm text-rose-600 hover:text-rose-800">
-                ログインに戻る
-              </Link>
-            </div>
           </form>
-        )}
-
-        {!isValidSession && error && (
-          <div className="text-center mt-6">
-            <Link href="/forgot-password" className="text-rose-600 hover:text-rose-800 font-medium">
+        ) : (
+          <div className="text-center">
+            <Link href="/forgot-password" className="font-medium text-pink-600 hover:text-pink-500">
               パスワードリセットをやり直す
             </Link>
           </div>
