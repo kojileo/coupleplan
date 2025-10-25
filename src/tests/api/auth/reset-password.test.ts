@@ -17,6 +17,12 @@ describe('/api/auth/reset-password', () => {
     jest.clearAllMocks();
     process.env = { ...originalEnv };
     process.env.NEXT_PUBLIC_APP_URL = 'http://localhost:3000';
+
+    // Rate limit mapをクリア（テスト間での干渉を防ぐ）
+    const { resetPasswordRateLimitMap } = require('@/app/api/auth/reset-password/route');
+    if (resetPasswordRateLimitMap) {
+      resetPasswordRateLimitMap.clear();
+    }
   });
 
   afterEach(() => {
@@ -228,6 +234,45 @@ describe('/api/auth/reset-password', () => {
           redirectTo: 'https://example.com/reset-password',
         }
       );
+    });
+  });
+
+  /**
+   * TC-AUTH-RESET-007: Rate Limit機能
+   * Priority: P1 (High)
+   * Test Type: Unit
+   */
+  describe('TC-AUTH-RESET-007: Rate Limit機能', () => {
+    it('同一IP・同一メールアドレスで5分間に3回を超えると429エラーを返す', async () => {
+      (supabaseAuth.supabase.auth.resetPasswordForEmail as jest.Mock).mockResolvedValue({
+        data: {},
+        error: null,
+      });
+
+      // 3回までは成功するはず
+      for (let i = 0; i < 3; i++) {
+        const request = new NextRequest('http://localhost:3000/api/auth/reset-password', {
+          method: 'POST',
+          body: JSON.stringify({
+            email: 'ratelimit@example.com',
+          }),
+        });
+        const response = await POST(request);
+        expect(response.status).toBe(200);
+      }
+
+      // 4回目は429エラーになるはず
+      const request = new NextRequest('http://localhost:3000/api/auth/reset-password', {
+        method: 'POST',
+        body: JSON.stringify({
+          email: 'ratelimit@example.com',
+        }),
+      });
+      const response = await POST(request);
+      expect(response.status).toBe(429);
+
+      const data = await response.json();
+      expect(data.error).toContain('メール送信制限に達しました');
     });
   });
 });

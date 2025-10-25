@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { createClient } from '@/lib/supabase/server';
 
+// Rate limit用のMap（メモリベース）
+export const resetPasswordRateLimitMap = new Map<string, { count: number; resetTime: number }>();
+
 interface ResetPasswordRequest {
   email: string;
 }
@@ -14,6 +17,30 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     const { email } = body;
+
+    // Rate limit チェック（同一IP、同一メールアドレス）
+    const ip =
+      request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '127.0.0.1';
+    const key = `${ip}-${email}`;
+    const now = Date.now();
+    const windowMs = 5 * 60 * 1000; // 5分
+    const maxRequests = 3; // 5分間に最大3回
+
+    const record = resetPasswordRateLimitMap.get(key);
+    if (!record || record.resetTime < now) {
+      // 新しいウィンドウまたは初回リクエスト
+      resetPasswordRateLimitMap.set(key, { count: 1, resetTime: now + windowMs });
+    } else {
+      // 既存のウィンドウ内
+      record.count++;
+      if (record.count > maxRequests) {
+        console.log('Rate limit exceeded:', { key, count: record.count, maxRequests });
+        return NextResponse.json(
+          { error: 'メール送信制限に達しました。5分後に再試行してください。' },
+          { status: 429 }
+        );
+      }
+    }
 
     // アプリケーションURLが設定されているか確認
     const appUrl = process.env.NEXT_PUBLIC_APP_URL;

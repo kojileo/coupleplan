@@ -40,6 +40,7 @@ export default function ProfilePage(): ReactElement {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const [isPasswordResetLoading, setIsPasswordResetLoading] = useState(false);
   const [editForm, setEditForm] = useState({
     name: '',
     email: '',
@@ -247,27 +248,31 @@ export default function ProfilePage(): ReactElement {
   };
 
   const handleChangePassword = async () => {
+    if (isPasswordResetLoading) return; // 重複実行防止
+
     try {
-      const redirectUrl = `${window.location.origin}/reset-password`;
-      console.log('プロフィールページ - パスワードリセット送信:', {
-        email: user?.email,
-        redirectUrl,
+      setIsPasswordResetLoading(true);
+
+      const response = await fetch('/api/auth/reset-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: user?.email }),
       });
 
-      const { data, error } = await supabase.auth.resetPasswordForEmail(user?.email || '', {
-        redirectTo: redirectUrl,
-      });
+      const data = await response.json();
 
-      console.log('プロフィールページ - パスワードリセット結果:', {
-        hasData: !!data,
-        error: error?.message,
-      });
+      if (!response.ok) {
+        throw new Error(data.error || 'パスワードリセットに失敗しました');
+      }
 
-      if (error) throw error;
       alert('パスワードリセットメールを送信しました。メールをご確認ください。');
     } catch (error) {
       console.error('パスワードリセットエラー:', error);
       alert('パスワードリセットに失敗しました');
+    } finally {
+      setIsPasswordResetLoading(false);
     }
   };
 
@@ -508,8 +513,9 @@ export default function ProfilePage(): ReactElement {
               onClick={handleChangePassword}
               variant="outline"
               className="w-full justify-start"
+              disabled={isPasswordResetLoading}
             >
-              🔒 パスワードを変更
+              {isPasswordResetLoading ? '⏳ 送信中...' : '🔒 パスワードを変更'}
             </Button>
             <Button
               onClick={handleDeleteAccount}
