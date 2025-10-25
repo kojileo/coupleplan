@@ -8,9 +8,10 @@
 
 import { NextRequest } from 'next/server';
 
-import { POST } from '@/app/api/auth/reset-password/route';
-import * as supabaseAuth from '@/lib/supabase-auth';
 import { resetPasswordRateLimitMap } from '@/lib/rate-limit-maps';
+import * as supabaseAuth from '@/lib/supabase-auth';
+
+import { POST } from '@/app/api/auth/reset-password/route';
 
 describe('/api/auth/reset-password', () => {
   const originalEnv = process.env;

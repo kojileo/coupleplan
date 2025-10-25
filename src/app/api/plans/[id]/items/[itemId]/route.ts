@@ -87,7 +87,6 @@ export async function PUT(
 
     return NextResponse.json({ item: updatedItem });
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'アイテム操作に失敗しました';
     console.error('アイテム更新エラー:', error);
     return NextResponse.json({ error: 'サーバーエラーが発生しました' }, { status: 500 });
   }
@@ -180,7 +179,6 @@ export async function DELETE(
 
     return NextResponse.json({ message: 'アイテムを削除しました' });
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'アイテム操作に失敗しました';
     console.error('アイテム削除エラー:', error);
     return NextResponse.json({ error: 'サーバーエラーが発生しました' }, { status: 500 });
   }

@@ -70,7 +70,6 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     return NextResponse.json({ items: items || [] });
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'アイテム操作に失敗しました';
     console.error('アイテム一覧取得エラー:', error);
     return NextResponse.json({ error: 'サーバーエラーが発生しました' }, { status: 500 });
   }
@@ -166,7 +165,6 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
     return NextResponse.json({ item: newItem }, { status: 201 });
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'アイテム操作に失敗しました';
     console.error('アイテム追加エラー:', error);
     return NextResponse.json({ error: 'サーバーエラーが発生しました' }, { status: 500 });
   }

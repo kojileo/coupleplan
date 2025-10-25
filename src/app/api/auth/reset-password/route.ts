@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { createClient } from '@/lib/supabase/server';
 import { resetPasswordRateLimitMap } from '@/lib/rate-limit-maps';
+import { createClient } from '@/lib/supabase/server';
 
 interface ResetPasswordRequest {
   email: string;

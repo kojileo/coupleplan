@@ -194,7 +194,7 @@ export default function MediationProposalPage(): ReactElement {
       setIsLoading(false);
     };
 
-    loadProposal();
+    void loadProposal();
   }, []);
 
   const handleStepExecution = async (stepId: string) => {

@@ -70,7 +70,6 @@ export async function GET(request: NextRequest) {
       has_more: (count || 0) > offset + limit,
     });
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'プラン取得に失敗しました';
     console.error('プラン一覧取得エラー:', error);
     return NextResponse.json({ error: 'プランの取得に失敗しました' }, { status: 500 });
   }

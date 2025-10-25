@@ -50,7 +50,7 @@ describe('Input Component', () => {
       const input = screen.getByTestId('input');
 
       await user.type(input, 'テスト入力');
-      expect(input.value).toBe('テスト入力');
+      expect((input as HTMLInputElement).value).toBe('テスト入力');
     });
 
     it('onChange イベントが発火する', () => {
@@ -82,17 +82,17 @@ describe('Input Component', () => {
     it('value プロパティで初期値を設定できる', () => {
       render(<Input value="初期値" onChange={() => {}} data-testid="input" />);
       const input = screen.getByTestId('input');
-      expect(input.value).toBe('初期値');
+      expect((input as HTMLInputElement).value).toBe('初期値');
     });
 
     it('value が変更されると表示が更新される', () => {
       const { rerender } = render(<Input value="初期値" onChange={() => {}} data-testid="input" />);
       let input = screen.getByTestId('input');
-      expect(input.value).toBe('初期値');
+      expect((input as HTMLInputElement).value).toBe('初期値');
 
       rerender(<Input value="新しい値" onChange={() => {}} data-testid="input" />);
       input = screen.getByTestId('input');
-      expect(input.value).toBe('新しい値');
+      expect((input as HTMLInputElement).value).toBe('新しい値');
     });
   });
 
@@ -113,8 +113,8 @@ describe('Input Component', () => {
       const input = screen.getByTestId('input');
 
       await user.type(input, 'test');
-      expect(input.placeholder).toBe('入力してください');
-      expect(input.value).toBe('test');
+      expect((input as HTMLInputElement).placeholder).toBe('入力してください');
+      expect((input as HTMLInputElement).value).toBe('test');
     });
   });
 
@@ -136,7 +136,7 @@ describe('Input Component', () => {
       const input = screen.getByTestId('input');
 
       await user.type(input, 'test');
-      expect(input.value).toBe('');
+      expect((input as HTMLInputElement).value).toBe('');
     });
   });
 

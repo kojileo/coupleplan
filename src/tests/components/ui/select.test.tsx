@@ -60,7 +60,7 @@ describe('Select Component', () => {
       const select = screen.getByTestId('select');
 
       await user.selectOptions(select, 'option1');
-      expect(select.value).toBe('option1');
+      expect((select as HTMLSelectElement).value).toBe('option1');
     });
 
     it('onChange イベントが発火する', () => {
@@ -92,7 +92,7 @@ describe('Select Component', () => {
         </Select>
       );
       const select = screen.getByTestId('select');
-      expect(select.value).toBe('option2');
+      expect((select as HTMLSelectElement).value).toBe('option2');
     });
 
     it('value が変更されると選択が更新される', () => {
@@ -103,7 +103,7 @@ describe('Select Component', () => {
         </Select>
       );
       let select = screen.getByTestId('select');
-      expect(select.value).toBe('option1');
+      expect((select as HTMLSelectElement).value).toBe('option1');
 
       rerender(
         <Select value="option2" onChange={() => {}} data-testid="select">
@@ -112,7 +112,7 @@ describe('Select Component', () => {
         </Select>
       );
       select = screen.getByTestId('select');
-      expect(select.value).toBe('option2');
+      expect((select as HTMLSelectElement).value).toBe('option2');
     });
   });
 
@@ -143,7 +143,7 @@ describe('Select Component', () => {
       const select = screen.getByTestId('select');
 
       await user.selectOptions(select, 'option2');
-      expect(select.value).toBe('option1'); // 変更されない
+      expect((select as HTMLSelectElement).value).toBe('option1'); // 変更されない
     });
   });
 
@@ -266,7 +266,7 @@ describe('Select Component', () => {
         </Select>
       );
       const select = screen.getByTestId('select');
-      expect(select.value).toBe('option2');
+      expect((select as HTMLSelectElement).value).toBe('option2');
     });
   });
 });
