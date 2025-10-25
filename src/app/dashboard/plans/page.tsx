@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+
 import { createClient } from '@/lib/supabase/client';
 import { DatePlan, DatePlanStatus } from '@/types/date-plan';
 
@@ -246,12 +247,6 @@ export default function PlansPage() {
             <p className="text-gray-600 mb-6">
               AIに提案してもらうか、自分でプランを作成してみましょう
             </p>
-            <Link
-              href="/dashboard/plans/create"
-              className="inline-block px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-            >
-              最初のプランを作成
-            </Link>
           </div>
         )}
       </div>

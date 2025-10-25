@@ -1,13 +1,19 @@
 'use client';
 
-import Link from 'next/link';
 import type { ReactElement } from 'react';
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 interface ApiResponse {
   error?: string;
   message?: string;
   success?: boolean;
+}
+
+interface FormErrors {
+  name?: string;
+  email?: string;
+  subject?: string;
+  message?: string;
 }
 
 export default function Contact(): ReactElement {
@@ -20,6 +26,44 @@ export default function Contact(): ReactElement {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [error, setError] = useState('');
+  const [formErrors, setFormErrors] = useState<FormErrors>({});
+  const [isFormValid, setIsFormValid] = useState(false);
+
+  // バリデーション関数
+  const validateForm = useCallback((): boolean => {
+    const errors: FormErrors = {};
+
+    if (!formData.name.trim()) {
+      errors.name = 'お名前を入力してください';
+    } else if (formData.name.trim().length < 2) {
+      errors.name = 'お名前は2文字以上で入力してください';
+    }
+
+    if (!formData.email.trim()) {
+      errors.email = 'メールアドレスを入力してください';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = '有効なメールアドレスを入力してください';
+    }
+
+    if (!formData.subject) {
+      errors.subject = 'お問い合わせ種別を選択してください';
+    }
+
+    if (!formData.message.trim()) {
+      errors.message = 'お問い合わせ内容を入力してください';
+    } else if (formData.message.trim().length < 10) {
+      errors.message = 'お問い合わせ内容は10文字以上で入力してください';
+    }
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  }, [formData]);
+
+  // フォームの有効性をチェック
+  useEffect(() => {
+    const isValid = validateForm();
+    setIsFormValid(isValid);
+  }, [formData, validateForm]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -29,12 +73,25 @@ export default function Contact(): ReactElement {
       ...prev,
       [name]: value,
     }));
+
     // エラーをクリア
     if (error) setError('');
+    if (formErrors[name as keyof FormErrors]) {
+      setFormErrors((prev) => ({
+        ...prev,
+        [name]: undefined,
+      }));
+    }
   };
 
   const handleSubmit = (e: React.FormEvent): void => {
     e.preventDefault();
+
+    // バリデーションを実行
+    if (!validateForm()) {
+      return;
+    }
+
     setIsSubmitting(true);
     setError('');
 
@@ -53,6 +110,8 @@ export default function Contact(): ReactElement {
         if (response.ok) {
           setSubmitSuccess(true);
           setFormData({ name: '', email: '', subject: '', message: '' });
+          setFormErrors({});
+          setIsFormValid(false);
         } else {
           setError(result.error || 'お問い合わせの送信に失敗しました');
         }
@@ -103,18 +162,20 @@ export default function Contact(): ReactElement {
       {/* メインコンテンツ */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-12 lg:gap-16">
             {/* お問い合わせフォーム */}
-            <div className="group hover:scale-105 transition-all duration-500">
-              <div className="bg-gradient-to-br from-white via-green-50/30 to-emerald-50/30 rounded-3xl p-10 border border-green-100 shadow-xl hover:shadow-2xl transition-all duration-500 relative overflow-hidden">
+            <div className="group hover:scale-[1.02] transition-all duration-500">
+              <div className="bg-gradient-to-br from-white via-green-50/30 to-emerald-50/30 rounded-3xl p-6 sm:p-8 lg:p-10 border border-green-100 shadow-xl hover:shadow-2xl transition-all duration-500 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-green-200 to-transparent rounded-full opacity-10 -translate-y-20 translate-x-20" />
 
                 <div className="relative">
-                  <div className="flex items-center mb-8">
-                    <div className="bg-gradient-to-br from-green-500 to-green-600 p-4 rounded-2xl mr-6 shadow-lg">
-                      <span className="text-3xl">📝</span>
+                  <div className="flex items-center mb-6 sm:mb-8">
+                    <div className="bg-gradient-to-br from-green-500 to-green-600 p-3 sm:p-4 rounded-2xl mr-4 sm:mr-6 shadow-lg">
+                      <span className="text-2xl sm:text-3xl">📝</span>
                     </div>
-                    <h2 className="text-3xl font-bold text-gray-900">お問い合わせフォーム</h2>
+                    <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
+                      お問い合わせフォーム
+                    </h2>
                   </div>
 
                   {submitSuccess && (
@@ -137,11 +198,11 @@ export default function Contact(): ReactElement {
                     </div>
                   )}
 
-                  <form onSubmit={handleSubmit} className="space-y-8">
+                  <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
                     <div>
                       <label
                         htmlFor="name"
-                        className="block text-lg font-semibold text-gray-700 mb-3"
+                        className="block text-base sm:text-lg font-semibold text-gray-700 mb-2 sm:mb-3"
                       >
                         お名前 <span className="text-red-500">*</span>
                       </label>
@@ -152,15 +213,30 @@ export default function Contact(): ReactElement {
                         required
                         value={formData.name}
                         onChange={handleChange}
-                        className="w-full px-6 py-4 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-green-500/20 focus:border-green-500 transition-all duration-300 text-lg text-gray-900 placeholder:text-gray-500"
+                        className={`w-full px-4 sm:px-6 py-3 sm:py-4 border-2 rounded-2xl focus:ring-4 focus:ring-green-500/20 transition-all duration-300 text-base sm:text-lg text-gray-900 placeholder:text-gray-500 ${
+                          formErrors.name
+                            ? 'border-red-300 focus:border-red-500 bg-red-50'
+                            : 'border-gray-200 focus:border-green-500'
+                        }`}
                         placeholder="山田太郎"
+                        aria-describedby={formErrors.name ? 'name-error' : undefined}
                       />
+                      {formErrors.name && (
+                        <p
+                          id="name-error"
+                          className="mt-2 text-sm text-red-600 flex items-center"
+                          role="alert"
+                        >
+                          <span className="mr-1">⚠️</span>
+                          {formErrors.name}
+                        </p>
+                      )}
                     </div>
 
                     <div>
                       <label
                         htmlFor="email"
-                        className="block text-lg font-semibold text-gray-700 mb-3"
+                        className="block text-base sm:text-lg font-semibold text-gray-700 mb-2 sm:mb-3"
                       >
                         メールアドレス <span className="text-red-500">*</span>
                       </label>
@@ -171,15 +247,30 @@ export default function Contact(): ReactElement {
                         required
                         value={formData.email}
                         onChange={handleChange}
-                        className="w-full px-6 py-4 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-green-500/20 focus:border-green-500 transition-all duration-300 text-lg text-gray-900 placeholder:text-gray-500"
+                        className={`w-full px-4 sm:px-6 py-3 sm:py-4 border-2 rounded-2xl focus:ring-4 focus:ring-green-500/20 transition-all duration-300 text-base sm:text-lg text-gray-900 placeholder:text-gray-500 ${
+                          formErrors.email
+                            ? 'border-red-300 focus:border-red-500 bg-red-50'
+                            : 'border-gray-200 focus:border-green-500'
+                        }`}
                         placeholder="example@email.com"
+                        aria-describedby={formErrors.email ? 'email-error' : undefined}
                       />
+                      {formErrors.email && (
+                        <p
+                          id="email-error"
+                          className="mt-2 text-sm text-red-600 flex items-center"
+                          role="alert"
+                        >
+                          <span className="mr-1">⚠️</span>
+                          {formErrors.email}
+                        </p>
+                      )}
                     </div>
 
                     <div>
                       <label
                         htmlFor="subject"
-                        className="block text-lg font-semibold text-gray-700 mb-3"
+                        className="block text-base sm:text-lg font-semibold text-gray-700 mb-2 sm:mb-3"
                       >
                         お問い合わせ種別 <span className="text-red-500">*</span>
                       </label>
@@ -189,25 +280,38 @@ export default function Contact(): ReactElement {
                         required
                         value={formData.subject}
                         onChange={handleChange}
-                        className="w-full px-6 py-4 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-green-500/20 focus:border-green-500 transition-all duration-300 text-lg text-gray-900"
+                        className={`w-full px-4 sm:px-6 py-3 sm:py-4 border-2 rounded-2xl focus:ring-4 focus:ring-green-500/20 transition-all duration-300 text-base sm:text-lg text-gray-900 ${
+                          formErrors.subject
+                            ? 'border-red-300 focus:border-red-500 bg-red-50'
+                            : 'border-gray-200 focus:border-green-500'
+                        }`}
+                        aria-describedby={formErrors.subject ? 'subject-error' : undefined}
                       >
                         <option value="">選択してください</option>
                         <option value="general">一般的なお問い合わせ</option>
                         <option value="technical">技術的な問題</option>
                         <option value="bug">バグ報告</option>
                         <option value="feature">機能リクエスト</option>
-                        <option value="emergency">緊急ヘルプ機能について</option>
-                        <option value="weather">天気・服装提案機能について</option>
                         <option value="privacy">プライバシーについて</option>
                         <option value="account">アカウントについて</option>
                         <option value="other">その他</option>
                       </select>
+                      {formErrors.subject && (
+                        <p
+                          id="subject-error"
+                          className="mt-2 text-sm text-red-600 flex items-center"
+                          role="alert"
+                        >
+                          <span className="mr-1">⚠️</span>
+                          {formErrors.subject}
+                        </p>
+                      )}
                     </div>
 
                     <div>
                       <label
                         htmlFor="message"
-                        className="block text-lg font-semibold text-gray-700 mb-3"
+                        className="block text-base sm:text-lg font-semibold text-gray-700 mb-2 sm:mb-3"
                       >
                         お問い合わせ内容 <span className="text-red-500">*</span>
                       </label>
@@ -215,181 +319,145 @@ export default function Contact(): ReactElement {
                         id="message"
                         name="message"
                         required
-                        rows={6}
+                        rows={5}
                         value={formData.message}
                         onChange={handleChange}
-                        className="w-full px-6 py-4 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-green-500/20 focus:border-green-500 transition-all duration-300 text-lg resize-none text-gray-900 placeholder:text-gray-500"
+                        className={`w-full px-4 sm:px-6 py-3 sm:py-4 border-2 rounded-2xl focus:ring-4 focus:ring-green-500/20 transition-all duration-300 text-base sm:text-lg resize-none text-gray-900 placeholder:text-gray-500 ${
+                          formErrors.message
+                            ? 'border-red-300 focus:border-red-500 bg-red-50'
+                            : 'border-gray-200 focus:border-green-500'
+                        }`}
                         placeholder="お問い合わせ内容を詳しくお書きください"
+                        aria-describedby={formErrors.message ? 'message-error' : undefined}
                       />
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mt-2 gap-2">
+                        {formErrors.message && (
+                          <p
+                            id="message-error"
+                            className="text-sm text-red-600 flex items-center"
+                            role="alert"
+                          >
+                            <span className="mr-1">⚠️</span>
+                            {formErrors.message}
+                          </p>
+                        )}
+                        <p className="text-sm text-gray-500 sm:ml-auto">
+                          {formData.message.length}/1000文字
+                        </p>
+                      </div>
                     </div>
 
                     <button
                       type="submit"
-                      disabled={isSubmitting}
-                      className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white py-5 px-8 rounded-2xl hover:from-green-600 hover:to-emerald-700 focus:ring-4 focus:ring-green-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 font-bold text-lg shadow-xl hover:shadow-2xl transform hover:-translate-y-1"
+                      disabled={isSubmitting || !isFormValid}
+                      className={`w-full py-4 sm:py-5 px-6 sm:px-8 rounded-2xl focus:ring-4 focus:ring-green-500/20 disabled:cursor-not-allowed transition-all duration-300 font-bold text-base sm:text-lg shadow-xl transform hover:-translate-y-1 ${
+                        isFormValid && !isSubmitting
+                          ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-600 hover:to-emerald-700 hover:shadow-2xl'
+                          : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      }`}
+                      aria-describedby="submit-status"
                     >
                       {isSubmitting ? (
                         <span className="flex items-center justify-center">
-                          <span className="animate-spin rounded-full h-6 w-6 border-2 border-white border-t-transparent mr-3"></span>
-                          送信中...
+                          <span className="animate-spin rounded-full h-5 w-5 sm:h-6 sm:w-6 border-2 border-white border-t-transparent mr-2 sm:mr-3"></span>
+                          <span className="text-sm sm:text-base">送信中...</span>
+                        </span>
+                      ) : isFormValid ? (
+                        <span className="flex items-center justify-center">
+                          <span className="mr-2">📧</span>
+                          <span className="text-sm sm:text-base">送信する</span>
                         </span>
                       ) : (
-                        '📧 送信する'
+                        <span className="flex items-center justify-center">
+                          <span className="mr-2">⚠️</span>
+                          <span className="text-sm sm:text-base">入力内容を確認してください</span>
+                        </span>
                       )}
                     </button>
+                    <div id="submit-status" className="sr-only" aria-live="polite">
+                      {isSubmitting
+                        ? 'フォームを送信中です'
+                        : isFormValid
+                          ? 'フォームの送信準備ができています'
+                          : 'フォームの入力内容を確認してください'}
+                    </div>
                   </form>
                 </div>
               </div>
             </div>
 
             {/* サイドバー情報 */}
-            <div className="space-y-8">
+            <div className="space-y-6 sm:space-y-8">
               {/* よくあるご質問 */}
-              <div className="group hover:scale-105 transition-all duration-500">
-                <div className="bg-gradient-to-br from-white via-blue-50/30 to-indigo-50/30 rounded-3xl p-10 border border-blue-100 shadow-xl hover:shadow-2xl transition-all duration-500 relative overflow-hidden">
+              <div className="group hover:scale-[1.02] transition-all duration-500">
+                <div className="bg-gradient-to-br from-white via-blue-50/30 to-indigo-50/30 rounded-3xl p-6 sm:p-8 lg:p-10 border border-blue-100 shadow-xl hover:shadow-2xl transition-all duration-500 relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-200 to-transparent rounded-full opacity-10 -translate-y-16 translate-x-16" />
 
                   <div className="relative">
-                    <div className="flex items-center mb-8">
-                      <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-4 rounded-2xl mr-6 shadow-lg">
-                        <span className="text-3xl">❓</span>
+                    <div className="flex items-center mb-6 sm:mb-8">
+                      <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-3 sm:p-4 rounded-2xl mr-4 sm:mr-6 shadow-lg">
+                        <span className="text-2xl sm:text-3xl">❓</span>
                       </div>
-                      <h2 className="text-3xl font-bold text-gray-900">よくあるご質問</h2>
+                      <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
+                        よくあるご質問
+                      </h2>
                     </div>
 
-                    <div className="space-y-6">
-                      <div className="border-b border-gray-200 pb-6">
-                        <h3 className="font-bold text-gray-900 mb-3 text-lg flex items-center">
-                          <span className="text-blue-500 mr-3">Q.</span>
-                          緊急ヘルプ機能が見つからない
-                        </h3>
-                        <p className="text-gray-600 leading-relaxed ml-8">
-                          画面右下の🆘ボタンから「お手洗い検索」と「会話ネタ」機能をご利用いただけます。
-                        </p>
-                      </div>
-
-                      <div className="border-b border-gray-200 pb-6">
-                        <h3 className="font-bold text-gray-900 mb-3 text-lg flex items-center">
-                          <span className="text-blue-500 mr-3">Q.</span>
-                          天気・服装提案機能の使い方
-                        </h3>
-                        <p className="text-gray-600 leading-relaxed ml-8">
-                          ホームページの天気・服装提案カードから現在地の天気と服装アドバイスを確認できます。
-                        </p>
-                      </div>
-
-                      <div className="border-b border-gray-200 pb-6">
-                        <h3 className="font-bold text-gray-900 mb-3 text-lg flex items-center">
-                          <span className="text-blue-500 mr-3">Q.</span>
+                    <div className="space-y-4 sm:space-y-6">
+                      <div className="border-b border-gray-200 pb-4 sm:pb-6">
+                        <h3 className="font-bold text-gray-900 mb-2 sm:mb-3 text-base sm:text-lg flex items-center">
+                          <span className="text-blue-500 mr-2 sm:mr-3">Q.</span>
                           アカウントを削除したい
                         </h3>
-                        <p className="text-gray-600 leading-relaxed ml-8">
+                        <p className="text-gray-600 leading-relaxed ml-6 sm:ml-8 text-sm sm:text-base">
                           プロフィール設定からアカウントの削除が可能です。削除すると全てのデータが失われますのでご注意ください。
                         </p>
                       </div>
 
-                      <div className="border-b border-gray-200 pb-6">
-                        <h3 className="font-bold text-gray-900 mb-3 text-lg flex items-center">
-                          <span className="text-blue-500 mr-3">Q.</span>
+                      <div className="border-b border-gray-200 pb-4 sm:pb-6">
+                        <h3 className="font-bold text-gray-900 mb-2 sm:mb-3 text-base sm:text-lg flex items-center">
+                          <span className="text-blue-500 mr-2 sm:mr-3">Q.</span>
                           パスワードを忘れました
                         </h3>
-                        <p className="text-gray-600 leading-relaxed ml-8">
+                        <p className="text-gray-600 leading-relaxed ml-6 sm:ml-8 text-sm sm:text-base">
                           ログインページの「パスワードを忘れた方」からパスワードリセットが可能です。
                         </p>
                       </div>
-
-                      <div className="pb-6">
-                        <h3 className="font-bold text-gray-900 mb-3 text-lg flex items-center">
-                          <span className="text-blue-500 mr-3">Q.</span>
-                          広告について
-                        </h3>
-                        <p className="text-gray-600 leading-relaxed ml-8">
-                          本サービスでは、運営費用のためにGoogle AdSenseによる広告を表示しています。
-                          詳細は
-                          <Link
-                            href="/privacy"
-                            className="text-blue-600 hover:text-blue-800 underline font-semibold mx-1"
-                          >
-                            プライバシーポリシー
-                          </Link>
-                          をご確認ください。
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="mt-8 text-center">
-                      <Link href="/faq">
-                        <button className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
-                          📚 すべてのFAQを見る
-                        </button>
-                      </Link>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* 回答について */}
-              <div className="group hover:scale-105 transition-all duration-500">
-                <div className="bg-gradient-to-br from-white via-orange-50/30 to-amber-50/30 rounded-3xl p-10 border border-orange-100 shadow-xl hover:shadow-2xl transition-all duration-500 relative overflow-hidden">
+              <div className="group hover:scale-[1.02] transition-all duration-500">
+                <div className="bg-gradient-to-br from-white via-orange-50/30 to-amber-50/30 rounded-3xl p-6 sm:p-8 lg:p-10 border border-orange-100 shadow-xl hover:shadow-2xl transition-all duration-500 relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-orange-200 to-transparent rounded-full opacity-10 -translate-y-16 translate-x-16" />
 
                   <div className="relative">
-                    <div className="flex items-center mb-6">
-                      <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-4 rounded-2xl mr-6 shadow-lg">
-                        <span className="text-3xl">⏰</span>
+                    <div className="flex items-center mb-4 sm:mb-6">
+                      <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-3 sm:p-4 rounded-2xl mr-4 sm:mr-6 shadow-lg">
+                        <span className="text-2xl sm:text-3xl">⏰</span>
                       </div>
-                      <h3 className="text-2xl font-bold text-gray-900">回答について</h3>
+                      <h3 className="text-xl sm:text-2xl font-bold text-gray-900">回答について</h3>
                     </div>
-                    <div className="space-y-4">
-                      <div className="flex items-center text-orange-600 font-semibold text-lg">
-                        <span className="mr-3 text-xl">✓</span> 通常1-3営業日以内にご回答
+                    <div className="space-y-3 sm:space-y-4">
+                      <div className="flex items-center text-orange-600 font-semibold text-base sm:text-lg">
+                        <span className="mr-2 sm:mr-3 text-lg sm:text-xl">✓</span>
+                        <span>通常1-3営業日以内にご回答</span>
                       </div>
-                      <div className="flex items-center text-orange-600 font-semibold text-lg">
-                        <span className="mr-3 text-xl">✓</span> 緊急の場合は優先対応
+                      <div className="flex items-center text-orange-600 font-semibold text-base sm:text-lg">
+                        <span className="mr-2 sm:mr-3 text-lg sm:text-xl">✓</span>
+                        <span>緊急の場合は優先対応</span>
                       </div>
-                      <div className="flex items-center text-orange-600 font-semibold text-lg">
-                        <span className="mr-3 text-xl">✓</span> 土日祝日は翌営業日対応
+                      <div className="flex items-center text-orange-600 font-semibold text-base sm:text-lg">
+                        <span className="mr-2 sm:mr-3 text-lg sm:text-xl">✓</span>
+                        <span>土日祝日は翌営業日対応</span>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* フッターナビゲーション */}
-      <section className="py-12 bg-white border-t border-gray-200">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
-            <div className="flex flex-wrap gap-6 justify-center sm:justify-start">
-              <Link
-                href="/"
-                className="text-gray-600 hover:text-green-600 font-medium transition-colors"
-              >
-                ホーム
-              </Link>
-              <Link
-                href="/about"
-                className="text-gray-600 hover:text-green-600 font-medium transition-colors"
-              >
-                サービスについて
-              </Link>
-              <Link
-                href="/faq"
-                className="text-gray-600 hover:text-green-600 font-medium transition-colors"
-              >
-                よくある質問
-              </Link>
-              <Link
-                href="/privacy"
-                className="text-gray-600 hover:text-green-600 font-medium transition-colors"
-              >
-                プライバシーポリシー
-              </Link>
-            </div>
-            <div className="text-gray-500 text-sm">© 2025 Couple Plan. All rights reserved.</div>
           </div>
         </div>
       </section>

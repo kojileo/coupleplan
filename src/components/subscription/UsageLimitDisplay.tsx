@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+
 import type { CheckLimitResponse, SubscriptionError } from '@/types/subscription';
 
 /**
@@ -104,7 +105,7 @@ export function UsageLimitDisplay() {
             href="/dashboard/subscription"
             className="inline-flex items-center px-4 py-2 text-sm font-medium text-blue-600 bg-white border border-blue-300 rounded-lg hover:bg-blue-50 hover:border-blue-400 transition-colors"
           >
-            💎 無制限で使う
+            💎 サブスクリプションを確認
           </Link>
         </div>
       </div>

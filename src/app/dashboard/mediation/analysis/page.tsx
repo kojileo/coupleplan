@@ -204,7 +204,7 @@ export default function AnalysisPage(): ReactElement {
       setIsLoading(false);
     };
 
-    loadAnalysis();
+    void loadAnalysis();
   }, []);
 
   const handleGenerateReport = async () => {

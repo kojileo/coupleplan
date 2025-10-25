@@ -249,7 +249,7 @@ export default function ApprovalWorkflowPage(): ReactElement {
         <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
           <h3 className="text-xl font-bold text-gray-900 mb-6">承認ステップ</h3>
           <div className="space-y-6">
-            {approvalRequest.steps.map((step, index) => (
+            {approvalRequest.steps.map((step) => (
               <div key={step.id} className="flex items-start space-x-4">
                 <div className="flex-shrink-0">
                   <div

@@ -6,9 +6,10 @@
  * 目標カバレッジ: 90%以上
  */
 
-import { cn, formatDate, auth } from '@/lib/utils';
 import { NextRequest } from 'next/server';
+
 import * as supabaseAuth from '@/lib/supabase-auth';
+import { cn, formatDate, auth } from '@/lib/utils';
 
 describe('utils', () => {
   /**

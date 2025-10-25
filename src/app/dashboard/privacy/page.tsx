@@ -1,8 +1,8 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import type { ReactElement } from 'react';
-import { useRouter } from 'next/navigation';
 
 import Button from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
@@ -52,7 +52,7 @@ export default function PrivacyPage(): ReactElement {
       if (error) {
         console.error('プライバシー設定取得エラー:', error);
       } else if (data && data.preferences) {
-        const prefs = data.preferences as any;
+        const prefs = data.preferences;
         if (prefs.privacy) {
           setSettings(prefs.privacy);
         }

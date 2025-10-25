@@ -6,9 +6,10 @@
  * 目標カバレッジ: 75%以上
  */
 
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import React from 'react';
+
 import Textarea from '@/components/ui/textarea';
 
 describe('Textarea Component', () => {
@@ -38,19 +39,19 @@ describe('Textarea Component', () => {
     it('ユーザー入力を受け付ける', async () => {
       const user = userEvent.setup();
       render(<Textarea data-testid="textarea" />);
-      const textarea = screen.getByTestId('textarea') as HTMLTextAreaElement;
+      const textarea = screen.getByTestId('textarea');
 
       await user.type(textarea, 'テスト入力');
-      expect(textarea.value).toBe('テスト入力');
+      expect((textarea as HTMLTextAreaElement).value).toBe('テスト入力');
     });
 
     it('複数行の入力を受け付ける', async () => {
       const user = userEvent.setup();
       render(<Textarea data-testid="textarea" />);
-      const textarea = screen.getByTestId('textarea') as HTMLTextAreaElement;
+      const textarea = screen.getByTestId('textarea');
 
       await user.type(textarea, '1行目{Enter}2行目{Enter}3行目');
-      expect(textarea.value).toContain('1行目\n2行目\n3行目');
+      expect((textarea as HTMLTextAreaElement).value).toContain('1行目\n2行目\n3行目');
     });
 
     it('onChange イベントが発火する', () => {
@@ -71,20 +72,20 @@ describe('Textarea Component', () => {
   describe('TC-UI-TEXTAREA-003: value プロパティ', () => {
     it('value プロパティで初期値を設定できる', () => {
       render(<Textarea value="初期テキスト" onChange={() => {}} data-testid="textarea" />);
-      const textarea = screen.getByTestId('textarea') as HTMLTextAreaElement;
-      expect(textarea.value).toBe('初期テキスト');
+      const textarea = screen.getByTestId('textarea');
+      expect((textarea as HTMLTextAreaElement).value).toBe('初期テキスト');
     });
 
     it('value が変更されると表示が更新される', () => {
       const { rerender } = render(
         <Textarea value="初期値" onChange={() => {}} data-testid="textarea" />
       );
-      let textarea = screen.getByTestId('textarea') as HTMLTextAreaElement;
-      expect(textarea.value).toBe('初期値');
+      let textarea = screen.getByTestId('textarea');
+      expect((textarea as HTMLTextAreaElement).value).toBe('初期値');
 
       rerender(<Textarea value="更新後" onChange={() => {}} data-testid="textarea" />);
-      textarea = screen.getByTestId('textarea') as HTMLTextAreaElement;
-      expect(textarea.value).toBe('更新後');
+      textarea = screen.getByTestId('textarea');
+      expect((textarea as HTMLTextAreaElement).value).toBe('更新後');
     });
   });
 
@@ -103,10 +104,10 @@ describe('Textarea Component', () => {
     it('disabledの場合、入力を受け付けない', async () => {
       const user = userEvent.setup();
       render(<Textarea disabled data-testid="textarea" />);
-      const textarea = screen.getByTestId('textarea') as HTMLTextAreaElement;
+      const textarea = screen.getByTestId('textarea');
 
       await user.type(textarea, 'test');
-      expect(textarea.value).toBe('');
+      expect((textarea as HTMLTextAreaElement).value).toBe('');
     });
   });
 

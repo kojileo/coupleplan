@@ -4,8 +4,9 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase-auth';
+
 import { verifyPartnerInvitation } from '@/lib/partner-linkage';
+import { supabase } from '@/lib/supabase-auth';
 
 interface VerifyRequest {
   invitationCode: string;

@@ -6,8 +6,8 @@ import type { FormEvent, ReactElement } from 'react';
 import { useState, useEffect, Suspense } from 'react';
 
 import Button from '@/components/ui/button';
-import { supabase } from '@/lib/supabase-auth';
 import { clearSession } from '@/lib/manual-auth';
+import { supabase } from '@/lib/supabase-auth';
 
 function LoginForm(): ReactElement {
   const router = useRouter();
@@ -23,7 +23,7 @@ function LoginForm(): ReactElement {
     const clearSessionParam = searchParams.get('clearSession');
     if (clearSessionParam === 'true') {
       console.log('破損したセッションをクリアします');
-      clearSession().then(() => {
+      void clearSession().then(() => {
         console.log('セッションをクリアしました');
       });
     }
@@ -73,9 +73,9 @@ function LoginForm(): ReactElement {
       const redirectUrl = getRedirectUrl();
       console.log('リダイレクト先:', redirectUrl);
       router.push(redirectUrl);
-    } catch (error: any) {
+    } catch (error) {
       console.error('ログインエラー:', error);
-      setError(error.message || 'ログインに失敗しました');
+      setError(error instanceof Error ? error.message : 'ログインに失敗しました');
     } finally {
       setLoading(false);
     }
@@ -99,7 +99,6 @@ function LoginForm(): ReactElement {
             </span>
           </Link>
           <h2 className="text-3xl font-bold text-gray-900 mb-2">ログイン</h2>
-          <p className="text-gray-600">おかえりなさい！続きを楽しみましょう</p>
         </div>
 
         {/* フォーム */}

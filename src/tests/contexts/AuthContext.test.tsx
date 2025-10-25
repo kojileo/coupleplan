@@ -1,17 +1,18 @@
 /**
  * AuthContext テスト
- * 
+ *
  * テスト対象: src/contexts/AuthContext.tsx
  * テスト計画: Docs/tests/TEST_CASES.md § 2. 認証機能テストケース
  * 目標カバレッジ: 85%以上
  */
 
-import React from 'react';
-import { render, screen, waitFor, renderHook, act } from '@testing-library/react';
-import { AuthProvider, useAuth } from '@/contexts/AuthContext';
-import * as supabaseAuth from '@/lib/supabase-auth';
-import * as manualAuth from '@/lib/manual-auth';
 import { User, Session } from '@supabase/supabase-js';
+import { render, screen, waitFor, renderHook, act } from '@testing-library/react';
+import React from 'react';
+
+import { AuthProvider, useAuth } from '@/contexts/AuthContext';
+import * as manualAuth from '@/lib/manual-auth';
+import * as supabaseAuth from '@/lib/supabase-auth';
 
 // Supabaseのモック
 jest.mock('@/lib/supabase-auth', () => ({
@@ -35,7 +36,7 @@ describe('AuthContext', () => {
   // モックのリセット
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // デフォルトのモック実装
     (supabaseAuth.supabase.auth.onAuthStateChange as jest.Mock).mockReturnValue({
       data: {
@@ -44,7 +45,7 @@ describe('AuthContext', () => {
         },
       },
     });
-    
+
     (manualAuth.detectAndClearCorruptedSession as jest.Mock).mockResolvedValue(false);
     (manualAuth.safeAuthCheck as jest.Mock).mockResolvedValue({
       isAuthenticated: false,
@@ -197,7 +198,7 @@ describe('AuthContext', () => {
 
       // signOutが呼ばれたことを確認
       expect(supabaseAuth.supabase.auth.signOut).toHaveBeenCalled();
-      
+
       // 状態がクリアされたことを確認
       expect(result.current.user).toBeNull();
       expect(result.current.session).toBeNull();
@@ -223,10 +224,7 @@ describe('AuthContext', () => {
         await result.current.signOut();
       });
 
-      expect(consoleErrorSpy).toHaveBeenCalledWith(
-        'ログアウトエラー:',
-        expect.any(Error)
-      );
+      expect(consoleErrorSpy).toHaveBeenCalledWith('ログアウトエラー:', expect.any(Error));
 
       consoleErrorSpy.mockRestore();
     });
@@ -335,18 +333,16 @@ describe('AuthContext', () => {
     it('認証状態変更時にuserとsessionが更新される', async () => {
       let authCallback: ((event: string, session: Session | null) => void) | null = null;
 
-      (supabaseAuth.supabase.auth.onAuthStateChange as jest.Mock).mockImplementation(
-        (callback) => {
-          authCallback = callback;
-          return {
-            data: {
-              subscription: {
-                unsubscribe: jest.fn(),
-              },
+      (supabaseAuth.supabase.auth.onAuthStateChange as jest.Mock).mockImplementation((callback) => {
+        authCallback = callback;
+        return {
+          data: {
+            subscription: {
+              unsubscribe: jest.fn(),
             },
-          };
-        }
-      );
+          },
+        };
+      });
 
       const { result } = renderHook(() => useAuth(), {
         wrapper: ({ children }) => <AuthProvider>{children}</AuthProvider>,
@@ -400,4 +396,3 @@ describe('AuthContext', () => {
     });
   });
 });
-

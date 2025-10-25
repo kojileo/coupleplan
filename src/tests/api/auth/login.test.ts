@@ -1,14 +1,15 @@
 /**
  * ログインAPI テスト
- * 
+ *
  * テスト対象: src/app/api/auth/login/route.ts
  * テスト計画: Docs/tests/TEST_CASES.md § 2.2 ログイン
  * 目標カバレッジ: 80%以上
  */
 
-import { POST } from '@/app/api/auth/login/route';
-import { NextRequest } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { NextRequest } from 'next/server';
+
+import { POST } from '@/app/api/auth/login/route';
 
 // Supabaseクライアントのモック
 jest.mock('@supabase/supabase-js', () => ({
@@ -313,4 +314,3 @@ describe('/api/auth/login', () => {
     });
   });
 });
-

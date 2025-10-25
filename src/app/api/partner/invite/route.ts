@@ -4,8 +4,9 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase-auth';
+
 import { createPartnerInvitation } from '@/lib/partner-linkage';
+import { supabase } from '@/lib/supabase-auth';
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {

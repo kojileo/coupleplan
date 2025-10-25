@@ -226,7 +226,7 @@ export default function ReflectionReportPage(): ReactElement {
       setIsLoading(false);
     };
 
-    loadReport();
+    void loadReport();
   }, []);
 
   const handleGeneratePDF = async () => {
@@ -241,13 +241,13 @@ export default function ReflectionReportPage(): ReactElement {
 
   const handleShareReport = () => {
     if (navigator.share) {
-      navigator.share({
+      void navigator.share({
         title: '関係改善レポート',
         text: '私たちの関係改善の進捗レポートです',
         url: window.location.href,
       });
     } else {
-      navigator.clipboard.writeText(window.location.href);
+      void navigator.clipboard.writeText(window.location.href);
       alert('レポートのリンクをコピーしました');
     }
   };

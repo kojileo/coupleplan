@@ -6,6 +6,7 @@ import {
   PlanValidationResult,
   PlanValidationError,
 } from '@/types/date-plan';
+
 import { isPrefectureValid, isCityValid } from './location-data';
 
 /**

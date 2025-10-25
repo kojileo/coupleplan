@@ -1,8 +1,9 @@
 'use client';
 
-import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
 import { useState } from 'react';
+
 import { createClient } from '@/lib/supabase/client';
 
 export default function Navbar() {
@@ -13,7 +14,7 @@ export default function Navbar() {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    router.push('/login');
+    router.push('/');
   };
 
   // ログインページや認証ページではナビゲーションを表示しない
@@ -73,14 +74,14 @@ export default function Navbar() {
               📅 プラン一覧
             </Link>
             <Link
-              href="/dashboard/plans/create"
+              href="/dashboard/subscription"
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                isActive('/dashboard/plans/create')
+                isActive('/dashboard/subscription')
                   ? 'bg-rose-100 text-rose-700'
                   : 'text-gray-700 hover:bg-gray-100'
               }`}
             >
-              ✨ プラン作成
+              💳 サブスクリプション
             </Link>
             <Link
               href="/dashboard/partner-linkage"

@@ -6,8 +6,9 @@
  * 目標カバレッジ: 80%以上
  */
 
-import { GET } from '@/app/api/plans/route';
 import { NextRequest } from 'next/server';
+
+import { GET } from '@/app/api/plans/route';
 
 // createClientのモック
 jest.mock('@/lib/supabase/server', () => ({

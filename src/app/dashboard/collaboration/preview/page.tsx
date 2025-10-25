@@ -64,13 +64,13 @@ export default function PlanPreviewPage(): ReactElement {
 
   const handleShare = () => {
     if (navigator.share) {
-      navigator.share({
+      void navigator.share({
         title: plan.title,
         text: plan.content,
         url: window.location.href,
       });
     } else {
-      navigator.clipboard.writeText(window.location.href);
+      void navigator.clipboard.writeText(window.location.href);
       alert('リンクをコピーしました');
     }
   };

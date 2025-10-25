@@ -214,7 +214,7 @@ export default function ImprovementPlanPage(): ReactElement {
       setIsLoading(false);
     };
 
-    loadPlan();
+    void loadPlan();
   }, []);
 
   const handleActivityComplete = async (activityId: string) => {

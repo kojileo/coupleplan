@@ -2,9 +2,10 @@
 // UC-001: AIデートプラン提案・生成機能
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+
 import { generateDatePlan } from '@/lib/ai-service';
 import { validateDatePlanRequest } from '@/lib/plan-validation';
+import { createClient } from '@/lib/supabase/server';
 import { DatePlanCreateRequest, AIGenerationRequest } from '@/types/date-plan';
 
 export async function POST(request: NextRequest) {
@@ -99,7 +100,7 @@ export async function POST(request: NextRequest) {
 
     // 生成されたプランをデータベースに保存
     const savedPlans = await Promise.all(
-      aiResponse.plans.map(async (plan, index) => {
+      aiResponse.plans.map(async (plan) => {
         // date_plansテーブルに保存
         const { data: savedPlan, error: planError } = await supabase
           .from('date_plans')
@@ -174,12 +175,13 @@ export async function POST(request: NextRequest) {
       generation_time: aiResponse.generation_time,
       metadata: aiResponse.metadata,
     });
-  } catch (error: any) {
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'プラン生成に失敗しました';
     console.error('プラン生成エラー:', error);
     return NextResponse.json(
       {
-        error: error.message || 'プランの生成に失敗しました',
-        code: error.code || 'GENERATION_ERROR',
+        error: errorMessage,
+        code: 'GENERATION_ERROR',
       },
       { status: 500 }
     );
