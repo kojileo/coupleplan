@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import type { ReactElement } from 'react';
 
 import Button from '@/components/ui/button';
@@ -36,7 +36,7 @@ interface UserProfile {
 }
 
 export default function ProfilePage(): ReactElement {
-  const { user, session } = useAuth();
+  const { user } = useAuth();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -52,13 +52,7 @@ export default function ProfilePage(): ReactElement {
     location?: string;
   }>({});
 
-  useEffect(() => {
-    if (user) {
-      loadProfile();
-    }
-  }, [user]);
-
-  const loadProfile = async () => {
+  const loadProfile = useCallback(async () => {
     if (!user) return;
 
     setIsLoading(true);
@@ -142,7 +136,13 @@ export default function ProfilePage(): ReactElement {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      void loadProfile();
+    }
+  }, [user, loadProfile]);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -180,7 +180,7 @@ export default function ProfilePage(): ReactElement {
       console.log('保存するデータ:', profileData);
 
       // まず既存のプロフィールを確認
-      const { data: existingProfile, error: checkError } = await supabase
+      const { error: checkError } = await supabase
         .from('profiles')
         .select('id')
         .eq('user_id', user.id)
@@ -378,7 +378,7 @@ export default function ProfilePage(): ReactElement {
                   <Button onClick={handleCancel} variant="outline">
                     キャンセル
                   </Button>
-                  <Button onClick={handleSave}>保存</Button>
+                  <Button onClick={() => void handleSave()}>保存</Button>
                 </>
               )}
             </div>
@@ -510,7 +510,7 @@ export default function ProfilePage(): ReactElement {
           <h3 className="text-2xl font-bold text-gray-900 mb-6">アカウント設定</h3>
           <div className="space-y-4">
             <Button
-              onClick={handleChangePassword}
+              onClick={() => void handleChangePassword()}
               variant="outline"
               className="w-full justify-start"
               disabled={isPasswordResetLoading}
@@ -518,7 +518,7 @@ export default function ProfilePage(): ReactElement {
               {isPasswordResetLoading ? '⏳ 送信中...' : '🔒 パスワードを変更'}
             </Button>
             <Button
-              onClick={handleDeleteAccount}
+              onClick={() => void handleDeleteAccount()}
               variant="outline"
               className="w-full justify-start text-red-600 hover:text-red-800 hover:bg-red-50"
             >

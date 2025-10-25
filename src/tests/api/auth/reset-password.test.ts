@@ -6,9 +6,11 @@
  * 目標カバレッジ: 80%以上
  */
 
-import { POST } from '@/app/api/auth/reset-password/route';
 import { NextRequest } from 'next/server';
+
+import { POST } from '@/app/api/auth/reset-password/route';
 import * as supabaseAuth from '@/lib/supabase-auth';
+import { resetPasswordRateLimitMap } from '@/lib/rate-limit-maps';
 
 describe('/api/auth/reset-password', () => {
   const originalEnv = process.env;
@@ -19,7 +21,6 @@ describe('/api/auth/reset-password', () => {
     process.env.NEXT_PUBLIC_APP_URL = 'http://localhost:3000';
 
     // Rate limit mapをクリア（テスト間での干渉を防ぐ）
-    const { resetPasswordRateLimitMap } = require('@/app/api/auth/reset-password/route');
     if (resetPasswordRateLimitMap) {
       resetPasswordRateLimitMap.clear();
     }

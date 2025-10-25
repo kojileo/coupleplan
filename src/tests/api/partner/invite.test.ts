@@ -6,10 +6,11 @@
  * 目標カバレッジ: 80%以上
  */
 
-import { POST } from '@/app/api/partner/invite/route';
 import { NextRequest } from 'next/server';
-import * as supabaseAuth from '@/lib/supabase-auth';
+
+import { POST } from '@/app/api/partner/invite/route';
 import * as partnerLinkage from '@/lib/partner-linkage';
+import * as supabaseAuth from '@/lib/supabase-auth';
 
 // モック
 jest.mock('@/lib/partner-linkage');

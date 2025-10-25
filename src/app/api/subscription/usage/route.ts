@@ -1,5 +1,6 @@
-import { createClient } from '@/lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
+
+import { createClient } from '@/lib/supabase/server';
 
 /**
  * POST /api/subscription/usage
@@ -66,7 +67,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    const plan = subscription.plan as any;
+    const plan = subscription.plan;
 
     // 無制限プランの場合
     if (plan.daily_plan_limit === null && plan.monthly_plan_limit === null) {

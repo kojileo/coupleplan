@@ -3,12 +3,12 @@
 import Link from 'next/link';
 import type { ReactElement } from 'react';
 
-import { useAuth } from '@/contexts/AuthContext';
-import Button from '@/components/ui/button';
 import { UsageLimitDisplay } from '@/components/subscription/UsageLimitDisplay';
+import Button from '@/components/ui/button';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function Dashboard(): ReactElement {
-  const { session, isLoading, user, signOut } = useAuth();
+  const { session, isLoading } = useAuth();
 
   // ローディング中
   if (isLoading) {

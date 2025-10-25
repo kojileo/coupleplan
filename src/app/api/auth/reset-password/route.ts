@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { createClient } from '@/lib/supabase/server';
-
-// Rate limit用のMap（メモリベース）
-export const resetPasswordRateLimitMap = new Map<string, { count: number; resetTime: number }>();
+import { resetPasswordRateLimitMap } from '@/lib/rate-limit-maps';
 
 interface ResetPasswordRequest {
   email: string;

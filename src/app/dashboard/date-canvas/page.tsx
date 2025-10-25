@@ -68,7 +68,7 @@ export default function DateCanvasPage(): ReactElement {
   const canvasRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const loadData = async () => {
+    const loadData = () => {
       setIsLoading(true);
 
       // 思い出データのシミュレーション
@@ -162,7 +162,7 @@ export default function DateCanvasPage(): ReactElement {
       setIsLoading(false);
     };
 
-    loadData();
+    void loadData();
   }, []);
 
   const handleAddMemory = () => {
@@ -170,8 +170,8 @@ export default function DateCanvasPage(): ReactElement {
 
     const memory: Memory = {
       id: Date.now().toString(),
-      title: newMemory.title!,
-      content: newMemory.content!,
+      title: newMemory.title,
+      content: newMemory.content,
       type: newMemory.type!,
       position: { x: Math.random() * 400 + 100, y: Math.random() * 300 + 100 },
       size: { width: 200, height: 120 },
@@ -218,13 +218,13 @@ export default function DateCanvasPage(): ReactElement {
 
   const handleShare = () => {
     if (navigator.share) {
-      navigator.share({
+      void navigator.share({
         title: 'Date Canvas - 思い出のキャンバス',
         text: '私たちの思い出をキャンバスに記録しました',
         url: window.location.href,
       });
     } else {
-      navigator.clipboard.writeText(window.location.href);
+      void navigator.clipboard.writeText(window.location.href);
       alert('リンクをコピーしました');
     }
   };

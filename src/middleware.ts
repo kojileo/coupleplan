@@ -1,7 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
 import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
-import { authCircuitBreaker } from '@/lib/circuit-breaker';
+import { NextRequest, NextResponse } from 'next/server';
+
 import { authStopManager } from '@/lib/auth-stop';
+import { authCircuitBreaker } from '@/lib/circuit-breaker';
 
 // 簡易的なレート制限実装（本番環境では Redis などを使用推奨）
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();

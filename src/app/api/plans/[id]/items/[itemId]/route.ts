@@ -2,6 +2,7 @@
 // UC001-005: カスタマイズビュー機能
 
 import { NextRequest, NextResponse } from 'next/server';
+
 import { createClient } from '@/lib/supabase/server';
 
 /**
@@ -85,7 +86,8 @@ export async function PUT(
     }
 
     return NextResponse.json({ item: updatedItem });
-  } catch (error: any) {
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'アイテム操作に失敗しました';
     console.error('アイテム更新エラー:', error);
     return NextResponse.json({ error: 'サーバーエラーが発生しました' }, { status: 500 });
   }
@@ -177,7 +179,8 @@ export async function DELETE(
     }
 
     return NextResponse.json({ message: 'アイテムを削除しました' });
-  } catch (error: any) {
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'アイテム操作に失敗しました';
     console.error('アイテム削除エラー:', error);
     return NextResponse.json({ error: 'サーバーエラーが発生しました' }, { status: 500 });
   }

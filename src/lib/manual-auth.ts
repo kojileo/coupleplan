@@ -3,9 +3,9 @@
  * 自動リフレッシュを無効化した場合の手動認証処理
  */
 
-import { supabase } from './supabase-auth';
-import { authCircuitBreaker } from './circuit-breaker';
 import { authStopManager } from './auth-stop';
+import { authCircuitBreaker } from './circuit-breaker';
+import { supabase } from './supabase-auth';
 
 export interface AuthStatus {
   isAuthenticated: boolean;
@@ -43,13 +43,15 @@ export async function checkAuthStatus(): Promise<AuthStatus> {
 
     if (error) {
       // リフレッシュトークンエラーの場合はグローバル停止をトリガー
-      if (error.message?.includes('refresh_token_not_found') || 
-          error.message?.includes('Invalid Refresh Token')) {
+      if (
+        error.message?.includes('refresh_token_not_found') ||
+        error.message?.includes('Invalid Refresh Token')
+      ) {
         console.warn('リフレッシュトークンエラーを検出。認証システムを停止します。');
         authStopManager.autoStopOnRefreshTokenError();
         authCircuitBreaker.recordFailure();
       }
-      
+
       return {
         isAuthenticated: false,
         needsRefresh: false,
@@ -79,7 +81,7 @@ export async function checkAuthStatus(): Promise<AuthStatus> {
   } catch (error) {
     // エラーを記録
     authCircuitBreaker.recordFailure();
-    
+
     return {
       isAuthenticated: false,
       needsRefresh: false,
@@ -97,11 +99,16 @@ export async function refreshToken(): Promise<boolean> {
 
     if (error) {
       // レート制限エラーの場合は特別な処理
-      if (error.message?.includes('rate limit') || error.message?.includes('over_request_rate_limit')) {
-        console.warn('トークンリフレッシュ: レート制限に達しています。しばらく待ってから再試行してください。');
+      if (
+        error.message?.includes('rate limit') ||
+        error.message?.includes('over_request_rate_limit')
+      ) {
+        console.warn(
+          'トークンリフレッシュ: レート制限に達しています。しばらく待ってから再試行してください。'
+        );
         return false;
       }
-      
+
       console.error('トークンリフレッシュエラー:', error);
       return false;
     }
@@ -152,13 +159,15 @@ export async function clearSession(): Promise<void> {
   try {
     // Supabaseセッションをクリア
     await supabase.auth.signOut();
-    
+
     // ローカルストレージをクリア
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('sb-' + process.env.NEXT_PUBLIC_SUPABASE_URL?.split('//')[1]?.split('.')[0] + '-auth-token');
+      localStorage.removeItem(
+        'sb-' + process.env.NEXT_PUBLIC_SUPABASE_URL?.split('//')[1]?.split('.')[0] + '-auth-token'
+      );
       sessionStorage.clear();
     }
-    
+
     console.log('セッションをクリアしました');
   } catch (error) {
     console.error('セッションクリアエラー:', error);
@@ -171,17 +180,19 @@ export async function clearSession(): Promise<void> {
 export async function detectAndClearCorruptedSession(): Promise<boolean> {
   try {
     const { data, error } = await supabase.auth.getSession();
-    
+
     if (error) {
       // リフレッシュトークンエラーの場合はセッションをクリア
-      if (error.message?.includes('refresh_token_not_found') || 
-          error.message?.includes('Invalid Refresh Token')) {
+      if (
+        error.message?.includes('refresh_token_not_found') ||
+        error.message?.includes('Invalid Refresh Token')
+      ) {
         console.warn('破損したセッションを検出しました。クリアします。');
         await clearSession();
         return true;
       }
     }
-    
+
     return false;
   } catch (error) {
     console.error('セッション検出エラー:', error);
@@ -196,9 +207,10 @@ export class AuthMonitor {
   private intervalId: NodeJS.Timeout | null = null;
   private isRunning = false;
 
-  start(intervalMs: number = 300000): void { // デフォルト5分間隔
+  start(intervalMs: number = 300000): void {
+    // デフォルト5分間隔
     if (this.isRunning) return;
-    
+
     this.isRunning = true;
     this.intervalId = setInterval(async () => {
       try {
@@ -208,7 +220,7 @@ export class AuthMonitor {
           console.log('破損したセッションをクリアしました');
           return;
         }
-        
+
         const status = await safeAuthCheck();
         console.log('認証状態監視:', status);
       } catch (error) {

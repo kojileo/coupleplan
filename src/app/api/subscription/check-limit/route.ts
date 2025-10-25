@@ -1,5 +1,6 @@
-import { createClient } from '@/lib/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
+
+import { createClient } from '@/lib/supabase/server';
 
 /**
  * GET /api/subscription/check-limit
@@ -47,7 +48,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const plan = subscription.plan as any;
+    const plan = subscription.plan;
 
     // 無制限プランの場合（Premium）
     if (plan.daily_plan_limit === null && plan.monthly_plan_limit === null) {

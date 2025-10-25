@@ -3,9 +3,10 @@
 // カップル招待バナーコンポーネント
 // プラン作成後やダッシュボードで表示され、カップル連携を促す
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
 import { X, Heart, Users, Share2 } from 'lucide-react';
+import Link from 'next/link';
+import { useState, useEffect } from 'react';
+
 import { getCoupleStatus, getCoupleInviteMessage } from '@/lib/couple-utils';
 
 interface CoupleInviteBannerProps {

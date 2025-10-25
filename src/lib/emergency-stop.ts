@@ -12,33 +12,32 @@ import { clearSession } from './manual-auth';
 export async function emergencyStop(): Promise<void> {
   try {
     console.warn('🚨 認証システムの緊急停止を実行します');
-    
+
     // 1. サーキットブレーカーを強制的にオープン
     authCircuitBreaker.reset();
     for (let i = 0; i < 10; i++) {
       authCircuitBreaker.recordFailure();
     }
-    
+
     // 2. 全てのセッションをクリア
     await clearSession();
-    
+
     // 3. ローカルストレージを完全にクリア
     if (typeof window !== 'undefined') {
       localStorage.clear();
       sessionStorage.clear();
-      
+
       // Supabase関連のキーを個別に削除
       const keys = Object.keys(localStorage);
-      keys.forEach(key => {
+      keys.forEach((key) => {
         if (key.includes('supabase') || key.includes('sb-')) {
           localStorage.removeItem(key);
         }
       });
     }
-    
+
     console.warn('✅ 認証システムの緊急停止が完了しました');
     console.warn('📝 手動でページをリロードしてください');
-    
   } catch (error) {
     console.error('❌ 緊急停止の実行中にエラーが発生しました:', error);
   }
@@ -50,15 +49,14 @@ export async function emergencyStop(): Promise<void> {
 export async function resetAuthSystem(): Promise<void> {
   try {
     console.log('🔄 認証システムをリセットします');
-    
+
     // 1. サーキットブレーカーをリセット
     authCircuitBreaker.reset();
-    
+
     // 2. セッションをクリア
     await clearSession();
-    
+
     console.log('✅ 認証システムのリセットが完了しました');
-    
   } catch (error) {
     console.error('❌ 認証システムのリセット中にエラーが発生しました:', error);
   }
