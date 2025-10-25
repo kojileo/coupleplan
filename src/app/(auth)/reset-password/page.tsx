@@ -21,22 +21,43 @@ export default function ResetPasswordPage(): ReactElement {
   useEffect(() => {
     const checkSession = async (): Promise<void> => {
       try {
-        // URLパラメータからトークンを取得
+        // URLパラメータからトークンとエラー情報を取得
         const urlParams = new URLSearchParams(window.location.search);
         const accessToken = urlParams.get('access_token');
         const refreshToken = urlParams.get('refresh_token');
         const type = urlParams.get('type');
         const code = urlParams.get('code');
+        const error = urlParams.get('error');
+        const errorCode = urlParams.get('error_code');
+        const errorDescription = urlParams.get('error_description');
 
         console.log('パスワードリセットページ - URL Parameters:', {
           accessToken: accessToken ? 'exists' : 'missing',
           refreshToken: refreshToken ? 'exists' : 'missing',
           type,
           code: code ? 'exists' : 'missing',
+          error,
+          errorCode,
+          errorDescription,
           fullUrl: window.location.href,
           search: window.location.search,
           hash: window.location.hash,
         });
+
+        // エラーパラメータがある場合の処理
+        if (error === 'access_denied' && errorCode === 'otp_expired') {
+          console.log('OTP期限切れエラーが検出されました');
+          setError(
+            'パスワードリセットリンクの有効期限が切れています。再度リセットメールを送信してください。'
+          );
+          return;
+        }
+
+        if (error) {
+          console.log('認証エラーが検出されました:', { error, errorCode, errorDescription });
+          setError('パスワードリセットリンクが無効です。再度リセットメールを送信してください。');
+          return;
+        }
 
         // 1. 従来方式（access_token + refresh_token）を優先
         if (type === 'recovery' && accessToken && refreshToken) {
@@ -109,16 +130,7 @@ export default function ResetPasswordPage(): ReactElement {
           }
         }
 
-        // 3. ホームページからリダイレクトされた場合の処理
-        if (code && window.location.pathname === '/') {
-          console.log(
-            'ホームページからリダイレクトされました。パスワードリセットページに移動します。'
-          );
-          window.location.href = `/reset-password?code=${code}`;
-          return;
-        }
-
-        // 4. Supabaseの自動セッション検出を試行
+        // 3. Supabaseの自動セッション検出を試行
         console.log('Supabaseの自動セッション検出を試行中...');
         const {
           data: { session },
