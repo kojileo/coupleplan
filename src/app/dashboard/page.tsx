@@ -6,8 +6,6 @@ import type { ReactElement } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import Button from '@/components/ui/button';
 import { UsageLimitDisplay } from '@/components/subscription/UsageLimitDisplay';
-import CoupleStatusCard from '@/components/couple/CoupleStatusCard';
-import CoupleInviteBanner from '@/components/couple/CoupleInviteBanner';
 
 export default function Dashboard(): ReactElement {
   const { session, isLoading, user, signOut } = useAuth();
@@ -56,22 +54,11 @@ export default function Dashboard(): ReactElement {
             <p className="text-xl text-gray-600">
               カップルの絆を深める統合プラットフォームへようこそ
             </p>
-            {user && <p className="text-lg text-gray-500 mt-2">こんにちは、{user.email} さん！</p>}
           </div>
 
           {/* 使用状況表示 */}
           <div className="max-w-6xl mx-auto mb-8">
             <UsageLimitDisplay />
-          </div>
-
-          {/* カップル連携状態 */}
-          <div className="max-w-6xl mx-auto mb-8">
-            <CoupleStatusCard />
-          </div>
-
-          {/* カップル招待バナー */}
-          <div className="max-w-6xl mx-auto mb-8">
-            <CoupleInviteBanner context="dashboard" />
           </div>
 
           {/* 主要機能カード */}
@@ -168,89 +155,6 @@ export default function Dashboard(): ReactElement {
                   <Button disabled className="w-full bg-gray-300 text-gray-500 cursor-not-allowed">
                     近日公開
                   </Button>
-                </div>
-              </div>
-            </div>
-
-            {/* ポータル統合 */}
-            <div className="group transition-all duration-500 relative">
-              <div className="bg-white rounded-3xl p-8 shadow-xl transition-all duration-500 border border-gray-100 h-full opacity-60">
-                <div className="absolute top-4 right-4 z-10">
-                  <span className="px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded-full">
-                    準備中
-                  </span>
-                </div>
-                <div className="text-center">
-                  <div className="bg-gradient-to-br from-indigo-300 to-indigo-400 w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg">
-                    <span className="text-3xl">🌐</span>
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4">ポータル統合</h3>
-                  <p className="text-gray-600 mb-6 leading-relaxed">
-                    デート情報ポータルからAIデートプラン生成まで、カップルのデート体験を一貫してサポートします。
-                  </p>
-                  <Button disabled className="w-full bg-gray-300 text-gray-500 cursor-not-allowed">
-                    近日公開
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            {/* パートナー連携 */}
-            <div className="group hover:scale-105 transition-all duration-500">
-              <div className="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100 h-full">
-                <div className="text-center">
-                  <div className="bg-gradient-to-br from-pink-500 to-pink-600 w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
-                    <span className="text-3xl">💑</span>
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4">パートナー連携</h3>
-                  <p className="text-gray-600 mb-6 leading-relaxed">
-                    パートナーとの連携設定、招待コードの生成・検証、カップル関係の確立を行います。
-                  </p>
-                  <Link href="/dashboard/partner-linkage">
-                    <Button className="w-full bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white">
-                      パートナー連携
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            </div>
-
-            {/* サブスクリプション管理 */}
-            <div className="group hover:scale-105 transition-all duration-500">
-              <div className="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100 h-full">
-                <div className="text-center">
-                  <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
-                    <span className="text-3xl">💎</span>
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4">サブスクリプション</h3>
-                  <p className="text-gray-600 mb-6 leading-relaxed">
-                    現在のプラン情報、使用状況の確認、Premiumプランの詳細をご覧いただけます。
-                  </p>
-                  <Link href="/dashboard/subscription">
-                    <Button className="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white">
-                      プラン管理
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            </div>
-
-            {/* プロフィール設定 */}
-            <div className="group hover:scale-105 transition-all duration-500">
-              <div className="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100 h-full">
-                <div className="text-center">
-                  <div className="bg-gradient-to-br from-gray-500 to-gray-600 w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-lg">
-                    <span className="text-3xl">⚙️</span>
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4">プロフィール設定</h3>
-                  <p className="text-gray-600 mb-6 leading-relaxed">
-                    アカウント情報、プロフィール、プライバシー設定を管理できます。
-                  </p>
-                  <Link href="/dashboard/profile">
-                    <Button className="w-full bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white">
-                      設定を開く
-                    </Button>
-                  </Link>
                 </div>
               </div>
             </div>
