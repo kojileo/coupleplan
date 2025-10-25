@@ -150,7 +150,7 @@ describe('/api/auth/reset-password', () => {
     it('Supabaseエラーの場合、400エラーを返す', async () => {
       (supabaseAuth.supabase.auth.resetPasswordForEmail as jest.Mock).mockResolvedValue({
         data: null,
-        error: { message: 'Email not found' },
+        error: { message: 'Email not found', status: 400 },
       });
 
       const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
@@ -168,11 +168,51 @@ describe('/api/auth/reset-password', () => {
       expect(response.status).toBe(400);
       expect(data.error).toContain('パスワードリセットメールの送信に失敗');
       expect(consoleErrorSpy).toHaveBeenCalledWith(
-        'Supabaseパスワードリセットエラー:',
+        expect.stringMatching(/\[.*\] Supabaseパスワードリセットエラー:/),
         expect.any(Object)
       );
 
       consoleErrorSpy.mockRestore();
+    });
+
+    it('レート制限エラーの場合、429エラーを返す', async () => {
+      (supabaseAuth.supabase.auth.resetPasswordForEmail as jest.Mock).mockResolvedValue({
+        data: null,
+        error: { message: 'rate limit exceeded', status: 429 },
+      });
+
+      const request = new NextRequest('http://localhost:3000/api/auth/reset-password', {
+        method: 'POST',
+        body: JSON.stringify({
+          email: 'ratelimit@example.com',
+        }),
+      });
+
+      const response = await POST(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(429);
+      expect(data.error).toContain('送信制限に達しました');
+    });
+
+    it('無効なメールアドレスエラーの場合、400エラーを返す', async () => {
+      (supabaseAuth.supabase.auth.resetPasswordForEmail as jest.Mock).mockResolvedValue({
+        data: null,
+        error: { message: 'invalid email format', status: 400 },
+      });
+
+      const request = new NextRequest('http://localhost:3000/api/auth/reset-password', {
+        method: 'POST',
+        body: JSON.stringify({
+          email: 'invalid-email',
+        }),
+      });
+
+      const response = await POST(request);
+      const data = await response.json();
+
+      expect(response.status).toBe(400);
+      expect(data.error).toContain('無効なメールアドレスです');
     });
   });
 
