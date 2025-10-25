@@ -73,77 +73,26 @@ export default function ResetPasswordPage(): ReactElement {
           }
         }
 
-        // 新しい方式：codeパラメータを使用した認証
+        // PKCE方式（codeパラメータ）は使用しない
+        // この方式はPKCE設定が複雑なため、従来方式を優先
         if (code) {
-          console.log('パスワードリセットコードが検出されました（新方式）');
-          try {
-            // codeを使用してセッションを確立
-            const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-
-            console.log('コード交換結果:', {
-              hasSession: !!data.session,
-              error: error?.message,
-            });
-
-            if (error) {
-              console.error('コード交換エラー:', error);
-              throw error;
-            }
-
-            if (data.session) {
-              setIsValidSession(true);
-              setMessage('新しいパスワードを設定してください');
-              return;
-            } else {
-              setError('セッションの確立に失敗しました。再度リセットメールを送信してください。');
-              return;
-            }
-          } catch (codeError) {
-            console.error('コード交換エラー:', codeError);
-            setError('パスワードリセットリンクが無効です。再度リセットメールを送信してください。');
-            return;
-          }
-        }
-
-        // ホームページからリダイレクトされた場合の処理
-        if (code && window.location.pathname === '/') {
           console.log(
-            'ホームページからリダイレクトされました。パスワードリセットページに移動します。'
+            'codeパラメータが検出されましたが、PKCE設定が不完全なため従来方式を推奨します'
           );
-          // パスワードリセットページにリダイレクト
-          window.location.href = `/reset-password?code=${code}`;
+          setError('パスワードリセットリンクが無効です。再度リセットメールを送信してください。');
           return;
         }
 
-        // 既存のセッションを確認
-        console.log('既存セッションを確認中...');
-        const {
-          data: { session },
-          error: sessionError,
-        } = await supabase.auth.getSession();
-
-        console.log('既存セッション確認結果:', {
-          hasSession: !!session,
-          error: sessionError?.message,
-        });
-
-        if (sessionError) {
-          console.error('セッション確認エラー:', sessionError);
-          throw sessionError;
+        // ホームページからリダイレクトされた場合の処理（codeパラメータは使用しない）
+        if (code && window.location.pathname === '/') {
+          console.log('ホームページからリダイレクトされましたが、codeパラメータは使用しません');
+          setError('パスワードリセットリンクが無効です。再度リセットメールを送信してください。');
+          return;
         }
 
-        if (session) {
-          setIsValidSession(true);
-          setMessage('新しいパスワードを設定してください');
-        } else {
-          console.log('有効なセッションが見つかりません');
-          // codeパラメータがある場合は、ホームページからリダイレクトされた可能性がある
-          if (code) {
-            setError('パスワードリセットリンクが無効です。再度リセットメールを送信してください。');
-          } else {
-            setError('無効なパスワードリセットリンクです。再度リセットメールを送信してください。');
-          }
-        }
+        // パラメータがない場合はエラー
+        console.log('有効なパスワードリセットパラメータが見つかりません');
+        setError('無効なパスワードリセットリンクです。再度リセットメールを送信してください。');
       } catch (err) {
         console.error('セッション確認エラー:', err);
         setError(
