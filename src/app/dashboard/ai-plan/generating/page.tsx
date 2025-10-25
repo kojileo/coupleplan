@@ -256,13 +256,6 @@ export default function AIGeneratingPage(): ReactElement {
                 d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            <div>
-              <h3 className="font-medium text-blue-900 mb-2">AI生成のヒント</h3>
-              <p className="text-sm text-blue-700">
-                Gemini 2.5の思考モードで、あなたに最適な1つのプランを深く分析・生成しています。
-                生成には通常15〜25秒程度かかります。
-              </p>
-            </div>
           </div>
         </div>
       </div>
