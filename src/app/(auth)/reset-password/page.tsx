@@ -16,116 +16,52 @@ export default function ResetPasswordPage(): ReactElement {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [isValidSession, setIsValidSession] = useState(false);
+  const [isCheckingSession, setIsCheckingSession] = useState(true);
 
-  // Supabaseのセッションを確認
+  // セッション確認（PKCEフローのみサポート）
   useEffect(() => {
     const checkSession = async (): Promise<void> => {
       try {
-        // URLパラメータからトークンを取得
-        const urlParams = new URLSearchParams(window.location.search);
-        const accessToken = urlParams.get('access_token');
-        const refreshToken = urlParams.get('refresh_token');
-        const type = urlParams.get('type');
-        const code = urlParams.get('code');
+        console.log('パスワードリセットページ - セッション確認開始');
 
-        console.log('パスワードリセットページ - URL Parameters:', {
-          accessToken: accessToken ? 'exists' : 'missing',
-          refreshToken: refreshToken ? 'exists' : 'missing',
-          type,
-          code: code ? 'exists' : 'missing',
+        // URLパラメータからエラー情報を取得
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlError = urlParams.get('error');
+        const errorCode = urlParams.get('error_code');
+        const errorDescription = urlParams.get('error_description');
+
+        console.log('URL Parameters:', {
+          error: urlError,
+          errorCode,
+          errorDescription,
           fullUrl: window.location.href,
-          search: window.location.search,
-          hash: window.location.hash,
         });
 
-        // 1. 従来方式（access_token + refresh_token）を優先
-        if (type === 'recovery' && accessToken && refreshToken) {
-          console.log('パスワードリセットトークンが検出されました（従来方式）');
-          try {
-            const { data, error } = await supabase.auth.setSession({
-              access_token: accessToken,
-              refresh_token: refreshToken,
-            });
-
-            console.log('セッション設定結果:', {
-              hasSession: !!data.session,
-              error: error?.message,
-            });
-
-            if (error) {
-              console.error('セッション設定エラー:', error);
-              setError(
-                'パスワードリセットリンクが無効です。再度リセットメールを送信してください。'
-              );
-              return;
-            }
-
-            if (data.session) {
-              setIsValidSession(true);
-              setMessage('新しいパスワードを設定してください');
-              return;
-            } else {
-              setError('セッションの確立に失敗しました。再度リセットメールを送信してください。');
-              return;
-            }
-          } catch (tokenError) {
-            console.error('トークン設定エラー:', tokenError);
-            setError('パスワードリセットリンクが無効です。再度リセットメールを送信してください。');
-            return;
-          }
-        }
-
-        // 2. PKCE方式（codeパラメータ）
-        if (code) {
-          console.log('パスワードリセットコードが検出されました（PKCE方式）');
-          try {
-            const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-
-            console.log('コード交換結果:', {
-              hasSession: !!data.session,
-              error: error?.message,
-            });
-
-            if (error) {
-              console.error('コード交換エラー:', error);
-              setError(
-                'パスワードリセットリンクが無効です。再度リセットメールを送信してください。'
-              );
-              return;
-            }
-
-            if (data.session) {
-              setIsValidSession(true);
-              setMessage('新しいパスワードを設定してください');
-              return;
-            } else {
-              setError('セッションの確立に失敗しました。再度リセットメールを送信してください。');
-              return;
-            }
-          } catch (codeError) {
-            console.error('コード交換エラー:', codeError);
-            setError('パスワードリセットリンクが無効です。再度リセットメールを送信してください。');
-            return;
-          }
-        }
-
-        // 3. ホームページからリダイレクトされた場合の処理
-        if (code && window.location.pathname === '/') {
-          console.log(
-            'ホームページからリダイレクトされました。パスワードリセットページに移動します。'
+        // エラーパラメータがある場合の処理
+        if (urlError === 'access_denied' && errorCode === 'otp_expired') {
+          console.log('OTP期限切れエラーが検出されました');
+          setError(
+            'パスワードリセットリンクの有効期限が切れています。再度リセットメールを送信してください。'
           );
-          window.location.href = `/reset-password?code=${code}`;
+          setIsCheckingSession(false);
           return;
         }
 
-        // 4. Supabaseの自動セッション検出を試行
+        if (urlError) {
+          console.log('認証エラーが検出されました:', { urlError, errorCode, errorDescription });
+          setError('パスワードリセットリンクが無効です。再度リセットメールを送信してください。');
+          setIsCheckingSession(false);
+          return;
+        }
+
+        // Supabaseの自動セッション検出（PKCEフロー）
         console.log('Supabaseの自動セッション検出を試行中...');
         const {
           data: { session },
           error: sessionError,
         } = await supabase.auth.getSession();
 
-        console.log('自動セッション検出結果:', {
+        console.log('セッション検出結果:', {
           hasSession: !!session,
           error: sessionError?.message,
         });
@@ -133,14 +69,16 @@ export default function ResetPasswordPage(): ReactElement {
         if (sessionError) {
           console.error('セッション確認エラー:', sessionError);
           setError('パスワードリセットリンクが無効です。再度リセットメールを送信してください。');
+          setIsCheckingSession(false);
           return;
         }
 
         if (session) {
+          console.log('有効なセッションが検出されました');
           setIsValidSession(true);
           setMessage('新しいパスワードを設定してください');
         } else {
-          console.log('有効なパスワードリセットパラメータが見つかりません');
+          console.log('有効なセッションが見つかりません');
           setError('無効なパスワードリセットリンクです。再度リセットメールを送信してください。');
         }
       } catch (err) {
@@ -148,6 +86,8 @@ export default function ResetPasswordPage(): ReactElement {
         setError(
           'セッションの確認中にエラーが発生しました。再度リセットメールを送信してください。'
         );
+      } finally {
+        setIsCheckingSession(false);
       }
     };
 
@@ -157,7 +97,10 @@ export default function ResetPasswordPage(): ReactElement {
   const handleSubmit = async (e: FormEvent): Promise<void> => {
     e.preventDefault();
     setLoading(true);
+    setMessage('');
+    setError('');
 
+    // バリデーション
     if (password !== confirmPassword) {
       setError('パスワードが一致しません');
       setLoading(false);
@@ -170,16 +113,18 @@ export default function ResetPasswordPage(): ReactElement {
       return;
     }
 
-    setMessage('');
-    setError('');
-
     try {
+      console.log('パスワード更新を開始');
       const { error } = await supabase.auth.updateUser({
         password,
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('パスワード更新エラー:', error);
+        throw error;
+      }
 
+      console.log('パスワード更新成功');
       setMessage('パスワードが正常に更新されました。ログインページに移動します...');
 
       // セッションをクリアしてからログインページにリダイレクト
@@ -200,6 +145,22 @@ export default function ResetPasswordPage(): ReactElement {
   const onSubmit = (e: FormEvent): void => {
     void handleSubmit(e);
   };
+
+  // セッション確認中の表示
+  if (isCheckingSession) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-pink-50 to-white py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8">
+          <div className="text-center">
+            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+              パスワードリセット
+            </h2>
+            <p className="mt-2 text-center text-sm text-gray-600">セッションを確認中...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-pink-50 to-white py-12 px-4 sm:px-6 lg:px-8">
