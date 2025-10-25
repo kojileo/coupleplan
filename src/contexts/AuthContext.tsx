@@ -5,7 +5,12 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import type { ReactElement, ReactNode } from 'react';
 
 import { supabase } from '@/lib/supabase-auth';
-import { safeAuthCheck, clearSession, detectAndClearCorruptedSession, type AuthStatus } from '@/lib/manual-auth';
+import {
+  safeAuthCheck,
+  clearSession,
+  detectAndClearCorruptedSession,
+  type AuthStatus,
+} from '@/lib/manual-auth';
 
 type AuthContextType = {
   user: User | null;
@@ -55,14 +60,16 @@ export function AuthProvider({ children }: { children: ReactNode }): ReactElemen
           }
           return;
         }
-        
+
         const status = await safeAuthCheck();
-        
+
         if (mounted) {
           setAuthStatus(status);
-          
+
           if (status.isAuthenticated) {
-            const { data: { session } } = await supabase.auth.getSession();
+            const {
+              data: { session },
+            } = await supabase.auth.getSession();
             setSession(session);
             setUser(session?.user ?? null);
           } else {
@@ -114,6 +121,10 @@ export function AuthProvider({ children }: { children: ReactNode }): ReactElemen
       setSession(null);
       setUser(null);
       setAuthStatus(null);
+      // ホーム画面にリダイレクト
+      if (typeof window !== 'undefined') {
+        window.location.href = '/';
+      }
     } catch (error) {
       console.error('ログアウトエラー:', error);
     }
@@ -123,9 +134,11 @@ export function AuthProvider({ children }: { children: ReactNode }): ReactElemen
     try {
       const status = await safeAuthCheck();
       setAuthStatus(status);
-      
+
       if (status.isAuthenticated) {
-        const { data: { session } } = await supabase.auth.getSession();
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
         setSession(session);
         setUser(session?.user ?? null);
       }
@@ -150,15 +163,17 @@ export function AuthProvider({ children }: { children: ReactNode }): ReactElemen
   };
 
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      session, 
-      isLoading, 
-      signOut, 
-      refreshAuth, 
-      clearCorruptedSession,
-      authStatus 
-    }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        session,
+        isLoading,
+        signOut,
+        refreshAuth,
+        clearCorruptedSession,
+        authStatus,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

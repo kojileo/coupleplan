@@ -13,7 +13,7 @@ export default function Navbar() {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    router.push('/login');
+    router.push('/');
   };
 
   // ログインページや認証ページではナビゲーションを表示しない
