@@ -21,7 +21,38 @@ export default function ResetPasswordPage(): ReactElement {
   useEffect(() => {
     const checkSession = async (): Promise<void> => {
       try {
-        // 現在のセッションを取得
+        // URLパラメータからトークンを取得
+        const urlParams = new URLSearchParams(window.location.search);
+        const accessToken = urlParams.get('access_token');
+        const refreshToken = urlParams.get('refresh_token');
+        const type = urlParams.get('type');
+
+        // パスワードリセット用のトークンがある場合
+        if (type === 'recovery' && accessToken && refreshToken) {
+          try {
+            // トークンを使用してセッションを確立
+            const { data, error } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken,
+            });
+
+            if (error) {
+              throw error;
+            }
+
+            if (data.session) {
+              setIsValidSession(true);
+              setMessage('新しいパスワードを設定してください');
+              return;
+            }
+          } catch (tokenError) {
+            console.error('トークン設定エラー:', tokenError);
+            setError('パスワードリセットリンクが無効です。再度リセットメールを送信してください。');
+            return;
+          }
+        }
+
+        // 既存のセッションを確認
         const {
           data: { session },
           error: sessionError,
@@ -31,11 +62,7 @@ export default function ResetPasswordPage(): ReactElement {
           throw sessionError;
         }
 
-        // URLのハッシュフラグメントを確認
-        const hash = window.location.hash;
-
-        // セッションがあるか、ハッシュに recovery type が含まれている場合は有効
-        if (session || (hash && hash.includes('type=recovery'))) {
+        if (session) {
           setIsValidSession(true);
           setMessage('新しいパスワードを設定してください');
         } else {
@@ -77,6 +104,9 @@ export default function ResetPasswordPage(): ReactElement {
       if (error) throw error;
 
       setMessage('パスワードが正常に更新されました。ログインページに移動します...');
+
+      // セッションをクリアしてからログインページにリダイレクト
+      await supabase.auth.signOut();
 
       // 3秒後にログインページにリダイレクト
       setTimeout(() => {

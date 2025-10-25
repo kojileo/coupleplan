@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { supabase } from '@/lib/supabase-auth';
+import { createClient } from '@/lib/supabase/server';
 
 interface ResetPasswordRequest {
   email: string;
@@ -21,6 +21,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       console.error('環境変数 NEXT_PUBLIC_APP_URL が設定されていません');
       return NextResponse.json({ error: 'サーバー設定エラー' }, { status: 500 });
     }
+
+    // サーバーサイド用のSupabaseクライアントを作成
+    const supabase = await createClient(request);
 
     // パスワードリセットメールを送信
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
