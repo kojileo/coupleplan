@@ -223,20 +223,6 @@ function SignUpForm(): ReactElement {
                 '🚀 アカウントを作成'
               )}
             </Button>
-
-            <div className="text-center">
-              <p className="text-sm text-gray-600">
-                アカウント作成により、
-                <Link href="/terms" className="text-rose-600 hover:text-rose-500 underline">
-                  利用規約
-                </Link>
-                および
-                <Link href="/privacy" className="text-rose-600 hover:text-rose-500 underline">
-                  プライバシーポリシー
-                </Link>
-                に同意したものとみなされます。
-              </p>
-            </div>
           </form>
         </div>
 

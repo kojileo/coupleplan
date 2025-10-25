@@ -248,8 +248,19 @@ export default function ProfilePage(): ReactElement {
 
   const handleChangePassword = async () => {
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(user?.email || '', {
-        redirectTo: `${window.location.origin}/reset-password`,
+      const redirectUrl = `${window.location.origin}/reset-password`;
+      console.log('プロフィールページ - パスワードリセット送信:', {
+        email: user?.email,
+        redirectUrl,
+      });
+
+      const { data, error } = await supabase.auth.resetPasswordForEmail(user?.email || '', {
+        redirectTo: redirectUrl,
+      });
+
+      console.log('プロフィールページ - パスワードリセット結果:', {
+        hasData: !!data,
+        error: error?.message,
       });
 
       if (error) throw error;

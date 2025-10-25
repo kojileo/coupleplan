@@ -14,6 +14,17 @@ export default function Home(): ReactElement {
 
   // 認証済みユーザーはダッシュボードに誘導
   useEffect(() => {
+    // パスワードリセットのcodeパラメータをチェック
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+
+    if (code) {
+      console.log('ホームページでパスワードリセットコードが検出されました:', code);
+      // パスワードリセットページにリダイレクト
+      void router.push(`/reset-password?code=${code}`);
+      return;
+    }
+
     if (session) {
       const redirectTo =
         new URLSearchParams(window.location.search).get('redirectTo') || '/dashboard';
