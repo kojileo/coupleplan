@@ -80,11 +80,6 @@ export default function Dashboard(): ReactElement {
                         プランを作成
                       </Button>
                     </Link>
-                    <Link href="/dashboard/plans">
-                      <Button variant="outline" className="w-full">
-                        📝 保存されたプランを見る
-                      </Button>
-                    </Link>
                   </div>
                 </div>
               </div>

@@ -96,10 +96,24 @@ export default function AIPlanPage(): ReactElement {
 
               {/* 予算 */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">予算</label>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  予算
+                  {formData.budget && (
+                    <span className="ml-2 text-rose-600 font-semibold">
+                      {budgetOptions.find((opt) => opt.value === formData.budget)?.label}
+                    </span>
+                  )}
+                </label>
                 <div className="grid grid-cols-1 gap-2">
                   {budgetOptions.map((option) => (
-                    <label key={option.value} className="flex items-center cursor-pointer">
+                    <label
+                      key={option.value}
+                      className={`flex items-center cursor-pointer p-3 rounded-lg border-2 transition-all ${
+                        formData.budget === option.value
+                          ? 'border-rose-500 bg-rose-50'
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
                       <input
                         type="radio"
                         name="budget"
@@ -116,10 +130,24 @@ export default function AIPlanPage(): ReactElement {
 
               {/* 時間 */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-3">デート時間</label>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  デート時間
+                  {formData.duration && (
+                    <span className="ml-2 text-rose-600 font-semibold">
+                      {durationOptions.find((opt) => opt.value === formData.duration)?.label}
+                    </span>
+                  )}
+                </label>
                 <div className="grid grid-cols-1 gap-2">
                   {durationOptions.map((option) => (
-                    <label key={option.value} className="flex items-center cursor-pointer">
+                    <label
+                      key={option.value}
+                      className={`flex items-center cursor-pointer p-3 rounded-lg border-2 transition-all ${
+                        formData.duration === option.value
+                          ? 'border-rose-500 bg-rose-50'
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
                       <input
                         type="radio"
                         name="duration"

@@ -135,9 +135,6 @@ export default function AIGeneratingPage(): ReactElement {
           <p className="text-xl text-gray-600 mb-2">
             あなただけの特別なデートプランを作成しています
           </p>
-          <div className="inline-flex items-center px-4 py-2 bg-purple-100 rounded-full">
-            <span className="text-sm font-medium text-purple-700">Gemini 2.5 思考モード搭載</span>
-          </div>
         </div>
 
         {/* プログレスバー */}
