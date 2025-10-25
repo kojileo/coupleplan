@@ -99,7 +99,6 @@ function LoginForm(): ReactElement {
             </span>
           </Link>
           <h2 className="text-3xl font-bold text-gray-900 mb-2">ログイン</h2>
-          <p className="text-gray-600">おかえりなさい！続きを楽しみましょう</p>
         </div>
 
         {/* フォーム */}

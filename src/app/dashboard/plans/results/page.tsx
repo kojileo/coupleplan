@@ -79,8 +79,7 @@ function PlanResultsContent() {
             </div>
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-3">AIが最適なプランを生成中...</h2>
-          <p className="text-gray-600 mb-2">Gemini 2.5 思考モードで分析中</p>
-          <p className="text-sm text-gray-500">15-25秒ほどお待ちください</p>
+          <p className="text-sm text-gray-500">少々お待ちください</p>
         </div>
       </div>
     );
@@ -128,12 +127,6 @@ function PlanResultsContent() {
           </div>
           <h1 className="text-4xl font-extrabold text-gray-900 mb-4">AIが最適なプランを生成！</h1>
           <p className="text-xl text-gray-600 mb-4">あなたの好みに合わせた最高のデートプランです</p>
-          <div className="inline-flex items-center px-4 py-2 bg-purple-100 rounded-full">
-            <svg className="w-5 h-5 text-purple-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-            </svg>
-            <span className="text-sm font-medium text-purple-700">Gemini 2.5 思考モード搭載</span>
-          </div>
         </div>
 
         {/* プラン表示（中央配置） */}
@@ -146,13 +139,6 @@ function PlanResultsContent() {
               >
                 {/* プランヘッダー */}
                 <div className="bg-gradient-to-r from-rose-500 to-purple-500 p-6 text-white">
-                  <div className="flex items-center justify-between mb-2">
-                    {plan.ai_generated && (
-                      <span className="px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-sm rounded-full font-medium">
-                        🤖 AI生成プラン
-                      </span>
-                    )}
-                  </div>
                   <h3 className="text-2xl font-bold mb-2">{plan.title}</h3>
                   <p className="text-white/90">{plan.description}</p>
                 </div>
@@ -241,23 +227,6 @@ function PlanResultsContent() {
             </button>
           </div>
         )}
-
-        {/* カップル招待バナー */}
-        {plans.length > 0 && (
-          <div className="mb-8">
-            <CoupleInviteBanner context="plan-created" />
-          </div>
-        )}
-
-        {/* フッターアクション */}
-        <div className="flex justify-center gap-4 mt-8">
-          <button
-            onClick={() => router.push('/dashboard/plans')}
-            className="px-6 py-3 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50 transition-colors"
-          >
-            プラン一覧を見る
-          </button>
-        </div>
       </div>
     </div>
   );

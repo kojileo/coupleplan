@@ -26,9 +26,21 @@ export default function ResetPasswordPage(): ReactElement {
         const accessToken = urlParams.get('access_token');
         const refreshToken = urlParams.get('refresh_token');
         const type = urlParams.get('type');
+        const code = urlParams.get('code');
 
-        // パスワードリセット用のトークンがある場合
+        // デバッグログを追加
+        console.log('パスワードリセットページ - URL Parameters:', {
+          accessToken: accessToken ? 'exists' : 'missing',
+          refreshToken: refreshToken ? 'exists' : 'missing',
+          type,
+          code: code ? 'exists' : 'missing',
+          fullUrl: window.location.href,
+          search: window.location.search,
+        });
+
+        // パスワードリセット用のトークンがある場合（従来の方式）
         if (type === 'recovery' && accessToken && refreshToken) {
+          console.log('パスワードリセットトークンが検出されました（従来方式）');
           try {
             // トークンを使用してセッションを確立
             const { data, error } = await supabase.auth.setSession({
@@ -36,13 +48,22 @@ export default function ResetPasswordPage(): ReactElement {
               refresh_token: refreshToken,
             });
 
+            console.log('セッション設定結果:', {
+              hasSession: !!data.session,
+              error: error?.message,
+            });
+
             if (error) {
+              console.error('セッション設定エラー:', error);
               throw error;
             }
 
             if (data.session) {
               setIsValidSession(true);
               setMessage('新しいパスワードを設定してください');
+              return;
+            } else {
+              setError('セッションの確立に失敗しました。再度リセットメールを送信してください。');
               return;
             }
           } catch (tokenError) {
@@ -52,13 +73,62 @@ export default function ResetPasswordPage(): ReactElement {
           }
         }
 
+        // 新しい方式：codeパラメータを使用した認証
+        if (code) {
+          console.log('パスワードリセットコードが検出されました（新方式）');
+          try {
+            // codeを使用してセッションを確立
+            const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+
+            console.log('コード交換結果:', {
+              hasSession: !!data.session,
+              error: error?.message,
+            });
+
+            if (error) {
+              console.error('コード交換エラー:', error);
+              throw error;
+            }
+
+            if (data.session) {
+              setIsValidSession(true);
+              setMessage('新しいパスワードを設定してください');
+              return;
+            } else {
+              setError('セッションの確立に失敗しました。再度リセットメールを送信してください。');
+              return;
+            }
+          } catch (codeError) {
+            console.error('コード交換エラー:', codeError);
+            setError('パスワードリセットリンクが無効です。再度リセットメールを送信してください。');
+            return;
+          }
+        }
+
+        // ホームページからリダイレクトされた場合の処理
+        if (code && window.location.pathname === '/') {
+          console.log(
+            'ホームページからリダイレクトされました。パスワードリセットページに移動します。'
+          );
+          // パスワードリセットページにリダイレクト
+          window.location.href = `/reset-password?code=${code}`;
+          return;
+        }
+
         // 既存のセッションを確認
+        console.log('既存セッションを確認中...');
         const {
           data: { session },
           error: sessionError,
         } = await supabase.auth.getSession();
 
+        console.log('既存セッション確認結果:', {
+          hasSession: !!session,
+          error: sessionError?.message,
+        });
+
         if (sessionError) {
+          console.error('セッション確認エラー:', sessionError);
           throw sessionError;
         }
 
@@ -66,7 +136,13 @@ export default function ResetPasswordPage(): ReactElement {
           setIsValidSession(true);
           setMessage('新しいパスワードを設定してください');
         } else {
-          setError('無効なパスワードリセットリンクです。再度リセットメールを送信してください。');
+          console.log('有効なセッションが見つかりません');
+          // codeパラメータがある場合は、ホームページからリダイレクトされた可能性がある
+          if (code) {
+            setError('パスワードリセットリンクが無効です。再度リセットメールを送信してください。');
+          } else {
+            setError('無効なパスワードリセットリンクです。再度リセットメールを送信してください。');
+          }
         }
       } catch (err) {
         console.error('セッション確認エラー:', err);

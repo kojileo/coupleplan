@@ -14,6 +14,17 @@ export default function Home(): ReactElement {
 
   // 認証済みユーザーはダッシュボードに誘導
   useEffect(() => {
+    // パスワードリセットのcodeパラメータをチェック
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+
+    if (code) {
+      console.log('ホームページでパスワードリセットコードが検出されました:', code);
+      // パスワードリセットページにリダイレクト
+      void router.push(`/reset-password?code=${code}`);
+      return;
+    }
+
     if (session) {
       const redirectTo =
         new URLSearchParams(window.location.search).get('redirectTo') || '/dashboard';
@@ -187,42 +198,6 @@ export default function Home(): ReactElement {
                 </div>
               </div>
             </div>
-
-            <div className="text-center mt-12">
-              <Link href="/signup?redirectTo=/dashboard">
-                <Button
-                  size="lg"
-                  className="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700"
-                >
-                  今すぐ無料で始める
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* お問い合わせセクション */}
-        <section className="py-20 bg-gradient-to-br from-slate-50 to-rose-50">
-          <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto text-center">
-              <div className="bg-white rounded-2xl shadow-xl p-12 border border-rose-100">
-                <div className="bg-gradient-to-br from-rose-500 to-pink-600 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                  <span className="text-3xl">✉️</span>
-                </div>
-                <h2 className="text-3xl font-bold text-gray-900 mb-4">お問い合わせ</h2>
-                <p className="text-lg text-gray-600 mb-8">
-                  ご質問・ご要望がございましたら、お気軽にお問い合わせください
-                </p>
-                <Link href="/contact">
-                  <Button
-                    size="lg"
-                    className="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white px-10 py-6 text-lg"
-                  >
-                    お問い合わせフォームへ
-                  </Button>
-                </Link>
-              </div>
-            </div>
           </div>
         </section>
       </main>
@@ -231,22 +206,8 @@ export default function Home(): ReactElement {
       <footer className="bg-gray-900 text-white py-12">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0">
-            <div className="flex items-center space-x-2">
-              <div className="bg-gradient-to-br from-rose-500 to-pink-600 p-1.5 rounded-lg">
-                <span className="text-xl">💑</span>
-              </div>
-              <span className="text-xl font-bold">CouplePlan</span>
-            </div>
-
-            <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-400">
-              <Link href="/contact" className="hover:text-white transition-colors">
-                お問い合わせ
-              </Link>
-            </div>
-
             <div className="text-sm text-gray-400">
               <p>© 2025 CouplePlan</p>
-              <p className="text-xs mt-1">モバイルアプリ公開予定</p>
             </div>
           </div>
         </div>

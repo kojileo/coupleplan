@@ -17,6 +17,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     // アプリケーションURLが設定されているか確認
     const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+    console.log('パスワードリセットAPI - 環境変数確認:', {
+      appUrl: appUrl ? '設定済み' : '未設定',
+      email: email,
+    });
+
     if (!appUrl) {
       console.error('環境変数 NEXT_PUBLIC_APP_URL が設定されていません');
       return NextResponse.json({ error: 'サーバー設定エラー' }, { status: 500 });
@@ -25,9 +30,20 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // サーバーサイド用のSupabaseクライアントを作成
     const supabase = await createClient(request);
 
+    const redirectUrl = `${appUrl}/reset-password`;
+    console.log('パスワードリセットメール送信:', {
+      email,
+      redirectUrl,
+    });
+
     // パスワードリセットメールを送信
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${appUrl}/reset-password`,
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: redirectUrl,
+    });
+
+    console.log('Supabaseパスワードリセット結果:', {
+      hasData: !!data,
+      error: error?.message,
     });
 
     if (error) {

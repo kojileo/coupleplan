@@ -73,14 +73,14 @@ export default function Navbar() {
               📅 プラン一覧
             </Link>
             <Link
-              href="/dashboard/plans/create"
+              href="/dashboard/subscription"
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                isActive('/dashboard/plans/create')
+                isActive('/dashboard/subscription')
                   ? 'bg-rose-100 text-rose-700'
                   : 'text-gray-700 hover:bg-gray-100'
               }`}
             >
-              ✨ プラン作成
+              💳 サブスクリプション
             </Link>
             <Link
               href="/dashboard/partner-linkage"

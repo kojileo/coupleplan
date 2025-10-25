@@ -223,37 +223,36 @@ export default function CreateDatePlanPage() {
           {/* フォーム */}
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* 予算 */}
-            <div className="space-y-2">
+            <div className="space-y-4">
               <label className="block text-sm font-medium text-gray-700">
                 予算 <span className="text-red-500">*</span>
+                {formData.budget && (
+                  <span className="ml-2 text-blue-600 font-semibold">
+                    {formData.budget.toLocaleString()}円
+                  </span>
+                )}
               </label>
-              <div className="flex items-center space-x-4">
-                <input
-                  type="number"
-                  value={formData.budget}
-                  onChange={(e) => handleInputChange('budget', parseInt(e.target.value))}
-                  className={`flex-1 px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-900 ${
-                    hasError('budget') ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  min="1000"
-                  max="100000"
-                  step="1000"
-                />
-                <span className="text-gray-600">円</span>
-              </div>
-              <input
-                type="range"
-                value={formData.budget}
-                onChange={(e) => handleInputChange('budget', parseInt(e.target.value))}
-                min="1000"
-                max="100000"
-                step="1000"
-                className="w-full"
-              />
-              <div className="flex justify-between text-sm text-gray-500">
-                <span>1,000円</span>
-                <span>{formData.budget.toLocaleString()}円</span>
-                <span>100,000円</span>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                {[
+                  { value: 5000, label: '5,000円以下' },
+                  { value: 10000, label: '10,000円' },
+                  { value: 20000, label: '20,000円' },
+                  { value: 30000, label: '30,000円' },
+                  { value: 50000, label: '50,000円以上' },
+                ].map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => handleInputChange('budget', option.value)}
+                    className={`p-3 rounded-lg border-2 transition-all text-sm font-medium ${
+                      formData.budget === option.value
+                        ? 'border-blue-500 bg-blue-50 text-blue-700'
+                        : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                    }`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
               </div>
               {getErrorMessage('budget') && (
                 <p className="text-sm text-red-500">{getErrorMessage('budget')}</p>
@@ -261,35 +260,34 @@ export default function CreateDatePlanPage() {
             </div>
 
             {/* 所要時間 */}
-            <div className="space-y-2">
+            <div className="space-y-4">
               <label className="block text-sm font-medium text-gray-700">
                 所要時間 <span className="text-red-500">*</span>
+                {formData.duration && (
+                  <span className="ml-2 text-blue-600 font-semibold">{formData.duration}時間</span>
+                )}
               </label>
-              <div className="flex items-center space-x-4">
-                <input
-                  type="number"
-                  value={formData.duration}
-                  onChange={(e) => handleInputChange('duration', parseInt(e.target.value))}
-                  className={`flex-1 px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-900 ${
-                    hasError('duration') ? 'border-red-500' : 'border-gray-300'
-                  }`}
-                  min="1"
-                  max="12"
-                />
-                <span className="text-gray-600">時間</span>
-              </div>
-              <input
-                type="range"
-                value={formData.duration}
-                onChange={(e) => handleInputChange('duration', parseInt(e.target.value))}
-                min="1"
-                max="12"
-                className="w-full"
-              />
-              <div className="flex justify-between text-sm text-gray-500">
-                <span>1時間</span>
-                <span>{formData.duration}時間</span>
-                <span>12時間</span>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                {[
+                  { value: 2, label: '2時間' },
+                  { value: 4, label: '4時間' },
+                  { value: 6, label: '6時間' },
+                  { value: 8, label: '8時間' },
+                  { value: 12, label: '12時間' },
+                ].map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => handleInputChange('duration', option.value)}
+                    className={`p-3 rounded-lg border-2 transition-all text-sm font-medium ${
+                      formData.duration === option.value
+                        ? 'border-blue-500 bg-blue-50 text-blue-700'
+                        : 'border-gray-200 hover:border-gray-300 text-gray-700'
+                    }`}
+                  >
+                    {option.label}
+                  </button>
+                ))}
               </div>
               {getErrorMessage('duration') && (
                 <p className="text-sm text-red-500">{getErrorMessage('duration')}</p>
@@ -366,62 +364,97 @@ export default function CreateDatePlanPage() {
             </div>
 
             {/* 好み */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium text-gray-900">
-                好み <span className="text-red-500">*</span>
-              </h3>
-              <p className="text-sm text-gray-600">
-                最大10個まで選択できます（選択中: {formData.preferences.length}/10）
-              </p>
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-medium text-gray-900">
+                  好み <span className="text-red-500">*</span>
+                </h3>
+                <p className="text-sm text-gray-600 mt-1">
+                  最大10個まで選択できます（選択中: {formData.preferences.length}/10）
+                </p>
+                {formData.preferences.length > 0 && (
+                  <div className="mt-2">
+                    <span className="text-sm text-blue-600 font-medium">
+                      選択中: {formData.preferences.join(', ')}
+                    </span>
+                  </div>
+                )}
+              </div>
 
               {/* カテゴリフィルター */}
-              <div className="flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  onClick={() => setSelectedCategory('')}
-                  className={`px-3 py-1 rounded-full text-sm ${
-                    selectedCategory === ''
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  すべて
-                </button>
-                {Object.entries(categories).map(([key, label]) => (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  カテゴリで絞り込み
+                </label>
+                <div className="flex flex-wrap gap-2">
                   <button
-                    key={key}
                     type="button"
-                    onClick={() => setSelectedCategory(key)}
-                    className={`px-3 py-1 rounded-full text-sm ${
-                      selectedCategory === key
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    onClick={() => setSelectedCategory('')}
+                    className={`px-4 py-2 rounded-lg border-2 transition-all text-sm font-medium ${
+                      selectedCategory === ''
+                        ? 'border-blue-500 bg-blue-50 text-blue-700'
+                        : 'border-gray-200 text-gray-700 hover:border-gray-300'
                     }`}
                   >
-                    {label}
+                    すべて
                   </button>
-                ))}
+                  {Object.entries(categories).map(([key, label]) => (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => setSelectedCategory(key)}
+                      className={`px-4 py-2 rounded-lg border-2 transition-all text-sm font-medium ${
+                        selectedCategory === key
+                          ? 'border-blue-500 bg-blue-50 text-blue-700'
+                          : 'border-gray-200 text-gray-700 hover:border-gray-300'
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {/* タグ選択 */}
-              <div className="flex flex-wrap gap-2">
-                {displayTags.map((tag) => (
-                  <button
-                    key={tag.id}
-                    type="button"
-                    onClick={() => togglePreference(tag.name)}
-                    disabled={
-                      !formData.preferences.includes(tag.name) && formData.preferences.length >= 10
-                    }
-                    className={`px-3 py-1 rounded-full text-sm transition-colors ${
-                      formData.preferences.includes(tag.name)
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed'
-                    }`}
-                  >
-                    {tag.name}
-                  </button>
-                ))}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-3">
+                  好みを選択してください
+                </label>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                  {displayTags.map((tag) => (
+                    <button
+                      key={tag.id}
+                      type="button"
+                      onClick={() => togglePreference(tag.name)}
+                      disabled={
+                        !formData.preferences.includes(tag.name) &&
+                        formData.preferences.length >= 10
+                      }
+                      className={`p-3 rounded-lg border-2 transition-all text-sm font-medium text-left ${
+                        formData.preferences.includes(tag.name)
+                          ? 'border-blue-500 bg-blue-50 text-blue-700'
+                          : 'border-gray-200 text-gray-700 hover:border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span>{tag.name}</span>
+                        {formData.preferences.includes(tag.name) && (
+                          <svg
+                            className="w-4 h-4 text-blue-600"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        )}
+                      </div>
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {getErrorMessage('preferences') && (

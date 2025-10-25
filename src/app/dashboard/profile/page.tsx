@@ -15,8 +15,6 @@ interface UserProfile {
   avatar?: string;
   bio?: string;
   location?: string;
-  birthday?: string;
-  anniversary?: string;
   preferences: {
     favoriteCategories: string[];
     budgetRange: string;
@@ -46,15 +44,11 @@ export default function ProfilePage(): ReactElement {
     name: '',
     email: '',
     location: '',
-    birthday: '',
-    anniversary: '',
   });
   const [validationErrors, setValidationErrors] = useState<{
     name?: string;
     email?: string;
     location?: string;
-    birthday?: string;
-    anniversary?: string;
   }>({});
 
   useEffect(() => {
@@ -73,7 +67,7 @@ export default function ProfilePage(): ReactElement {
       const { data: profileData, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('id', user.id)
+        .eq('user_id', user.id)
         .single();
 
       if (error && error.code !== 'PGRST116') {
@@ -90,8 +84,6 @@ export default function ProfilePage(): ReactElement {
           `https://ui-avatars.com/api/?name=${encodeURIComponent(user.user_metadata?.name || 'User')}&background=rose&color=fff`,
         bio: profileData?.bio || '',
         location: profileData?.location || '',
-        birthday: profileData?.birthday || '',
-        anniversary: profileData?.anniversary || '',
         preferences: {
           favoriteCategories: profileData?.favorite_categories || ['カフェ', 'レストラン'],
           budgetRange: profileData?.budget_range || '¥5,000-¥15,000',
@@ -121,8 +113,6 @@ export default function ProfilePage(): ReactElement {
         name: defaultProfile.name,
         email: defaultProfile.email || '',
         location: defaultProfile.location || '',
-        birthday: defaultProfile.birthday || '',
-        anniversary: defaultProfile.anniversary || '',
       });
     } catch (error) {
       console.error('プロフィール読み込みエラー:', error);
@@ -134,8 +124,6 @@ export default function ProfilePage(): ReactElement {
         avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(user.user_metadata?.name || 'User')}&background=rose&color=fff`,
         bio: '',
         location: '',
-        birthday: '',
-        anniversary: '',
         preferences: {
           favoriteCategories: ['カフェ', 'レストラン'],
           budgetRange: '¥5,000-¥15,000',
@@ -167,8 +155,6 @@ export default function ProfilePage(): ReactElement {
       name: editForm.name,
       email: editForm.email,
       location: editForm.location,
-      birthday: editForm.birthday,
-      anniversary: editForm.anniversary,
     };
 
     const validation = validateProfileForm(formData);
@@ -183,22 +169,50 @@ export default function ProfilePage(): ReactElement {
     try {
       // 空文字列やundefinedをnullに変換
       const profileData = {
-        id: user.id,
+        user_id: user.id,
         name: editForm.name,
         email: editForm.email,
         location: editForm.location && editForm.location.trim() !== '' ? editForm.location : null,
-        birthday: editForm.birthday && editForm.birthday.trim() !== '' ? editForm.birthday : null,
-        anniversary:
-          editForm.anniversary && editForm.anniversary.trim() !== '' ? editForm.anniversary : null,
         updated_at: new Date().toISOString(),
       };
 
       console.log('保存するデータ:', profileData);
-      console.log('birthday値:', editForm.birthday, '→', profileData.birthday);
-      console.log('anniversary値:', editForm.anniversary, '→', profileData.anniversary);
 
-      // Supabaseにプロフィールデータを保存
-      const { data, error } = await supabase.from('profiles').upsert(profileData);
+      // まず既存のプロフィールを確認
+      const { data: existingProfile, error: checkError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('user_id', user.id)
+        .single();
+
+      let data, error;
+
+      if (checkError && checkError.code === 'PGRST116') {
+        // プロフィールが存在しない場合は新規作成
+        const { data: insertData, error: insertError } = await supabase
+          .from('profiles')
+          .insert(profileData)
+          .select();
+        data = insertData;
+        error = insertError;
+      } else if (checkError) {
+        // その他のエラー
+        throw checkError;
+      } else {
+        // プロフィールが存在する場合は更新
+        const { data: updateData, error: updateError } = await supabase
+          .from('profiles')
+          .update({
+            name: profileData.name,
+            email: profileData.email,
+            location: profileData.location,
+            updated_at: profileData.updated_at,
+          })
+          .eq('user_id', user.id)
+          .select();
+        data = updateData;
+        error = updateError;
+      }
 
       console.log('Supabaseレスポンス:', { data, error });
 
@@ -210,8 +224,6 @@ export default function ProfilePage(): ReactElement {
         name: editForm.name,
         email: editForm.email,
         location: editForm.location,
-        birthday: editForm.birthday,
-        anniversary: editForm.anniversary,
       });
 
       alert('プロフィールを更新しました');
@@ -228,8 +240,6 @@ export default function ProfilePage(): ReactElement {
         name: profile.name,
         email: profile.email || '',
         location: profile.location || '',
-        birthday: profile.birthday || '',
-        anniversary: profile.anniversary || '',
       });
     }
     setValidationErrors({});
@@ -238,8 +248,19 @@ export default function ProfilePage(): ReactElement {
 
   const handleChangePassword = async () => {
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(user?.email || '', {
-        redirectTo: `${window.location.origin}/reset-password`,
+      const redirectUrl = `${window.location.origin}/reset-password`;
+      console.log('プロフィールページ - パスワードリセット送信:', {
+        email: user?.email,
+        redirectUrl,
+      });
+
+      const { data, error } = await supabase.auth.resetPasswordForEmail(user?.email || '', {
+        redirectTo: redirectUrl,
+      });
+
+      console.log('プロフィールページ - パスワードリセット結果:', {
+        hasData: !!data,
+        error: error?.message,
       });
 
       if (error) throw error;
@@ -334,39 +355,36 @@ export default function ProfilePage(): ReactElement {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-purple-50">
-      {/* ヘッダー */}
-      <div className="bg-white shadow-lg border-b border-rose-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-4">
-              <Button onClick={() => window.history.back()} variant="outline" size="sm">
-                ← 戻る
-              </Button>
-              <h1 className="text-2xl font-bold text-gray-900">プロフィール</h1>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* ページヘッダー */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">プロフィール</h1>
+              <p className="text-gray-600 mt-2">アカウント情報と設定を管理</p>
             </div>
             <div className="flex items-center space-x-2">
               {!isEditing ? (
-                <Button onClick={handleEdit} variant="outline" size="sm">
+                <Button onClick={handleEdit} variant="outline">
                   編集
                 </Button>
               ) : (
                 <>
-                  <Button onClick={handleCancel} variant="outline" size="sm">
+                  <Button onClick={handleCancel} variant="outline">
                     キャンセル
                   </Button>
-                  <Button onClick={handleSave} size="sm">
-                    保存
-                  </Button>
+                  <Button onClick={handleSave}>保存</Button>
                 </>
               )}
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* プロフィール情報 */}
         <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">基本情報</h2>
+            {isEditing && <div className="text-sm text-gray-500">編集モード</div>}
+          </div>
           <div className="space-y-6">
             {isEditing ? (
               <div className="space-y-4">
@@ -402,51 +420,19 @@ export default function ProfilePage(): ReactElement {
                     <p className="mt-1 text-sm text-red-600">{validationErrors.email}</p>
                   )}
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">居住地</label>
-                    <input
-                      type="text"
-                      value={editForm.location}
-                      onChange={(e) => {
-                        setEditForm({ ...editForm, location: e.target.value });
-                        setValidationErrors({ ...validationErrors, location: undefined });
-                      }}
-                      className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent ${validationErrors.location ? 'border-red-500' : 'border-gray-300'}`}
-                    />
-                    {validationErrors.location && (
-                      <p className="mt-1 text-sm text-red-600">{validationErrors.location}</p>
-                    )}
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">誕生日</label>
-                    <input
-                      type="date"
-                      value={editForm.birthday}
-                      onChange={(e) => {
-                        setEditForm({ ...editForm, birthday: e.target.value });
-                        setValidationErrors({ ...validationErrors, birthday: undefined });
-                      }}
-                      className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent ${validationErrors.birthday ? 'border-red-500' : 'border-gray-300'}`}
-                    />
-                    {validationErrors.birthday && (
-                      <p className="mt-1 text-sm text-red-600">{validationErrors.birthday}</p>
-                    )}
-                  </div>
-                </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">記念日</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">居住地</label>
                   <input
-                    type="date"
-                    value={editForm.anniversary}
+                    type="text"
+                    value={editForm.location}
                     onChange={(e) => {
-                      setEditForm({ ...editForm, anniversary: e.target.value });
-                      setValidationErrors({ ...validationErrors, anniversary: undefined });
+                      setEditForm({ ...editForm, location: e.target.value });
+                      setValidationErrors({ ...validationErrors, location: undefined });
                     }}
-                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent ${validationErrors.anniversary ? 'border-red-500' : 'border-gray-300'}`}
+                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent ${validationErrors.location ? 'border-red-500' : 'border-gray-300'}`}
                   />
-                  {validationErrors.anniversary && (
-                    <p className="mt-1 text-sm text-red-600">{validationErrors.anniversary}</p>
+                  {validationErrors.location && (
+                    <p className="mt-1 text-sm text-red-600">{validationErrors.location}</p>
                   )}
                 </div>
               </div>
@@ -456,8 +442,6 @@ export default function ProfilePage(): ReactElement {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-500 mb-4">
                   <div>📍 {profile.location}</div>
                   <div>📧 {profile.email}</div>
-                  {profile.birthday && <div>🎂 {profile.birthday}</div>}
-                  {profile.anniversary && <div>💕 {profile.anniversary}</div>}
                 </div>
               </div>
             )}
@@ -488,38 +472,6 @@ export default function ProfilePage(): ReactElement {
             </div>
           </div>
         )}
-
-        {/* 好み設定 */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
-          <h3 className="text-2xl font-bold text-gray-900 mb-6">好み設定</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h4 className="font-medium text-gray-900 mb-3">好きなカテゴリ</h4>
-              <div className="flex flex-wrap gap-2">
-                {profile.preferences.favoriteCategories.map((category, index) => (
-                  <span
-                    key={index}
-                    className="px-3 py-1 bg-rose-100 text-rose-800 text-sm rounded-full"
-                  >
-                    {category}
-                  </span>
-                ))}
-              </div>
-            </div>
-            <div>
-              <h4 className="font-medium text-gray-900 mb-3">予算範囲</h4>
-              <p className="text-gray-600">{profile.preferences.budgetRange}</p>
-            </div>
-            <div>
-              <h4 className="font-medium text-gray-900 mb-3">時間の好み</h4>
-              <p className="text-gray-600">{profile.preferences.timePreference}</p>
-            </div>
-            <div>
-              <h4 className="font-medium text-gray-900 mb-3">アクティビティレベル</h4>
-              <p className="text-gray-600">{profile.preferences.activityLevel}</p>
-            </div>
-          </div>
-        </div>
 
         {/* 統計情報 */}
         <div className="bg-white rounded-2xl shadow-xl p-8 mb-8">
