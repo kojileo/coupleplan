@@ -42,7 +42,7 @@
     "@supabase/supabase-js": "^2.75.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
-    "isomorphic-dompurify": "^2.29.0",
+    "isomorphic-dompurify": "^2.31.0",
     "lucide-react": "^0.544.0",
     "next": "^15.3.0",
     "next-auth": "^4.24.13",
